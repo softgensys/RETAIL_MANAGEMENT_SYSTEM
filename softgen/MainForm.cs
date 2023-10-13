@@ -205,8 +205,8 @@ namespace softgen
                 }
                 else
                 {
-                    string pnlUserName = general.GetuserName(DeTools.gstrloginId.Trim());
-                    Messages.InfoMsg("user: " + pnlUserName.Trim());
+                    pnlUserName.Text = general.GetuserName(DeTools.gstrloginId.Trim());
+                    //Messages.InfoMsg("user: " + pnlUserName.Trim());
                 }
 
                 messages.gstrMsg = messages.gstrMsg + "                                    ";
@@ -575,7 +575,7 @@ namespace softgen
 
         private void MainForm_Load_1(object sender, EventArgs e)
         {
-           
+
         }
 
 
@@ -686,6 +686,47 @@ namespace softgen
         private void pnlDate_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void tmrActiveForm_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                string msg = "Click on any of the above buttons to complete the desired task.";
+
+                if (ActiveMdiChild != null && ActiveMdiChild.Name != Name)
+                {
+                    DeTools.gobjActiveForm = ActiveMdiChild;
+                    switch (DeTools.GetMode(DeTools.gobjActiveForm))
+                    {
+                        case DeTools.DELETEMODE:
+                        case DeTools.INQUIREMODE:
+                        case DeTools.POSTMODE:
+                        case "":
+                            Messages.HelpMsg(msg);
+                            break;
+                    }
+                }
+
+                if (ActiveMdiChild != null && !string.IsNullOrEmpty(ActiveMdiChild.Tag as string))
+                { 
+
+                    if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
+                    {
+                        if (DeTools.toolbarDictionary.ContainsKey(ActiveMdiChild))
+                        {
+                            ToolStrip currentToolbar = DeTools.toolbarDictionary[ActiveMdiChild];
+                            currentToolbar.BringToFront();
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                messages.VBError(ex,Name, "tmrActiveForm_Tick","");
+            }
         }
     }
 }

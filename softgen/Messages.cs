@@ -71,6 +71,12 @@ namespace softgen
             MessageBox.Show("Login Failed!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        public static void HelpMsg(string msg)
+        {
+           MainForm.Instance.pnlHelp.Text = msg;
+            MainForm.Instance.pnlHelp.ForeColor= System.Drawing.Color.FromArgb(0,100,0,0);
+        }
+
 
 
         //////////////////

@@ -32,7 +32,7 @@ namespace softgen
         private static string gstrSQL;
         public static string gstrloginId;
         public static string gstrloginName;
-        private static Form gobjActiveForm;
+        public static Form gobjActiveForm;
         public static string[] gstrsetup = new string[6]; // Initialized in a method
         public static int gintFormHeight;
         public static int gintFormWidth;
@@ -318,7 +318,7 @@ namespace softgen
                     case Keys.F2:
                         if (GetMode(form) != null)
                         {
-                           // form.ClearForm();
+                            //form.ClearForm();
                             //ClearCreatedByPanel();
 
                         }

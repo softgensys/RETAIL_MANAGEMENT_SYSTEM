@@ -71,6 +71,8 @@ namespace softgen
             panel1 = new Panel();
             linkLabel1 = new LinkLabel();
             imageList1 = new ImageList(components);
+            tmrActiveForm = new System.Windows.Forms.Timer(components);
+            pnlHelp = new Label();
             tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel.SuspendLayout();
@@ -350,9 +352,10 @@ namespace softgen
             // panel
             // 
             panel.BackColor = Color.CadetBlue;
+            panel.Controls.Add(pnlHelp);
             panel.Controls.Add(tbrTools);
             panel.Controls.Add(panel1);
-            panel.Location = new Point(1, 629);
+            panel.Location = new Point(1, 613);
             panel.Name = "panel";
             panel.Size = new Size(1350, 78);
             panel.TabIndex = 10;
@@ -411,6 +414,19 @@ namespace softgen
             imageList1.Images.SetKeyName(11, "Retrieve");
             imageList1.Images.SetKeyName(12, "Continue");
             imageList1.Images.SetKeyName(13, "DeleteMode");
+            // 
+            // tmrActiveForm
+            // 
+            tmrActiveForm.Enabled = true;
+            tmrActiveForm.Tick += tmrActiveForm_Tick;
+            // 
+            // pnlHelp
+            // 
+            pnlHelp.BackColor = Color.LightSlateGray;
+            pnlHelp.Location = new Point(3, 58);
+            pnlHelp.Name = "pnlHelp";
+            pnlHelp.Size = new Size(496, 15);
+            pnlHelp.TabIndex = 8;
             // 
             // MainForm
             // 
@@ -518,5 +534,7 @@ namespace softgen
         private Label label4;
         private Label label3;
         private Label label1;
+        private System.Windows.Forms.Timer tmrActiveForm;
+        public Label pnlHelp;
     }
 }
