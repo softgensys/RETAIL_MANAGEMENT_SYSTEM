@@ -10,7 +10,7 @@ namespace softgen
 {
     public class Messages
     {
-        public string gstrMsg="";
+        public static string gstrMsg="";
 
             public static void ErrorMsg(string message)
             {

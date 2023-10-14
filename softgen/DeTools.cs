@@ -78,14 +78,13 @@ namespace softgen
         private static double refundAmount;
         public static Dictionary<Form, ToolStrip> toolbarDictionary = new Dictionary<Form, ToolStrip>();//store key value pair data From is key and Toolstrip will be its Value .For Destroying toolbar
         public static string ConnectionString;
-
-
-
-
-
         
+
+
+
+        ///////
         /// //////////////////////////////////////////////////////////////////
-        
+
 
         public static void ActivateForm(Form form,bool TF,string mode) 
         {
@@ -473,45 +472,56 @@ namespace softgen
                 // Access the ToolStripItem at the specified TBRIndex
                 ToolStripItem toolStripItem = mobjToolbar.Items[TBRIndex];
 
-                switch (BtnKey)
+                        // Check if gobjActiveForm is not null and implements the ISearchableForm interface
+                if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
                 {
-                    case ADDMODE:
+                    switch (BtnKey)
+                    {
+                        case ADDMODE:
 
-                        strAppMode = ADDMODE;
-                        ActivateForm(gobjActiveForm, true, ADDMODE);
-                        //gobjActiveForm.SetSearchVar(true);
+                            strAppMode = ADDMODE;
+                            ActivateForm(gobjActiveForm, true, ADDMODE);
+
+            
+                            searchableForm.SetSearchVar(true);
+                            //gobjActiveForm.SetSearchVar(true);
+                        
                         MainForm.Instance.mnuAdd.Checked = true;      
 
                         break;
 
-                    case MODIFYMODE:
-                        strAppMode = MODIFYMODE;
-                        ActivateForm(gobjActiveForm, true, MODIFYMODE);
-                        //gobjActiveForm.SetSearchVar(false);
-                        MainForm.Instance.mnuModify.Checked = true;
-                        break;
+                        case MODIFYMODE:
+                            strAppMode = MODIFYMODE;
+                            ActivateForm(gobjActiveForm, true, MODIFYMODE);
+                    
+                                searchableForm.SetSearchVar(false);
+                    
+                                MainForm.Instance.mnuModify.Checked = true;
+                            break;
 
-                    case DELETEMODE:
-                        strAppMode = DELETEMODE;
-                        ActivateForm(gobjActiveForm, false, DELETEMODE);
-                        //gobjActiveForm.SetSearchVar(false);
-                        MainForm.Instance.mnuDeleteMode.Checked = true;
-                        break;
+                        case DELETEMODE:
+                            strAppMode = DELETEMODE;
+                            ActivateForm(gobjActiveForm, false, DELETEMODE);
+                       
+                                searchableForm.SetSearchVar(false);
+                                MainForm.Instance.mnuDeleteMode.Checked = true;
+                            break;
 
-                    case INQUIREMODE:
-                        strAppMode = INQUIREMODE;
-                        ActivateForm(gobjActiveForm, false, INQUIREMODE);
-                        //gobjActiveForm.SetSearchVar(false);
-                        MainForm.Instance.mnuInquire.Checked = true;
-                        break;
+                        case INQUIREMODE:
+                                    strAppMode = INQUIREMODE;
+                                    ActivateForm(gobjActiveForm, false, INQUIREMODE);
+                                    searchableForm.SetSearchVar(false);
+                                    MainForm.Instance.mnuInquire.Checked = true;
+                                    break;
 
-                    case POSTMODE:
-                        strAppMode = POSTMODE;
-                        ActivateForm(gobjActiveForm, false, POSTMODE);
-                        //gobjActiveForm.SetSearchVar(false);
-                        MainForm.Instance.mnuPost.Checked = true;
-                        break;
-                }
+                                case POSTMODE:
+                                    strAppMode = POSTMODE;
+                                    ActivateForm(gobjActiveForm, false, POSTMODE);
+                                    searchableForm.SetSearchVar(false);
+                                    MainForm.Instance.mnuPost.Checked = true;
+                                    break;
+                    }
+                
 
                 switch (BtnKey)
                 {
@@ -582,145 +592,149 @@ namespace softgen
                     MainForm.Instance.mnuAuthorise.Enabled = true;
                 }
 
-                switch (BtnKey)
-                {
-                    case ADDMODE:
-                    case MODIFYMODE:
-                    case DELETEMODE:
-                    case INQUIREMODE:
-                    case POSTMODE:
-                       CreateButton(mobjToolbar, "Fresh", strAppMode + " Fresh Information");
-                        MainForm.Instance.mnuRefresh.Enabled = true;
-                        if (strAppMode == POSTMODE)
-                        {
-                            mobjToolbar.Items[mobjToolbar.Items.Count - 1].ToolTipText = "Authorise Fresh Information";
-                            mobjbutton.ToolTipText = "Authorise Fresh Information";
-                        }
+                    switch (BtnKey)
+                    {
+                        case ADDMODE:
+                        case MODIFYMODE:
+                        case DELETEMODE:
+                        case INQUIREMODE:
+                        case POSTMODE:
+                            CreateButton(mobjToolbar, "Fresh", strAppMode + " Fresh Information");
+                            MainForm.Instance.mnuRefresh.Enabled = true;
+                            if (strAppMode == POSTMODE)
+                            {
+                                mobjToolbar.Items[mobjToolbar.Items.Count - 1].ToolTipText = "Authorise Fresh Information";
+                                mobjbutton.ToolTipText = "Authorise Fresh Information";
+                            }
 
-                        if (BtnKey != ADDMODE)
-                        {
-                            CreateButton(mobjToolbar, "Retrieve", "Find Information for Specified Criteria");
-                            MainForm.Instance.mnuRetrieve.Enabled = true;
-                        }
+                            if (BtnKey != ADDMODE)
+                            {
+                                CreateButton(mobjToolbar, "Retrieve", "Find Information for Specified Criteria");
+                                MainForm.Instance.mnuRetrieve.Enabled = true;
+                            }
 
-                        if (strOptions.EndsWith("R"))
-                        {
-                          CreateButton(mobjToolbar, "Print", "Print the Current Information");
-                            MainForm.Instance.mnuPrint.Enabled = true;
-                        }
+                            if (strOptions.EndsWith("R"))
+                            {
+                                CreateButton(mobjToolbar, "Print", "Print the Current Information");
+                                MainForm.Instance.mnuPrint.Enabled = true;
+                            }
 
-                        mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7],null, "ModeQuit");
-                        mobjbutton.ToolTipText = "Quit From " + strAppMode + " Mode";
+                            mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "ModeQuit");
+                            mobjbutton.ToolTipText = "Quit From " + strAppMode + " Mode";
 
-                        mobjbutton.AutoSize = false;
-                        mobjbutton.BackColor = Color.Lavender;
-                        mobjbutton.BackgroundImageLayout = ImageLayout.Center;
-                        mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                        mobjbutton.ImageAlign = ContentAlignment.TopCenter;
-                        mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
-                        mobjbutton.Margin = new Padding(3);
-                        mobjbutton.Size = new Size(51, 47);
-                        mobjbutton.TextAlign = ContentAlignment.BottomCenter;
-                        mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+                            mobjbutton.AutoSize = false;
+                            mobjbutton.BackColor = Color.Lavender;
+                            mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+                            mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+                            mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+                            mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                            mobjbutton.Margin = new Padding(3);
+                            mobjbutton.Size = new Size(51, 47);
+                            mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+                            mobjbutton.TextImageRelation = TextImageRelation.Overlay;
 
-                        mobjToolbar.Items.Add(mobjbutton);
-                        
-                        CreateButton(mobjToolbar, "Help", "Help Information");
-                        //SendKeys "{F2}"
-                        //gobjActiveForm.ClearForm();
-                        break;
-                        switch (BtnKey)
-                        {
-                            case "Save":
-                               // gobjActiveForm.SaveForm();
-                                break;
+                            mobjToolbar.Items.Add(mobjbutton);
 
-                            case "DeleteForm":
-                                //gobjActiveForm.DeleteForm();
-                                break;
+                            CreateButton(mobjToolbar, "Help", "Help Information");
+                            //SendKeys "{F2}"
+                            //gobjActiveForm.ClearForm();
+                            break;
 
-                            case "Fresh":
-                                //gstrMsg = "Do you want to refresh without saving the changes?";
-                                //    if (gobjActiveForm.GetDEStatus() == true)
-                                //    {
-                                //        if (MessageBox.Show(gstrMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                //        {
-                                //            return;
-                                //        }
-                                //    }
-                                //    if (GetMode(gobjActiveForm) == ADDMODE)
-                                //    {
-                                //        gobjActiveForm.SetSearchVar(true);
-                                //    }
-                                //    else
-                                //    {
-                                //        gobjActiveForm.SetSearchVar(false);
-                                //    }
-                                //    if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
-                                //    {
-                                //        gobjActiveForm.SaveTempDataForm();
-                                //    }
-                                //    gobjActiveForm.ClearForm();
-                                //    ClearCreatedByPanel();
-                                  ClearStatusBarHelp();
+                            //switch (BtnKey)
+                            //{
+                                case "Save":
+                                    // gobjActiveForm.SaveForm();
+                                    break;
+
+                                case "DeleteForm":
+                                    //gobjActiveForm.DeleteForm();
+                                    break;
+
+                                case "Fresh":
+                                    Messages.gstrMsg = "Do you want to refresh without saving the changes?";
+
+                                    if (searchableForm.GetDEStatus() == true)
+                                    {
+                                        //if (MessageBox.Show(gstrMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                        if(MessageBox.Show(Messages.gstrMsg,null,MessageBoxButtons.YesNo,MessageBoxIcon.Question)== DialogResult.No)
+                                        {
+                                            return;
+                                        }
+                                    }
+                                    if (GetMode(gobjActiveForm) == ADDMODE)
+                                    {
+                                        searchableForm.SetSearchVar(true);
+                                    }
+                                    else
+                                    {
+                                        searchableForm.SetSearchVar(false);
+                                    }
+                                    if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+                                    {
+                                      //  gobjActiveForm.SaveTempDataForm();
+                                    }
+                                    //gobjActiveForm.ClearForm();
+                                    //ClearCreatedByPanel();
+                                    ClearStatusBarHelp();
                                     break;
 
                                 case "Retrieve":
-                                //    gobjActiveForm.SearchForm();
+                                    //gobjActiveForm.SearchForm();
                                     break;
 
                                 case "Print":
-                                //    gobjActiveForm.PrintDoc();
+                                    //    gobjActiveForm.PrintDoc();
                                     break;
 
                                 case "Authorise":
-                                //    gobjActiveForm.PostForm();
+                                    //    gobjActiveForm.PostForm();
                                     break;
 
                                 case "Continue":
-                                //    gobjActiveForm.PrintReport();
+                                    //    gobjActiveForm.PrintReport();
                                     break;
 
                                 case "Help":
-                                //    CallHelp();
+                                        //CallHelp();
                                     break;
 
                                 case "ModeQuit":
-                                //    gstrMsg = "Do you want to exit without saving the changes?";
-                                //    if (gobjActiveForm.GetDEStatus() == true)
-                                //    {
-                                //        if (MessageBox.Show(gstrMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                //        {
-                                //            return;
-                                //        }
-                                //    }
-                                //    if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
-                                //    {
-                                //        gobjActiveForm.SaveTempDataForm();
-                                //    }
+                                    Messages.gstrMsg = "Do you want to exit without saving the changes?";
+                                    if (searchableForm.GetDEStatus() == true)
+                                    {
+                                        if (MessageBox.Show(Messages.gstrMsg, null, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                        {
+                                            return;
+                                        }
+                                    }
+                                    if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+                                    {
+                                       // gobjActiveForm.SaveTempDataForm();
+                                    }
 
-                                //    gobjActiveForm.Caption = RestoreCaption(gobjActiveForm);
-                                DestroyToolbar(gobjActiveForm);
-                                CreateToolbar(gobjActiveForm, strOptions);
-                              ActivateForm(gobjActiveForm, false, null);
-                                //    gobjActiveForm.Icon = mdiMain.Icon;
-                                ClearStatusBarHelp();
-                                break;
+                                    gobjActiveForm.Text = RestoreCaption(gobjActiveForm);
+                                    DestroyToolbar(gobjActiveForm);
+                                    CreateToolbar(gobjActiveForm, strOptions);
+                                    ActivateForm(gobjActiveForm, false, null);
+                                    //    gobjActiveForm.Icon = mdiMain.Icon;
+                                    ClearStatusBarHelp();
+                                    break;
 
-                            case "Quit":
-                            //    gobjActiveForm.Close();
-                                DisableFileMenu();
-                                break;
+                                case "Quit":
+                                    //    gobjActiveForm.Close();
+                                    DisableFileMenu();
+                                    break;
 
-                            case "SystemQuit":
-                              //if (AskToExit() == DialogResult.Yes)
-                            //    {
-                            //        frmHelp.Close();
-                            //        mdiMain.Close();
-                            //    }
-                               break;
-                        }
-                }
+                                case "SystemQuit":
+                                    //if (AskToExit() == DialogResult.Yes)
+                                    //    {
+                                    //        frmHelp.Close();
+                                    //        mdiMain.Close();
+                                    //    }
+                                    break;
+                            }
+                    }
+                
             }
 
             catch (System.Exception ex)

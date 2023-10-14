@@ -29,9 +29,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmM_Group));
-            button3 = new Button();
-            button2 = new Button();
-            button1 = new Button();
             chkStatus = new CheckBox();
             txtSTaxPer = new TextBox();
             txtGrpDesc = new TextBox();
@@ -41,27 +38,6 @@
             lblGrpDesc = new Label();
             lblGrpId = new Label();
             SuspendLayout();
-            // 
-            // button3
-            // 
-            resources.ApplyResources(button3, "button3");
-            button3.Name = "button3";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
-            // 
-            // button2
-            // 
-            resources.ApplyResources(button2, "button2");
-            button2.Name = "button2";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
-            // 
-            // button1
-            // 
-            resources.ApplyResources(button1, "button1");
-            button1.Name = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // chkStatus
             // 
@@ -109,9 +85,6 @@
             resources.ApplyResources(this, "$this");
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(button1);
             Controls.Add(chkStatus);
             Controls.Add(txtSTaxPer);
             Controls.Add(txtGrpDesc);
@@ -129,11 +102,6 @@
         }
 
         #endregion
-
-
-        private Button button3;
-        private Button button2;
-        private Button button1;
         private CheckBox chkStatus;
         private TextBox txtSTaxPer;
         private TextBox txtGrpDesc;

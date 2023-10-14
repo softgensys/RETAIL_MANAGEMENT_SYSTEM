@@ -209,13 +209,13 @@ namespace softgen
                     //Messages.InfoMsg("user: " + pnlUserName.Trim());
                 }
 
-                messages.gstrMsg = messages.gstrMsg + "                                    ";
+                Messages.gstrMsg = Messages.gstrMsg + "                                    ";
                 pnlDate.Text = DateTime.Parse(DeTools.gstrsetup[3]).ToString("d MMMM yyyy");
-                messages.gstrMsg = messages.gstrMsg + "Date: " + pnlDate;
+                Messages.gstrMsg = Messages.gstrMsg + "Date: " + pnlDate;
 
-                messages.gstrMsg = messages.gstrMsg + "                                    ";
+                Messages.gstrMsg = Messages.gstrMsg + "                                    ";
                 pnlLoginTime.Text = DateTime.Now.ToString("h:mm tt");
-                messages.gstrMsg = messages.gstrMsg + "Login Time: " + pnlLoginTime;
+                Messages.gstrMsg = Messages.gstrMsg + "Login Time: " + pnlLoginTime;
                 //pnlUser = gstrMsg;
 
                 Show();
