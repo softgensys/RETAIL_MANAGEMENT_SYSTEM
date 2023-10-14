@@ -662,7 +662,7 @@ namespace softgen
                                 //    }
                                 //    gobjActiveForm.ClearForm();
                                 //    ClearCreatedByPanel();
-                                //    ClearStatusBarHelp();
+                                  ClearStatusBarHelp();
                                     break;
 
                                 case "Retrieve":
@@ -703,8 +703,8 @@ namespace softgen
                                 DestroyToolbar(gobjActiveForm);
                                 CreateToolbar(gobjActiveForm, strOptions);
                               ActivateForm(gobjActiveForm, false, null);
-                            //    gobjActiveForm.Icon = mdiMain.Icon;
-                            //    //ClearStatusBarHelp
+                                //    gobjActiveForm.Icon = mdiMain.Icon;
+                                ClearStatusBarHelp();
                                 break;
 
                             case "Quit":
@@ -713,7 +713,7 @@ namespace softgen
                                 break;
 
                             case "SystemQuit":
-                            //    if (AskToExit() == DialogResult.Yes)
+                              //if (AskToExit() == DialogResult.Yes)
                             //    {
                             //        frmHelp.Close();
                             //        mdiMain.Close();
@@ -955,8 +955,8 @@ namespace softgen
             {
                 //form.ClearForm();    todo
                 DisableFileMenu();
-                //UncheckFileMenu();todo
-                //ClearStatusBarHelp();todo
+                UncheckFileMenu();
+                ClearStatusBarHelp();
                 int toolbarIndex = (int)form.Tag; // Assuming you stored the toolbar index in the Tag property
                 if (toolbarDictionary.ContainsKey(form))
                 {
@@ -975,6 +975,10 @@ namespace softgen
 
         }
 
+        public static void ClearStatusBarHelp()
+        {
+            MainForm.Instance.pnlHelp.Text = "";
+        }
 
         public static string Encrypt(string strPwd)
         {
@@ -1174,7 +1178,7 @@ namespace softgen
             }
 
             DisableFileMenu();
-            //UncheckFileMenu();
+            UncheckFileMenu();
 
             if (string.IsNullOrEmpty(strMode))
             {
@@ -1324,6 +1328,19 @@ namespace softgen
                     }
                 }
             }
+        }
+
+        public static void CreatedBy(string created_by, string Created_date)
+        {
+            MainForm.Instance.pnlCreated_by.Text = created_by;
+            MainForm.Instance.pnlCreated_date.Text=Created_date;
+
+        }
+        public static void PostedBy(string Posted_by,string Posted_date)
+        {
+            MainForm.Instance.pnlPosted_by.Text =Posted_by;
+            MainForm.Instance.pnlPosted_date.Text =Posted_date;
+
         }
 
 

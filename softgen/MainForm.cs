@@ -709,7 +709,7 @@ namespace softgen
                 }
 
                 if (ActiveMdiChild != null && !string.IsNullOrEmpty(ActiveMdiChild.Tag as string))
-                { 
+                {
 
                     if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
                     {
@@ -725,7 +725,7 @@ namespace softgen
             catch (Exception ex)
             {
 
-                messages.VBError(ex,Name, "tmrActiveForm_Tick","");
+                messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
             }
         }
     }

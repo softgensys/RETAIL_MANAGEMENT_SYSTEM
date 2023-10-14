@@ -123,6 +123,7 @@
             Name = "frmM_Group";
             FormClosed += Group_FormClosed;
             Load += Group_Load;
+            KeyPress += frmM_Group_KeyPress;
             ResumeLayout(false);
             PerformLayout();
         }

@@ -14,6 +14,8 @@ namespace softgen
     public partial class frmM_Group : Form
     {
         private DbConnector dbConnector;
+        private string mstrEntBy, mstrEntOn, mstrAuthBy, mstrAuthOn;
+        public bool mblnSearch, mblnDataEntered;
 
         public frmM_Group()
         {
@@ -26,7 +28,11 @@ namespace softgen
 
         private void MyForm_Activated(object sender, EventArgs e)
         {
+            DeTools.ClearStatusBarHelp();
             DeTools.ActiveFileMenu(this);
+            DeTools.CreatedBy(mstrEntBy, mstrEntOn);
+            DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
+
 
 
         }
@@ -127,7 +133,7 @@ namespace softgen
 
         private void Group_Load(object sender, EventArgs e)
         {
-            DeTools.DisplayForm(this,400,220);
+            DeTools.DisplayForm(this, 400, 220);
             ToolTip toolTip = new ToolTip();
             toolTip.SetToolTip(txtGrpId, "Enter Group Id.");
             toolTip.SetToolTip(txtGrpDesc, "Enter Group Description.");
@@ -141,6 +147,17 @@ namespace softgen
             parentform.dashpanel.Visible = true;
             parentform.mainpanel.Visible = false;
             parentform.formpanel.Visible = false;
+        }
+
+        private void frmM_Group_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            switch (DeTools.GetMode(this))
+            {
+                case DeTools.ADDMODE:
+                case DeTools.MODIFYMODE:
+                    mblnDataEntered = true;
+                    break;
+            }
         }
     }
 }

@@ -67,12 +67,16 @@ namespace softgen
             menuStrip1 = new MenuStrip();
             statusStrip1 = new StatusStrip();
             panel = new Panel();
+            pnlHelp = new Label();
             tbrTools = new ToolStrip();
             panel1 = new Panel();
             linkLabel1 = new LinkLabel();
             imageList1 = new ImageList(components);
             tmrActiveForm = new System.Windows.Forms.Timer(components);
-            pnlHelp = new Label();
+            pnlCreated_by = new Label();
+            pnlCreated_date = new Label();
+            pnlPosted_by = new Label();
+            pnlPosted_date = new Label();
             tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel.SuspendLayout();
@@ -352,14 +356,26 @@ namespace softgen
             // panel
             // 
             panel.BackColor = Color.CadetBlue;
+            panel.Controls.Add(pnlPosted_date);
+            panel.Controls.Add(pnlPosted_by);
+            panel.Controls.Add(pnlCreated_date);
             panel.Controls.Add(pnlHelp);
             panel.Controls.Add(tbrTools);
             panel.Controls.Add(panel1);
+            panel.Controls.Add(pnlCreated_by);
             panel.Location = new Point(1, 613);
             panel.Name = "panel";
             panel.Size = new Size(1350, 78);
             panel.TabIndex = 10;
             panel.Paint += panel_Paint;
+            // 
+            // pnlHelp
+            // 
+            pnlHelp.BackColor = Color.LightSlateGray;
+            pnlHelp.Location = new Point(3, 58);
+            pnlHelp.Name = "pnlHelp";
+            pnlHelp.Size = new Size(496, 15);
+            pnlHelp.TabIndex = 8;
             // 
             // tbrTools
             // 
@@ -420,13 +436,41 @@ namespace softgen
             tmrActiveForm.Enabled = true;
             tmrActiveForm.Tick += tmrActiveForm_Tick;
             // 
-            // pnlHelp
+            // pnlCreated_by
             // 
-            pnlHelp.BackColor = Color.LightSlateGray;
-            pnlHelp.Location = new Point(3, 58);
-            pnlHelp.Name = "pnlHelp";
-            pnlHelp.Size = new Size(496, 15);
-            pnlHelp.TabIndex = 8;
+            pnlCreated_by.AutoSize = true;
+            pnlCreated_by.Location = new Point(609, 54);
+            pnlCreated_by.Name = "pnlCreated_by";
+            pnlCreated_by.Size = new Size(0, 15);
+            pnlCreated_by.TabIndex = 9;
+            pnlCreated_by.Visible = false;
+            // 
+            // pnlCreated_date
+            // 
+            pnlCreated_date.AutoSize = true;
+            pnlCreated_date.Location = new Point(682, 54);
+            pnlCreated_date.Name = "pnlCreated_date";
+            pnlCreated_date.Size = new Size(0, 15);
+            pnlCreated_date.TabIndex = 10;
+            pnlCreated_date.Visible = false;
+            // 
+            // pnlPosted_by
+            // 
+            pnlPosted_by.AutoSize = true;
+            pnlPosted_by.Location = new Point(1013, 14);
+            pnlPosted_by.Name = "pnlPosted_by";
+            pnlPosted_by.Size = new Size(0, 15);
+            pnlPosted_by.TabIndex = 0;
+            pnlPosted_by.Visible = false;
+            // 
+            // pnlPosted_date
+            // 
+            pnlPosted_date.AutoSize = true;
+            pnlPosted_date.Location = new Point(1089, 14);
+            pnlPosted_date.Name = "pnlPosted_date";
+            pnlPosted_date.Size = new Size(0, 15);
+            pnlPosted_date.TabIndex = 11;
+            pnlPosted_date.Visible = false;
             // 
             // MainForm
             // 
@@ -454,6 +498,7 @@ namespace softgen
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             panel.ResumeLayout(false);
+            panel.PerformLayout();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);
@@ -533,8 +578,11 @@ namespace softgen
         private Label pnlLoginTime;
         private Label label4;
         private Label label3;
-        private Label label1;
         private System.Windows.Forms.Timer tmrActiveForm;
         public Label pnlHelp;
+        public Label pnlCreated_by;
+        public Label pnlCreated_date;
+        public Label pnlPosted_date;
+        public Label pnlPosted_by;
     }
 }

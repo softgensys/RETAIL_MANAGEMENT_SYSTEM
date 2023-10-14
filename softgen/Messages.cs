@@ -39,8 +39,8 @@ namespace softgen
 
         public void AuthorisedMsg()
         {
-            //ClearStatusBarHelp();
-            gstrMsg = "Changes are not allowed in an authorised information.";
+            General general = new General();
+            //general.ClearStatusBarHelprMsg;
             gstrMsg += "\nUse inquire mode to see this information.";
             MessageBox.Show(gstrMsg, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -71,12 +71,22 @@ namespace softgen
             MessageBox.Show("Login Failed!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        internal static void IncorrectPasswordMsg() { }
+
         public static void HelpMsg(string msg)
         {
            MainForm.Instance.pnlHelp.Text = msg;
             MainForm.Instance.pnlHelp.ForeColor= System.Drawing.Color.FromArgb(0,100,0,0);
         }
 
+        public static void PostedMsg()
+        {
+            MainForm.Instance.pnlHelp.Text = "Information Authorized!";
+            MainForm.Instance.pnlHelp.ForeColor= System.Drawing.Color.FromArgb(0,100,0,0);
+
+            InfoMsg("Information Authorized!");
+
+        }
 
 
         //////////////////
