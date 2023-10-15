@@ -94,7 +94,7 @@
             Controls.Add(lblGrpDesc);
             Controls.Add(lblGrpId);
             Name = "frmM_Group";
-            FormClosed += Group_FormClosed;
+            FormClosed += frmM_Group_FormClosed;
             Load += Group_Load;
             KeyPress += frmM_Group_KeyPress;
             ResumeLayout(false);

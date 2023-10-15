@@ -13,6 +13,7 @@ using static System.Windows.Forms.Design.AxImporter;
 using System.Runtime.InteropServices;// for CLass SystemInformation mainly ComputerName
 using MySql.Data.MySqlClient;
 using System.Security.Cryptography.X509Certificates;
+using System.Data.Odbc;
 
 namespace softgen
 
@@ -78,7 +79,8 @@ namespace softgen
         private static double refundAmount;
         public static Dictionary<Form, ToolStrip> toolbarDictionary = new Dictionary<Form, ToolStrip>();//store key value pair data From is key and Toolstrip will be its Value .For Destroying toolbar
         public static string ConnectionString;
-        
+        public static int startIndex=-1;
+
 
 
 
@@ -174,17 +176,24 @@ namespace softgen
         {
             try {
                 string caption = form.Text; // Use form.Text instead of form.Caption to get the form's caption
+                
+                startIndex = caption.IndexOf("<");
 
-                int startIndex = caption.IndexOf("<");
-                int endIndex = caption.IndexOf(">", startIndex);
-
-                if (startIndex >= 0 && endIndex > startIndex)
+                if (startIndex >= 0)
                 {
-                    string mode = caption.Substring(startIndex + 1, endIndex - startIndex - 1);
-                    return mode.Trim();
-                }
 
-                return string.Empty; // Return an empty string if the mode is not found
+                    int endIndex = caption.IndexOf(">", startIndex);
+
+                    if (startIndex >= 0 && endIndex > startIndex)
+                    {
+                        string mode = caption.Substring(startIndex + 1, endIndex - startIndex - 1);
+                        return mode.Trim();
+                    }
+
+                }
+               
+                 return string.Empty; // Return an empty string if the mode is not found
+               
             }
             catch(System.Exception ex)
             {
@@ -823,6 +832,8 @@ namespace softgen
                 int I = GetFreeIndex(); // Obtain a free index for the toolbar
                                         //mobjToolbar = new ToolStrip();
                 mobjToolbar = MainForm.Instance.tbrTools; // Use the existing tbrTools from MainForm
+                mobjToolbar.Items.Clear(); // Clear existing buttons
+
                 mobjToolbar.AutoSize = false;
                 mobjToolbar.BackColor = Color.CadetBlue;
                 mobjToolbar.Dock = DockStyle.None;
@@ -836,12 +847,20 @@ namespace softgen
                 string formName = form.Name.Trim();
                 string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper():string.Empty;
 
-                if (!form.Controls.Contains(mobjToolbar))
+                if (!MainForm.Instance.Controls.Contains(mobjToolbar))
                 {
-                    
 
-                    form.Controls.Add(mobjToolbar);
+
+                    MainForm.Instance.Controls.Add(mobjToolbar);
                     form.Tag = I;
+                    mobjToolbar.AutoSize = false;
+                    mobjToolbar.BackColor = Color.CadetBlue;
+                    mobjToolbar.Dock = DockStyle.None;
+                    mobjToolbar.GripStyle = ToolStripGripStyle.Hidden;
+                    mobjToolbar.Location = new Point(1, 629);
+                    //mobjToolbar.Name = "tbrTools";
+                    mobjToolbar.Size = new Size(417, 52);
+                    mobjToolbar.TabIndex = 7;
                 }
 
                 if (strFormType =="C") //CheckList Form
@@ -889,24 +908,26 @@ namespace softgen
 
                 }
 
-                if (form.Name == "MainForm" )
+                    if (form.Name == "MainForm" )
                 {
-                    mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "SystemQuit");
+                    if (MainForm.Instance.MdiChildren.Length == 0)
+                    {
+                        mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "SystemQuit");
 
-                    mobjbutton.AutoSize = false;
-                    mobjbutton.BackColor = Color.Lavender;
-                    mobjbutton.BackgroundImageLayout = ImageLayout.Center;
-                    mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                    mobjbutton.ImageAlign = ContentAlignment.TopCenter;
-                    mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
-                    mobjbutton.Margin = new Padding(3);
-                    mobjbutton.Size = new Size(51, 47);
-                    mobjbutton.TextAlign = ContentAlignment.BottomCenter;
-                    mobjbutton.TextImageRelation = TextImageRelation.Overlay;
-                    mobjbutton.ToolTipText = "Quit from the System";
+                        mobjbutton.AutoSize = false;
+                        mobjbutton.BackColor = Color.Lavender;
+                        mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+                        mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+                        mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+                        mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                        mobjbutton.Margin = new Padding(3);
+                        mobjbutton.Size = new Size(51, 47);
+                        mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+                        mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+                        mobjbutton.ToolTipText = "Quit from the System";
 
-                    mobjToolbar.Items.Add(mobjbutton);
-
+                        mobjToolbar.Items.Add(mobjbutton);
+                    }
                 }
                 else
                 {
@@ -928,7 +949,7 @@ namespace softgen
 
                 CreateButton(mobjToolbar,"Help","Help Information!");
 
-                form.Controls.Add(mobjToolbar);
+                MainForm.Instance.Controls.Add(mobjToolbar);
                 form.Tag = I;
                 // Attach the created toolbar's reference to the form in the dictionary
                 DeTools.toolbarDictionary[form] = mobjToolbar;
@@ -936,6 +957,7 @@ namespace softgen
                 mobjToolbar.Tag = Options;
 
                 mobjToolbar.Visible = true;
+                mobjToolbar.BringToFront();
 
 
             }
@@ -944,6 +966,7 @@ namespace softgen
                 Messages.ErrorMsg(ex.ToString());
             }   
         }
+        
 
         private static int GetFreeIndex()
         {
@@ -963,30 +986,51 @@ namespace softgen
         }
 
 
+        //public static void DestroyToolbar(Form form)
+        //{
+        //    if (form.Tag != null)
+        //    {
+        //        //form.ClearForm();    todo
+        //        DisableFileMenu();
+        //        UncheckFileMenu();
+        //        ClearStatusBarHelp();
+        //        int toolbarIndex = (int)form.Tag; // Assuming you stored the toolbar index in the Tag property
+        //        if (toolbarDictionary.ContainsKey(form))
+        //        {
+        //            ToolStrip toolStrip= toolbarDictionary[form];//this have value a toolstrip associated with the specific form where it will be called. and stored in toolstrip.
+        //            toolStrip.Dispose();
+        //            toolbarDictionary.Remove(form); //clear the dictionary
+
+        //        }
+        //            maintTBRIndex[(int)form.Tag] = true;
+        //        form.Tag = null;
+
+
+
+
+        //    }
+
+        //}
+
         public static void DestroyToolbar(Form form)
         {
-            if (form.Tag != null)
+            if (toolbarDictionary.ContainsKey(form))
             {
-                //form.ClearForm();    todo
-                DisableFileMenu();
-                UncheckFileMenu();
-                ClearStatusBarHelp();
-                int toolbarIndex = (int)form.Tag; // Assuming you stored the toolbar index in the Tag property
-                if (toolbarDictionary.ContainsKey(form))
+                ToolStrip mobjToolbar = toolbarDictionary[form];
+
+                // Remove the ToolStrip from the parent form's controls
+                if (mobjToolbar.Parent != null)
                 {
-                    ToolStrip toolStrip= toolbarDictionary[form];//this have value a toolstrip associated with the specific form where it will be called. and stored in toolstrip.
-                    toolStrip.Dispose();
-                    toolbarDictionary.Remove(form); //clear the dictionary
-
+                    mobjToolbar.Parent.Controls.Remove(mobjToolbar);
                 }
-                    maintTBRIndex[(int)form.Tag] = true;
-                form.Tag = null;
 
+                // Clear the ToolStrip's items and dispose of it
+                mobjToolbar.Items.Clear();
+                mobjToolbar.Dispose();
 
-
-
+                // Remove the form from the dictionary
+                toolbarDictionary.Remove(form);
             }
-
         }
 
         public static void ClearStatusBarHelp()
@@ -1056,44 +1100,80 @@ namespace softgen
             }
         }
 
+        //public static string GetOptions(string FormName)
+        //{
+
+        //    ConnectionString = "DSN=softgen_db_my;Uid=root;";
+        //    gstrSQL = "SELECT * FROM s_logopt WHERE login_id =" +"login_id+ AND prog_id = @formName";
+
+        //    using (MySqlConnection connection = new MySqlConnection(ConnectionString))
+        //    {
+        //        connection.Open();
+
+        //        using (MySqlCommand cmd = new MySqlCommand(gstrSQL, connection))
+        //        {
+        //            cmd.Parameters.AddWithValue("@login_id", gstrloginId); // Assuming gstrLogin_id is a global variable
+        //            cmd.Parameters.AddWithValue("@formName", FormName);
+
+        //            using (MySqlDataReader reader = cmd.ExecuteReader())
+        //            {
+        //                if (reader.Read())
+        //                {
+        //                    string options = string.Empty;
+
+        //                    if (Convert.ToInt32(reader["can_add"]) == 1) options += "A";
+        //                    if (Convert.ToInt32(reader["can_modify"]) == 1) options += "M";
+        //                    if (Convert.ToInt32(reader["can_delete"]) == 1) options += "D";
+        //                    if (Convert.ToInt32(reader["can_inquire"]) == 1) options += "I";
+        //                    if (Convert.ToInt32(reader["can_post"]) == 1) options += "P";
+        //                    if (Convert.ToInt32(reader["can_print"]) == 1) options += "R";
+
+        //                    return options;
+        //                }
+        //                else
+        //                {
+        //                    return string.Empty;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
         public static string GetOptions(string FormName)
         {
+            string query = "SELECT * FROM s_logopt WHERE login_id = ? AND prog_id = ?";
+            string options = string.Empty;
 
-            ConnectionString = "DSN=softgen_db_my;Uid=root;";
-            gstrSQL = "SELECT * FROM s_logopt WHERE login_id = @login_id AND prog_id = @formName";
-
-            using (MySqlConnection connection = new MySqlConnection(ConnectionString))
+            try
             {
-                connection.Open();
+                DbConnector db = new DbConnector(); // Create an instance of DbConnector
+                OdbcParameter[] parameters = new OdbcParameter[2];
+                parameters[0] = new OdbcParameter("login_id", gstrloginId);
+                parameters[1] = new OdbcParameter("formName", FormName);
 
-                using (MySqlCommand cmd = new MySqlCommand(gstrSQL, connection))
+                using (OdbcDataReader reader = db.ExecuteReader(query, parameters))
                 {
-                    cmd.Parameters.AddWithValue("@login_id", gstrloginId); // Assuming gstrLogin_id is a global variable
-                    cmd.Parameters.AddWithValue("@formName", FormName);
-
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    if (reader.Read())
                     {
-                        if (reader.Read())
-                        {
-                            string options = string.Empty;
-
-                            if (Convert.ToInt32(reader["can_add"]) == 1) options += "A";
-                            if (Convert.ToInt32(reader["can_modify"]) == 1) options += "M";
-                            if (Convert.ToInt32(reader["can_delete"]) == 1) options += "D";
-                            if (Convert.ToInt32(reader["can_inquire"]) == 1) options += "I";
-                            if (Convert.ToInt32(reader["can_post"]) == 1) options += "P";
-                            if (Convert.ToInt32(reader["can_print"]) == 1) options += "R";
-
-                            return options;
-                        }
-                        else
-                        {
-                            return string.Empty;
-                        }
+                        if (Convert.ToInt32(reader["can_add"]) == 1) options += "A";
+                        if (Convert.ToInt32(reader["can_modify"]) == 1) options += "M";
+                        if (Convert.ToInt32(reader["can_delete"]) == 1) options += "D";
+                        if (Convert.ToInt32(reader["can_inquire"]) == 1) options += "I";
+                        if (Convert.ToInt32(reader["can_post"]) == 1) options += "P";
+                        if (Convert.ToInt32(reader["can_print"]) == 1) options += "R";
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+                Console.WriteLine(ex.Message);
+            }
+
+            return options;
         }
+
+
 
         private static void RemoveButtons(ToolStrip toolStrip)
         {

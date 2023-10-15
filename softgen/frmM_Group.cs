@@ -39,21 +39,21 @@ namespace softgen
 
         private void Group_Load(object sender, EventArgs e)
         {
-            DeTools.DisplayForm(this, 400, 220);
+            DeTools.DisplayForm(this, 300, 420);
             ToolTip toolTip = new ToolTip();
             toolTip.SetToolTip(txtGrpId, "Enter Group Id.");
             toolTip.SetToolTip(txtGrpDesc, "Enter Group Description.");
 
         }
 
-        private void Group_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            MainForm parentform = (MainForm)this.MdiParent;
+        //private void Group_FormClosed(object sender, FormClosedEventArgs e)
+        //{
+        //    MainForm parentform = (MainForm)this.MdiParent;
 
-            parentform.dashpanel.Visible = true;
-            parentform.mainpanel.Visible = false;
-            parentform.formpanel.Visible = false;
-        }
+        //    parentform.dashpanel.Visible = true;
+        //    parentform.mainpanel.Visible = false;
+        //    parentform.formpanel.Visible = false;
+        //}
 
         private void frmM_Group_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -80,5 +80,10 @@ namespace softgen
             mblnSearch = StartVal;
         }
 
+        private void frmM_Group_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DeTools.DestroyToolbar(this);
+            MainForm.Instance.Mgroupmenu.Enabled = true;
+        }
     }
 }

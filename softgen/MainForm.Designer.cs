@@ -287,21 +287,21 @@ namespace softgen
             MItemmenu.Name = "MItemmenu";
             MItemmenu.Size = new Size(163, 22);
             MItemmenu.Text = "Item";
-            MItemmenu.Click += MItemmenu_Click;
+           // MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
             documentSeriesToolStripMenuItem.Size = new Size(163, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
-            documentSeriesToolStripMenuItem.Click += documentSeriesToolStripMenuItem_Click;
+            //documentSeriesToolStripMenuItem.Click += documentSeriesToolStripMenuItem_Click;
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
             documentTypeToolStripMenuItem.Size = new Size(163, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
-            documentTypeToolStripMenuItem.Click += documentTypeToolStripMenuItem_Click;
+            //documentTypeToolStripMenuItem.Click += documentTypeToolStripMenuItem_Click;
             // 
             // transactionToolStripMenuItem
             // 
@@ -529,7 +529,7 @@ namespace softgen
         private Button button10;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem masterToolStripMenuItem;
-        private ToolStripMenuItem Mgroupmenu;
+        public ToolStripMenuItem Mgroupmenu;
         private ToolStripMenuItem MItemmenu;
         private ToolStripMenuItem documentSeriesToolStripMenuItem;
         private ToolStripMenuItem documentTypeToolStripMenuItem;

@@ -308,10 +308,11 @@ namespace softgen
 
         private void groupToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenChildForm();
-            dashpanel.Visible = false;
-            formpanel.Visible = false;
-            mainpanel.Visible = true;
+           OpenChildForm();
+            Mgroupmenu.Enabled = false;
+            //dashpanel.Visible = false;
+            // formpanel.Visible = false;
+            //mainpanel.Visible = true;
 
         }
 
@@ -326,115 +327,115 @@ namespace softgen
 
         }
 
-        private void button9_Click(object sender, EventArgs e)
-        {
-            FlagManager.Flag = "Add";
-            dashpanel.Visible = false;
-            formpanel.Visible = true;
-            //formpanel.BringToFront();
+        //private void button9_Click(object sender, EventArgs e)
+        //{
+        //    FlagManager.Flag = "Add";
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = true;
+        //    //formpanel.BringToFront();
 
-            // Add the FormPanel to the mainPanel's Controls collection
-            panel.Controls.Add(formpanel);
+        //    // Add the FormPanel to the mainPanel's Controls collection
+        //    panel.Controls.Add(formpanel);
 
-            // Position the FormPanel within the mainPanel
-            formpanel.Location = new Point(0, 1); // Adjust as needed
+        //    // Position the FormPanel within the mainPanel
+        //    formpanel.Location = new Point(0, 1); // Adjust as needed
 
-            // Bring the FormPanel to the front
-            formpanel.BringToFront();
-            mainpanel.Visible = false;
-            button10.Visible = false;
-            dltbtn.Visible = false;
-            savebtn.Visible = true;
+        //    // Bring the FormPanel to the front
+        //    formpanel.BringToFront();
+        //    mainpanel.Visible = false;
+        //    button10.Visible = false;
+        //    dltbtn.Visible = false;
+        //    savebtn.Visible = true;
 
-            /*Item ItemForm = new Item();
+        //    /*Item ItemForm = new Item();
 
-            if (FlagManager.Flag == "Add")
-            {
-                ItemForm.Tag = "<Add>";
-            }
-            else if (FlagManager.Flag == "Modify")
-            {
-                ItemForm.Text = "Item <Modify>";
-            }
-            else
-            {
-                // Default text if Flag is not recognized
-                ItemForm.Text = "Item";
-            }*/
-
-
-            ////////////////////////////
-            string newTitle = "Item<Add>";
-
-            // Call the method in Form 1 to update the title
-
-        }
+        //    if (FlagManager.Flag == "Add")
+        //    {
+        //        ItemForm.Tag = "<Add>";
+        //    }
+        //    else if (FlagManager.Flag == "Modify")
+        //    {
+        //        ItemForm.Text = "Item <Modify>";
+        //    }
+        //    else
+        //    {
+        //        // Default text if Flag is not recognized
+        //        ItemForm.Text = "Item";
+        //    }*/
 
 
-        private void button8_Click(object sender, EventArgs e)
-        {
+        //    ////////////////////////////
+        //    string newTitle = "Item<Add>";
 
-            FlagManager.Flag = "Modify";
-            dashpanel.Visible = false;
-            formpanel.Visible = true;
-            mainpanel.Visible = false;
+        //    // Call the method in Form 1 to update the title
 
-
-        }
+        //}
 
 
-        private void button7_Click(object sender, EventArgs e)
-        {
-            FlagManager.Flag = "Delete";
-            dashpanel.Visible = false;
-            formpanel.Visible = true;
-            mainpanel.Visible = false;
+        //private void button8_Click(object sender, EventArgs e)
+        //{
+
+        //    FlagManager.Flag = "Modify";
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = true;
+        //    mainpanel.Visible = false;
 
 
-        }
+        //}
 
-        private void button6_Click(object sender, EventArgs e)
-        {
-            FlagManager.Flag = "Inquire";
-            dashpanel.Visible = false;
-            formpanel.Visible = true;
-            mainpanel.Visible = false;
-        }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            FlagManager.Flag = "Post";
-            dashpanel.Visible = false;
-            formpanel.Visible = true;
-            mainpanel.Visible = false;
-        }
+        //private void button7_Click(object sender, EventArgs e)
+        //{
+        //    FlagManager.Flag = "Delete";
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = true;
+        //    mainpanel.Visible = false;
 
-        private void MItemmenu_Click(object sender, EventArgs e)
-        {
 
-            //Item itemForm = new Item();
-            //itemForm.Show();
-            OpenChildForm2();
-            dashpanel.Visible = false;
-            formpanel.Visible = false;
-            mainpanel.Visible = true;
-        }
+        //}
 
-        private void documentSeriesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenChildForm3();
-            dashpanel.Visible = false;
-            formpanel.Visible = false;
-            mainpanel.Visible = true;
-        }
+        //private void button6_Click(object sender, EventArgs e)
+        //{
+        //    FlagManager.Flag = "Inquire";
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = true;
+        //    mainpanel.Visible = false;
+        //}
 
-        private void documentTypeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenChildForm4();
-            dashpanel.Visible = false;
-            formpanel.Visible = false;
-            mainpanel.Visible = true;
-        }
+        //private void button5_Click(object sender, EventArgs e)
+        //{
+        //    FlagManager.Flag = "Post";
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = true;
+        //    mainpanel.Visible = false;
+        //}
+
+        //private void MItemmenu_Click(object sender, EventArgs e)
+        //{
+
+        //    //Item itemForm = new Item();
+        //    //itemForm.Show();
+        //    OpenChildForm2();
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = false;
+        //    mainpanel.Visible = true;
+        //}
+
+        //private void documentSeriesToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    OpenChildForm3();
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = false;
+        //    mainpanel.Visible = true;
+        //}
+
+        //private void documentTypeToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    OpenChildForm4();
+        //    dashpanel.Visible = false;
+        //    formpanel.Visible = false;
+        //    mainpanel.Visible = true;
+        //}
 
         private void button10_Click(object sender, EventArgs e)
         {
@@ -719,7 +720,24 @@ namespace softgen
                             currentToolbar.BringToFront();
                         }
                     }
+                    ////added new
+                    if (ActiveMdiChild.MdiParent is Form mdiParentForm &&
+                    DeTools.toolbarDictionary.ContainsKey(mdiParentForm))
+                    {
+                        ToolStrip parentToolbar = DeTools.toolbarDictionary[mdiParentForm];
+                        parentToolbar.BringToFront();
+                    }
+
+                    // Check if there's a tbrTools associated with MainForm
+                    if (DeTools.toolbarDictionary.ContainsKey(MainForm.Instance))
+                    {
+                        ToolStrip mainFormToolbar = DeTools.toolbarDictionary[MainForm.Instance];
+                        mainFormToolbar.BringToFront();
+                    }
                 }
+
+                
+
 
             }
             catch (Exception ex)
