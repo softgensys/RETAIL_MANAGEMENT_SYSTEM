@@ -67,16 +67,15 @@ namespace softgen
             menuStrip1 = new MenuStrip();
             statusStrip1 = new StatusStrip();
             panel = new Panel();
+            pnlPosted_date = new Label();
+            pnlPosted_by = new Label();
+            pnlCreated_date = new Label();
             pnlHelp = new Label();
-            tbrTools = new ToolStrip();
             panel1 = new Panel();
             linkLabel1 = new LinkLabel();
+            pnlCreated_by = new Label();
             imageList1 = new ImageList(components);
             tmrActiveForm = new System.Windows.Forms.Timer(components);
-            pnlCreated_by = new Label();
-            pnlCreated_date = new Label();
-            pnlPosted_by = new Label();
-            pnlPosted_date = new Label();
             tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel.SuspendLayout();
@@ -87,30 +86,30 @@ namespace softgen
             // 
             tableLayoutPanel1.BackColor = Color.FromArgb(192, 192, 255);
             tableLayoutPanel1.CellBorderStyle = TableLayoutPanelCellBorderStyle.Outset;
-            tableLayoutPanel1.ColumnCount = 6;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666679F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666679F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666679F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666679F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666679F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666679F));
+            tableLayoutPanel1.ColumnCount = 7;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.6666718F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.666666F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Controls.Add(label2, 2, 0);
             tableLayoutPanel1.Controls.Add(pnlDate, 3, 0);
             tableLayoutPanel1.Controls.Add(pnlLoginTime, 5, 0);
             tableLayoutPanel1.Controls.Add(label4, 4, 0);
             tableLayoutPanel1.Controls.Add(pnlUserName, 1, 0);
             tableLayoutPanel1.Controls.Add(label3, 0, 0);
-            tableLayoutPanel1.Location = new Point(2, 686);
+            tableLayoutPanel1.Location = new Point(2, 693);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             tableLayoutPanel1.Size = new Size(1207, 21);
             tableLayoutPanel1.TabIndex = 1;
             // 
             // label2
             // 
-            label2.Location = new Point(405, 2);
+            label2.Location = new Point(399, 2);
             label2.Name = "label2";
             label2.Size = new Size(148, 15);
             label2.TabIndex = 1;
@@ -119,7 +118,7 @@ namespace softgen
             // 
             // pnlDate
             // 
-            pnlDate.Location = new Point(605, 2);
+            pnlDate.Location = new Point(596, 2);
             pnlDate.Name = "pnlDate";
             pnlDate.Size = new Size(132, 15);
             pnlDate.TabIndex = 0;
@@ -127,14 +126,14 @@ namespace softgen
             // 
             // pnlLoginTime
             // 
-            pnlLoginTime.Location = new Point(1005, 2);
+            pnlLoginTime.Location = new Point(990, 2);
             pnlLoginTime.Name = "pnlLoginTime";
             pnlLoginTime.Size = new Size(136, 15);
             pnlLoginTime.TabIndex = 3;
             // 
             // label4
             // 
-            label4.Location = new Point(805, 2);
+            label4.Location = new Point(793, 2);
             label4.Name = "label4";
             label4.Size = new Size(164, 15);
             label4.TabIndex = 4;
@@ -143,7 +142,7 @@ namespace softgen
             // 
             // pnlUserName
             // 
-            pnlUserName.Location = new Point(205, 2);
+            pnlUserName.Location = new Point(202, 2);
             pnlUserName.Name = "pnlUserName";
             pnlUserName.Size = new Size(132, 15);
             pnlUserName.TabIndex = 2;
@@ -287,21 +286,18 @@ namespace softgen
             MItemmenu.Name = "MItemmenu";
             MItemmenu.Size = new Size(163, 22);
             MItemmenu.Text = "Item";
-           // MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
             documentSeriesToolStripMenuItem.Size = new Size(163, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
-            //documentSeriesToolStripMenuItem.Click += documentSeriesToolStripMenuItem_Click;
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
             documentTypeToolStripMenuItem.Size = new Size(163, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
-            //documentTypeToolStripMenuItem.Click += documentTypeToolStripMenuItem_Click;
             // 
             // transactionToolStripMenuItem
             // 
@@ -347,52 +343,67 @@ namespace softgen
             // statusStrip1
             // 
             statusStrip1.AutoSize = false;
-            statusStrip1.Location = new Point(0, 629);
+            statusStrip1.Location = new Point(0, 610);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(1199, 78);
+            statusStrip1.Size = new Size(1199, 97);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
             // panel
             // 
-            panel.BackColor = Color.CadetBlue;
+            panel.BackColor = Color.AntiqueWhite;
             panel.Controls.Add(pnlPosted_date);
             panel.Controls.Add(pnlPosted_by);
             panel.Controls.Add(pnlCreated_date);
             panel.Controls.Add(pnlHelp);
-            panel.Controls.Add(tbrTools);
             panel.Controls.Add(panel1);
             panel.Controls.Add(pnlCreated_by);
-            panel.Location = new Point(1, 613);
+            panel.Location = new Point(0, 616);
             panel.Name = "panel";
-            panel.Size = new Size(1350, 78);
+            panel.Size = new Size(1380, 90);
             panel.TabIndex = 10;
             panel.Paint += panel_Paint;
             // 
+            // pnlPosted_date
+            // 
+            pnlPosted_date.AutoSize = true;
+            pnlPosted_date.Location = new Point(1089, 14);
+            pnlPosted_date.Name = "pnlPosted_date";
+            pnlPosted_date.Size = new Size(0, 15);
+            pnlPosted_date.TabIndex = 11;
+            pnlPosted_date.Visible = false;
+            // 
+            // pnlPosted_by
+            // 
+            pnlPosted_by.AutoSize = true;
+            pnlPosted_by.Location = new Point(1013, 14);
+            pnlPosted_by.Name = "pnlPosted_by";
+            pnlPosted_by.Size = new Size(0, 15);
+            pnlPosted_by.TabIndex = 0;
+            pnlPosted_by.Visible = false;
+            // 
+            // pnlCreated_date
+            // 
+            pnlCreated_date.AutoSize = true;
+            pnlCreated_date.Location = new Point(682, 54);
+            pnlCreated_date.Name = "pnlCreated_date";
+            pnlCreated_date.Size = new Size(0, 15);
+            pnlCreated_date.TabIndex = 10;
+            pnlCreated_date.Visible = false;
+            // 
             // pnlHelp
             // 
-            pnlHelp.BackColor = Color.LightSlateGray;
-            pnlHelp.Location = new Point(3, 58);
+            pnlHelp.BackColor = Color.Silver;
+            pnlHelp.Location = new Point(470, 59);
             pnlHelp.Name = "pnlHelp";
-            pnlHelp.Size = new Size(496, 15);
+            pnlHelp.Size = new Size(496, 16);
             pnlHelp.TabIndex = 8;
-            // 
-            // tbrTools
-            // 
-            tbrTools.AutoSize = false;
-            tbrTools.BackColor = Color.CadetBlue;
-            tbrTools.Dock = DockStyle.None;
-            tbrTools.GripStyle = ToolStripGripStyle.Hidden;
-            tbrTools.Location = new Point(8, 3);
-            tbrTools.Name = "tbrTools";
-            tbrTools.Size = new Size(417, 52);
-            tbrTools.TabIndex = 7;
             // 
             // panel1
             // 
             panel1.BackColor = Color.Gainsboro;
             panel1.Controls.Add(linkLabel1);
-            panel1.Location = new Point(690, 3);
+            panel1.Location = new Point(690, 5);
             panel1.Name = "panel1";
             panel1.Size = new Size(260, 50);
             panel1.TabIndex = 2;
@@ -410,6 +421,15 @@ namespace softgen
             linkLabel1.TabStop = true;
             linkLabel1.Text = "SOFTGEN SYSTEMS (9810256984)";
             linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            // 
+            // pnlCreated_by
+            // 
+            pnlCreated_by.AutoSize = true;
+            pnlCreated_by.Location = new Point(609, 54);
+            pnlCreated_by.Name = "pnlCreated_by";
+            pnlCreated_by.Size = new Size(0, 15);
+            pnlCreated_by.TabIndex = 9;
+            pnlCreated_by.Visible = false;
             // 
             // imageList1
             // 
@@ -435,42 +455,6 @@ namespace softgen
             // 
             tmrActiveForm.Enabled = true;
             tmrActiveForm.Tick += tmrActiveForm_Tick;
-            // 
-            // pnlCreated_by
-            // 
-            pnlCreated_by.AutoSize = true;
-            pnlCreated_by.Location = new Point(609, 54);
-            pnlCreated_by.Name = "pnlCreated_by";
-            pnlCreated_by.Size = new Size(0, 15);
-            pnlCreated_by.TabIndex = 9;
-            pnlCreated_by.Visible = false;
-            // 
-            // pnlCreated_date
-            // 
-            pnlCreated_date.AutoSize = true;
-            pnlCreated_date.Location = new Point(682, 54);
-            pnlCreated_date.Name = "pnlCreated_date";
-            pnlCreated_date.Size = new Size(0, 15);
-            pnlCreated_date.TabIndex = 10;
-            pnlCreated_date.Visible = false;
-            // 
-            // pnlPosted_by
-            // 
-            pnlPosted_by.AutoSize = true;
-            pnlPosted_by.Location = new Point(1013, 14);
-            pnlPosted_by.Name = "pnlPosted_by";
-            pnlPosted_by.Size = new Size(0, 15);
-            pnlPosted_by.TabIndex = 0;
-            pnlPosted_by.Visible = false;
-            // 
-            // pnlPosted_date
-            // 
-            pnlPosted_date.AutoSize = true;
-            pnlPosted_date.Location = new Point(1089, 14);
-            pnlPosted_date.Name = "pnlPosted_date";
-            pnlPosted_date.Size = new Size(0, 15);
-            pnlPosted_date.TabIndex = 11;
-            pnlPosted_date.Visible = false;
             // 
             // MainForm
             // 
@@ -565,7 +549,6 @@ namespace softgen
         public ToolStripMenuItem mnuPost;
         public ToolStripMenuItem mnuHelp;
         public ImageList imageList1;
-        public ToolStrip tbrTools;
         public ToolStripMenuItem mnuDeleteRecord;
         public ToolStripMenuItem mnuSave;
         public ToolStripMenuItem mnuAuthorise;

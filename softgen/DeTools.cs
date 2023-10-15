@@ -295,7 +295,11 @@ namespace softgen
             try
             {
                 // Access the ToolStrip from MainForm.Instance
-                ToolStrip toolStrip = MainForm.Instance.tbrTools1; // Replace with your actual ToolStrip name
+                //  ToolStrip toolStrip = MainForm.Instance.tbrTools1; // Replace with your actual ToolStrip name
+
+                // Access the ToolStrip for the current form
+                ToolStrip toolStrip = toolbarDictionary[form]; // Retrieve the ToolStrip for the current form from the dictionary
+
 
                 ToolStripItem toolStripItem = null;
           
@@ -472,8 +476,9 @@ namespace softgen
             try
             {
                 string strOptions, strAppMode="";
-                mobjToolbar = MainForm.Instance.tbrTools;
-              
+                //  mobjToolbar = MainForm.Instance.tbrTools;
+                mobjToolbar = toolbarDictionary[gobjActiveForm];
+
                 MenuStrip menustrip = MainForm.Instance.menuStrip1;
                
                 strOptions = mobjToolbar.Tag?.ToString()?? "AMDIPR";
@@ -831,14 +836,17 @@ namespace softgen
               
                 int I = GetFreeIndex(); // Obtain a free index for the toolbar
                                         //mobjToolbar = new ToolStrip();
-                mobjToolbar = MainForm.Instance.tbrTools; // Use the existing tbrTools from MainForm
+                                        //mobjToolbar = MainForm.Instance.tbrTools; // Use the existing tbrTools from MainForm
+                mobjToolbar = new ToolStrip(); // Create a new ToolStrip for each form
+
+
                 mobjToolbar.Items.Clear(); // Clear existing buttons
 
                 mobjToolbar.AutoSize = false;
                 mobjToolbar.BackColor = Color.CadetBlue;
                 mobjToolbar.Dock = DockStyle.None;
                 mobjToolbar.GripStyle = ToolStripGripStyle.Hidden;
-                mobjToolbar.Location = new Point(1, 629);
+                mobjToolbar.Location = new Point(2, 550);
                 //mobjToolbar.Name = "tbrTools";
                 mobjToolbar.Size = new Size(417, 52);
                 mobjToolbar.TabIndex = 7;
