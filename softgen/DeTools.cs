@@ -560,7 +560,7 @@ namespace softgen
                 {
                     case ADDMODE:
                     case MODIFYMODE:
-                    MainForm.Instance.btnSave.Visible = true;
+ //                   MainForm.Instance.btnSave.Visible = true;
                     mobjbutton= new ToolStripButton("Save", MainForm.Instance.imageList1.Images[8],null,"Save");
                         
                         mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
@@ -582,7 +582,7 @@ namespace softgen
 
                 if (BtnKey==DELETEMODE)
                 {
-                    MainForm.Instance.btnDelete.Visible = true;
+ //                   MainForm.Instance.btnDelete.Visible = true;
                     mobjbutton = new ToolStripButton("Delete", MainForm.Instance.imageList1.Images[13], null, "Delete");
                     mobjbutton.ToolTipText = "Deleting The Current Information";
                     mobjbutton.AutoSize = false;
@@ -735,7 +735,7 @@ namespace softgen
                                     break;
 
                                 case "Quit":
-                                    //    gobjActiveForm.Close();
+                                    gobjActiveForm.Close();
                                     DisableFileMenu();
                                     break;
 
@@ -813,6 +813,13 @@ namespace softgen
                     mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                     mobjbutton.TextImageRelation = TextImageRelation.Overlay;
                     mobjbutton.ToolTipText = ToolTip;
+
+////// Imp....                    // Attach a click event handler for the button
+                    mobjbutton.Click += (sender, e) =>
+                    {
+                        // Call the ButtonClick method with the appropriate parameters
+                        ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+                    };
 
                     ToolBar.Items.Add(mobjbutton);
                 }
@@ -1186,10 +1193,17 @@ namespace softgen
         private static void RemoveButtons(ToolStrip toolStrip)
         {
             int totalButtons = toolStrip.Items.Count;
+            
             for (int Counter=totalButtons-1;Counter>= 0; Counter--)
             {
                 toolStrip.Items.RemoveAt(Counter);
-            } 
+            }
+
+            // Create a new ToolStrip object
+            ToolStrip newToolbar = new ToolStrip(); 
+
+            // Update the dictionary with the newToolbar for gobjActiveForm
+            toolbarDictionary[gobjActiveForm] = newToolbar;
 
         }
 

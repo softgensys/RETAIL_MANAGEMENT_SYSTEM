@@ -1,6 +1,6 @@
 ﻿namespace softgen
 {
-    partial class HelpForm
+    partial class frmHelp
     {
         /// <summary>
         /// Required designer variable.

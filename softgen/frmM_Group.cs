@@ -84,6 +84,7 @@ namespace softgen
         {
             DeTools.DestroyToolbar(this);
             MainForm.Instance.Mgroupmenu.Enabled = true;
+
         }
     }
 }

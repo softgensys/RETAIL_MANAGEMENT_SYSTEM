@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace softgen
 {
-    public partial class HelpForm : Form
+    public partial class frmHelp : Form
     {
-        public HelpForm()
+        public frmHelp()
         {
             InitializeComponent();
         }
