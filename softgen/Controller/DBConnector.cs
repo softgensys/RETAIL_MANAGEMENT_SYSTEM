@@ -23,7 +23,7 @@ namespace softgen
            public DbConnector()
            {
                connectionString = "Dsn=softgen_db_my;uid=root";
-               mysql_connectionString = "Server=localhost;Database=softgen_db;Uid=root"; ;
+               mysql_connectionString = "Server=localhost;Database=softgen_db;Uid=root"; 
         }
 
            public bool OpenConnection()

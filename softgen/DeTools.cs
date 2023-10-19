@@ -1500,6 +1500,46 @@ namespace softgen
 
         }
 
+        public static bool IsFieldUnique(string tableName, string fieldName, string value)
+        {
+            DeTools.gstrSQL = "SELECT COUNT(*) FROM "+tableName+ " WHERE "+ fieldName +" = '"+value+"'";
+
+            // Use your database connector and OdbcDataReader to execute the query
+            DbConnector dbConnector = new DbConnector();
+            OdbcDataReader reader = null;
+
+            try
+            {
+                dbConnector.OpenConnection();
+
+                using (OdbcDataReader reader1 = dbConnector.CreateResultset(DeTools.gstrSQL))
+                {
+
+                    if (reader1.HasRows)
+                    {
+                        int count = reader1.GetInt32(0);
+                        return count == 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    reader.Close();
+                }
+                dbConnector.CloseConnection();
+            }
+
+            // Default to false in case of exceptions or errors
+            return false;
+        }
+
 
     }//End For Static Class 'DETOOLS'
 

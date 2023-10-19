@@ -103,7 +103,7 @@ namespace softgen
                 //dbConnector.transactiono=new OdbcTransaction;
 
                 // Check if the record with the specified Group_id exists
-                DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" +txtGrpId.Text.Trim() + "'";
+                DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" + txtGrpId.Text.Trim() + "'";
                 OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
                 dbConnector.connection.Open();
                 OdbcDataReader reader = cmd.ExecuteReader();
@@ -121,7 +121,7 @@ namespace softgen
                     cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
                     cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
                     cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[3]));
+                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[4]));
                     cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
                     cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
 
@@ -142,7 +142,7 @@ namespace softgen
                     cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
                     cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
                     cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[3]));
+                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[4]));
                     cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
                     cmd.Parameters.Add(new OdbcParameter("status", "V"));
 
@@ -170,8 +170,25 @@ namespace softgen
             {
                 dbConnector.CloseConnection();
             }
-    
+
         }
 
+        private void txtGrpId_Validating(object sender, CancelEventArgs e)
+
+        {
+            if (this.Text.Contains("<Add>"))
+            {
+                
+
+                if (!DeTools.IsFieldUnique("m_group", "group_id", txtGrpId.Text.ToString().Trim()))
+                {
+                    MessageBox.Show("Id :" + txtGrpId.Text + " already Exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtGrpId.Text = null;
+                    txtGrpId.Refresh();
+                    txtGrpId.Focus();
+                    // You can also clear the control or perform other actions
+                }
+            }
+        }
     }////////////////End///////////
 }

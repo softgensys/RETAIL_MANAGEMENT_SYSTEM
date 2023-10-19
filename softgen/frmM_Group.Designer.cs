@@ -59,6 +59,7 @@
             // 
             resources.ApplyResources(txtGrpId, "txtGrpId");
             txtGrpId.Name = "txtGrpId";
+            txtGrpId.Validating += txtGrpId_Validating;
             // 
             // lblStatus
             // 
