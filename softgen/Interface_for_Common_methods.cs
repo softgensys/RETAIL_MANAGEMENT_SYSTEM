@@ -14,6 +14,8 @@ namespace softgen
 
             bool GetDEStatus();
 
+            void SaveForm();
+
         }
 
     }

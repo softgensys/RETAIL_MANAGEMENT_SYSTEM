@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Odbc;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows.Forms;
 
 
@@ -16,7 +18,7 @@ namespace softgen
         private DbConnector dbConnector;
         private string mstrEntBy, mstrEntOn, mstrAuthBy, mstrAuthOn;
         public bool mblnSearch, mblnDataEntered;
-
+        private OdbcTransaction transaction;
         public frmM_Group()
         {
             InitializeComponent();
@@ -43,6 +45,7 @@ namespace softgen
             ToolTip toolTip = new ToolTip();
             toolTip.SetToolTip(txtGrpId, "Enter Group Id.");
             toolTip.SetToolTip(txtGrpDesc, "Enter Group Description.");
+            Help.controlToHelpTopicMapping.Add(txtGrpId, "1004"); /////For Help ContextId///IMP...
 
         }
 
@@ -86,5 +89,89 @@ namespace softgen
             MainForm.Instance.Mgroupmenu.Enabled = true;
 
         }
-    }
+
+
+        public void SaveForm()
+        {
+            try
+            {
+                dbConnector = new DbConnector();
+                // dbConnector.connectionString= new OdbcConnection();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+
+                //dbConnector.transactiono=new OdbcTransaction;
+
+                // Check if the record with the specified Group_id exists
+                DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" +txtGrpId.Text.Trim() + "'";
+                OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                dbConnector.connection.Open();
+                OdbcDataReader reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    // The record exists, so update it
+                    reader.Close();
+                    transaction = dbConnector.connection.BeginTransaction();
+                    cmd.Transaction = transaction;
+
+                    DeTools.gstrSQL = "UPDATE m_Group SET group_desc = ?, active_yn = ?, sales_tax = ?, ent_by = ?, ent_on = ?, trans_status = ? WHERE Group_id = ?";
+                    cmd.CommandText = DeTools.gstrSQL;
+                    cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                    cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                    cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                    cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[3]));
+                    cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                    cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+
+                    cmd.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                else
+                {
+                    // The record does not exist, so insert a new one
+                    reader.Close();
+                    transaction = dbConnector.connection.BeginTransaction();
+                    cmd.Transaction = transaction;
+
+                    DeTools.gstrSQL = "INSERT INTO m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    cmd.CommandText = DeTools.gstrSQL;
+                    cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                    cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                    cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                    cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                    cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[3]));
+                    cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                    cmd.Parameters.Add(new OdbcParameter("status", "V"));
+
+                    cmd.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+                dbConnector.connection.Close();
+
+                // Additional logic here for clearing fields, displaying messages, etc.
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception or display an error message
+                Console.WriteLine(ex.Message);
+
+                // Rollback the transaction if an error occurs
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+
+                // Additional error handling and messages
+            }
+            finally
+            {
+                dbConnector.CloseConnection();
+            }
+    
+        }
+
+    }////////////////End///////////
 }

@@ -21,5 +21,10 @@ namespace softgen
         {
 
         }
+
+        private void txtValue_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace softgen
         public const string POSTMODE = "Post";
         public const string QUITCAPTION = "    Quit    ";
 
-        private static string gstrSQL;
+        public static string gstrSQL;
         public static string gstrloginId;
         public static string gstrloginName;
         public static Form gobjActiveForm;
@@ -510,7 +510,7 @@ namespace softgen
                     
                                 searchableForm.SetSearchVar(false);
                     
-                                MainForm.Instance.mnuModify.Checked = true;
+                               MainForm.Instance.mnuModify.Checked = true;
                             break;
 
                         case DELETEMODE:
@@ -560,24 +560,31 @@ namespace softgen
                 {
                     case ADDMODE:
                     case MODIFYMODE:
- //                   MainForm.Instance.btnSave.Visible = true;
-                    mobjbutton= new ToolStripButton("Save", MainForm.Instance.imageList1.Images[8],null,"Save");
-                        
-                        mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
+                            mobjbutton = new ToolStripButton("Save", MainForm.Instance.imageList1.Images[8], null, "Save");
 
-                        mobjbutton.AutoSize = false;
-                        mobjbutton.BackColor = Color.Lavender;
-                        mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                        mobjbutton.ImageAlign = ContentAlignment.TopCenter;
-                        mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
-                        mobjbutton.Margin = new Padding(3);
-                        mobjbutton.Size = new Size(51, 47);
-                        mobjbutton.TextAlign = ContentAlignment.BottomCenter;
-                        mobjbutton.TextImageRelation = TextImageRelation.Overlay;
-                        
-                        MainForm.Instance.mnuSave.Enabled = true;
+                            mobjbutton.AutoSize = false;
+                            mobjbutton.BackColor = Color.Lavender;
+                            mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+                            mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+                            mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                            mobjbutton.Margin = new Padding(3);
+                            mobjbutton.Size = new Size(51, 47);
+                            mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+                            mobjbutton.TextImageRelation = TextImageRelation.Overlay;
 
-                        break;
+                            // Attach a click event handler for the button
+                            mobjbutton.Click += (sender, e) =>
+                            {
+                                // Call searchableForm's SaveForm method
+                                searchableForm.SaveForm();
+                            };
+
+                            MainForm.Instance.mnuSave.Enabled = true;
+
+                            mobjToolbar.Items.Add(mobjbutton); //added to the  mobjToolbar
+
+                            break;
+
                 }
 
                 if (BtnKey==DELETEMODE)
@@ -596,9 +603,9 @@ namespace softgen
                     mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                     mobjbutton.TextImageRelation = TextImageRelation.Overlay;
                    
-                    MainForm.Instance.mnuDeleteRecord.Enabled = true;
-
-                    mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
+                    MainForm.Instance.mnuDeleteRecord.Enabled = true;       
+                     
+                        mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
                 }
                 if (BtnKey == POSTMODE)
                 {
@@ -657,7 +664,7 @@ namespace softgen
                             //switch (BtnKey)
                             //{
                                 case "Save":
-                                    // gobjActiveForm.SaveForm();
+                                    searchableForm.SaveForm();
                                     break;
 
                                 case "DeleteForm":
@@ -784,7 +791,41 @@ namespace softgen
                     mobjbutton.ToolTipText = ToolTip;
 
                     ToolBar.Items.Add(mobjbutton);
+                    ////// Imp....                    // Attach a click event handler for the button
+                    mobjbutton.Click += (sender, e) =>
+                    {
+                        // Call the ButtonClick method with the appropriate parameters
+                        ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+                    };
+
                 }
+
+                //else if (BtnKey == "Save")
+                //{
+                //    mobjbutton = new ToolStripButton(BtnKey.Trim(), MainForm.Instance.imageList1.Images[8], null,"Save");
+                //    mobjbutton.AutoSize = false;
+                //    mobjbutton.BackColor = Color.Lavender;
+                //    mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+                //    mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+                //    mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                //    mobjbutton.Margin = new Padding(3);
+                //    mobjbutton.Size = new Size(51, 47);
+                //    mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+                //    mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+                //    mobjbutton.ToolTipText = ToolTip;
+
+
+                //    mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
+
+                //    ////// Imp....                    // Attach a click event handler for the button
+                //    mobjbutton.Click += (sender, e) =>
+                //    {
+                //        // Call the ButtonClick method with the appropriate parameters
+                //        ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+                //    };
+
+
+                //}
 
                 ImageList imageList = MainForm.Instance.imageList1; // Your ImageList
                                                                     // Iterate through the images in the ImageList

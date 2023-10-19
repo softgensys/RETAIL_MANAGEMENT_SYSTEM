@@ -13,13 +13,18 @@ namespace softgen
 {
      public class DbConnector
        {
-           private OdbcConnection connection;
-           public string connectionString;
+           public OdbcConnection connection;
+        public OdbcTransaction transactiono;
+        public MySqlTransaction transaction;
+        
+        public string connectionString;
+        public string mysql_connectionString;
 
            public DbConnector()
            {
                connectionString = "Dsn=softgen_db_my;uid=root";
-           }
+               mysql_connectionString = "Server=localhost;Database=softgen_db;Uid=root"; ;
+        }
 
            public bool OpenConnection()
            {
@@ -36,6 +41,23 @@ namespace softgen
                    return false;
                }
            }
+
+        public bool MysqlOpenConnection()
+        {
+            try
+            {
+                connectionString = "Server=localhost;Database=softgen_db;Uid=root";
+                MySqlConnection mysqlconnection = new MySqlConnection(connectionString);
+                mysqlconnection.Open();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception or display an error message
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
 
 
         public bool ConnectSGS_db()
@@ -157,6 +179,37 @@ namespace softgen
             }
 
             return reader;
+        }
+
+
+        public void BeginTransaction()
+        {
+            connectionString = "Server=localhost;Database=softgen_db;Uid=root";
+            MySqlConnection mysqlconnection = new MySqlConnection(connectionString);
+            mysqlconnection.Open();
+
+           
+                transaction = mysqlconnection.BeginTransaction();
+           
+        }
+
+        public void CommitTransaction()
+        {
+
+            if (transaction != null)
+            {
+                transaction.Commit();
+                transaction = null;
+            }
+        }
+
+        public void RollbackTransaction()
+        {
+            if (transaction != null)
+            {
+                transaction.Rollback();
+                transaction = null;
+            }
         }
 
 
