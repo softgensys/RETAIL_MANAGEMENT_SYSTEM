@@ -15,7 +15,7 @@ namespace softgen
     public partial class frmWelscr : Form
     {
         public string gstrSQl1;
-                frmStart frmStart1 = new frmStart();
+        frmStart frmStart1 = new frmStart();
 
 
         public frmWelscr()

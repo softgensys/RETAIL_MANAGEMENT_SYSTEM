@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -87,6 +88,18 @@ namespace softgen
             InfoMsg("Information Authorized!");
 
         }
+
+        public static void SavingMsg()
+        {
+            MainForm.Instance.pnlHelp.Text = "Information saving. Please wait...";
+        }
+        
+        public static void SavedMsg()
+        {
+            MainForm.Instance.pnlHelp.Text = "Information Saved.!";
+            InfoMsg("Information Saved Successfully!");
+        }
+
 
 
         //////////////////

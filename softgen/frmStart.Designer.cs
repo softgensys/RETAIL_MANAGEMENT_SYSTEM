@@ -73,6 +73,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(496, 264);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmStart";
             Text = "frmStart";
             panel1.ResumeLayout(false);

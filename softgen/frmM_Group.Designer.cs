@@ -42,6 +42,8 @@
             // chkStatus
             // 
             resources.ApplyResources(chkStatus, "chkStatus");
+            chkStatus.Checked = true;
+            chkStatus.CheckState = CheckState.Checked;
             chkStatus.Name = "chkStatus";
             chkStatus.UseVisualStyleBackColor = true;
             // 

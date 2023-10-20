@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;// for CLass SystemInformation mainly Compu
 using MySql.Data.MySqlClient;
 using System.Security.Cryptography.X509Certificates;
 using System.Data.Odbc;
+using System.Data;
 
 namespace softgen
 
@@ -1539,6 +1540,64 @@ namespace softgen
             // Default to false in case of exceptions or errors
             return false;
         }
+
+        public static bool CheckTemporaryTableExists(string tableName)
+        {
+            DbConnector dbConnector = new DbConnector();
+            //dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            using (OdbcCommand cmd = new OdbcCommand("SHOW TABLES LIKE 'temp_"+tableName+"'", dbConnector.connection))
+            {
+                dbConnector.connection.Open();
+                object result = cmd.ExecuteScalar();
+                dbConnector.connection.Close();
+                return result != null;
+            }
+        }
+
+        public static void CreateTemporaryTable(string tableName)
+        {
+            DbConnector dbConnector = new DbConnector();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            string createTableQuery = "CREATE TABLE temp_"+ tableName +" AS SELECT * FROM main_table_name WHERE 1=0;";
+            using (OdbcCommand cmd = new OdbcCommand(createTableQuery, dbConnector.connection))
+            {
+                dbConnector.connection.Open();
+                cmd.ExecuteNonQuery();
+                dbConnector.connection.Close();
+            }
+        }
+
+        public static DataTable SelectDataFromTemporaryTable(string tableName)
+        {
+         
+            DbConnector dbConnector = new DbConnector();
+            dbConnector.connection.Open();
+            string query = "SELECT * FROM temp_"+tableName+""; // Your ODBC query here
+
+            dbConnector.connection.Close();
+            return dbConnector.ExecuteQuery(query);
+        }
+
+        public static void InsertDataIntoMainTable(DataTable data, string mainTableName)
+        {
+            DbConnector dbConnector = new DbConnector();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            dbConnector.connection.Open();
+
+            using (OdbcDataAdapter adapter = new OdbcDataAdapter())
+            {
+                adapter.SelectCommand = new OdbcCommand($"SELECT * FROM {mainTableName} WHERE 1=0", dbConnector.connection);
+
+                using (OdbcCommandBuilder builder = new OdbcCommandBuilder(adapter))
+                {
+                    // Update the data in the main table
+                    adapter.Update(data);
+                }
+                dbConnector.connection.Close();
+            }
+        }
+
 
 
     }//End For Static Class 'DETOOLS'

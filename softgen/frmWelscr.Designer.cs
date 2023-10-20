@@ -151,7 +151,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(432, 197);
             Controls.Add(panel1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "frmWelscr";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmWelscr";
             Load += frmWelscr_Load;
             KeyUp += frmWelscr_KeyUp;

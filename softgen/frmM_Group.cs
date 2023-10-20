@@ -114,6 +114,7 @@ namespace softgen
                     reader.Close();
                     transaction = dbConnector.connection.BeginTransaction();
                     cmd.Transaction = transaction;
+                    Messages.SavingMsg();
 
                     DeTools.gstrSQL = "UPDATE m_Group SET group_desc = ?, active_yn = ?, sales_tax = ?, ent_by = ?, ent_on = ?, trans_status = ? WHERE Group_id = ?";
                     cmd.CommandText = DeTools.gstrSQL;
@@ -121,7 +122,8 @@ namespace softgen
                     cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
                     cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
                     cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[4]));
+                    //cmd.Parameters.Add(new OdbcParameter("ent_on", "NOW()"));
+                    cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
                     cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
                     cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
 
@@ -134,22 +136,33 @@ namespace softgen
                     reader.Close();
                     transaction = dbConnector.connection.BeginTransaction();
                     cmd.Transaction = transaction;
+                    if (DeTools.CheckTemporaryTableExists("m_group") == true)
+                    {
 
-                    DeTools.gstrSQL = "INSERT INTO m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                    cmd.CommandText = DeTools.gstrSQL;
-                    cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
-                    cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
-                    cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                    cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
-                    cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                    cmd.Parameters.Add(new OdbcParameter("ent_on", DeTools.gstrsetup[4]));
-                    cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                    cmd.Parameters.Add(new OdbcParameter("status", "V"));
+                        Messages.SavingMsg();
 
-                    cmd.ExecuteNonQuery();
-                    transaction.Commit();
+                        DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                        cmd.CommandText = DeTools.gstrSQL;
+                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                        cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                        cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                        cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                        cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                        cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                        cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                        //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+
+                        cmd.ExecuteNonQuery();
+
+                        //DeTools.SelectDataFromTemporaryTable("m_group");
+
+                        transaction.Commit();
+                        DeTools.InsertDataIntoMainTable(DeTools.SelectDataFromTemporaryTable("m_group"), "m_group");
+                    }
                 }
                 dbConnector.connection.Close();
+
+                Messages.SavedMsg();
 
                 // Additional logic here for clearing fields, displaying messages, etc.
             }
@@ -178,7 +191,7 @@ namespace softgen
         {
             if (this.Text.Contains("<Add>"))
             {
-                
+
 
                 if (!DeTools.IsFieldUnique("m_group", "group_id", txtGrpId.Text.ToString().Trim()))
                 {
