@@ -95,6 +95,7 @@ namespace softgen
         {
             try
             {
+                //for getting unsaved data
                 dbConnector = new DbConnector();
                 // dbConnector.connectionString= new OdbcConnection();
                 dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
@@ -128,6 +129,9 @@ namespace softgen
                     cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
 
                     cmd.ExecuteNonQuery();
+
+                    string quer = "update temp_m_group set closed_yn='N' where group_id=? order by ent_on desc ";
+
                     transaction.Commit();
                 }
                 else
@@ -136,12 +140,12 @@ namespace softgen
                     reader.Close();
                     transaction = dbConnector.connection.BeginTransaction();
                     cmd.Transaction = transaction;
-                    if (DeTools.CheckTemporaryTableExists("m_group") == true)
+                    if (DeTools.CheckTemporaryTableExists("m_group") != null)
                     {
 
                         Messages.SavingMsg();
 
-                        DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                        DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn,comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         cmd.CommandText = DeTools.gstrSQL;
                         cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
                         cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
@@ -150,6 +154,8 @@ namespace softgen
                         cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
                         cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
                         cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                        cmd.Parameters.Add(new OdbcParameter("closed_yn", "N"));
+                        cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
                         //cmd.Parameters.Add(new OdbcParameter("status", "V"));
 
                         cmd.ExecuteNonQuery();
@@ -157,7 +163,7 @@ namespace softgen
                         //DeTools.SelectDataFromTemporaryTable("m_group");
 
                         transaction.Commit();
-                        DeTools.InsertDataIntoMainTable(DeTools.SelectDataFromTemporaryTable("m_group"), "m_group");
+                        DeTools.InsertDataIntoMainTable("m_group", "group_id", txtGrpId.Text.ToString().Trim());
                     }
                 }
                 dbConnector.connection.Close();
@@ -203,5 +209,101 @@ namespace softgen
                 }
             }
         }
+
+        private void frmM_Group_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (txtGrpId.Text != "" || txtGrpDesc.Text != "")
+            {
+                dbConnector = new DbConnector();
+                // dbConnector.connectionString= new OdbcConnection();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
+
+                transaction = dbConnector.connection.BeginTransaction();
+                string insert = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
+                cmd.Transaction = transaction;
+
+
+                cmd.CommandText = insert;
+                cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+
+                cmd.ExecuteNonQuery();
+
+                //DeTools.SelectDataFromTemporaryTable("m_group");
+
+                transaction.Commit();
+                dbConnector.connection.Close();
+            }
+        }
+
+        public void UnsavedData()
+        {
+            DbConnector dbConnector = new DbConnector();
+
+
+            try
+            {
+                if (DeTools.CheckTemporaryTableExists("m_group") != null)
+                {
+                    dbConnector.OpenConnection();
+
+
+                    // Define your SQL query
+                    string query = "SELECT * FROM temp_m_group WHERE closed_yn='Y' order by ent_on desc limit 1;";
+
+                    OdbcParameter[] parameters = new OdbcParameter[0];
+
+
+                    using (OdbcDataReader reader = dbConnector.ExecuteReader(query, parameters))
+                    {
+                        if (reader.Read())
+                        {
+                            // Populate text fields with the data from the reader
+                            txtGrpId.Text = reader["group_id"].ToString();
+                            txtGrpDesc.Text = reader["group_desc"].ToString();
+                            // Read the 'active_yn' value from the query result
+                            string activeYnValue = reader["active_yn"].ToString(); // Replace with the actual column name
+
+                            if (activeYnValue == "Y")
+                            {
+                                chkStatus.Checked = true;
+                            }
+                            else
+                            {
+                                chkStatus.Checked = false;
+                            }
+                            // Populate other text fields similarly
+                            Messages.UnsavedMsg(txtGrpId.Text);
+
+                        }
+                        else
+                        {
+                            // Handle case when no data is found for the given groupID
+                            // You can clear the text fields or display a message
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that occur during the database operation
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                dbConnector.CloseConnection();
+            }
+        }
+
+
     }////////////////End///////////
 }

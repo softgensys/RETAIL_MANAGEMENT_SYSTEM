@@ -81,7 +81,7 @@ namespace softgen
         public static Dictionary<Form, ToolStrip> toolbarDictionary = new Dictionary<Form, ToolStrip>();//store key value pair data From is key and Toolstrip will be its Value .For Destroying toolbar
         public static string ConnectionString;
         public static int startIndex=-1;
-
+        public static frmM_Group frmM_Group= new frmM_Group();
 
 
 
@@ -582,7 +582,8 @@ namespace softgen
 
                             MainForm.Instance.mnuSave.Enabled = true;
 
-                            mobjToolbar.Items.Add(mobjbutton); //added to the  mobjToolbar
+                            mobjToolbar.Items.Add(mobjbutton); //added to the  mobjToolbar                           
+                            searchableForm.UnsavedData();//for loading unsaved data
 
                             break;
 
@@ -623,6 +624,8 @@ namespace softgen
                         case POSTMODE:
                             CreateButton(mobjToolbar, "Fresh", strAppMode + " Fresh Information");
                             MainForm.Instance.mnuRefresh.Enabled = true;
+
+                            
                             if (strAppMode == POSTMODE)
                             {
                                 mobjToolbar.Items[mobjToolbar.Items.Count - 1].ToolTipText = "Authorise Fresh Information";
@@ -754,7 +757,10 @@ namespace softgen
                                     //        mdiMain.Close();
                                     //    }
                                     break;
-                            }
+
+                               
+
+                    }
                     }
                 
             }
@@ -1438,6 +1444,10 @@ namespace softgen
                 General general = new General();
                     general.CenterForm(form);
                 form.Show();
+                //if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+                //{
+                //searchableForm.UnsavedData();//for loading unsaved data
+                //}
             }
             catch (Exception ex)
             {
@@ -1551,7 +1561,14 @@ namespace softgen
                 dbConnector.connection.Open();
                 object result = cmd.ExecuteScalar();
                 dbConnector.connection.Close();
-                return result != null;
+
+                if (result == null)
+                {
+                    CreateTemporaryTable(tableName);
+                }
+                    return result != null;
+               
+
             }
         }
 
@@ -1559,7 +1576,12 @@ namespace softgen
         {
             DbConnector dbConnector = new DbConnector();
             dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
-            string createTableQuery = "CREATE TABLE temp_"+ tableName +" AS SELECT * FROM main_table_name WHERE 1=0;";
+            // Define the column name and its data type
+            string columnName = "closed_yn";
+            string columnType = "CHAR(1)";  // Modify the data type as needed
+            string columnName1 = "comp_name";
+            string columnType1 = "VARCHAR(100)";  // Modify the data type as needed
+            string createTableQuery = "CREATE TABLE temp_"+ tableName + " AS SELECT *, '" + columnType + "' 'N' AS " + columnName + ",'"+ columnType1+"' 'null' AS "+columnName1+" FROM " + tableName+" WHERE 1=0";
             using (OdbcCommand cmd = new OdbcCommand(createTableQuery, dbConnector.connection))
             {
                 dbConnector.connection.Open();
@@ -1568,39 +1590,102 @@ namespace softgen
             }
         }
 
-        public static DataTable SelectDataFromTemporaryTable(string tableName)
+        public static DataTable SelectDataFromTemporaryTable(string tableName,string whereid,string wherecolumn)
         {
          
             DbConnector dbConnector = new DbConnector();
-            dbConnector.connection.Open();
-            string query = "SELECT * FROM temp_"+tableName+""; // Your ODBC query here
+            //dbConnector.connection.Open();
+            dbConnector.OpenConnection();
+            string query = "SELECT * FROM temp_"+tableName+" where "+wherecolumn+" = '"+whereid+"' order by ent_on limit 1"; // Your ODBC query here
 
-            dbConnector.connection.Close();
+            dbConnector.CloseConnection();
             return dbConnector.ExecuteQuery(query);
         }
 
-        public static void InsertDataIntoMainTable(DataTable data, string mainTableName)
+        //public static void InsertDataIntoMainTable(DataTable data, string mainTableName)
+        //{
+        //    DbConnector dbConnector = new DbConnector();
+        //    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+        //    //dbConnector.connection.Open();
+        //    dbConnector.OpenConnection();
+
+        //    using (OdbcDataAdapter adapter = new OdbcDataAdapter())
+        //    {
+        //        adapter.SelectCommand = new OdbcCommand($"SELECT * FROM {mainTableName} WHERE 1=0", dbConnector.connection);
+
+        //        using (OdbcCommandBuilder builder = new OdbcCommandBuilder(adapter))
+        //        {
+        //            // Update the data in the main table
+        //            adapter.Update(data);
+        //        }
+        //        //dbConnector.connection.Close();
+        //        dbConnector.CloseConnection();
+        //    }
+        //}
+
+
+        //public static void InsertDataIntoMainTable(string mainTableName,string wherecol,string whereid)
+        //{
+        //    DbConnector dbConnector = new DbConnector();
+
+        //    try
+        //    {
+        //        dbConnector.OpenConnection();
+
+        //        // Your SQL query for inserting data from the temporary table to the main table
+        //        string query = "insert into "+mainTableName+" SELECT * FROM temp_"+mainTableName+" WHERE "+wherecol+" = '"+whereid+"' ORDER BY ent_on LIMIT 1;";
+
+        //        // Create an OdbcCommand with the query and execute it
+        //        using (OdbcCommand cmd = new OdbcCommand(query, dbConnector.GetConnection()))
+        //        {
+        //            cmd.ExecuteNonQuery();
+        //        }
+
+        //        dbConnector.CloseConnection();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Error: " + ex.Message);
+
+        //        // Handle the exception as needed, including rolling back the transaction if required
+        //    }
+        //    finally
+        //    {
+        //        dbConnector.CloseConnection();
+        //    }
+        //}
+
+        public static void InsertDataIntoMainTable(string mainTableName, string wherecol, string whereid)
         {
-            DbConnector dbConnector = new DbConnector();
-            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
-            dbConnector.connection.Open();
+            MySqlConnection connection = new MySqlConnection("Server=localhost;Database=softgen_db;Uid=root;");
 
-            using (OdbcDataAdapter adapter = new OdbcDataAdapter())
+            try
             {
-                adapter.SelectCommand = new OdbcCommand($"SELECT * FROM {mainTableName} WHERE 1=0", dbConnector.connection);
+                connection.Open();
 
-                using (OdbcCommandBuilder builder = new OdbcCommandBuilder(adapter))
-                {
-                    // Update the data in the main table
-                    adapter.Update(data);
-                }
-                dbConnector.connection.Close();
+                // Your SQL query for inserting data from the temporary table to the main table
+                string query = $"INSERT INTO {mainTableName}  (group_id, group_desc, active_yn, sales_tax, status, ent_on, ent_by, auth_on, auth_by, trans_status) SELECT  group_id, group_desc, active_yn, sales_tax, status, ent_on, ent_by, auth_on, auth_by, trans_status FROM temp_{mainTableName} WHERE {wherecol} = @whereid ORDER BY ent_on LIMIT 1;";
+
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@whereid", whereid);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                // Handle the exception as needed, including rolling back the transaction if required
+            }
+            finally
+            {
+                connection.Close();
             }
         }
 
 
 
-    }//End For Static Class 'DETOOLS'
+
+    }//End For Static Class DETOOLS'
 
 
 

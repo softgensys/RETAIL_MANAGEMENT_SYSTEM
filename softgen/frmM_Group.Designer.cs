@@ -97,6 +97,7 @@
             Controls.Add(lblGrpDesc);
             Controls.Add(lblGrpId);
             Name = "frmM_Group";
+            FormClosing += frmM_Group_FormClosing;
             FormClosed += frmM_Group_FormClosed;
             Load += Group_Load;
             KeyPress += frmM_Group_KeyPress;
@@ -108,10 +109,10 @@
         private CheckBox chkStatus;
         private TextBox txtSTaxPer;
         private TextBox txtGrpDesc;
-        private TextBox txtGrpId;
         private Label lblStatus;
         private Label lblSTaxPer;
         private Label lblGrpDesc;
         private Label lblGrpId;
+        public TextBox txtGrpId;
     }
 }

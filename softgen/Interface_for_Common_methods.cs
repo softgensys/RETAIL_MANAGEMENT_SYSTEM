@@ -16,6 +16,8 @@ namespace softgen
 
             void SaveForm();
 
+            void UnsavedData();
+
         }
 
     }

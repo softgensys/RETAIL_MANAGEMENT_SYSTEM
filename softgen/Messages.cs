@@ -100,6 +100,11 @@ namespace softgen
             InfoMsg("Information Saved Successfully!");
         }
 
+        public static void UnsavedMsg(string id)
+        {
+            InfoMsg("This Was Unsaved pls Save or Clear: '"+id+"'");
+        }
+
 
 
         //////////////////
