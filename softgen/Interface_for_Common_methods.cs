@@ -18,6 +18,8 @@ namespace softgen
 
             void UnsavedData();
 
+            void check_temp_login_sytemname();//to check comp name and login id for showing to particualr login id
+
         }
 
     }

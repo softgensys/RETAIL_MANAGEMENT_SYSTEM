@@ -220,26 +220,37 @@ namespace softgen
                 dbConnector.connection.Open();
 
                 transaction = dbConnector.connection.BeginTransaction();
-                string insert = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
-                cmd.Transaction = transaction;
+
+                string selectid_toenter = "select group_id from m_group where group_id='"+txtGrpId.Text.Trim()+"'";
+                using(OdbcDataReader reader= dbConnector.CreateResultset(selectid_toenter))
+                {
+                    if (!reader.HasRows)
+                    {
+                        string insert = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn, comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
+                        cmd.Transaction = transaction;
 
 
-                cmd.CommandText = insert;
-                cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
-                cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
-                cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
-                cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
-                //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+                        cmd.CommandText = insert;
+                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                        cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                        cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                        cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                        cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                        cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                        cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                        cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                        cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+                        //cmd.Parameters.Add(new OdbcParameter("status", "V"));
 
-                cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
 
-                //DeTools.SelectDataFromTemporaryTable("m_group");
+                        //DeTools.SelectDataFromTemporaryTable("m_group");
 
+                    }
+                }
+
+                
                 transaction.Commit();
                 dbConnector.connection.Close();
             }
@@ -256,9 +267,10 @@ namespace softgen
                 {
                     dbConnector.OpenConnection();
 
+                    string compname= DeTools.fOSMachineName.GetMachineName();
+                    string user=MainForm.Instance.pnlUserName.Text.Trim();
 
-                    // Define your SQL query
-                    string query = "SELECT * FROM temp_m_group WHERE closed_yn='Y' order by ent_on desc limit 1;";
+                    string query = "SELECT * FROM temp_m_group WHERE closed_yn='Y' and ent_by='"+user.Trim()+"' and comp_name='"+compname.Trim()+"' order by ent_on desc limit 1;";
 
                     OdbcParameter[] parameters = new OdbcParameter[0];
 
@@ -301,6 +313,40 @@ namespace softgen
             finally
             {
                 dbConnector.CloseConnection();
+            }
+        }
+
+        public void check_temp_login_sytemname()
+        {
+            string getent_by = "";
+            string getcomp_name= "";
+            DbConnector dbConnector = new DbConnector();
+
+            dbConnector.OpenConnection();
+
+            bool check = false;
+            string id = "group_id";
+            string tblname = "m_group";
+
+            DeTools.gstrSQL = "SELECT "+id+",ent_by,comp_name FROM softgen_db.temp_"+tblname+" order by ent_on desc limit 1;";
+
+            using (OdbcDataReader reader = dbConnector.CreateResultset(DeTools.gstrSQL))
+            {
+                if (reader.HasRows)
+                {
+                   getent_by = reader["ent_by"].ToString();
+                   getcomp_name = reader["comp_name"].ToString();
+
+
+                }
+                string pnlusername= MainForm.Instance.pnlUserName.Text.Trim();
+                string machine_name= DeTools.fOSMachineName.GetMachineName();
+
+                if (getent_by.ToLower().Trim() == pnlusername.ToLower().Trim() && getcomp_name.Trim() == machine_name.Trim())
+                {
+               
+                        UnsavedData();
+                }
             }
         }
 

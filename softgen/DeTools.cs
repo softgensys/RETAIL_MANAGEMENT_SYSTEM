@@ -501,9 +501,11 @@ namespace softgen
                             searchableForm.SetSearchVar(true);
                             //gobjActiveForm.SetSearchVar(true);
                         
-                        MainForm.Instance.mnuAdd.Checked = true;      
+                        MainForm.Instance.mnuAdd.Checked = true;
 
-                        break;
+                            searchableForm.check_temp_login_sytemname();//for loading unsaved data
+
+                            break;
 
                         case MODIFYMODE:
                             strAppMode = MODIFYMODE;
@@ -583,7 +585,8 @@ namespace softgen
                             MainForm.Instance.mnuSave.Enabled = true;
 
                             mobjToolbar.Items.Add(mobjbutton); //added to the  mobjToolbar                           
-                            searchableForm.UnsavedData();//for loading unsaved data
+                           
+                        
 
                             break;
 
@@ -1682,6 +1685,7 @@ namespace softgen
             }
         }
 
+         
 
 
 

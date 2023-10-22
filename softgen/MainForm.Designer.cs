@@ -557,7 +557,6 @@ namespace softgen
         public ToolStripMenuItem mnuPrint;
         private Label pnlDate;
         private Label label2;
-        private Label pnlUserName;
         private Label pnlLoginTime;
         private Label label4;
         private Label label3;
@@ -567,5 +566,6 @@ namespace softgen
         public Label pnlCreated_date;
         public Label pnlPosted_date;
         public Label pnlPosted_by;
+        public Label pnlUserName;
     }
 }
