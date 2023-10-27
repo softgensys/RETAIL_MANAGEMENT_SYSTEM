@@ -41,21 +41,24 @@
             cboFields = new ComboBox();
             lblOrder = new Label();
             lblSelect = new Label();
-            pnlTop = new Panel();
-            pnlToptxt = new Label();
             cboFieldsId = new ComboBox();
             cboOrderId = new ComboBox();
             cboDataType = new ComboBox();
+            pnlTop = new Panel();
+            pnlToptxt = new Label();
+            grdHelp = new DataGridView();
             panel1.SuspendLayout();
             pnlInstruction.SuspendLayout();
             panel3.SuspendLayout();
             pnlTop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)grdHelp).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
             panel1.BackColor = Color.Wheat;
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(grdHelp);
             panel1.Controls.Add(pnlText);
             panel1.Controls.Add(pnlInstruction);
             panel1.Controls.Add(panel3);
@@ -64,6 +67,7 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(683, 392);
             panel1.TabIndex = 0;
+            panel1.Paint += panel1_Paint;
             // 
             // pnlText
             // 
@@ -180,25 +184,6 @@
             lblSelect.TabIndex = 0;
             lblSelect.Text = "Filter";
             // 
-            // pnlTop
-            // 
-            pnlTop.BackColor = Color.Pink;
-            pnlTop.Controls.Add(pnlToptxt);
-            pnlTop.Location = new Point(1, 1);
-            pnlTop.Name = "pnlTop";
-            pnlTop.Size = new Size(678, 24);
-            pnlTop.TabIndex = 0;
-            // 
-            // pnlToptxt
-            // 
-            pnlToptxt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            pnlToptxt.Location = new Point(241, 3);
-            pnlToptxt.Name = "pnlToptxt";
-            pnlToptxt.Size = new Size(193, 18);
-            pnlToptxt.TabIndex = 0;
-            pnlToptxt.Text = "Permissions";
-            pnlToptxt.TextAlign = ContentAlignment.MiddleCenter;
-            // 
             // cboFieldsId
             // 
             cboFieldsId.FormattingEnabled = true;
@@ -226,6 +211,36 @@
             cboDataType.TabIndex = 10;
             cboDataType.Visible = false;
             // 
+            // pnlTop
+            // 
+            pnlTop.BackColor = Color.Pink;
+            pnlTop.Controls.Add(pnlToptxt);
+            pnlTop.Location = new Point(1, 1);
+            pnlTop.Name = "pnlTop";
+            pnlTop.Size = new Size(678, 24);
+            pnlTop.TabIndex = 0;
+            // 
+            // pnlToptxt
+            // 
+            pnlToptxt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            pnlToptxt.Location = new Point(241, 3);
+            pnlToptxt.Name = "pnlToptxt";
+            pnlToptxt.Size = new Size(193, 18);
+            pnlToptxt.TabIndex = 0;
+            pnlToptxt.Text = "Permissions";
+            pnlToptxt.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // grdHelp
+            // 
+            grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            grdHelp.GridColor = SystemColors.ActiveCaption;
+            grdHelp.Location = new Point(2, 102);
+            grdHelp.MultiSelect = false;
+            grdHelp.Name = "grdHelp";
+            grdHelp.RowTemplate.Height = 25;
+            grdHelp.Size = new Size(676, 247);
+            grdHelp.TabIndex = 3;
+            // 
             // frmHelp
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -240,6 +255,7 @@
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             pnlTop.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)grdHelp).EndInit();
             ResumeLayout(false);
         }
 
@@ -263,5 +279,6 @@
         public ComboBox cboFieldsId;
         public ComboBox cboOrderId;
         public ComboBox cboDataType;
+        public DataGridView grdHelp;
     }
 }

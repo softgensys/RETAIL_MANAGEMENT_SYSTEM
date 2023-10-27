@@ -77,10 +77,10 @@ namespace softgen
                         reader.Close();
                         General.InitialiseSetup(DeTools.gstrloginId, gstrRep);
                         this.Hide();
-                        frmStart frmStart = new frmStart();
+                        //frmStart frmStart = new frmStart();
 
-                        frmStart.Show();
-                        frmStart.lblMsg.Refresh();
+                        //frmStart.Show();
+                        //frmStart.lblMsg.Refresh();
 
                         // Load mdiMain; // Assuming mdiMain is an MDI form, you need to handle this accordingly
                         MainForm mainForm = new MainForm();
@@ -101,7 +101,7 @@ namespace softgen
         {
             if (e.KeyCode == Keys.Escape)
             {
-                frmStart1.Close();
+               // frmStart1.Close();
             }
         }
 

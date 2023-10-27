@@ -13,7 +13,7 @@ namespace softgen
     public partial class MainForm : Form
     {
         private bool blnMDI_Loaded = false;
-        frmStart frmStart = new frmStart();
+        //frmStart frmStart = new frmStart();
         DbConnector dbConnector = new DbConnector();
         General general = new General();
         Messages messages = new Messages();
@@ -173,12 +173,13 @@ namespace softgen
 
                 Cursor.Current = Cursors.WaitCursor;
 
-                frmStart.lblMsg.Text = "Checking permissions...";
-                frmStart.lblMsg.Refresh();
+                //frmStart.Close();
+                //frmStart.lblMsg.Text = "Checking permissions...";
+                //frmStart.lblMsg.Refresh();
                 DeTools.CreateToolbar(this, "1");
 
-                frmStart.lblMsg.Text = "Connecting...";
-                frmStart.lblMsg.Refresh();
+                //frmStart.lblMsg.Text = "Connecting...";
+                //frmStart.lblMsg.Refresh();
 
                 if (!dbConnector.ConnectSGS_db())
                 {
@@ -188,12 +189,12 @@ namespace softgen
 
                 blnDBOpen = true;
 
-                frmStart.lblMsg.Text = "Initializing...";
-                frmStart.lblMsg.Refresh();
+                //frmStart.lblMsg.Text = "Initializing...";
+                //frmStart.lblMsg.Refresh();
 
                 if (!DayBegin())
                 {
-                    frmStart.Close();
+                    //frmStart.Close();
                     // dbConnector.CloseConnection();
                     Application.Exit();
                 }
@@ -220,15 +221,25 @@ namespace softgen
 
                 Show();
 
-
-                if (DeTools.toolbarDictionary.ContainsKey(this))
+                //---old ------toolstrip dictionary
+                if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(this.Text))
                 {
-                    ToolStrip currentToolbar = DeTools.toolbarDictionary[this];
+                    ToolStrip currentToolbar = DeTools.toolbarDictionarywith_frmnm[this.Text];
                     currentToolbar.BringToFront();
                 }
 
                 // Close the start form, set the cursor to default, and continue
-                frmStart.Close();
+                //if (DeTools.toolbarDictionary1.TryGetValue(this, out List<ToolStrip> toolbars))
+                //{
+                //    // Retrieve the most recent toolbar for this form
+                //    ToolStrip currentToolbar = toolbars.LastOrDefault();
+
+                //    if (currentToolbar != null)
+                //    {
+                //        currentToolbar.BringToFront();
+                //    }
+                //}
+                //frmStart.Close();
                 Cursor.Current = Cursors.Default;
             }
             catch (Exception ex)
@@ -236,7 +247,7 @@ namespace softgen
                 // Handle exceptions
                 Cursor.Current = Cursors.Default;
                 messages.VBError(ex, this.Name, "MainForm_Load");
-                frmStart.Close();
+                //frmStart.Close();
                 if (blnDBOpen)
                     dbConnector.CloseConnection();
                 Application.Exit();
@@ -654,11 +665,11 @@ namespace softgen
                 DeTools.gstrsetup[3] = d_Date.ToString("dd MMMM yyyy, dddd");
                 DeTools.gstrsetup[4] = p_Date.ToString("dd-MM-yyyy");
 
-                frmStart.lblDate.Text = DeTools.gstrsetup[3];
-                frmStart.lblDate.Refresh();
+               // frmStart.lblDate.Text = DeTools.gstrsetup[3];
+                //frmStart.lblDate.Refresh();
 
-                frmStart.lblMsg.Text = "Starting...";
-                frmStart.lblMsg.Refresh();
+                //frmStart.lblMsg.Text = "Starting...";
+                //frmStart.lblMsg.Refresh();
 
                 general.DayClose(DeTools.gstrsetup[4]);
                 return true;
@@ -758,9 +769,9 @@ namespace softgen
                 {
                     if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
                     {
-                        if (DeTools.toolbarDictionary.ContainsKey(ActiveMdiChild))
+                        if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(ActiveMdiChild.Text))
                         {
-                            ToolStrip currentToolbar = DeTools.toolbarDictionary[ActiveMdiChild];
+                            ToolStrip currentToolbar = DeTools.toolbarDictionarywith_frmnm[ActiveMdiChild.Text];
                             currentToolbar.BringToFront();
                         }
                     }
@@ -768,9 +779,9 @@ namespace softgen
                 else if (ActiveMdiChild == null)
                 {
                     // There is no active child form, so you can ensure the main form's tbrtools is displayed here.
-                    if (DeTools.toolbarDictionary.ContainsKey(this))
+                    if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(this.Text))
                     {
-                        ToolStrip mainToolbar = DeTools.toolbarDictionary[this];
+                        ToolStrip mainToolbar = DeTools.toolbarDictionarywith_frmnm[this.Text];
                         mainToolbar.BringToFront();
                     }
                 }

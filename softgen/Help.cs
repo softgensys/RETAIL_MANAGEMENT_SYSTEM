@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Odbc;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -240,7 +243,7 @@ namespace softgen
             string strFields;
             string strCondition;
             object strValue = null;
-            string strheading;
+            string strheading="";
             string strMode = new string(' ', 1);
 
 
@@ -410,6 +413,202 @@ namespace softgen
                         DeTools.gstrSQL = DeTools.gstrSQL;
                     }
                 }
+                if (s_Mode == DeTools.MODIFYMODE)
+                {
+                    if (!string.IsNullOrEmpty(strFields))
+                    {
+                        strFields = " AND " + strFields;
+                    }
+                    DeTools.gstrSQL = DeTools.gstrSQL + strFields + " " + strCondition + " " + strValue + " " + strOrderBy;
+                }
+
+                if (s_Mode == DeTools.ADDMODE)
+                {
+                    if (!string.IsNullOrEmpty(strFields))
+                    {
+                        strFields = " AND " + strFields;
+                    }
+                    DeTools.gstrSQL = DeTools.gstrSQL + strFields + " " + strCondition + " " + strValue + " " + strOrderBy;
+                }
+
+                if (s_Mode == DeTools.POSTMODE)
+                {
+                    if (!string.IsNullOrEmpty(strFields))
+                    {
+                        strFields = " AND " + strFields;
+                    }
+                    DeTools.gstrSQL = DeTools.gstrSQL + strFields + " " + strCondition + " " + strValue + " " + strOrderBy;
+                }
+
+                if (s_Mode == DeTools.DELETEMODE)
+                {
+                    if (!string.IsNullOrEmpty(strFields))
+                    {
+                        strFields = " AND " + strFields;
+                    }
+                    DeTools.gstrSQL = DeTools.gstrSQL + strFields + " " + strCondition + " " + strValue + " " + strOrderBy;
+                }
+
+                if (string.IsNullOrEmpty(s_Mode))
+                {
+                    if (!string.IsNullOrEmpty(strFields))
+                    {
+                        strFields = " WHERE " + strFields;
+                    }
+                    DeTools.gstrSQL = DeTools.gstrSQL + strFields + " " + strCondition + " " + strValue + " " + strOrderBy;
+                }
+
+                // Adjust the SQL query to limit the number of records
+                DeTools.gstrSQL = DeTools.gstrSQL.Replace("SELECT", "SELECT TOP 2000");
+
+                // Execute the query and retrieve results
+                using (OdbcDataReader rs_Result = dbConnector.CreateResultset(DeTools.gstrSQL))
+                {
+                    if (!rs_Result.HasRows)
+                    {
+                        if (s_Mode == DeTools.MODIFYMODE || s_Mode == DeTools.DELETEMODE || s_Mode == DeTools.POSTMODE)
+                        {
+                            if (i_Help_id == 1101)
+                            {
+                                frmHelp.pnlText.Text = "No authorized record available in Employee Master.";
+                            }
+                            else
+                            {
+                                frmHelp.pnlText.Text = "No unauthorized record available.";
+                            }
+                        }
+                        else
+                        {
+                            frmHelp.pnlText.Text = "No record available.";
+                        }
+
+                        for (Count = 0; Count < frmHelp.pnlToptxt.Text.Length; Count++)
+                        {
+                            if (frmHelp.pnlToptxt.Text[Count] == '(')
+                            {
+                                strheading = frmHelp.pnlToptxt.Text.Substring(0, Count);
+                                break;
+                            }
+                        }
+
+                        frmHelp.pnlToptxt.Text = strheading + " (0)";
+                        frmHelp.pnlInstructiontxt.Text = "Press Escape to exit from help.";
+                        frmHelp.pnlText.Visible = true;
+                    }
+                    else
+                    {
+                        // Get the number of rows (subtract one for column headings)
+                        i_Rows = 1;
+                        while (rs_Result.Read())
+                        {
+                            i_Rows++;
+                        }
+                        rs_Result.Close();
+
+                        i_NoOfRecords = i_Rows - 1;
+
+                        for (Count = 0; Count < frmHelp.pnlToptxt.Text.Length; Count++)
+                        {
+                            if (frmHelp.pnlToptxt.Text[Count] == '(')
+                            {
+                                strheading = frmHelp.pnlToptxt.Text.Substring(0, Count);
+                                break;
+                            }
+                        }
+
+                        // Get the number of columns from Help table
+                        i_Cols = rs_Query.GetInt32("No_of_columns");
+
+                        frmHelp.grdHelp.Rows.Clear(); // Clear any existing rows
+                        for (int r = 0; r < i_Rows; r++)
+                        {
+                            frmHelp.grdHelp.Rows.Add(); // Add a new row
+                        }
+
+                        frmHelp.grdHelp.Columns.Clear(); // Clear any existing columns
+                        for (int c = 0; c < i_Cols; c++)
+                        {
+                            DataGridViewTextBoxColumn column = new DataGridViewTextBoxColumn();
+                            frmHelp.grdHelp.Columns.Add(column);
+                        }
+
+                        //// Prepare the header row
+                        //frmHelp.grdHelp.Row = 0;
+                        //frmHelp.grdHelp.RowHeight[0] = 450;
+                        //for (j = 0; j < i_Cols; j++)
+                        //{
+                        //    frmHelp.grdHelp.Col = j;
+                        //    strFieldName = "Caption" + (j + 1);
+                        //    frmHelp.grdHelp.Text = rs_Query[strFieldName].ToString();
+                        //    frmHelp.grdHelp.ColWidth[j] = 1200;
+                        //    frmHelp.grdHelp.ColWidth[j] = rs_Result.GetFieldValue(j).ToString().Length * 90;
+                        //}
+
+                        // Prepare the header row
+                        for (j = 0; j < i_Cols; j++)
+                        {
+                            // Assuming frmHelp.grdHelp is a DataGridView
+                            DataGridViewColumn column = new DataGridViewColumn();
+                            column.HeaderText = "Caption" + (j + 1);
+                            column.Width = 1200; // Set your desired width here
+
+                            frmHelp.grdHelp.Columns.Add(column);
+                        }
+
+                        // After adding columns, you can set the header row's height
+                        frmHelp.grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+                        frmHelp.grdHelp.ColumnHeadersHeight = 450;
+                        frmHelp.grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+
+
+                        frmHelp.pgbStatus.Minimum = 0;
+                        frmHelp.pgbStatus.Maximum = i_Rows - 1;
+                        frmHelp.Show();
+
+                        frmHelp.pnlToptxt.Text = strheading + " (0)";
+
+                        for (i = 1; i < i_Rows; i++)
+                        {
+                            frmHelp.pgbStatus.Value = i;
+                            if (i % 50 == 0)
+                            {
+                                frmHelp.pnlToptxt.Text = strheading + " (" + i + ")";
+                            }
+                            // Add a new row to the DataGridView and populate its cells
+                            frmHelp.grdHelp.Rows.Add();
+                            for (j = 0; j < i_Cols; j++)
+                            {
+                                // frmHelp.grdHelp.Rows[i - 1].Cells[j].Value = rs_Result.GetFieldValue(j).ToString();
+                                frmHelp.grdHelp.Rows[i - 1].Cells[j].Value = rs_Result.GetFieldValue<string>(j);
+                            }
+                        }
+
+                        frmHelp.pnlToptxt.Text = strheading + " (" + i_NoOfRecords + ")";
+                        //frmHelp.grdHelp.Col = 0;
+                        //frmHelp.grdHelp.Row = 1;
+                        frmHelp.grdHelp.CurrentCell = frmHelp.grdHelp[0, 1];
+                        frmHelp.grdHelp.Visible = true;
+
+                        // Enable filter menus based on the number of rows
+                        if (frmHelp.grdHelp.RowCount > 101)
+                        {
+                            //frmHelp.mnuLast_100.Enabled = true;
+                            //frmHelp.mnuLast_50.Enabled = true;
+                            //frmHelp.mnuLast_15.Enabled = true;
+                        }
+                        else if (frmHelp.grdHelp.RowCount > 51)
+                        {
+                            //frmHelp.mnuLast_50.Enabled = true;
+                            //frmHelp.mnuLast_15.Enabled = true;
+                        }
+                        else if (frmHelp.grdHelp.RowCount > 16)
+                        {
+                          //  frmHelp.mnuLast_15.Enabled = true;
+                        }
+
+                        frmHelp.pnlInstructiontxt.Text = "Double click or press Enter to select.";
+                    }
+                }
             }
         }
 
@@ -438,8 +637,6 @@ namespace softgen
             frmHelp.pnlText.Visible = true;
 
         }
-
-
 
 
 
