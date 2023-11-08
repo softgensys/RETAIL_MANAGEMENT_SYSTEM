@@ -152,8 +152,10 @@ namespace softgen
             //    Application.Exit();
             //}
             bool blnDBOpen = false;
+
             try
             {
+
                 foreach (Control ctrl in this.Controls)
                 {
                     if (ctrl is MdiClient)
@@ -222,11 +224,26 @@ namespace softgen
                 Show();
 
                 //---old ------toolstrip dictionary
-                if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(this.Text))
+                //if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(this.Text))
+                //{
+                //    ToolStrip currentToolbar = DeTools.toolbarDictionarywith_frmnm[this.Text];
+                //    currentToolbar.BringToFront();
+                //}
+                string mode = DeTools.GetMode(this);
+                string key = string.IsNullOrEmpty(mode) ? this.Name : $"{this.Name}-{mode}";
+
+                if (DeTools.toolbarDictionary1.ContainsKey(key))
                 {
-                    ToolStrip currentToolbar = DeTools.toolbarDictionarywith_frmnm[this.Text];
-                    currentToolbar.BringToFront();
+                    List<ToolStrip> toolbars = DeTools.toolbarDictionary1[key];
+
+                    foreach (ToolStrip currentToolbar in toolbars)
+                    {
+                        currentToolbar.BringToFront();
+                    }
                 }
+
+
+                //----------------------
 
                 // Close the start form, set the cursor to default, and continue
                 //if (DeTools.toolbarDictionary1.TryGetValue(this, out List<ToolStrip> toolbars))
@@ -240,6 +257,9 @@ namespace softgen
                 //    }
                 //}
                 //frmStart.Close();
+                //frmWelscr frmWelscr = new frmWelscr();
+
+
                 Cursor.Current = Cursors.Default;
             }
             catch (Exception ex)
@@ -282,7 +302,7 @@ namespace softgen
         //for item
         private void OpenChildForm2()
         {
-            Item childForm2 = new Item();
+            frmM_Item childForm2 = new frmM_Item();
             childForm2.MdiParent = this; // Set the MDI parent form
             childForm2.Show();
 
@@ -700,6 +720,66 @@ namespace softgen
 
         }
 
+
+        private void tmrActiveForm_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                Messages messages = new Messages();
+                string msg = "Click on any of the above buttons to complete the desired task.";
+
+                if (ActiveMdiChild != null && ActiveMdiChild.Name != Name)
+                {
+                    DeTools.gobjActiveForm = ActiveMdiChild;
+                    switch (DeTools.GetMode(DeTools.gobjActiveForm))
+                    {
+                        case DeTools.DELETEMODE:
+                        case DeTools.INQUIREMODE:
+                        case DeTools.POSTMODE:
+                        case "":
+                            messages.HelpMsg(msg);
+                            break;
+                    }
+                }
+
+                if (ActiveMdiChild != null && ActiveMdiChild.Tag != null)
+                {
+                    if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
+                    {
+                        if (DeTools.toolbarDictionary1.ContainsKey(ActiveMdiChild.Text))
+                        {
+                            List<ToolStrip> toolbars = DeTools.toolbarDictionary1[ActiveMdiChild.Text];
+
+                            foreach (ToolStrip currentToolbar in toolbars)
+                            {
+                                currentToolbar.BringToFront();
+                            }
+                        }
+                    }
+                }
+                else if (ActiveMdiChild == null)
+                {
+                    // There is no active child form, so you can ensure the main form's tbrtools is displayed here.
+                    if (DeTools.toolbarDictionary1.ContainsKey(this.Text))
+                    {
+                        List<ToolStrip> mainToolbars = DeTools.toolbarDictionary1[this.Text];
+
+                        foreach (ToolStrip mainToolbar in mainToolbars)
+                        {
+                            mainToolbar.BringToFront();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
+            }
+        }
+
+
+        //-----newest old
+
         //private void tmrActiveForm_Tick(object sender, EventArgs e)
         //{
         //    try
@@ -720,77 +800,33 @@ namespace softgen
         //            }
         //        }
 
-        //         else if (ActiveMdiChild != null && !string.IsNullOrEmpty(ActiveMdiChild.Tag as string))
+        //        //if (ActiveMdiChild != null && !string.IsNullOrEmpty(ActiveMdiChild.Tag as string))
+        //        if (ActiveMdiChild != null && ActiveMdiChild.Tag != null)
+        //        {
+        //            if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
         //            {
-
-        //                if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
+        //                if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(ActiveMdiChild.Text))
         //                {
-        //                    if (DeTools.toolbarDictionary.ContainsKey(ActiveMdiChild))
-        //                    {
-        //                        ToolStrip currentToolbar = DeTools.toolbarDictionary[ActiveMdiChild];
-        //                        currentToolbar.BringToFront();
-        //                    }
+        //                    ToolStrip currentToolbar = DeTools.toolbarDictionarywith_frmnm[ActiveMdiChild.Text];
+        //                    currentToolbar.BringToFront();
         //                }
-
         //            }
-
-
-
-
+        //        }
+        //        else if (ActiveMdiChild == null)
+        //        {
+        //            // There is no active child form, so you can ensure the main form's tbrtools is displayed here.
+        //            if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(this.Text))
+        //            {
+        //                ToolStrip mainToolbar = DeTools.toolbarDictionarywith_frmnm[this.Text];
+        //                mainToolbar.BringToFront();
+        //            }
+        //        }
         //    }
         //    catch (Exception ex)
         //    {
-
         //        messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
         //    }
         //}
-
-        private void tmrActiveForm_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                string msg = "Click on any of the above buttons to complete the desired task.";
-
-                if (ActiveMdiChild != null && ActiveMdiChild.Name != Name)
-                {
-                    DeTools.gobjActiveForm = ActiveMdiChild;
-                    switch (DeTools.GetMode(DeTools.gobjActiveForm))
-                    {
-                        case DeTools.DELETEMODE:
-                        case DeTools.INQUIREMODE:
-                        case DeTools.POSTMODE:
-                        case "":
-                            Messages.HelpMsg(msg);
-                            break;
-                    }
-                }
-
-                if (ActiveMdiChild != null && !string.IsNullOrEmpty(ActiveMdiChild.Tag as string))
-                {
-                    if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
-                    {
-                        if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(ActiveMdiChild.Text))
-                        {
-                            ToolStrip currentToolbar = DeTools.toolbarDictionarywith_frmnm[ActiveMdiChild.Text];
-                            currentToolbar.BringToFront();
-                        }
-                    }
-                }
-                else if (ActiveMdiChild == null)
-                {
-                    // There is no active child form, so you can ensure the main form's tbrtools is displayed here.
-                    if (DeTools.toolbarDictionarywith_frmnm.ContainsKey(this.Text))
-                    {
-                        ToolStrip mainToolbar = DeTools.toolbarDictionarywith_frmnm[this.Text];
-                        mainToolbar.BringToFront();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
-            }
-        }
 
 
 

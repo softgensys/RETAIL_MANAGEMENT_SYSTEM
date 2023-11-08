@@ -124,6 +124,12 @@ namespace softgen
 
         public string GetuserName(string struserId)
         {
+            //for getting unsaved data
+            dbConnector = new DbConnector();
+            // dbConnector.connectionString= new OdbcConnection();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+
             dbConnector.OpenConnection();
             string result = string.Empty;
             if (struserId.ToUpper().Trim()== "SA")

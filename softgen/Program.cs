@@ -11,7 +11,16 @@ namespace softgen
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            frmWelscr frmWelscr = new frmWelscr();
+            if (frmWelscr.openyn == false)
+            {
+                Application.Run(new MainForm());
+            }
+            else
+            {
+                
             Application.Run(new frmWelscr());
+            }
         }
     }
 }

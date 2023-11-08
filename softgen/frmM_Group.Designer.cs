@@ -59,6 +59,8 @@
             // 
             // txtGrpId
             // 
+            txtGrpId.AutoCompleteMode = AutoCompleteMode.Suggest;
+            txtGrpId.AutoCompleteSource = AutoCompleteSource.HistoryList;
             resources.ApplyResources(txtGrpId, "txtGrpId");
             txtGrpId.Name = "txtGrpId";
             txtGrpId.Validating += txtGrpId_Validating;

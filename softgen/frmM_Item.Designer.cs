@@ -1,6 +1,6 @@
 ﻿namespace softgen
 {
-    partial class Item
+    partial class frmM_Item
     {
         /// <summary>
         /// Required designer variable.
@@ -72,20 +72,20 @@
             label1 = new Label();
             manufcomb = new ComboBox();
             label2 = new Label();
-            sizecomb = new ComboBox();
-            sizeidlbl = new Label();
-            ssgrpcomb = new ComboBox();
-            ssgrplbl = new Label();
-            subgrpcomb = new ComboBox();
-            subgrplbl = new Label();
-            grpcomb = new ComboBox();
-            grplbl = new Label();
-            typcomb = new ComboBox();
-            typelbl = new Label();
-            desctxt = new TextBox();
-            desclbl = new Label();
-            itemidtxt = new TextBox();
-            itemidlbl = new Label();
+            cboSizeID = new ComboBox();
+            lblSizeID = new Label();
+            cboSSGroupID = new ComboBox();
+            lblSSGroupID = new Label();
+            cboSGroup = new ComboBox();
+            lblSubGroup = new Label();
+            cboGroup = new ComboBox();
+            lblGroup = new Label();
+            cboType = new ComboBox();
+            lblType = new Label();
+            txtItemDesc = new TextBox();
+            lblItemDesc = new Label();
+            txtItemId = new TextBox();
+            lblItemId = new Label();
             panel1 = new Panel();
             checkBox4 = new CheckBox();
             label31 = new Label();
@@ -101,11 +101,11 @@
             label26 = new Label();
             textBox23 = new TextBox();
             label25 = new Label();
-            lbltype = new Label();
-            lblgrp = new Label();
-            lblsubgrp = new Label();
-            lblssgrp = new Label();
-            lblsizeid = new Label();
+            rotType = new Label();
+            rotGroup = new Label();
+            rotSGroup = new Label();
+            rotSSGroupDesc = new Label();
+            rotSizeDesc = new Label();
             lblcolid = new Label();
             lblmanuf = new Label();
             lblpurunit = new Label();
@@ -482,6 +482,7 @@
             // 
             // txtshortdesc
             // 
+            txtshortdesc.AutoCompleteSource = AutoCompleteSource.HistoryList;
             txtshortdesc.Enabled = false;
             txtshortdesc.Location = new Point(438, 96);
             txtshortdesc.Name = "txtshortdesc";
@@ -552,151 +553,153 @@
             label2.TabIndex = 100;
             label2.Text = "Manuf.";
             // 
-            // sizecomb
+            // cboSizeID
             // 
-            sizecomb.FormattingEnabled = true;
-            sizecomb.Location = new Point(437, 65);
-            sizecomb.Name = "sizecomb";
-            sizecomb.Size = new Size(85, 23);
-            sizecomb.TabIndex = 98;
-            sizecomb.SelectedIndexChanged += sizecomb_SelectedIndexChanged;
-            sizecomb.MouseDown += sizecomb_MouseDown;
+            cboSizeID.FormattingEnabled = true;
+            cboSizeID.Location = new Point(437, 65);
+            cboSizeID.Name = "cboSizeID";
+            cboSizeID.Size = new Size(85, 23);
+            cboSizeID.TabIndex = 98;
+            cboSizeID.SelectedIndexChanged += sizecomb_SelectedIndexChanged;
+            cboSizeID.MouseDown += sizecomb_MouseDown;
             // 
-            // sizeidlbl
+            // lblSizeID
             // 
-            sizeidlbl.AutoSize = true;
-            sizeidlbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            sizeidlbl.ImeMode = ImeMode.NoControl;
-            sizeidlbl.Location = new Point(381, 69);
-            sizeidlbl.Name = "sizeidlbl";
-            sizeidlbl.Size = new Size(44, 15);
-            sizeidlbl.TabIndex = 97;
-            sizeidlbl.Text = "Size Id";
+            lblSizeID.AutoSize = true;
+            lblSizeID.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSizeID.ImeMode = ImeMode.NoControl;
+            lblSizeID.Location = new Point(381, 69);
+            lblSizeID.Name = "lblSizeID";
+            lblSizeID.Size = new Size(44, 15);
+            lblSizeID.TabIndex = 97;
+            lblSizeID.Text = "Size Id";
             // 
-            // ssgrpcomb
+            // cboSSGroupID
             // 
-            ssgrpcomb.Enabled = false;
-            ssgrpcomb.FormattingEnabled = true;
-            ssgrpcomb.Location = new Point(65, 65);
-            ssgrpcomb.Name = "ssgrpcomb";
-            ssgrpcomb.Size = new Size(88, 23);
-            ssgrpcomb.TabIndex = 95;
-            ssgrpcomb.SelectedIndexChanged += ssgrpcomb_SelectedIndexChanged;
-            ssgrpcomb.MouseDown += ssgrpcomb_MouseDown;
+            cboSSGroupID.Enabled = false;
+            cboSSGroupID.FormattingEnabled = true;
+            cboSSGroupID.Location = new Point(65, 65);
+            cboSSGroupID.Name = "cboSSGroupID";
+            cboSSGroupID.Size = new Size(88, 23);
+            cboSSGroupID.TabIndex = 95;
+            cboSSGroupID.SelectedIndexChanged += ssgrpcomb_SelectedIndexChanged;
+            cboSSGroupID.MouseDown += ssgrpcomb_MouseDown;
             // 
-            // ssgrplbl
+            // lblSSGroupID
             // 
-            ssgrplbl.AutoSize = true;
-            ssgrplbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            ssgrplbl.ImeMode = ImeMode.NoControl;
-            ssgrplbl.Location = new Point(1, 68);
-            ssgrplbl.Name = "ssgrplbl";
-            ssgrplbl.Size = new Size(62, 15);
-            ssgrplbl.TabIndex = 94;
-            ssgrplbl.Text = "S.S Group";
+            lblSSGroupID.AutoSize = true;
+            lblSSGroupID.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSSGroupID.ImeMode = ImeMode.NoControl;
+            lblSSGroupID.Location = new Point(1, 68);
+            lblSSGroupID.Name = "lblSSGroupID";
+            lblSSGroupID.Size = new Size(62, 15);
+            lblSSGroupID.TabIndex = 94;
+            lblSSGroupID.Text = "S.S Group";
             // 
-            // subgrpcomb
+            // cboSGroup
             // 
-            subgrpcomb.Enabled = false;
-            subgrpcomb.FormattingEnabled = true;
-            subgrpcomb.Location = new Point(437, 34);
-            subgrpcomb.Name = "subgrpcomb";
-            subgrpcomb.Size = new Size(85, 23);
-            subgrpcomb.TabIndex = 92;
-            subgrpcomb.SelectedIndexChanged += subgrpcomb_SelectedIndexChanged;
-            subgrpcomb.MouseDown += subgrpcomb_MouseDown;
+            cboSGroup.Enabled = false;
+            cboSGroup.FormattingEnabled = true;
+            cboSGroup.Location = new Point(437, 34);
+            cboSGroup.Name = "cboSGroup";
+            cboSGroup.Size = new Size(85, 23);
+            cboSGroup.TabIndex = 92;
+            cboSGroup.SelectedIndexChanged += subgrpcomb_SelectedIndexChanged;
+            cboSGroup.MouseDown += subgrpcomb_MouseDown;
             // 
-            // subgrplbl
+            // lblSubGroup
             // 
-            subgrplbl.AutoSize = true;
-            subgrplbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            subgrplbl.ImeMode = ImeMode.NoControl;
-            subgrplbl.Location = new Point(364, 38);
-            subgrplbl.Name = "subgrplbl";
-            subgrplbl.Size = new Size(66, 15);
-            subgrplbl.TabIndex = 91;
-            subgrplbl.Text = "Sub Group";
+            lblSubGroup.AutoSize = true;
+            lblSubGroup.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSubGroup.ImeMode = ImeMode.NoControl;
+            lblSubGroup.Location = new Point(364, 38);
+            lblSubGroup.Name = "lblSubGroup";
+            lblSubGroup.Size = new Size(66, 15);
+            lblSubGroup.TabIndex = 91;
+            lblSubGroup.Text = "Sub Group";
             // 
-            // grpcomb
+            // cboGroup
             // 
-            grpcomb.AutoCompleteMode = AutoCompleteMode.Suggest;
-            grpcomb.FormattingEnabled = true;
-            grpcomb.Location = new Point(61, 34);
-            grpcomb.Name = "grpcomb";
-            grpcomb.Size = new Size(88, 23);
-            grpcomb.TabIndex = 89;
-            grpcomb.SelectedIndexChanged += grpcomb_SelectedIndexChanged;
-            grpcomb.MouseDown += grpcomb_MouseDown;
+            cboGroup.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cboGroup.FormattingEnabled = true;
+            cboGroup.Location = new Point(61, 34);
+            cboGroup.Name = "cboGroup";
+            cboGroup.Size = new Size(88, 23);
+            cboGroup.TabIndex = 89;
+            cboGroup.SelectedIndexChanged += grpcomb_SelectedIndexChanged;
+            cboGroup.MouseDown += grpcomb_MouseDown;
             // 
-            // grplbl
+            // lblGroup
             // 
-            grplbl.AutoSize = true;
-            grplbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            grplbl.ImeMode = ImeMode.NoControl;
-            grplbl.Location = new Point(12, 37);
-            grplbl.Name = "grplbl";
-            grplbl.Size = new Size(42, 15);
-            grplbl.TabIndex = 88;
-            grplbl.Text = "Group";
+            lblGroup.AutoSize = true;
+            lblGroup.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblGroup.ImeMode = ImeMode.NoControl;
+            lblGroup.Location = new Point(12, 37);
+            lblGroup.Name = "lblGroup";
+            lblGroup.Size = new Size(42, 15);
+            lblGroup.TabIndex = 88;
+            lblGroup.Text = "Group";
             // 
-            // typcomb
+            // cboType
             // 
-            typcomb.AutoCompleteSource = AutoCompleteSource.ListItems;
-            typcomb.FormattingEnabled = true;
-            typcomb.Location = new Point(500, 4);
-            typcomb.Name = "typcomb";
-            typcomb.Size = new Size(49, 23);
-            typcomb.TabIndex = 86;
-            typcomb.SelectedIndexChanged += typcomb_SelectedIndexChanged;
-            typcomb.MouseDown += typcomb_MouseDown;
+            cboType.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cboType.FormattingEnabled = true;
+            cboType.Location = new Point(500, 4);
+            cboType.Name = "cboType";
+            cboType.Size = new Size(49, 23);
+            cboType.TabIndex = 86;
+            cboType.SelectedIndexChanged += typcomb_SelectedIndexChanged;
+            cboType.MouseDown += typcomb_MouseDown;
             // 
-            // typelbl
+            // lblType
             // 
-            typelbl.AutoSize = true;
-            typelbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            typelbl.ImeMode = ImeMode.NoControl;
-            typelbl.Location = new Point(461, 7);
-            typelbl.Name = "typelbl";
-            typelbl.Size = new Size(33, 15);
-            typelbl.TabIndex = 85;
-            typelbl.Text = "Type";
+            lblType.AutoSize = true;
+            lblType.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblType.ImeMode = ImeMode.NoControl;
+            lblType.Location = new Point(461, 7);
+            lblType.Name = "lblType";
+            lblType.Size = new Size(33, 15);
+            lblType.TabIndex = 85;
+            lblType.Text = "Type";
             // 
-            // desctxt
+            // txtItemDesc
             // 
-            desctxt.Location = new Point(222, 4);
-            desctxt.Name = "desctxt";
-            desctxt.Size = new Size(229, 23);
-            desctxt.TabIndex = 84;
+            txtItemDesc.AutoCompleteMode = AutoCompleteMode.Suggest;
+            txtItemDesc.AutoCompleteSource = AutoCompleteSource.HistoryList;
+            txtItemDesc.Location = new Point(222, 4);
+            txtItemDesc.Name = "txtItemDesc";
+            txtItemDesc.Size = new Size(229, 23);
+            txtItemDesc.TabIndex = 84;
             // 
-            // desclbl
+            // lblItemDesc
             // 
-            desclbl.AutoSize = true;
-            desclbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            desclbl.ImeMode = ImeMode.NoControl;
-            desclbl.Location = new Point(182, 7);
-            desclbl.Name = "desclbl";
-            desclbl.Size = new Size(37, 15);
-            desclbl.TabIndex = 83;
-            desclbl.Text = "Desc.";
+            lblItemDesc.AutoSize = true;
+            lblItemDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblItemDesc.ImeMode = ImeMode.NoControl;
+            lblItemDesc.Location = new Point(182, 7);
+            lblItemDesc.Name = "lblItemDesc";
+            lblItemDesc.Size = new Size(37, 15);
+            lblItemDesc.TabIndex = 83;
+            lblItemDesc.Text = "Desc.";
             // 
-            // itemidtxt
+            // txtItemId
             // 
-            itemidtxt.Location = new Point(61, 4);
-            itemidtxt.Name = "itemidtxt";
-            itemidtxt.Size = new Size(109, 23);
-            itemidtxt.TabIndex = 82;
-            itemidtxt.TextChanged += itemidtxt_TextChanged;
+            txtItemId.Location = new Point(61, 4);
+            txtItemId.Name = "txtItemId";
+            txtItemId.Size = new Size(109, 23);
+            txtItemId.TabIndex = 82;
+            txtItemId.TextChanged += itemidtxt_TextChanged;
             // 
-            // itemidlbl
+            // lblItemId
             // 
-            itemidlbl.AutoSize = true;
-            itemidlbl.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            itemidlbl.ImeMode = ImeMode.NoControl;
-            itemidlbl.Location = new Point(6, 7);
-            itemidlbl.Name = "itemidlbl";
-            itemidlbl.Size = new Size(48, 15);
-            itemidlbl.TabIndex = 81;
-            itemidlbl.Text = "Item Id";
+            lblItemId.AutoSize = true;
+            lblItemId.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblItemId.ImeMode = ImeMode.NoControl;
+            lblItemId.Location = new Point(6, 7);
+            lblItemId.Name = "lblItemId";
+            lblItemId.Size = new Size(48, 15);
+            lblItemId.TabIndex = 81;
+            lblItemId.Text = "Item Id";
             // 
             // panel1
             // 
@@ -848,51 +851,51 @@
             label25.TabIndex = 82;
             label25.Text = "PLU";
             // 
-            // lbltype
+            // rotType
             // 
-            lbltype.BackColor = Color.Bisque;
-            lbltype.BorderStyle = BorderStyle.Fixed3D;
-            lbltype.Location = new Point(556, 4);
-            lbltype.Name = "lbltype";
-            lbltype.Size = new Size(153, 23);
-            lbltype.TabIndex = 166;
+            rotType.BackColor = Color.Bisque;
+            rotType.BorderStyle = BorderStyle.Fixed3D;
+            rotType.Location = new Point(556, 4);
+            rotType.Name = "rotType";
+            rotType.Size = new Size(153, 23);
+            rotType.TabIndex = 166;
             // 
-            // lblgrp
+            // rotGroup
             // 
-            lblgrp.BackColor = Color.Bisque;
-            lblgrp.BorderStyle = BorderStyle.Fixed3D;
-            lblgrp.Location = new Point(156, 34);
-            lblgrp.Name = "lblgrp";
-            lblgrp.Size = new Size(200, 23);
-            lblgrp.TabIndex = 167;
-            lblgrp.Click += lblgrp_Click;
+            rotGroup.BackColor = Color.Bisque;
+            rotGroup.BorderStyle = BorderStyle.Fixed3D;
+            rotGroup.Location = new Point(156, 34);
+            rotGroup.Name = "rotGroup";
+            rotGroup.Size = new Size(200, 23);
+            rotGroup.TabIndex = 167;
+            rotGroup.Click += lblgrp_Click;
             // 
-            // lblsubgrp
+            // rotSGroup
             // 
-            lblsubgrp.BackColor = Color.Bisque;
-            lblsubgrp.BorderStyle = BorderStyle.Fixed3D;
-            lblsubgrp.Location = new Point(528, 34);
-            lblsubgrp.Name = "lblsubgrp";
-            lblsubgrp.Size = new Size(184, 23);
-            lblsubgrp.TabIndex = 168;
+            rotSGroup.BackColor = Color.Bisque;
+            rotSGroup.BorderStyle = BorderStyle.Fixed3D;
+            rotSGroup.Location = new Point(528, 34);
+            rotSGroup.Name = "rotSGroup";
+            rotSGroup.Size = new Size(184, 23);
+            rotSGroup.TabIndex = 168;
             // 
-            // lblssgrp
+            // rotSSGroupDesc
             // 
-            lblssgrp.BackColor = Color.Bisque;
-            lblssgrp.BorderStyle = BorderStyle.Fixed3D;
-            lblssgrp.Location = new Point(157, 65);
-            lblssgrp.Name = "lblssgrp";
-            lblssgrp.Size = new Size(198, 23);
-            lblssgrp.TabIndex = 169;
+            rotSSGroupDesc.BackColor = Color.Bisque;
+            rotSSGroupDesc.BorderStyle = BorderStyle.Fixed3D;
+            rotSSGroupDesc.Location = new Point(157, 65);
+            rotSSGroupDesc.Name = "rotSSGroupDesc";
+            rotSSGroupDesc.Size = new Size(198, 23);
+            rotSSGroupDesc.TabIndex = 169;
             // 
-            // lblsizeid
+            // rotSizeDesc
             // 
-            lblsizeid.BackColor = Color.Bisque;
-            lblsizeid.BorderStyle = BorderStyle.Fixed3D;
-            lblsizeid.Location = new Point(528, 65);
-            lblsizeid.Name = "lblsizeid";
-            lblsizeid.Size = new Size(184, 23);
-            lblsizeid.TabIndex = 170;
+            rotSizeDesc.BackColor = Color.Bisque;
+            rotSizeDesc.BorderStyle = BorderStyle.Fixed3D;
+            rotSizeDesc.Location = new Point(528, 65);
+            rotSizeDesc.Name = "rotSizeDesc";
+            rotSizeDesc.Size = new Size(184, 23);
+            rotSizeDesc.TabIndex = 170;
             // 
             // lblcolid
             // 
@@ -1070,7 +1073,7 @@
             ACTIVE.TrueValue = "Y";
             ACTIVE.Width = 50;
             // 
-            // Item
+            // frmM_Item
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -1087,11 +1090,11 @@
             Controls.Add(lblpurunit);
             Controls.Add(lblmanuf);
             Controls.Add(lblcolid);
-            Controls.Add(lblsizeid);
-            Controls.Add(lblssgrp);
-            Controls.Add(lblsubgrp);
-            Controls.Add(lblgrp);
-            Controls.Add(lbltype);
+            Controls.Add(rotSizeDesc);
+            Controls.Add(rotSSGroupDesc);
+            Controls.Add(rotSGroup);
+            Controls.Add(rotGroup);
+            Controls.Add(rotType);
             Controls.Add(dataGridView1);
             Controls.Add(panel1);
             Controls.Add(label24);
@@ -1138,26 +1141,26 @@
             Controls.Add(label1);
             Controls.Add(manufcomb);
             Controls.Add(label2);
-            Controls.Add(sizecomb);
-            Controls.Add(sizeidlbl);
-            Controls.Add(ssgrpcomb);
-            Controls.Add(ssgrplbl);
-            Controls.Add(subgrpcomb);
-            Controls.Add(subgrplbl);
-            Controls.Add(grpcomb);
-            Controls.Add(grplbl);
-            Controls.Add(typcomb);
-            Controls.Add(typelbl);
-            Controls.Add(desctxt);
-            Controls.Add(desclbl);
-            Controls.Add(itemidtxt);
-            Controls.Add(itemidlbl);
+            Controls.Add(cboSizeID);
+            Controls.Add(lblSizeID);
+            Controls.Add(cboSSGroupID);
+            Controls.Add(lblSSGroupID);
+            Controls.Add(cboSGroup);
+            Controls.Add(lblSubGroup);
+            Controls.Add(cboGroup);
+            Controls.Add(lblGroup);
+            Controls.Add(cboType);
+            Controls.Add(lblType);
+            Controls.Add(txtItemDesc);
+            Controls.Add(lblItemDesc);
+            Controls.Add(txtItemId);
+            Controls.Add(lblItemId);
             Controls.Add(panel2);
             Controls.Add(panel3);
             MdiChildrenMinimizedAnchorBottom = false;
-            Name = "Item";
+            Name = "frmM_Item";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Item";
+            Text = "Item Master";
             FormClosed += Item_FormClosed;
             Load += Item_Load;
             panel1.ResumeLayout(false);
@@ -1218,20 +1221,20 @@
         private TextBox textBox2;
         private ComboBox manufcomb;
         private Label label2;
-        private ComboBox sizecomb;
-        private Label sizeidlbl;
-        private ComboBox ssgrpcomb;
-        private Label ssgrplbl;
-        private ComboBox subgrpcomb;
-        private Label subgrplbl;
-        private ComboBox grpcomb;
-        private Label grplbl;
-        private ComboBox typcomb;
-        private Label typelbl;
-        private TextBox desctxt;
-        private Label desclbl;
-        private TextBox itemidtxt;
-        private Label itemidlbl;
+        private ComboBox cboSizeID;
+        private Label lblSizeID;
+        private ComboBox cboSSGroupID;
+        private Label lblSSGroupID;
+        private ComboBox cboSGroup;
+        private Label lblSubGroup;
+        private ComboBox cboGroup;
+        private Label lblGroup;
+        private ComboBox cboType;
+        private Label lblType;
+        private TextBox txtItemDesc;
+        private Label lblItemDesc;
+        private TextBox txtItemId;
+        private Label lblItemId;
         private Panel panel1;
         private CheckBox checkBox4;
         private Label label31;
@@ -1247,11 +1250,11 @@
         private Label label26;
         private TextBox textBox23;
         private Label label25;
-        private Label lbltype;
-        private Label lblgrp;
-        private Label lblsubgrp;
-        private Label lblssgrp;
-        private Label lblsizeid;
+        private Label rotType;
+        private Label rotGroup;
+        private Label rotSGroup;
+        private Label rotSSGroupDesc;
+        private Label rotSizeDesc;
         private Label lblcolid;
         private Label lblmanuf;
         private Label lblpurunit;

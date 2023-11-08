@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            grdHelp = new DataGridView();
             pnlText = new Label();
             pnlInstruction = new Panel();
             pnlInstructiontxt = new Label();
@@ -46,12 +47,11 @@
             cboDataType = new ComboBox();
             pnlTop = new Panel();
             pnlToptxt = new Label();
-            grdHelp = new DataGridView();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)grdHelp).BeginInit();
             pnlInstruction.SuspendLayout();
             panel3.SuspendLayout();
             pnlTop.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)grdHelp).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -68,6 +68,18 @@
             panel1.Size = new Size(683, 392);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
+            // 
+            // grdHelp
+            // 
+            grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            grdHelp.GridColor = SystemColors.ActiveCaption;
+            grdHelp.Location = new Point(2, 102);
+            grdHelp.MultiSelect = false;
+            grdHelp.Name = "grdHelp";
+            grdHelp.RowTemplate.Height = 25;
+            grdHelp.Size = new Size(676, 247);
+            grdHelp.TabIndex = 3;
+            grdHelp.CellDoubleClick += grdHelp_CellDoubleClick;
             // 
             // pnlText
             // 
@@ -125,6 +137,7 @@
             cmdOK.TabIndex = 7;
             cmdOK.Text = "Search";
             cmdOK.UseVisualStyleBackColor = true;
+            cmdOK.Click += cmdOK_Click;
             // 
             // pgbStatus
             // 
@@ -163,6 +176,9 @@
             cboFields.Name = "cboFields";
             cboFields.Size = new Size(135, 23);
             cboFields.TabIndex = 2;
+            cboFields.SelectedIndexChanged += cboFields_SelectedIndexChanged;
+            cboFields.SelectionChangeCommitted += cboFields_SelectionChangeCommitted;
+            cboFields.MouseClick += cboFields_MouseClick;
             // 
             // lblOrder
             // 
@@ -230,17 +246,6 @@
             pnlToptxt.Text = "Permissions";
             pnlToptxt.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // grdHelp
-            // 
-            grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            grdHelp.GridColor = SystemColors.ActiveCaption;
-            grdHelp.Location = new Point(2, 102);
-            grdHelp.MultiSelect = false;
-            grdHelp.Name = "grdHelp";
-            grdHelp.RowTemplate.Height = 25;
-            grdHelp.Size = new Size(676, 247);
-            grdHelp.TabIndex = 3;
-            // 
             // frmHelp
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -251,11 +256,11 @@
             Text = "Help";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)grdHelp).EndInit();
             pnlInstruction.ResumeLayout(false);
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             pnlTop.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)grdHelp).EndInit();
             ResumeLayout(false);
         }
 

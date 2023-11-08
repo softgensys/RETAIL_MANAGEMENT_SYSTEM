@@ -8,13 +8,13 @@ using System.Windows.Forms.VisualStyles;
 
 namespace softgen
 {
-    public partial class Item : Form
+    public partial class frmM_Item : Form
     {
         public DbConnector dbConnector;
 
 
 
-        public Item()
+        public frmM_Item()
         {
             InitializeComponent();
 
@@ -99,18 +99,18 @@ namespace softgen
             List<string> whereClauseValue = new List<string>();
             string tableName = "m_group";
             string columnName = "group_desc";
-            string ClauseValue = grpcomb.SelectedValue.ToString();
+            string ClauseValue = cboGroup.SelectedValue.ToString();
             whereClauseVariable.Add("group_id");
             whereClauseValue.Add(ClauseValue);
             int op = 0;
 
-            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, lblgrp);
+            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, rotGroup);
 
             if (ClauseValue != "")
             {
-                subgrpcomb.Enabled = true;
+                cboSGroup.Enabled = true;
             }
-            else { subgrpcomb.Enabled = false; }
+            else { cboSGroup.Enabled = false; }
 
         }
 
@@ -192,7 +192,7 @@ namespace softgen
             ComboBoxDataLoader.LoadDataIntoComboBox(tableName, whereClauseVariable, whereClauseValue, 0, selectColumn, comboBox);
 
             comboBox.SelectedIndex = -1;
-            lbltype.Text = "";
+            rotType.Text = "";
         }
 
         public void typcomb_SelectedIndexChanged(object sender, EventArgs e)
@@ -205,13 +205,13 @@ namespace softgen
 
                 string tableName = "m_item_type";
                 string columnName = "item_type_desc";
-                string ClauseValue1 = typcomb.SelectedValue.ToString();
+                string ClauseValue1 = cboType.SelectedValue.ToString();
                 whereClauseVariable.Add("item_type_id");
                 whereClauseValue.Add(ClauseValue1);
                 int op = 0;
 
 
-                ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, lbltype);
+                ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, rotType);
             }
 
         }
@@ -222,7 +222,7 @@ namespace softgen
 
             List<string> whereClauseVariable = new List<string>();
             List<string> whereClauseValue = new List<string>();
-            string ClauseValue = grpcomb.SelectedValue.ToString();
+            string ClauseValue = cboGroup.SelectedValue.ToString();
             String tableName = "m_sub_group";
             whereClauseVariable.Add("group_id");
             whereClauseValue.Add(ClauseValue);
@@ -236,20 +236,20 @@ namespace softgen
             List<string> whereClauseValue = new List<string>();
             string tableName = "m_sub_group";
             string columnName = "sub_group_desc";
-            string ClauseValue = subgrpcomb.SelectedValue.ToString();
+            string ClauseValue = cboSGroup.SelectedValue.ToString();
             whereClauseVariable.Add("sub_group_id");
             whereClauseValue.Add(ClauseValue);
             int op = 0;
 
-            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, lblsubgrp);
+            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, rotSGroup);
 
             if (ClauseValue != "")
             {
-                ssgrpcomb.Enabled = true;
+                cboSSGroupID.Enabled = true;
             }
             else
             {
-                ssgrpcomb.Enabled = false;
+                cboSSGroupID.Enabled = false;
             }
         }
 
@@ -259,8 +259,8 @@ namespace softgen
 
             List<string> whereClauseVariable = new List<string>();
             List<string> whereClauseValue = new List<string>();
-            string ClauseValue1 = grpcomb.SelectedValue.ToString();
-            string ClauseValue2 = subgrpcomb.SelectedValue.ToString();
+            string ClauseValue1 = cboGroup.SelectedValue.ToString();
+            string ClauseValue2 = cboSGroup.SelectedValue.ToString();
             String tableName = "m_sub_sub_group";
             whereClauseVariable.Add("group_id");
             whereClauseValue.Add(ClauseValue1);
@@ -279,12 +279,12 @@ namespace softgen
             List<string> whereClauseValue = new List<string>();
             string tableName = "m_sub_sub_group";
             string columnName = "sub_sub_group_desc";
-            string ClauseValue = ssgrpcomb.SelectedValue.ToString();
+            string ClauseValue = cboSSGroupID.SelectedValue.ToString();
             whereClauseVariable.Add("sub_sub_group_id");
             whereClauseValue.Add(ClauseValue);
             int op = 0;
 
-            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, lblssgrp);
+            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, rotSSGroupDesc);
         }
 
         public void colidcomb_MouseDown(object sender, MouseEventArgs e)
@@ -336,12 +336,12 @@ namespace softgen
             List<string> whereClauseValue = new List<string>();
             string tableName = "m_size";
             string columnName = "color_desc";
-            string ClauseValue = sizecomb.SelectedValue.ToString();
+            string ClauseValue = cboSizeID.SelectedValue.ToString();
             whereClauseVariable.Add("size_id");
             whereClauseValue.Add(ClauseValue);
             int op = 0;
 
-            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, lblsizeid);
+            ComboBoxDataLoader.GetcomboValue_in_txt(tableName, columnName, whereClauseVariable, whereClauseValue, op, rotSizeDesc);
 
         }
 

@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Data.Odbc;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,11 +17,12 @@ namespace softgen
     {
         public string gstrSQl1;
         frmStart frmStart1 = new frmStart();
-
+        public bool openyn= true;
 
         public frmWelscr()
         {
             InitializeComponent();
+           
 
         }
 
@@ -77,6 +79,8 @@ namespace softgen
                         reader.Close();
                         General.InitialiseSetup(DeTools.gstrloginId, gstrRep);
                         this.Hide();
+                        //this.Close();
+                        //this.Dispose();
                         //frmStart frmStart = new frmStart();
 
                         //frmStart.Show();
@@ -86,6 +90,9 @@ namespace softgen
                         MainForm mainForm = new MainForm();
                         mainForm.MdiParent = this.ParentForm; // Set the MDI parent
                         mainForm.Show();
+                       // DeTools.DisplayForm(mainForm, 1215, 746);
+                        openyn =false;
+
                     }
                 }
             }

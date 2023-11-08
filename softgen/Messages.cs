@@ -59,13 +59,7 @@ namespace softgen
             }
 
             MessageBox.Show(gstrMsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void HelpMsg(object value)
-        {
-            // Implement HelpMsg logic if needed
-            //MainForm.pnlHelp.Text = strHelp;
-        }
+        }       
 
         public static void IncorrectLoginMsg()
         {
@@ -74,11 +68,12 @@ namespace softgen
 
         internal static void IncorrectPasswordMsg() { }
 
-        public static void HelpMsg(string msg)
+        public void HelpMsg(string msg)
         {
            MainForm.Instance.pnlHelp.Text = msg;
             MainForm.Instance.pnlHelp.ForeColor= System.Drawing.Color.FromArgb(0,100,0,0);
         }
+                              
 
         public static void PostedMsg()
         {

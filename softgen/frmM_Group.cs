@@ -19,6 +19,8 @@ namespace softgen
         private string mstrEntBy, mstrEntOn, mstrAuthBy, mstrAuthOn;
         public bool mblnSearch, mblnDataEntered;
         private OdbcTransaction transaction;
+        Messages msg = new Messages();
+
         public frmM_Group()
         {
             InitializeComponent();
@@ -95,6 +97,7 @@ namespace softgen
         {
             try
             {
+
                 //for getting unsaved data
                 dbConnector = new DbConnector();
                 // dbConnector.connectionString= new OdbcConnection();
@@ -192,6 +195,91 @@ namespace softgen
 
         }
 
+        public void SearchForm()
+        {
+            try
+            {
+                //for getting unsaved data
+                dbConnector = new DbConnector();
+                // dbConnector.connectionString= new OdbcConnection();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+                General general = new General();
+                if (!string.IsNullOrWhiteSpace(txtGrpId.Text) && !mblnSearch)
+                {
+                    msg.HelpMsg("Information retrieving. Please wait...");
+
+                    DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" + txtGrpId.Text.Trim() + "'";
+
+                    OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                    dbConnector.connection.Open();
+                    OdbcDataReader reader = cmd.ExecuteReader();
+
+                    if (!reader.HasRows)
+                    {
+                        msg.HelpMsg("Information Not Found");
+                        Messages.InfoMsg("No information available for this criteria.!");
+                        mblnSearch = false;
+                        reader.Close();
+                        return;
+                    }
+                    else
+                    {
+                        while (reader.Read())
+                        {
+                            if (reader["status"].ToString() == "A") // Posted
+                            {
+                                switch (DeTools.GetMode(this))
+                                {
+                                    case DeTools.DELETEMODE:
+                                    case DeTools.POSTMODE:
+                                        //AuthorisedMsg();
+                                        mblnSearch = false;
+                                        reader.Close();
+                                        return;
+                                }
+                            }
+
+                            txtGrpId.Enabled = false;
+                            txtGrpDesc.Text = reader["group_desc"].ToString();
+                            if (reader["active_yn"].ToString() == "Y")
+                                chkStatus.Checked = true;
+                            else
+                                chkStatus.Checked = false;
+                            txtSTaxPer.Text = reader["sales_tax"].ToString();
+                            mstrEntBy = general.GetuserName(reader["ent_by"].ToString());
+                            DateTime entOn = Convert.ToDateTime(reader["ent_on"]);
+                            mstrEntOn = entOn.ToString("dd/MM/yyyy");
+                            DeTools.CreatedBy(mstrEntBy, mstrEntOn);
+
+                            if (reader["status"].ToString() == "A")
+                            {
+                                mstrAuthBy = general.GetuserName(reader["auth_by"].ToString());
+                                DateTime AuthOn = Convert.ToDateTime(reader["auth_on"].ToString());
+                                mstrAuthOn = AuthOn.ToString("dd/MM/yyyy");
+                                DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
+                            }
+                        }
+
+                        reader.Close();
+                        //msg.FoundMsg("Information Found!");
+                        msg.HelpMsg("Information Found!");
+                        mblnSearch = true;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                msg.VBError(ex, "frmM_Group", "SearchForm", null);
+            }
+        }
+
+
         private void txtGrpId_Validating(object sender, CancelEventArgs e)
 
         {
@@ -221,8 +309,8 @@ namespace softgen
 
                 transaction = dbConnector.connection.BeginTransaction();
 
-                string selectid_toenter = "select group_id from m_group where group_id='"+txtGrpId.Text.Trim()+"'";
-                using(OdbcDataReader reader= dbConnector.CreateResultset(selectid_toenter))
+                string selectid_toenter = "select group_id from m_group where group_id='" + txtGrpId.Text.Trim() + "'";
+                using (OdbcDataReader reader = dbConnector.CreateResultset(selectid_toenter))
                 {
                     if (!reader.HasRows)
                     {
@@ -250,7 +338,7 @@ namespace softgen
                     }
                 }
 
-                
+
                 transaction.Commit();
                 dbConnector.connection.Close();
             }
@@ -267,10 +355,10 @@ namespace softgen
                 {
                     dbConnector.OpenConnection();
 
-                    string compname= DeTools.fOSMachineName.GetMachineName();
-                    string user=MainForm.Instance.pnlUserName.Text.Trim();
+                    string compname = DeTools.fOSMachineName.GetMachineName();
+                    string user = MainForm.Instance.pnlUserName.Text.Trim();
 
-                    string query = "SELECT * FROM temp_m_group WHERE closed_yn='Y' and ent_by='"+user.Trim()+"' and comp_name='"+compname.Trim()+"' order by ent_on desc limit 1;";
+                    string query = "SELECT * FROM temp_m_group WHERE closed_yn='Y' and ent_by='" + user.Trim() + "' and comp_name='" + compname.Trim() + "' order by ent_on desc limit 1;";
 
                     OdbcParameter[] parameters = new OdbcParameter[0];
 
@@ -319,7 +407,7 @@ namespace softgen
         public void check_temp_login_sytemname()
         {
             string getent_by = "";
-            string getcomp_name= "";
+            string getcomp_name = "";
             DbConnector dbConnector = new DbConnector();
 
             dbConnector.OpenConnection();
@@ -328,24 +416,24 @@ namespace softgen
             string id = "group_id";
             string tblname = "m_group";
 
-            DeTools.gstrSQL = "SELECT "+id+",ent_by,comp_name FROM softgen_db.temp_"+tblname+" order by ent_on desc limit 1;";
+            DeTools.gstrSQL = "SELECT " + id + ",ent_by,comp_name FROM softgen_db.temp_" + tblname + " order by ent_on desc limit 1;";
 
             using (OdbcDataReader reader = dbConnector.CreateResultset(DeTools.gstrSQL))
             {
                 if (reader.HasRows)
                 {
-                   getent_by = reader["ent_by"].ToString();
-                   getcomp_name = reader["comp_name"].ToString();
+                    getent_by = reader["ent_by"].ToString();
+                    getcomp_name = reader["comp_name"].ToString();
 
 
                 }
-                string pnlusername= MainForm.Instance.pnlUserName.Text.Trim();
-                string machine_name= DeTools.fOSMachineName.GetMachineName();
+                string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
+                string machine_name = DeTools.fOSMachineName.GetMachineName();
 
                 if (getent_by.ToLower().Trim() == pnlusername.ToLower().Trim() && getcomp_name.Trim() == machine_name.Trim())
                 {
-               
-                        UnsavedData();
+
+                    UnsavedData();
                 }
             }
         }

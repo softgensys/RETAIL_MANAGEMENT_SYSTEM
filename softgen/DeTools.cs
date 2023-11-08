@@ -82,13 +82,21 @@ namespace softgen
         private static double refundAmount;
         public static Dictionary<Form, ToolStrip> toolbarDictionary = new Dictionary<Form, ToolStrip>();//store key value pair data From is key and Toolstrip will be its Value .For Destroying toolbar
         public static Dictionary<string, ToolStrip> toolbarDictionarywith_frmnm = new Dictionary<string, ToolStrip>();
+        //public static Dictionary<string, ToolStrip> newToolbarDictionary = new Dictionary<string, ToolStrip>();
+
+
 
         // Define a new data structure to manage multiple toolbars per form
-        public static Dictionary<Form, List<ToolStrip>> toolbarDictionary1 = new Dictionary<Form, List<ToolStrip>>();
+        public static Dictionary<string, List<ToolStrip>> toolbarDictionary1 = new Dictionary<string, List<ToolStrip>>();
+        public static Dictionary<string, List<ToolStrip>> newToolbarDictionary = new Dictionary<string, List<ToolStrip>>();
+        public static ImageList imageList= new ImageList();
+
         public static string ConnectionString;
         public static int startIndex=-1;
         public static frmM_Group frmM_Group= new frmM_Group();
-
+        ///////////-------------
+        public static string currentKey;
+        public static string newKey;
 
 
         ///////
@@ -104,6 +112,7 @@ namespace softgen
                 foreach (Control control in form.Controls)
                 {
                     string controlName = control.Name.Trim().ToLower();
+                    bool endswithId= controlName.EndsWith("Id",StringComparison.OrdinalIgnoreCase);
 
                     switch (controlName.Substring(0, 3))
                     {
@@ -112,6 +121,10 @@ namespace softgen
                         case "dir":
                         case "fil":
                             control.Enabled = TF;
+                            if (endswithId)
+                            {
+                            control.Focus();
+                            }
                             break;
                         case "cbo":
                             control.Enabled = TF;
@@ -295,23 +308,19 @@ namespace softgen
         }
 
 
-
-        /// <summary>
-        /// --------------------old--------------
-        /// </summary>
-        /// <param name="form"></param>
-        /// <param name="KeyCode"></param>
         public static void ExecuteKeyDown(Form form, Keys KeyCode)
         {
             try
             {
-                // Access the ToolStrip from MainForm.Instance
-                //  ToolStrip toolStrip = MainForm.Instance.tbrTools1; // Replace with your actual ToolStrip name
+                // Retrieve the current form's name
+                string formName = form.Name;
 
-                // Access the ToolStrip for the current form----old
-                //ToolStrip toolStrip = toolbarDictionary[form]; // Retrieve the ToolStrip for the current form from the dictionary
-                ToolStrip toolStrip = toolbarDictionarywith_frmnm[form.Text]; // Retrieve the ToolStrip for the current form from the dictionary
+                // Determine the key for the toolbar dictionary
+                  string mode = GetMode(form);
+                  string key = string.IsNullOrEmpty(mode) ? form.Name : $"{form.Name}-{mode}";
 
+                // Access the ToolStrip for the current form from the dictionary
+                ToolStrip toolStrip = toolbarDictionary1[key].Last();
 
                 ToolStripItem toolStripItem = null;
 
@@ -325,26 +334,23 @@ namespace softgen
                         {
                             toolStripItem = item;
                             break;
-
                         }
                     }
-
                 }
+
                 if (toolStripItem != null && toolStripItem.Tag != null)
                 {
                     // Retrieve the Tag property of the ToolStripItem and assign it to strOptions   
                     strOptions = toolStripItem.Tag.ToString();
                 }
 
-
                 switch (KeyCode)
                 {
                     case Keys.F2:
                         if (GetMode(form) != null)
                         {
-                            //form.ClearForm();
-                            //ClearCreatedByPanel();
-
+                            // form.ClearForm();
+                            // ClearCreatedByPanel();
                         }
                         break;
                     case Keys.F3:
@@ -356,7 +362,6 @@ namespace softgen
                             }
                         }
                         break;
-
                     case Keys.F4:
                         if (GetMode(form) == null)
                         {
@@ -366,7 +371,6 @@ namespace softgen
                             }
                         }
                         break;
-
                     case Keys.F5:
                         switch (GetMode(form))
                         {
@@ -376,13 +380,11 @@ namespace softgen
                                     ButtonClick((int)form.Tag, "DELETEMODE");
                                 }
                                 break;
-
                             case "DELETEMODE":
-                                //form.DeleteForm();
+                                // form.DeleteForm();
                                 break;
                         }
                         break;
-
                     case Keys.F6:
                         if (GetMode(form) == null)
                         {
@@ -392,7 +394,6 @@ namespace softgen
                             }
                         }
                         break;
-
                     case Keys.F7:
                         switch (GetMode(form))
                         {
@@ -402,59 +403,209 @@ namespace softgen
                                     ButtonClick((int)form.Tag, "POSTMODE");
                                 }
                                 break;
-
                             case "POSTMODE":
-                                //             form.PostForm();
+                                // form.PostForm();
                                 break;
                         }
                         break;
-
                     case Keys.F8:
                         if (GetMode(form) != null)
                         {
                             if (HasOption(strOptions, 'R'))
                             {
-                                //           form.PrintDoc();
+                                // form.PrintDoc();
                             }
                         }
                         break;
-
                     case Keys.F10:
                         switch (GetMode(form))
                         {
                             case "ADDMODE":
                             case "MODIFYMODE":
-                                //           form.SaveForm();
+                                // form.SaveForm();
                                 break;
                         }
                         break;
-
                     case Keys.Escape:
                         switch (GetMode(form))
                         {
                             case null:
                                 ButtonClick((int)form.Tag, "Quit");
                                 break;
-
                             default:
                                 ButtonClick((int)form.Tag, "ModeQuit");
                                 break;
                         }
                         break;
-
                 }
-
-
-
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
             }
-
-
         }
+
+
+
+        /// <summary>
+        /// --------------------old--------------
+        /// </summary>
+
+        /// ---------newest old
+        //public static void ExecuteKeyDown(Form form, Keys KeyCode)
+        //{
+        //    try
+        //    {
+        //        // Access the ToolStrip from MainForm.Instance
+        //        //  ToolStrip toolStrip = MainForm.Instance.tbrTools1; // Replace with your actual ToolStrip name
+
+        //        // Access the ToolStrip for the current form----old
+        //        //ToolStrip toolStrip = toolbarDictionary[form]; // Retrieve the ToolStrip for the current form from the dictionary
+        //        ToolStrip toolStrip = toolbarDictionarywith_frmnm[form.Text]; // Retrieve the ToolStrip for the current form from the dictionary
+
+
+        //        ToolStripItem toolStripItem = null;
+
+        //        string strOptions = GetStrOptions(form); // Assign a value before the switch
+
+        //        foreach (ToolStripItem item in toolStrip.Items)
+        //        {
+        //            if (item is ToolStripButton button)
+        //            {
+        //                if (item.Tag != null && item.Tag?.ToString() == form.Tag?.ToString())
+        //                {
+        //                    toolStripItem = item;
+        //                    break;
+
+        //                }
+        //            }
+
+        //        }
+        //        if (toolStripItem != null && toolStripItem.Tag != null)
+        //        {
+        //            // Retrieve the Tag property of the ToolStripItem and assign it to strOptions   
+        //            strOptions = toolStripItem.Tag.ToString();
+        //        }
+
+
+        //        switch (KeyCode)
+        //        {
+        //            case Keys.F2:
+        //                if (GetMode(form) != null)
+        //                {
+        //                    //form.ClearForm();
+        //                    //ClearCreatedByPanel();
+
+        //                }
+        //                break;
+        //            case Keys.F3:
+        //                if (GetMode(form) == null)
+        //                {
+        //                    if (HasOption(strOptions, 'A'))
+        //                    {
+        //                        ButtonClick((int)form.Tag, "ADDMODE");
+        //                    }
+        //                }
+        //                break;
+
+        //            case Keys.F4:
+        //                if (GetMode(form) == null)
+        //                {
+        //                    if (HasOption(strOptions, 'M'))
+        //                    {
+        //                        ButtonClick((int)form.Tag, "MODIFYMODE");
+        //                    }
+        //                }
+        //                break;
+
+        //            case Keys.F5:
+        //                switch (GetMode(form))
+        //                {
+        //                    case null:
+        //                        if (HasOption(strOptions, 'D'))
+        //                        {
+        //                            ButtonClick((int)form.Tag, "DELETEMODE");
+        //                        }
+        //                        break;
+
+        //                    case "DELETEMODE":
+        //                        //form.DeleteForm();
+        //                        break;
+        //                }
+        //                break;
+
+        //            case Keys.F6:
+        //                if (GetMode(form) == null)
+        //                {
+        //                    if (HasOption(strOptions, 'I'))
+        //                    {
+        //                        ButtonClick((int)form.Tag, "INQUIREMODE");
+        //                    }
+        //                }
+        //                break;
+
+        //            case Keys.F7:
+        //                switch (GetMode(form))
+        //                {
+        //                    case null:
+        //                        if (HasOption(strOptions, 'P'))
+        //                        {
+        //                            ButtonClick((int)form.Tag, "POSTMODE");
+        //                        }
+        //                        break;
+
+        //                    case "POSTMODE":
+        //                        //             form.PostForm();
+        //                        break;
+        //                }
+        //                break;
+
+        //            case Keys.F8:
+        //                if (GetMode(form) != null)
+        //                {
+        //                    if (HasOption(strOptions, 'R'))
+        //                    {
+        //                        //           form.PrintDoc();
+        //                    }
+        //                }
+        //                break;
+
+        //            case Keys.F10:
+        //                switch (GetMode(form))
+        //                {
+        //                    case "ADDMODE":
+        //                    case "MODIFYMODE":
+        //                        //           form.SaveForm();
+        //                        break;
+        //                }
+        //                break;
+
+        //            case Keys.Escape:
+        //                switch (GetMode(form))
+        //                {
+        //                    case null:
+        //                        ButtonClick((int)form.Tag, "Quit");
+        //                        break;
+
+        //                    default:
+        //                        ButtonClick((int)form.Tag, "ModeQuit");
+        //                        break;
+        //                }
+        //                break;
+
+        //        }
+
+
+
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        //    }
+
+
+        //}
 
         //public static void ExecuteKeyDown(Form form, Keys KeyCode)
         //{
@@ -632,121 +783,103 @@ namespace softgen
         {
             try
             {
-                string strOptions, strAppMode="";
-                //  mobjToolbar = MainForm.Instance.tbrTools;
-                //mobjToolbar = toolbarDictionary[gobjActiveForm]; --old
+                string strOptions, strAppMode = "",key="",mode="";
 
-                    mobjToolbar = toolbarDictionarywith_frmnm[gobjActiveForm.Text]; 
+                // Retrieve the current form's name
+                string formName = gobjActiveForm.Name;
 
-                //var secondLastItem = toolbarDictionarywith_frmnm.Reverse().Skip(1).First();
-                //mobjToolbar = secondLastItem.Value;
-
-
-                //if (!toolbarDictionary1.TryGetValue(gobjActiveForm, out List<ToolStrip> toolbars))
-                //{
-                //    // Create a new toolbar for the active form if it doesn't exist
-                //    toolbars = new List<ToolStrip>();
-                //    toolbarDictionary1[gobjActiveForm] = toolbars;
-                //}
-
-                //// Access the most recent toolbar for this form
-                //mobjToolbar = toolbars.LastOrDefault();
+                // Determine the key for the toolbar dictionary
+                mode = GetMode(gobjActiveForm);
+                key = string.IsNullOrEmpty(mode) ? gobjActiveForm.Name : $"{gobjActiveForm.Name}-{mode}";
+                ToolStrip mobjToolbar = toolbarDictionary1[key].Last(); // Get the last toolbar associated with the form
 
                 MenuStrip menustrip = MainForm.Instance.menuStrip1;
-               
-                strOptions = mobjToolbar.Tag?.ToString()?? "AMDIPR";
+
+                strOptions = mobjToolbar.Tag?.ToString() ?? "AMDIPR";
 
                 // Access the ToolStripItem at the specified TBRIndex
                 ToolStripItem toolStripItem = mobjToolbar.Items[TBRIndex];
 
-                        // Check if gobjActiveForm is not null and implements the ISearchableForm interface
+                string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
+                // string imageFolderPath = Path.Combine("Softgen//", "Icons");
+                string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
+
+
+
+
+                ImageList dynamicImageList = new ImageList();
+                
+                foreach (string imageFile in Directory.GetFiles(imageFolderPath, "*.png")) // Change the file extension to match your image type
+                {
+                    string imageName = Path.GetFileNameWithoutExtension(imageFile);
+                    Image image = Image.FromFile(imageFile);
+                    dynamicImageList.Images.Add(imageName, image);
+                }
+
+                // Check if gobjActiveForm is not null and implements the ISearchableForm interface
                 if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
                 {
+                  
+                   
+
                     switch (BtnKey)
                     {
                         case ADDMODE:
-
                             strAppMode = ADDMODE;
                             ActivateForm(gobjActiveForm, true, ADDMODE);
-
-            
                             searchableForm.SetSearchVar(true);
-                            //gobjActiveForm.SetSearchVar(true);
-                        
-                        MainForm.Instance.mnuAdd.Checked = true;
-
+                            MainForm.Instance.mnuAdd.Checked = true;
                             searchableForm.check_temp_login_sytemname();//for loading unsaved data
-
-                          
-
                             break;
-
                         case MODIFYMODE:
                             strAppMode = MODIFYMODE;
                             ActivateForm(gobjActiveForm, true, MODIFYMODE);
-                    
-                                searchableForm.SetSearchVar(false);
-                    
-                               MainForm.Instance.mnuModify.Checked = true;
-                           
+                            searchableForm.SetSearchVar(false);
+                            MainForm.Instance.mnuModify.Checked = true;
                             break;
-
                         case DELETEMODE:
                             strAppMode = DELETEMODE;
                             ActivateForm(gobjActiveForm, false, DELETEMODE);
-                       
-                                searchableForm.SetSearchVar(false);
-                                MainForm.Instance.mnuDeleteMode.Checked = true;
-                          
+                            searchableForm.SetSearchVar(false);
+                            MainForm.Instance.mnuDeleteMode.Checked = true;
                             break;
-
                         case INQUIREMODE:
-                                    strAppMode = INQUIREMODE;
-                                    ActivateForm(gobjActiveForm, false, INQUIREMODE);
-                                    searchableForm.SetSearchVar(false);
-                                    MainForm.Instance.mnuInquire.Checked = true;
-                           
+                            strAppMode = INQUIREMODE;
+                            ActivateForm(gobjActiveForm, false, INQUIREMODE);
+                            searchableForm.SetSearchVar(false);
+                            MainForm.Instance.mnuInquire.Checked = true;
                             break;
-
-                                case POSTMODE:
-                                    strAppMode = POSTMODE;
-                                    ActivateForm(gobjActiveForm, false, POSTMODE);
-                                    searchableForm.SetSearchVar(false);
-                                    MainForm.Instance.mnuPost.Checked = true;
-
-                        
+                        case POSTMODE:
+                            strAppMode = POSTMODE;
+                            ActivateForm(gobjActiveForm, false, POSTMODE);
+                            searchableForm.SetSearchVar(false);
+                            MainForm.Instance.mnuPost.Checked = true;
                             break;
                     }
-                
 
-                switch (BtnKey)
-                {
-                    case ADDMODE:
-                    case MODIFYMODE:
-                    case DELETEMODE:
-                    case INQUIREMODE:
-                    case POSTMODE:
-
-                        ToolStripSeparator separator = new ToolStripSeparator();
-                        mobjToolbar.Items.Add(separator);
-                        SetModeCaption(gobjActiveForm, strAppMode);
-                        RemoveButtons(mobjToolbar, strAppMode);
-                        DisableFileMenu();
-                        MainForm.Instance.mnuHelp.Enabled = true;
-                        toolbarDictionarywith_frmnm[gobjActiveForm.Text] = mobjToolbar;
-
-
-
+                    switch (BtnKey)
+                    {
+                        case ADDMODE:
+                        case MODIFYMODE:
+                        case DELETEMODE:
+                        case INQUIREMODE:
+                        case POSTMODE:
+                            ToolStripSeparator separator = new ToolStripSeparator();
+                            mobjToolbar.Items.Add(separator);
+                            SwitchMode(gobjActiveForm, strAppMode);
+                            //SetModeCaption(gobjActiveForm, strAppMode);
+                            //RemoveButtons(mobjToolbar);
+                            mobjToolbar.Items.Clear();
+                            DisableFileMenu();
+                            MainForm.Instance.mnuHelp.Enabled = true;
                             break;
+                    }
 
-                }
-
-                switch (BtnKey)
-                {
-                    case ADDMODE:
-                    case MODIFYMODE:
-                            mobjbutton = new ToolStripButton("Save", MainForm.Instance.imageList1.Images[8], null, "Save");
-
+                    switch (BtnKey)
+                    {
+                        case ADDMODE:
+                        case MODIFYMODE:
+                            mobjbutton = new ToolStripButton("Save", dynamicImageList.Images[13], null, "Save");
                             mobjbutton.AutoSize = false;
                             mobjbutton.BackColor = Color.Lavender;
                             mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
@@ -765,44 +898,32 @@ namespace softgen
                             };
 
                             MainForm.Instance.mnuSave.Enabled = true;
-
-                            mobjToolbar.Items.Add(mobjbutton); //added to the  mobjToolbar
-
-                         
-
-
-
+                            mobjToolbar.Items.Add(mobjbutton); // added to the mobjToolbar
                             break;
-
-                }
-
-                if (BtnKey==DELETEMODE)
-                {
- //                   MainForm.Instance.btnDelete.Visible = true;
-                    mobjbutton = new ToolStripButton("Delete", MainForm.Instance.imageList1.Images[13], null, "Delete");
-                    mobjbutton.ToolTipText = "Deleting The Current Information";
-                    mobjbutton.AutoSize = false;
-                    mobjbutton.BackColor = Color.Lavender;
-                    mobjbutton.BackgroundImageLayout = ImageLayout.Center;
-                    mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                    mobjbutton.ImageAlign = ContentAlignment.TopCenter;
-                    mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
-                    mobjbutton.Margin = new Padding(3);
-                    mobjbutton.Size = new Size(51, 47);
-                    mobjbutton.TextAlign = ContentAlignment.BottomCenter;
-                    mobjbutton.TextImageRelation = TextImageRelation.Overlay;
-                   
-                    MainForm.Instance.mnuDeleteRecord.Enabled = true;       
-                     
-                        mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
-
-                    
                     }
-                if (BtnKey == POSTMODE)
-                {
-                   CreateButton(mobjToolbar, "Authorise", "Authorise the Current Information");
-                    MainForm.Instance.mnuAuthorise.Enabled = true;
-                       
+
+                    if (BtnKey == DELETEMODE)
+                    {
+                        mobjbutton = new ToolStripButton("Delete", dynamicImageList.Images[4], null, "Delete");
+                        mobjbutton.ToolTipText = "Deleting The Current Information";
+                        mobjbutton.AutoSize = false;
+                        mobjbutton.BackColor = Color.Lavender;
+                        mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+                        mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+                        mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+                        mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                        mobjbutton.Margin = new Padding(3);
+                        mobjbutton.Size = new Size(51, 47);
+                        mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+                        mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+                        MainForm.Instance.mnuDeleteRecord.Enabled = true;
+                        mobjToolbar.Items.Add(mobjbutton); // added to the mobjToolbar
+                    }
+
+                    if (BtnKey == POSTMODE)
+                    {
+                        CreateButton(mobjToolbar, "Authorise", "Authorise the Current Information");
+                        MainForm.Instance.mnuAuthorise.Enabled = true;
                     }
 
                     switch (BtnKey)
@@ -815,12 +936,10 @@ namespace softgen
                             CreateButton(mobjToolbar, "Fresh", strAppMode + " Fresh Information");
                             MainForm.Instance.mnuRefresh.Enabled = true;
 
-                            
                             if (strAppMode == POSTMODE)
                             {
                                 mobjToolbar.Items[mobjToolbar.Items.Count - 1].ToolTipText = "Authorise Fresh Information";
                                 mobjbutton.ToolTipText = "Authorise Fresh Information";
-
                             }
 
                             if (BtnKey != ADDMODE)
@@ -834,11 +953,9 @@ namespace softgen
                                 CreateButton(mobjToolbar, "Print", "Print the Current Information");
                                 MainForm.Instance.mnuPrint.Enabled = true;
                             }
-                          
 
-                            mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "ModeQuit");
+                            mobjbutton = new ToolStripButton(QUITCAPTION, dynamicImageList.Images[11], null, "ModeQuit");
                             mobjbutton.ToolTipText = "Quit From " + strAppMode + " Mode";
-
                             mobjbutton.AutoSize = false;
                             mobjbutton.BackColor = Color.Lavender;
                             mobjbutton.BackgroundImageLayout = ImageLayout.Center;
@@ -849,189 +966,606 @@ namespace softgen
                             mobjbutton.Size = new Size(51, 47);
                             mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                             mobjbutton.TextImageRelation = TextImageRelation.Overlay;
-
                             mobjToolbar.Items.Add(mobjbutton);
 
                             CreateButton(mobjToolbar, "Help", "Help Information");
-                            //SendKeys "{F2}"
-                            //gobjActiveForm.ClearForm();
-
-                         
                             break;
 
-                            //switch (BtnKey)
-                            //{
-                                case "Save":
-                                    searchableForm.SaveForm();
 
-                           
+                       
+
+                        //switch (BtnKey)
+                        //{
+                        case "Save":
+                            searchableForm.SaveForm();
+
+
                             break;
 
-                                case "DeleteForm":
+                        case "DeleteForm":
                             //gobjActiveForm.DeleteForm();
-                        
+
                             break;
 
-                                case "Fresh":
-                                    Messages.gstrMsg = "Do you want to refresh without saving the changes?";
+                        case "Fresh":
+                            Messages.gstrMsg = "Do you want to refresh without saving the changes?";
 
-                                    if (searchableForm.GetDEStatus() == true)
-                                    {
-                                        //if (MessageBox.Show(gstrMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                        if(MessageBox.Show(Messages.gstrMsg,null,MessageBoxButtons.YesNo,MessageBoxIcon.Question)== DialogResult.No)
-                                        {
-                                            return;
-                                        }
-                                    }
-                                    if (GetMode(gobjActiveForm) == ADDMODE)
-                                    {
-                                        searchableForm.SetSearchVar(true);
-                                    }
-                                    else
-                                    {
-                                        searchableForm.SetSearchVar(false);
-                                    }
-                                    if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
-                                    {
-                                      //  gobjActiveForm.SaveTempDataForm();
-                                    }
-                                    //gobjActiveForm.ClearForm();
-                                    //ClearCreatedByPanel();
-                                    ClearStatusBarHelp();
-                                   
-                                break;
+                            if (searchableForm.GetDEStatus() == true)
+                            {
+                                //if (MessageBox.Show(gstrMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                if (MessageBox.Show(Messages.gstrMsg, null, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                {
+                                    return;
+                                }
+                            }
+                            if (GetMode(gobjActiveForm) == ADDMODE)
+                            {
+                                searchableForm.SetSearchVar(true);
+                            }
+                            else
+                            {
+                                searchableForm.SetSearchVar(false);
+                            }
+                            if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+                            {
+                                //  gobjActiveForm.SaveTempDataForm();
+                            }
+                            //gobjActiveForm.ClearForm();
+                            //ClearCreatedByPanel();
+                            ClearStatusBarHelp();
 
-                                case "Retrieve":
-                                    //gobjActiveForm.SearchForm();
+                            break;
 
-                                break;
+                        case "Retrieve":
+                            //gobjActiveForm.SearchForm();
 
-                                case "Print":
-                                    //    gobjActiveForm.PrintDoc();
-                                break;
+                            break;
 
-                                case "Authorise":
-                                    //    gobjActiveForm.PostForm();
-                                break;
+                        case "Print":
+                            //    gobjActiveForm.PrintDoc();
+                            break;
 
-                                case "Continue":
-                                    //    gobjActiveForm.PrintReport();
-                                break;
+                        case "Authorise":
+                            //    gobjActiveForm.PostForm();
+                            break;
 
-                                case "Help":
-                                    mobjbutton.Click += (sender, e) =>
-                                    {
-                                        // Call searchableForm's SaveForm method
-                              
-                                    CallHelp();
-                                    };
-                            
-                                break;
+                        case "Continue":
+                            //    gobjActiveForm.PrintReport();
+                            break;
 
-                                case "ModeQuit":
-                                    Messages.gstrMsg = "Do you want to exit without saving the changes?";
-                                    if (searchableForm.GetDEStatus() == true)
-                                    {
-                                        if (MessageBox.Show(Messages.gstrMsg, null, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                                        {
-                                            return;
-                                        }
-                                    }
-                                    if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
-                                    {
-                                       // gobjActiveForm.SaveTempDataForm();
-                                    }
+                        case "Help":
+                            mobjbutton.Click += (sender, e) =>
+                            {
+                                // Call searchableForm's SaveForm method
 
-                                    gobjActiveForm.Text = RestoreCaption(gobjActiveForm);
-                                    DestroyToolbar(gobjActiveForm);
-                                    CreateToolbar(gobjActiveForm, strOptions);
-                                    ActivateForm(gobjActiveForm, false, null);
-                                    //    gobjActiveForm.Icon = mdiMain.Icon;
-                                    ClearStatusBarHelp();
-                                      
-                                break;
+                                CallHelp();
+                            };
 
-                                case "Quit":
-                                    gobjActiveForm.Close();
-                                    DisableFileMenu();
-                                   
-                                break;
+                            break;
 
-                                case "SystemQuit":
-                                    //if (AskToExit() == DialogResult.Yes)
-                                    //    {
-                                    //        frmHelp.Close();
-                                    //        mdiMain.Close();
-                                    //    }
-                                break;
+                        case "ModeQuit":
+                            Messages.gstrMsg = "Do you want to exit without saving the changes?";
+                            if (searchableForm.GetDEStatus() == true)
+                            {
+                                if (MessageBox.Show(Messages.gstrMsg, null, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                {
+                                    return;
+                                }
+                            }
+                            if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+                            {
+                                // gobjActiveForm.SaveTempDataForm();
+                            }
+
+                            gobjActiveForm.Text = RestoreCaption(gobjActiveForm);
+                            DestroyToolbar(gobjActiveForm);
+                            CreateToolbar(gobjActiveForm, strOptions);
+                            ActivateForm(gobjActiveForm, false, null);
+                            //    gobjActiveForm.Icon = mdiMain.Icon;
+                            ClearStatusBarHelp();
+
+                            break;
+
+                        case "Quit":
+                            gobjActiveForm.Close();
+                            DisableFileMenu();
+
+                            break;
+
+                        case "SystemQuit":
+                            if (Messages.ConfirmationMsg("Do you Want to close?") == DialogResult.Yes)
+                            {
+                                frmHelp frmHelp = new frmHelp();
+                                frmHelp.Close();
+                                MainForm.Instance.Close();
+                            }
+                            break;
+
 
 
                     }
-                  // toolbarDictionary[gobjActiveForm] = mobjToolbar;
-                }
-                
-            }
+                    //Again getting mode and key because added new toolstrip in SwitchMode Function
 
+                    gobjActiveForm.Refresh();
+
+                    
+                    toolbarDictionary1[newKey].Add(mobjToolbar);
+
+                    //if (toolbarDictionary1.ContainsKey(currentKey) && newToolbarDictionary.ContainsKey(newKey))
+                    //{
+                    //    // Get the list of ToolStrip objects from both dictionaries
+                    //    List<ToolStrip> oldToolstrips = toolbarDictionary1[currentKey];
+                    //    List<ToolStrip> newToolstrips = newToolbarDictionary[newKey];
+
+                    //    // Create a list to store common ToolStripItems
+                    //    List<ToolStripItem> commonItems = new List<ToolStripItem>();
+
+                    //    // Iterate through the toolstrips and add their items to the commonItems list
+                    //    foreach (ToolStrip toolstrip in oldToolstrips.Concat(newToolstrips))
+                    //    {
+                    //        commonItems.AddRange(toolstrip.Items.OfType<ToolStripItem>());
+                    //    }
+
+                    //    // Create a new ToolStrip for the common items
+                    //    ToolStrip commonToolbar = new ToolStrip();
+                    //    commonToolbar.Items.AddRange(commonItems.ToArray());
+
+                    //    // Clear the common items from both dictionaries
+                    //    oldToolstrips.RemoveAll(toolstrip => commonItems.Any(item => toolstrip.Items.Contains(item)));
+                    //    newToolstrips.RemoveAll(toolstrip => commonItems.Any(item => toolstrip.Items.Contains(item)));
+
+                    //    // Add the common ToolStrip to the old dictionary
+                    //    oldToolstrips.Add(commonToolbar);
+
+                    //    // Remove the common ToolStrip from the new dictionary
+                    //    newToolstrips.Remove(commonToolbar);
+
+                    //    // Add the remaining ToolStrip objects from newToolstrips to mobjToolbar
+                    //    foreach (var newToolStrip in newToolstrips)
+                    //    {
+                    //        mobjToolbar.Items.AddRange(newToolStrip.Items.Cast<ToolStripItem>().ToArray());
+                    //    }
+
+                    //}
+                    mobjToolbar.BringToFront();
+
+
+                }
+            }
             catch (System.Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
             }
-
-
         }
 
-        private static void CreateButton( ToolStrip ToolBar,string BtnKey,string ToolTip)
+
+        //-------old
+        //       public static void ButtonClick(int TBRIndex, string BtnKey)
+        //       {
+        //           try
+        //           {
+        //               string strOptions, strAppMode="";
+        //               //  mobjToolbar = MainForm.Instance.tbrTools;
+        //               //mobjToolbar = toolbarDictionary[gobjActiveForm]; --old
+
+
+
+        //               mobjToolbar = toolbarDictionarywith_frmnm[gobjActiveForm.Text]; 
+
+
+
+        //               //if (!toolbarDictionary1.TryGetValue(gobjActiveForm, out List<ToolStrip> toolbars))
+        //               //{
+        //               //    // Create a new toolbar for the active form if it doesn't exist
+        //               //    toolbars = new List<ToolStrip>();
+        //               //    toolbarDictionary1[gobjActiveForm] = toolbars;
+        //               //}
+
+        //               //// Access the most recent toolbar for this form
+        //               //mobjToolbar = toolbars.LastOrDefault();
+
+        //               MenuStrip menustrip = MainForm.Instance.menuStrip1;
+
+        //               strOptions = mobjToolbar.Tag?.ToString()?? "AMDIPR";
+
+        //               // Access the ToolStripItem at the specified TBRIndex
+        //               ToolStripItem toolStripItem = mobjToolbar.Items[TBRIndex];
+
+        //                       // Check if gobjActiveForm is not null and implements the ISearchableForm interface
+        //               if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+        //               {
+        //                   switch (BtnKey)
+        //                   {
+        //                       case ADDMODE:
+
+        //                           strAppMode = ADDMODE;
+        //                           ActivateForm(gobjActiveForm, true, ADDMODE);
+
+
+        //                           searchableForm.SetSearchVar(true);
+        //                           //gobjActiveForm.SetSearchVar(true);
+
+        //                       MainForm.Instance.mnuAdd.Checked = true;
+
+        //                           searchableForm.check_temp_login_sytemname();//for loading unsaved data
+
+
+
+        //                           break;
+
+        //                       case MODIFYMODE:
+        //                           strAppMode = MODIFYMODE;
+        //                           ActivateForm(gobjActiveForm, true, MODIFYMODE);
+
+        //                               searchableForm.SetSearchVar(false);
+
+        //                              MainForm.Instance.mnuModify.Checked = true;
+
+        //                           break;
+
+        //                       case DELETEMODE:
+        //                           strAppMode = DELETEMODE;
+        //                           ActivateForm(gobjActiveForm, false, DELETEMODE);
+
+        //                               searchableForm.SetSearchVar(false);
+        //                               MainForm.Instance.mnuDeleteMode.Checked = true;
+
+        //                           break;
+
+        //                       case INQUIREMODE:
+        //                                   strAppMode = INQUIREMODE;
+        //                                   ActivateForm(gobjActiveForm, false, INQUIREMODE);
+        //                                   searchableForm.SetSearchVar(false);
+        //                                   MainForm.Instance.mnuInquire.Checked = true;
+
+        //                           break;
+
+        //                               case POSTMODE:
+        //                                   strAppMode = POSTMODE;
+        //                                   ActivateForm(gobjActiveForm, false, POSTMODE);
+        //                                   searchableForm.SetSearchVar(false);
+        //                                   MainForm.Instance.mnuPost.Checked = true;
+
+
+        //                           break;
+        //                   }
+
+
+        //               switch (BtnKey)
+        //               {
+        //                   case ADDMODE:
+        //                   case MODIFYMODE:
+        //                   case DELETEMODE:
+        //                   case INQUIREMODE:
+        //                   case POSTMODE:
+
+        //                       ToolStripSeparator separator = new ToolStripSeparator();
+        //                       mobjToolbar.Items.Add(separator);
+        //                       SetModeCaption(gobjActiveForm, strAppMode);
+        //                       RemoveButtons(mobjToolbar, strAppMode);
+        //                       DisableFileMenu();
+        //                       MainForm.Instance.mnuHelp.Enabled = true;
+        //                      //toolbarDictionarywith_frmnm[gobjActiveForm.Text] = mobjToolbar;
+
+
+
+        //                           break;
+
+        //               }
+
+        //               switch (BtnKey)
+        //               {
+        //                   case ADDMODE:
+        //                   case MODIFYMODE:
+        //                           mobjbutton = new ToolStripButton("Save", MainForm.Instance.imageList1.Images[8], null, "Save");
+
+        //                           mobjbutton.AutoSize = false;
+        //                           mobjbutton.BackColor = Color.Lavender;
+        //                           mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //                           mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //                           mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //                           mobjbutton.Margin = new Padding(3);
+        //                           mobjbutton.Size = new Size(51, 47);
+        //                           mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //                           mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+
+        //                           // Attach a click event handler for the button
+        //                           mobjbutton.Click += (sender, e) =>
+        //                           {
+        //                               // Call searchableForm's SaveForm method
+        //                               searchableForm.SaveForm();
+        //                           };
+
+        //                           MainForm.Instance.mnuSave.Enabled = true;
+
+        //                           mobjToolbar.Items.Add(mobjbutton); //added to the  mobjToolbar
+
+        //                           toolbarDictionarywith_frmnm[gobjActiveForm.Text] = mobjToolbar;
+
+
+
+        //                           break;
+
+        //               }
+
+        //               if (BtnKey==DELETEMODE)
+        //               {
+        ////                   MainForm.Instance.btnDelete.Visible = true;
+        //                   mobjbutton = new ToolStripButton("Delete", MainForm.Instance.imageList1.Images[13], null, "Delete");
+        //                   mobjbutton.ToolTipText = "Deleting The Current Information";
+        //                   mobjbutton.AutoSize = false;
+        //                   mobjbutton.BackColor = Color.Lavender;
+        //                   mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //                   mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //                   mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //                   mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //                   mobjbutton.Margin = new Padding(3);
+        //                   mobjbutton.Size = new Size(51, 47);
+        //                   mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //                   mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+
+        //                   MainForm.Instance.mnuDeleteRecord.Enabled = true;       
+
+        //                       mobjToolbar.Items.Add(mobjbutton); //added to  the mobjToolbar
+
+
+        //                   }
+        //               if (BtnKey == POSTMODE)
+        //               {
+        //                  CreateButton(mobjToolbar, "Authorise", "Authorise the Current Information");
+        //                   MainForm.Instance.mnuAuthorise.Enabled = true;
+
+        //                   }
+
+        //                   switch (BtnKey)
+        //                   {
+        //                       case ADDMODE:
+        //                       case MODIFYMODE:
+        //                       case DELETEMODE:
+        //                       case INQUIREMODE:
+        //                       case POSTMODE:
+        //                           CreateButton(mobjToolbar, "Fresh", strAppMode + " Fresh Information");
+        //                           MainForm.Instance.mnuRefresh.Enabled = true;
+
+
+        //                           if (strAppMode == POSTMODE)
+        //                           {
+        //                               mobjToolbar.Items[mobjToolbar.Items.Count - 1].ToolTipText = "Authorise Fresh Information";
+        //                               mobjbutton.ToolTipText = "Authorise Fresh Information";
+
+        //                           }
+
+        //                           if (BtnKey != ADDMODE)
+        //                           {
+        //                               CreateButton(mobjToolbar, "Retrieve", "Find Information for Specified Criteria");
+        //                               MainForm.Instance.mnuRetrieve.Enabled = true;
+        //                           }
+
+        //                           if (strOptions.EndsWith("R"))
+        //                           {
+        //                               CreateButton(mobjToolbar, "Print", "Print the Current Information");
+        //                               MainForm.Instance.mnuPrint.Enabled = true;
+        //                           }
+
+
+        //                           mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "ModeQuit");
+        //                           mobjbutton.ToolTipText = "Quit From " + strAppMode + " Mode";
+
+        //                           mobjbutton.AutoSize = false;
+        //                           mobjbutton.BackColor = Color.Lavender;
+        //                           mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //                           mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //                           mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //                           mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //                           mobjbutton.Margin = new Padding(3);
+        //                           mobjbutton.Size = new Size(51, 47);
+        //                           mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //                           mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+
+        //                           mobjToolbar.Items.Add(mobjbutton);
+
+        //                           CreateButton(mobjToolbar, "Help", "Help Information");
+        //                           //SendKeys "{F2}"
+        //                           //gobjActiveForm.ClearForm();
+
+
+        //                           break;
+
+        //                           //switch (BtnKey)
+        //                           //{
+        //                               case "Save":
+        //                                   searchableForm.SaveForm();
+
+
+        //                           break;
+
+        //                               case "DeleteForm":
+        //                           //gobjActiveForm.DeleteForm();
+
+        //                           break;
+
+        //                               case "Fresh":
+        //                                   Messages.gstrMsg = "Do you want to refresh without saving the changes?";
+
+        //                                   if (searchableForm.GetDEStatus() == true)
+        //                                   {
+        //                                       //if (MessageBox.Show(gstrMsg, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+        //                                       if(MessageBox.Show(Messages.gstrMsg,null,MessageBoxButtons.YesNo,MessageBoxIcon.Question)== DialogResult.No)
+        //                                       {
+        //                                           return;
+        //                                       }
+        //                                   }
+        //                                   if (GetMode(gobjActiveForm) == ADDMODE)
+        //                                   {
+        //                                       searchableForm.SetSearchVar(true);
+        //                                   }
+        //                                   else
+        //                                   {
+        //                                       searchableForm.SetSearchVar(false);
+        //                                   }
+        //                                   if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+        //                                   {
+        //                                     //  gobjActiveForm.SaveTempDataForm();
+        //                                   }
+        //                                   //gobjActiveForm.ClearForm();
+        //                                   //ClearCreatedByPanel();
+        //                                   ClearStatusBarHelp();
+
+        //                               break;
+
+        //                               case "Retrieve":
+        //                                   //gobjActiveForm.SearchForm();
+
+        //                               break;
+
+        //                               case "Print":
+        //                                   //    gobjActiveForm.PrintDoc();
+        //                               break;
+
+        //                               case "Authorise":
+        //                                   //    gobjActiveForm.PostForm();
+        //                               break;
+
+        //                               case "Continue":
+        //                                   //    gobjActiveForm.PrintReport();
+        //                               break;
+
+        //                               case "Help":
+        //                                   mobjbutton.Click += (sender, e) =>
+        //                                   {
+        //                                       // Call searchableForm's SaveForm method
+
+        //                                   CallHelp();
+        //                                   };
+
+        //                               break;
+
+        //                               case "ModeQuit":
+        //                                   Messages.gstrMsg = "Do you want to exit without saving the changes?";
+        //                                   if (searchableForm.GetDEStatus() == true)
+        //                                   {
+        //                                       if (MessageBox.Show(Messages.gstrMsg, null, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+        //                                       {
+        //                                           return;
+        //                                       }
+        //                                   }
+        //                                   if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+        //                                   {
+        //                                      // gobjActiveForm.SaveTempDataForm();
+        //                                   }
+
+        //                                   gobjActiveForm.Text = RestoreCaption(gobjActiveForm);
+        //                                   DestroyToolbar(gobjActiveForm);
+        //                                   CreateToolbar(gobjActiveForm, strOptions);
+        //                                   ActivateForm(gobjActiveForm, false, null);
+        //                                   //    gobjActiveForm.Icon = mdiMain.Icon;
+        //                                   ClearStatusBarHelp();
+
+        //                               break;
+
+        //                               case "Quit":
+        //                                   gobjActiveForm.Close();
+        //                                   DisableFileMenu();
+
+        //                               break;
+
+        //                               case "SystemQuit":
+        //                                   if (Messages.ConfirmationMsg("Do you Want to close?") == DialogResult.Yes)
+        //                                       {
+        //                                           frmHelp frmHelp = new frmHelp();
+        //                                           frmHelp.Close();
+        //                                           MainForm.Instance.Close();
+        //                                       }
+        //                               break;
+
+
+        //                   }
+        //                   toolbarDictionarywith_frmnm[gobjActiveForm.Text] = mobjToolbar;
+        //                   //mobjToolbar.BringToFront();
+        //               }
+
+        //           }
+
+        //           catch (System.Exception ex)
+        //           {
+        //               MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        //           }
+
+
+        //       }
+
+
+        private static void CreateButton(ToolStrip ToolBar, string BtnKey, string ToolTip)
         {
             try
             {
-               
-                gobjActiveForm = Form.ActiveForm;
                 string imageNameToFind = BtnKey.Trim(); // The name of the image you want to find
                 Image foundImage = null;
 
-                if (BtnKey == "Quit")
+                
+
+                //ImageList imageList = new ImageList();
+                //foreach (Image image in MainForm.Instance.imageList1.Images)
+                //{
+                //    imageList.Images.Add(image);
+                //}
+                // ImageList newImageList = new ImageList();
+                //   newImageList.ImageSize = MainForm.Instance.imageList1.ImageSize; // Set the image size
+
+                //foreach (var key in MainForm.Instance.imageList1.Images.Keys)
+                //{
+                //    Image image = MainForm.Instance.imageList1.Images[key];
+                //    newImageList.Images.Add(key, image);
+                //}
+
+                //// Iterate through the images in the copied ImageList
+                //for (int i = 0; i < newImageList.Images.Count; i++)
+                //{
+                //    // Compare the image name at index i with the known image name
+                //    if (newImageList.Images.Keys[i].Trim().ToLower() == imageNameToFind.ToLower())
+                //    {
+                //        // The image name at index i matches the known image name
+                //        foundImage = newImageList.Images[i]; // Capture the matched image
+                //        break; // Exit the loop since you found the image
+                //    }
+                //}
+               string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
+               // string imageFolderPath = Path.Combine("Softgen//", "Icons");
+                string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
+
+
+
+
+                ImageList dynamicImageList = new ImageList();
+                dynamicImageList.ImageSize = new Size(23, 23); // Set the image size as needed
+
+                // Load images from file locations and add them to the ImageList
+              //  dynamicImageList.Images.Add("ImageKey1", Image.FromFile("softgen\\Icons.png"));
+                //dynamicImageList.Images.Add("ImageKey2", Image.FromFile("path_to_image2.png"));
+
+                // Load images from the folder and add them to the ImageList
+                foreach (string imageFile in Directory.GetFiles(imageFolderPath, "*.png")) // Change the file extension to match your image type
                 {
-                    mobjbutton = new ToolStripButton(BtnKey.Trim(), MainForm.Instance.imageList1.Images[7],null,QUITCAPTION.Trim());
-
-                    mobjbutton.AutoSize = false;
-                    mobjbutton.BackColor = Color.Lavender;
-                    mobjbutton.BackgroundImageLayout = ImageLayout.Center;
-                    mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                    mobjbutton.ImageAlign = ContentAlignment.TopCenter;
-                    mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
-                    mobjbutton.Margin = new Padding(3);
-                    mobjbutton.Size = new Size(51, 47);
-                    mobjbutton.TextAlign = ContentAlignment.BottomCenter;
-                    mobjbutton.TextImageRelation = TextImageRelation.Overlay;
-                    mobjbutton.ToolTipText = ToolTip;
-
-                    ToolBar.Items.Add(mobjbutton);
-                    ////// Imp....                    // Attach a click event handler for the button
-                    mobjbutton.Click += (sender, e) =>
-                    {
-                        // Call the ButtonClick method with the appropriate parameters
-                        ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
-                    };
-
+                    string imageName = Path.GetFileNameWithoutExtension(imageFile);
+                    Image image = Image.FromFile(imageFile);
+                    dynamicImageList.Images.Add(imageName, image);
                 }
 
-                ImageList imageList = MainForm.Instance.imageList1; // Your ImageList
-                                                                    // Iterate through the images in the ImageList
-                for (int i = 0; i < imageList.Images.Count; i++)
+                for (int i = 0; i < dynamicImageList.Images.Count; i++)
                 {
                     // Compare the image name at index i with the known image name
-                    if (imageList.Images.Keys[i] == imageNameToFind)
+                    if (dynamicImageList.Images.Keys[i] == imageNameToFind)
                     {
                         // The image name at index i matches the known image name
-                        foundImage = imageList.Images[i]; // Capture the matched image
+                        foundImage = dynamicImageList.Images[i]; // Capture the matched image
                         break; // Exit the loop since you found the image
                     }
                 }
-                if (foundImage!= null)
-                {
 
-                    mobjbutton = new ToolStripButton(BtnKey.Trim(), foundImage,null,BtnKey.Trim());
+                if (BtnKey == "Quit")
+                {
+                    mobjbutton = new ToolStripButton(BtnKey.Trim(), dynamicImageList.Images[11], null, QUITCAPTION.Trim());
 
                     mobjbutton.AutoSize = false;
                     mobjbutton.BackColor = Color.Lavender;
@@ -1045,40 +1579,253 @@ namespace softgen
                     mobjbutton.TextImageRelation = TextImageRelation.Overlay;
                     mobjbutton.ToolTipText = ToolTip;
 
-
+                    ToolBar.Items.Add(mobjbutton);
                     ////// Imp....                    // Attach a click event handler for the button
                     mobjbutton.Click += (sender, e) =>
                     {
                         // Call the ButtonClick method with the appropriate parameters
                         ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
                     };
-
-                    ToolBar.Items.Add(mobjbutton);
                 }
 
-                else
+                if (BtnKey != "Quit")
                 {
-                    MessageBox.Show("FoundImage is Null ","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);                      
-                }
 
+                    if (foundImage != null)
+                    {
+                        mobjbutton = new ToolStripButton(BtnKey.Trim(), foundImage, null, BtnKey.Trim());
+
+                        mobjbutton.AutoSize = false;
+                        mobjbutton.BackColor = Color.Lavender;
+                        mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+                        mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+                        mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+                        mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                        mobjbutton.Margin = new Padding(3);
+                        mobjbutton.Size = new Size(51, 47);
+                        mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+                        mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+                        mobjbutton.ToolTipText = ToolTip;
+
+                        ////// Imp....                    // Attach a click event handler for the button
+                        mobjbutton.Click += (sender, e) =>
+                        {
+                            // Call the ButtonClick method with the appropriate parameters
+                            ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+                        };
+
+                        ToolBar.Items.Add(mobjbutton);
+                    }
+                    else
+                    {
+                        MessageBox.Show("FoundImage is Null", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
             catch (Exception ex)
             {
-
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+        //---------newest old
+        //private static void CreateButton(ToolStrip ToolBar, string BtnKey, string ToolTip)
+        //{
+        //    try
+        //    {
+        //        //string mode = GetMode(gobjActiveForm);
+        //        //string key =gobjActiveForm.Name;
+        //        //ToolStrip mobjToolbar = toolbarDictionary1[key].Last(); // Get the last toolbar associated with the form
+
+
+
+        //        string imageNameToFind = BtnKey.Trim(); // The name of the image you want to find
+        //        Image foundImage = null;
+
+        //        if (BtnKey == "Quit")
+        //        {
+        //            mobjbutton = new ToolStripButton(BtnKey.Trim(), MainForm.Instance.imageList1.Images[7], null, QUITCAPTION.Trim());
+
+        //            mobjbutton.AutoSize = false;
+        //            mobjbutton.BackColor = Color.Lavender;
+        //            mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //            mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //            mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //            mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //            mobjbutton.Margin = new Padding(3);
+        //            mobjbutton.Size = new Size(51, 47);
+        //            mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //            mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+        //            mobjbutton.ToolTipText = ToolTip;
+
+        //            ToolBar.Items.Add(mobjbutton);
+        //            ////// Imp....                    // Attach a click event handler for the button
+        //            mobjbutton.Click += (sender, e) =>
+        //            {
+        //                // Call the ButtonClick method with the appropriate parameters
+        //                ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+        //            };
+
+        //        }
+
+
+        //            imageList = MainForm.Instance.imageList1; // Your ImageList                                                                                                                   
+
+        //            // Iterate through the images in the ImageList
+        //            for (int i = 0; i < imageList.Images.Count; i++)
+        //            {
+        //                // Compare the image name at index i with the known image name
+        //                if (imageList.Images.Keys[i] == imageNameToFind)
+        //                {
+        //                    // The image name at index i matches the known image name
+        //                    foundImage = imageList.Images[i]; // Capture the matched image
+        //                    break; // Exit the loop since you found the image
+        //                }
+        //            }
+        //            if (foundImage != null)
+        //            {
+        //                mobjbutton = new ToolStripButton(BtnKey.Trim(), foundImage, null, BtnKey.Trim());
+
+        //                mobjbutton.AutoSize = false;
+        //                mobjbutton.BackColor = Color.Lavender;
+        //                mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //                mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //                mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //                mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //                mobjbutton.Margin = new Padding(3);
+        //                mobjbutton.Size = new Size(51, 47);
+        //                mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //                mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+        //                mobjbutton.ToolTipText = ToolTip;
+
+        //                ////// Imp....                    // Attach a click event handler for the button
+        //                mobjbutton.Click += (sender, e) =>
+        //                {
+        //                    // Call the ButtonClick method with the appropriate parameters
+        //                    ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+        //                };
+
+        //                ToolBar.Items.Add(mobjbutton);
+        //            }
+
+        //        else
+        //        {
+        //            MessageBox.Show("FoundImage is Null", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
+
+
+        //----------old
+        //private static void CreateButton( ToolStrip ToolBar,string BtnKey,string ToolTip)
+        //{
+        //    try
+        //    {
+
+        //       // gobjActiveForm = Form.ActiveForm;
+        //        string imageNameToFind = BtnKey.Trim(); // The name of the image you want to find
+        //        Image foundImage = null;
+
+        //        if (BtnKey == "Quit")
+        //        {
+        //            mobjbutton = new ToolStripButton(BtnKey.Trim(), MainForm.Instance.imageList1.Images[7],null,QUITCAPTION.Trim());
+
+        //            mobjbutton.AutoSize = false;
+        //            mobjbutton.BackColor = Color.Lavender;
+        //            mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //            mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //            mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //            mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //            mobjbutton.Margin = new Padding(3);
+        //            mobjbutton.Size = new Size(51, 47);
+        //            mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //            mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+        //            mobjbutton.ToolTipText = ToolTip;
+
+        //            ToolBar.Items.Add(mobjbutton);
+        //            ////// Imp....                    // Attach a click event handler for the button
+        //            mobjbutton.Click += (sender, e) =>
+        //            {
+        //                // Call the ButtonClick method with the appropriate parameters
+        //                ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+        //            };
+
+        //        }
+
+        //        ImageList imageList = MainForm.Instance.imageList1; // Your ImageList
+        //                                                            // Iterate through the images in the ImageList
+        //        for (int i = 0; i < imageList.Images.Count; i++)
+        //        {
+        //            // Compare the image name at index i with the known image name
+        //            if (imageList.Images.Keys[i] == imageNameToFind)
+        //            {
+        //                // The image name at index i matches the known image name
+        //                foundImage = imageList.Images[i]; // Capture the matched image
+        //                break; // Exit the loop since you found the image
+        //            }
+        //        }
+        //        if (foundImage!= null)
+        //        {
+
+        //            mobjbutton = new ToolStripButton(BtnKey.Trim(), foundImage,null,BtnKey.Trim());
+
+        //            mobjbutton.AutoSize = false;
+        //            mobjbutton.BackColor = Color.Lavender;
+        //            mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //            mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //            mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //            mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //            mobjbutton.Margin = new Padding(3);
+        //            mobjbutton.Size = new Size(51, 47);
+        //            mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //            mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+        //            mobjbutton.ToolTipText = ToolTip;
+
+
+        //            ////// Imp....                    // Attach a click event handler for the button
+        //            mobjbutton.Click += (sender, e) =>
+        //            {
+        //                // Call the ButtonClick method with the appropriate parameters
+        //                ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
+        //            };
+
+        //            ToolBar.Items.Add(mobjbutton);
+        //        }
+
+        //        else
+        //        {
+        //            MessageBox.Show("FoundImage is Null ","Error",MessageBoxButtons.OK, MessageBoxIcon.Error);                      
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    }
+        //}
 
         public static void CreateToolbar(Form form, string Options)
         {
             try
             {
-              
-                int I = GetFreeIndex(); // Obtain a free index for the toolbar
-                                        //mobjToolbar = new ToolStrip();
-                                        //mobjToolbar = MainForm.Instance.tbrTools; // Use the existing tbrTools from MainForm
-                mobjToolbar = new ToolStrip(); // Create a new ToolStrip for each form
+                string mode = GetMode(form);
+                string key = string.IsNullOrEmpty(mode) ? form.Name : $"{form.Name}-{mode}";
 
+                // Check if the dictionary already contains the key (form name + mode)
+                if (!toolbarDictionary1.ContainsKey(key))
+                {
+                    toolbarDictionary1[key] = new List<ToolStrip>();
+                }
+
+                int I = GetFreeIndex(); // Obtain a free index for the toolbar
+
+                mobjToolbar = new ToolStrip();
 
                 mobjToolbar.Items.Clear(); // Clear existing buttons
 
@@ -1087,18 +1834,15 @@ namespace softgen
                 mobjToolbar.Dock = DockStyle.None;
                 mobjToolbar.GripStyle = ToolStripGripStyle.Hidden;
                 mobjToolbar.Location = new Point(2, 550);
-                //mobjToolbar.Name = "tbrTools";
                 mobjToolbar.Size = new Size(417, 52);
                 mobjToolbar.TabIndex = 7;
 
                 mobjToolbar.ImageList = MainForm.Instance.imageList1;
                 string formName = form.Name.Trim();
-                string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper():string.Empty;
+                string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper() : string.Empty;
 
                 if (!MainForm.Instance.Controls.Contains(mobjToolbar))
                 {
-
-
                     MainForm.Instance.Controls.Add(mobjToolbar);
                     form.Tag = I;
                     mobjToolbar.AutoSize = false;
@@ -1106,27 +1850,24 @@ namespace softgen
                     mobjToolbar.Dock = DockStyle.None;
                     mobjToolbar.GripStyle = ToolStripGripStyle.Hidden;
                     mobjToolbar.Location = new Point(1, 629);
-                    //mobjToolbar.Name = "tbrTools";
                     mobjToolbar.Size = new Size(417, 52);
                     mobjToolbar.TabIndex = 7;
                 }
 
-                if (strFormType =="C") //CheckList Form
+                if (strFormType == "C")
                 {
                     CreateButton(mobjToolbar, "Continue", "Print CheckList!");
                 }
-                else if (strFormType== "R") //Report Form
+                else if (strFormType == "R")
                 {
                     CreateButton(mobjToolbar, "Continue", "Print Report!");
                 }
-
                 else
                 {
                     DisableFileMenu();
                     for (I = 1; I <= Options.Length; I++)
                     {
-                        
-                        switch (Options[I-1].ToString().ToUpper())
+                        switch (Options[I - 1].ToString().ToUpper())
                         {
                             case "A":
                                 MainForm.Instance.mnuAdd.Enabled = true;
@@ -1148,15 +1889,11 @@ namespace softgen
                                 MainForm.Instance.mnuPost.Enabled = true;
                                 CreateButton(mobjToolbar, POSTMODE, "Post Existing Information");
                                 break;
-
-
                         }
                     }
-
-
                 }
 
-                    if (form.Name == "MainForm" )
+                if (form.Name == "MainForm")
                 {
                     if (MainForm.Instance.MdiChildren.Length == 0)
                     {
@@ -1179,44 +1916,188 @@ namespace softgen
                 }
                 else
                 {
-                    if (strFormType== "C") // cheklist
+                    if (strFormType == "C")
                     {
                         CreateButton(mobjToolbar, "Quit", "Quit from Checklist");
-                        
                     }
-                    else if (strFormType== "R")
+                    else if (strFormType == "R")
                     {
-                        CreateButton(mobjToolbar,"Quit","Quit from Report");
-
+                        CreateButton(mobjToolbar, "Quit", "Quit from Report");
                     }
-                    else {
-                        CreateButton(mobjToolbar,"Quit","Quit from Entry Screen");
+                    else
+                    {
+                        CreateButton(mobjToolbar, "Quit", "Quit from Entry Screen");
                     }
-
                 }
 
-                CreateButton(mobjToolbar,"Help","Help Information!");
+                CreateButton(mobjToolbar, "Help", "Help Information!");
 
                 MainForm.Instance.Controls.Add(mobjToolbar);
                 form.Tag = I;
+
                 // Attach the created toolbar's reference to the form in the dictionary
-                //DeTools.toolbarDictionary[form] = mobjToolbar;--old
-                DeTools.toolbarDictionarywith_frmnm[form.Text] = mobjToolbar;
+                toolbarDictionary1[key].Add(mobjToolbar);
 
-
+                // Update the tag with the options
                 mobjToolbar.Tag = Options;
 
                 mobjToolbar.Visible = true;
                 mobjToolbar.BringToFront();
-
-
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Messages.ErrorMsg(ex.ToString());
-            }   
+            }
         }
-        
+        //----old
+        //  public static void CreateToolbar(Form form, string Options)
+        //{
+        //    try
+        //    {
+
+        //        int I = GetFreeIndex(); // Obtain a free index for the toolbar
+        //                                //mobjToolbar = new ToolStrip();
+        //                                //mobjToolbar = MainForm.Instance.tbrTools; // Use the existing tbrTools from MainForm
+        //        mobjToolbar = new ToolStrip(); // Create a new ToolStrip for each form
+
+
+        //        mobjToolbar.Items.Clear(); // Clear existing buttons
+
+        //        mobjToolbar.AutoSize = false;
+        //        mobjToolbar.BackColor = Color.CadetBlue;
+        //        mobjToolbar.Dock = DockStyle.None;
+        //        mobjToolbar.GripStyle = ToolStripGripStyle.Hidden;
+        //        mobjToolbar.Location = new Point(2, 550);
+        //        //mobjToolbar.Name = "tbrTools";
+        //        mobjToolbar.Size = new Size(417, 52);
+        //        mobjToolbar.TabIndex = 7;
+
+        //        mobjToolbar.ImageList = MainForm.Instance.imageList1;
+        //        string formName = form.Name.Trim();
+        //        string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper():string.Empty;
+
+        //        if (!MainForm.Instance.Controls.Contains(mobjToolbar))
+        //        {
+
+
+        //            MainForm.Instance.Controls.Add(mobjToolbar);
+        //            form.Tag = I;
+        //            mobjToolbar.AutoSize = false;
+        //            mobjToolbar.BackColor = Color.CadetBlue;
+        //            mobjToolbar.Dock = DockStyle.None;
+        //            mobjToolbar.GripStyle = ToolStripGripStyle.Hidden;
+        //            mobjToolbar.Location = new Point(1, 629);
+        //            //mobjToolbar.Name = "tbrTools";
+        //            mobjToolbar.Size = new Size(417, 52);
+        //            mobjToolbar.TabIndex = 7;
+        //        }
+
+        //        if (strFormType =="C") //CheckList Form
+        //        {
+        //            CreateButton(mobjToolbar, "Continue", "Print CheckList!");
+        //        }
+        //        else if (strFormType== "R") //Report Form
+        //        {
+        //            CreateButton(mobjToolbar, "Continue", "Print Report!");
+        //        }
+
+        //        else
+        //        {
+        //            DisableFileMenu();
+        //            for (I = 1; I <= Options.Length; I++)
+        //            {
+
+        //                switch (Options[I-1].ToString().ToUpper())
+        //                {
+        //                    case "A":
+        //                        MainForm.Instance.mnuAdd.Enabled = true;
+        //                        CreateButton(mobjToolbar, ADDMODE, "Add New Information");
+        //                        break;
+        //                    case "M":
+        //                        MainForm.Instance.mnuModify.Enabled = true;
+        //                        CreateButton(mobjToolbar, MODIFYMODE, "Modify Existing Information");
+        //                        break;
+        //                    case "D":
+        //                        MainForm.Instance.mnuDeleteMode.Enabled = true;
+        //                        CreateButton(mobjToolbar, DELETEMODE, "Delete Existing Information");
+        //                        break;
+        //                    case "I":
+        //                        MainForm.Instance.mnuInquire.Enabled = true;
+        //                        CreateButton(mobjToolbar, INQUIREMODE, "Inquire Existing Information");
+        //                        break;
+        //                    case "P":
+        //                        MainForm.Instance.mnuPost.Enabled = true;
+        //                        CreateButton(mobjToolbar, POSTMODE, "Post Existing Information");
+        //                        break;
+
+
+        //                }
+        //            }
+
+
+        //        }
+
+        //            if (form.Name == "MainForm" )
+        //        {
+        //            if (MainForm.Instance.MdiChildren.Length == 0)
+        //            {
+        //                mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "SystemQuit");
+
+        //                mobjbutton.AutoSize = false;
+        //                mobjbutton.BackColor = Color.Lavender;
+        //                mobjbutton.BackgroundImageLayout = ImageLayout.Center;
+        //                mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+        //                mobjbutton.ImageAlign = ContentAlignment.TopCenter;
+        //                mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+        //                mobjbutton.Margin = new Padding(3);
+        //                mobjbutton.Size = new Size(51, 47);
+        //                mobjbutton.TextAlign = ContentAlignment.BottomCenter;
+        //                mobjbutton.TextImageRelation = TextImageRelation.Overlay;
+        //                mobjbutton.ToolTipText = "Quit from the System";
+
+        //                mobjToolbar.Items.Add(mobjbutton);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (strFormType== "C") // cheklist
+        //            {
+        //                CreateButton(mobjToolbar, "Quit", "Quit from Checklist");
+
+        //            }
+        //            else if (strFormType== "R")
+        //            {
+        //                CreateButton(mobjToolbar,"Quit","Quit from Report");
+
+        //            }
+        //            else {
+        //                CreateButton(mobjToolbar,"Quit","Quit from Entry Screen");
+        //            }
+
+        //        }
+
+        //        CreateButton(mobjToolbar,"Help","Help Information!");
+
+        //        MainForm.Instance.Controls.Add(mobjToolbar);
+        //        form.Tag = I;
+        //        // Attach the created toolbar's reference to the form in the dictionary
+        //        //DeTools.toolbarDictionary[form] = mobjToolbar;--old
+        //        DeTools.toolbarDictionarywith_frmnm[form.Text] = mobjToolbar;
+
+
+        //        mobjToolbar.Tag = Options;
+
+        //        mobjToolbar.Visible = true;
+        //        mobjToolbar.BringToFront();
+
+
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Messages.ErrorMsg(ex.ToString());
+        //    }   
+        //}
+
 
         private static int GetFreeIndex()
         {
@@ -1264,27 +2145,76 @@ namespace softgen
 
         public static void DestroyToolbar(Form form)
         {
-            //if (toolbarDictionary.ContainsKey(form))--old
-            if (toolbarDictionarywith_frmnm.ContainsKey(form.Text))
+            string formName = form.Name;
+            string mode = GetMode(form);
+            string key = string.IsNullOrEmpty(mode) ? formName : $"{formName}-{mode}";
+
+            if (toolbarDictionary1.ContainsKey(key))
             {
-                //ToolStrip mobjToolbar = toolbarDictionary[form];--old
-                ToolStrip mobjToolbar = toolbarDictionarywith_frmnm[form.Text];
+                List<ToolStrip> toolbars = toolbarDictionary1[key];
 
-                // Remove the ToolStrip from the parent form's controls
-                if (mobjToolbar.Parent != null)
+                if (toolbars.Any())
                 {
-                    mobjToolbar.Parent.Controls.Remove(mobjToolbar);
+                    ToolStrip mobjToolbar = toolbars.Last();
+
+                    // Remove the ToolStrip from the parent form's controls
+                    if (mobjToolbar.Parent != null)
+                    {
+                        mobjToolbar.Parent.Controls.Remove(mobjToolbar);
+                    }
+
+                    // Clear the ToolStrip's items and dispose of it
+                    mobjToolbar.Items.Clear();
+                    mobjToolbar.Dispose();
+
+                    // Remove the toolbar from the list of toolbars
+                    toolbars.RemoveAt(toolbars.Count - 1);
+
+                    // If there are no more toolbars for this form and mode, remove the key
+                    if (toolbars.Count == 0)
+                    {
+                        toolbarDictionary1.Remove(key);
+                        int index = (int)form.Tag;
+                        DecrementIndex(index);
+                    }
+
+                
                 }
-
-                // Clear the ToolStrip's items and dispose of it
-                mobjToolbar.Items.Clear();
-                mobjToolbar.Dispose();
-
-                // Remove the form from the dictionary
-                //toolbarDictionary.Remove(form);--old
-                   toolbarDictionarywith_frmnm.Remove(form.Text);
             }
         }
+
+        private static void DecrementIndex(int index)
+        {
+            if (index >= 1 && index <= mintUBound)
+            {
+                maintTBRIndex[index] = false; // Mark the index as not in use
+            }
+        }
+
+        //--------newest old
+        //public static void DestroyToolbar(Form form)
+        //{
+        //    //if (toolbarDictionary.ContainsKey(form))--old
+        //    if (toolbarDictionarywith_frmnm.ContainsKey(form.Text))
+        //    {
+        //        //ToolStrip mobjToolbar = toolbarDictionary[form];--old
+        //        ToolStrip mobjToolbar = toolbarDictionarywith_frmnm[form.Text];
+
+        //        // Remove the ToolStrip from the parent form's controls
+        //        if (mobjToolbar.Parent != null)
+        //        {
+        //            mobjToolbar.Parent.Controls.Remove(mobjToolbar);
+        //        }
+
+        //        // Clear the ToolStrip's items and dispose of it
+        //        mobjToolbar.Items.Clear();
+        //        mobjToolbar.Dispose();
+
+        //        // Remove the form from the dictionary
+        //        //toolbarDictionary.Remove(form);--old
+        //           toolbarDictionarywith_frmnm.Remove(form.Text);
+        //    }
+        //}
 
         public static void ClearStatusBarHelp()
         {
@@ -1426,33 +2356,88 @@ namespace softgen
             return options;
         }
 
-
-
-        private static void RemoveButtons(ToolStrip toolStrip,string strAppMode)
+        private static void RemoveButtons(ToolStrip toolStrip)
         {
-            int totalButtons = toolStrip.Items.Count;
-            
-            for (int Counter=totalButtons-1;Counter>= 0; Counter--)
+            // Clear all items (buttons) from the ToolStrip
+            toolStrip.Items.Clear();
+
+            // Retrieve the current form's name
+            string formName = gobjActiveForm.Name;
+
+            // Determine the key for the toolbar dictionary
+            string mode = GetMode(gobjActiveForm);
+            string key = string.IsNullOrEmpty(mode) ? gobjActiveForm.Name : $"{gobjActiveForm.Name}-{mode}";
+
+            if (toolbarDictionary1.ContainsKey(key))
             {
-                toolStrip.Items.RemoveAt(Counter);
+                // The key exists, so add a new ToolStrip to it
+                ToolStrip newToolbar = new ToolStrip();
+                toolbarDictionary1[key].Add(newToolbar);
+
+                // Now you can add this newToolbar to the dictionary
             }
-            //--------old//
-            // Create a new ToolStrip object
-            ToolStrip newToolbar = new ToolStrip(); 
-
-            // Update the dictionary with the newToolbar for gobjActiveForm
-            //toolbarDictionary[gobjActiveForm] = newToolbar;
-            toolbarDictionarywith_frmnm[gobjActiveForm.Text] = newToolbar;
-            
-            //----------------
-            // Clear the list of toolbars associated with gobjActiveForm
-            //if (toolbarDictionary1.ContainsKey(gobjActiveForm))
-            //{
-            //    toolbarDictionary1[gobjActiveForm].Clear();
-            //}
-           // CreateToolbar(gobjActiveForm, GetOptions(gobjActiveForm.Name));
-
+            else
+            {
+                // Handle the case when the key doesn't exist (e.g., create a new list and add the toolbar)
+                var newToolbarList = new List<ToolStrip>();
+                newToolbarList.Add(new ToolStrip());
+                toolbarDictionary1[key] = newToolbarList;
+            }
         }
+
+
+        //-------newest old
+        //private static void RemoveButtons(ToolStrip toolStrip)
+        //{
+        //    // Clear all items (buttons) from the ToolStrip
+        //    toolStrip.Items.Clear();
+
+        //    // Create a new ToolStrip object
+        //    ToolStrip newToolbar = new ToolStrip();
+
+        //    // Update the dictionary with the newToolbar for gobjActiveForm
+        //    // Retrieve the current form's name
+        //    string formName = gobjActiveForm.Name;
+
+        //    // Determine the key for the toolbar dictionary
+        //    string mode = GetMode(gobjActiveForm);
+        //    string key = string.IsNullOrEmpty(mode) ? gobjActiveForm.Name : $"{gobjActiveForm.Name}-{mode}";
+        //    toolbarDictionary1[key].Add(newToolbar);
+
+        //    // Now you can add this newToolbar to the dictionary
+
+        //    // Don't create a new toolbar here, just update the dictionary with the newToolbar
+        //}
+
+
+        //-------------old
+
+        //private static void RemoveButtons(ToolStrip toolStrip, string strAppMode)
+        //{
+        //    int totalButtons = toolStrip.Items.Count;
+
+        //    for (int Counter = totalButtons - 1; Counter >= 0; Counter--)
+        //    {
+        //        toolStrip.Items.RemoveAt(Counter);
+        //    }
+        //    //--------old//
+        //    // Create a new ToolStrip object
+        //    mobjToolbar = new ToolStrip();
+
+        //    // Update the dictionary with the newToolbar for gobjActiveForm
+        //    //toolbarDictionary[gobjActiveForm] = newToolbar;
+        //    toolbarDictionarywith_frmnm[gobjActiveForm.Text] = mobjToolbar;
+
+        //    //----------------
+        //    // Clear the list of toolbars associated with gobjActiveForm
+        //    //if (toolbarDictionary1.ContainsKey(gobjActiveForm))
+        //    //{
+        //    //    toolbarDictionary1[gobjActiveForm].Clear();
+        //    //}
+        //    // CreateToolbar(gobjActiveForm, GetOptions(gobjActiveForm.Name));
+
+        //}
+
 
         public static string RestoreCaption(Form form)
         {
@@ -1529,88 +2514,182 @@ namespace softgen
 
 
         }
-        //old-----------------------------------------------
+
         public static void ActiveFileMenu(Form form)
         {
+            string formName = form.Name;
             string strMode = GetMode(form);
-            //ToolStrip toolStrip = toolbarDictionary[form]; // Retrieve the ToolStrip for this form--old
-            ToolStrip toolStrip = toolbarDictionarywith_frmnm[form.Text]; // Retrieve the ToolStrip for this form
-            string strOptions = (string)toolStrip.Tag;
+            string key = string.IsNullOrEmpty(strMode) ? formName : $"{formName}-{strMode}";
 
-            if (string.IsNullOrEmpty(strOptions))
+            if (toolbarDictionary1.ContainsKey(key))
             {
-                strOptions = "AMDIPR";
-            }
+                List<ToolStrip> toolbars = toolbarDictionary1[key];
 
-            DisableFileMenu();
-            UncheckFileMenu();
-
-            if (string.IsNullOrEmpty(strMode))
-            {
-                MainForm.Instance.mnuHelp.Enabled = false;
-
-                for (int i = 0; i < strOptions.Length; i++)
+                if (toolbars.Any())
                 {
-                    char option = char.ToUpper(strOptions[i]);
-                    switch (option)
+                    ToolStrip toolStrip = toolbars.Last();
+                    string strOptions = (string)toolStrip.Tag;
+
+                    if (string.IsNullOrEmpty(strOptions))
                     {
-                        case 'A':
-                            MainForm.Instance.mnuAdd.Enabled = true;
-                            break;
-                        case 'M':
-                            MainForm.Instance.mnuModify.Enabled = true;
-                            break;
-                        case 'D':
-                            MainForm.Instance.mnuDeleteMode.Enabled = true;
-                            break;
-                        case 'I':
-                            MainForm.Instance.mnuInquire.Enabled = true;
-                            break;
-                        case 'P':
-                            MainForm.Instance.mnuPost.Enabled = true;
-                            break;
+                        strOptions = "AMDIPR";
+                    }
+
+                    DisableFileMenu();
+                    UncheckFileMenu();
+
+                    if (string.IsNullOrEmpty(strMode))
+                    {
+                        MainForm.Instance.mnuHelp.Enabled = false;
+
+                        for (int i = 0; i < strOptions.Length; i++)
+                        {
+                            char option = char.ToUpper(strOptions[i]);
+                            switch (option)
+                            {
+                                case 'A':
+                                    MainForm.Instance.mnuAdd.Enabled = true;
+                                    break;
+                                case 'M':
+                                    MainForm.Instance.mnuModify.Enabled = true;
+                                    break;
+                                case 'D':
+                                    MainForm.Instance.mnuDeleteMode.Enabled = true;
+                                    break;
+                                case 'I':
+                                    MainForm.Instance.mnuInquire.Enabled = true;
+                                    break;
+                                case 'P':
+                                    MainForm.Instance.mnuPost.Enabled = true;
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MainForm.Instance.mnuHelp.Enabled = true;
+                        MainForm.Instance.mnuRefresh.Enabled = true;
+
+                        if (strMode != ADDMODE)
+                        {
+                            MainForm.Instance.mnuRetrieve.Enabled = true;
+                        }
+
+                        if (strOptions.EndsWith("R"))
+                        {
+                            MainForm.Instance.mnuPrint.Enabled = true;
+                        }
+
+                        switch (strMode)
+                        {
+                            case ADDMODE:
+                                MainForm.Instance.mnuAdd.Checked = true;
+                                MainForm.Instance.mnuSave.Enabled = true;
+                                break;
+                            case MODIFYMODE:
+                                MainForm.Instance.mnuModify.Checked = true;
+                                MainForm.Instance.mnuSave.Enabled = true;
+                                break;
+                            case DELETEMODE:
+                                MainForm.Instance.mnuDeleteMode.Checked = true;
+                                MainForm.Instance.mnuDeleteRecord.Enabled = true;
+                                break;
+                            case INQUIREMODE:
+                                MainForm.Instance.mnuInquire.Checked = true;
+                                break;
+                            case POSTMODE:
+                                MainForm.Instance.mnuPost.Checked = true;
+                                MainForm.Instance.mnuAuthorise.Enabled = true;
+                                break;
+                        }
                     }
                 }
             }
-            else
-            {
-                MainForm.Instance.mnuHelp.Enabled = true;
-                MainForm.Instance.mnuRefresh.Enabled = true;
-
-                if (strMode != ADDMODE)
-                {
-                    MainForm.Instance.mnuRetrieve.Enabled = true;
-                }
-
-                if (strOptions.EndsWith("R"))
-                {
-                    MainForm.Instance.mnuPrint.Enabled = true;
-                }
-
-                switch (strMode)
-                {
-                    case ADDMODE:
-                        MainForm.Instance.mnuAdd.Checked = true;
-                        MainForm.Instance.mnuSave.Enabled = true;
-                        break;
-                    case MODIFYMODE:
-                        MainForm.Instance.mnuModify.Checked = true;
-                        MainForm.Instance.mnuSave.Enabled = true;
-                        break;
-                    case DELETEMODE:
-                        MainForm.Instance.mnuDeleteMode.Checked = true;
-                        MainForm.Instance.mnuDeleteRecord.Enabled = true;
-                        break;
-                    case INQUIREMODE:
-                        MainForm.Instance.mnuInquire.Checked = true;
-                        break;
-                    case POSTMODE:
-                        MainForm.Instance.mnuPost.Checked = true;
-                        MainForm.Instance.mnuAuthorise.Enabled = true;
-                        break;
-                }
-            }
         }
+
+
+        //newest old-----------------------------------------------
+        //public static void ActiveFileMenu(Form form)
+        //{
+        //    string strMode = GetMode(form);
+        //    //ToolStrip toolStrip = toolbarDictionary[form]; // Retrieve the ToolStrip for this form--old
+        //    ToolStrip toolStrip = toolbarDictionarywith_frmnm[form.Text]; // Retrieve the ToolStrip for this form
+        //    string strOptions = (string)toolStrip.Tag;
+
+        //    if (string.IsNullOrEmpty(strOptions))
+        //    {
+        //        strOptions = "AMDIPR";
+        //    }
+
+        //    DisableFileMenu();
+        //    UncheckFileMenu();
+
+        //    if (string.IsNullOrEmpty(strMode))
+        //    {
+        //        MainForm.Instance.mnuHelp.Enabled = false;
+
+        //        for (int i = 0; i < strOptions.Length; i++)
+        //        {
+        //            char option = char.ToUpper(strOptions[i]);
+        //            switch (option)
+        //            {
+        //                case 'A':
+        //                    MainForm.Instance.mnuAdd.Enabled = true;
+        //                    break;
+        //                case 'M':
+        //                    MainForm.Instance.mnuModify.Enabled = true;
+        //                    break;
+        //                case 'D':
+        //                    MainForm.Instance.mnuDeleteMode.Enabled = true;
+        //                    break;
+        //                case 'I':
+        //                    MainForm.Instance.mnuInquire.Enabled = true;
+        //                    break;
+        //                case 'P':
+        //                    MainForm.Instance.mnuPost.Enabled = true;
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        MainForm.Instance.mnuHelp.Enabled = true;
+        //        MainForm.Instance.mnuRefresh.Enabled = true;
+
+        //        if (strMode != ADDMODE)
+        //        {
+        //            MainForm.Instance.mnuRetrieve.Enabled = true;
+        //        }
+
+        //        if (strOptions.EndsWith("R"))
+        //        {
+        //            MainForm.Instance.mnuPrint.Enabled = true;
+        //        }
+
+        //        switch (strMode)
+        //        {
+        //            case ADDMODE:
+        //                MainForm.Instance.mnuAdd.Checked = true;
+        //                MainForm.Instance.mnuSave.Enabled = true;
+        //                break;
+        //            case MODIFYMODE:
+        //                MainForm.Instance.mnuModify.Checked = true;
+        //                MainForm.Instance.mnuSave.Enabled = true;
+        //                break;
+        //            case DELETEMODE:
+        //                MainForm.Instance.mnuDeleteMode.Checked = true;
+        //                MainForm.Instance.mnuDeleteRecord.Enabled = true;
+        //                break;
+        //            case INQUIREMODE:
+        //                MainForm.Instance.mnuInquire.Checked = true;
+        //                break;
+        //            case POSTMODE:
+        //                MainForm.Instance.mnuPost.Checked = true;
+        //                MainForm.Instance.mnuAuthorise.Enabled = true;
+        //                break;
+        //        }
+        //    }
+        //}
 
         //public static void ActiveFileMenu(Form form)
         //{
@@ -1744,70 +2823,103 @@ namespace softgen
             }
         }
 
-        //--------------old
-        //for MAINFORM
         public static void BringToolStripToFront(string formOptions)
         {
             // Split the formOptions into individual option codes
             string[] options = formOptions.Split(',');
 
-            foreach (ToolStrip toolbar in toolbarDictionarywith_frmnm.Values)
+            foreach (List<ToolStrip> toolbars in toolbarDictionary1.Values)
             {
-                // Hide all toolstrips first
-                toolbar.Visible = false;
-            }
-            //------old
-            //foreach (string option in options)
-            //{
-            //    foreach (var kvp in toolbarDictionary)
-            //    {
-            //        Form form = kvp.Key;
-            //        ToolStrip toolbar = kvp.Value;
-            //        string formName = form.Name.Trim();
-            //        string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper() : string.Empty;
-
-            //        if (strFormType == "C" && option == "C") // CheckList Form
-            //        {
-            //            toolbar.Visible = true;
-            //        }
-            //        else if (strFormType == "R" && option == "R") // Report Form
-            //        {
-            //            toolbar.Visible = true;
-            //        }
-            //        else if (options.Contains(option)) // Check if the form's options list contains the current option
-            //        {
-            //            toolbar.Visible = true;
-            //        }
-            //    }
-            //}
-            foreach (string option in options)
-            {
-                foreach (var kvp in toolbarDictionarywith_frmnm)
+                foreach (ToolStrip toolbar in toolbars)
                 {
-                    if (gobjActiveForm.Text.ToLower() == kvp.Key.ToString().ToLower())
-                    {
-                        string formName = gobjActiveForm.Name; // Get the Form object
-                        ToolStrip toolbar = kvp.Value;
-                        // string formName = form.Name.Trim();--old
-                        string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper() : string.Empty;
-
-                        if (strFormType == "C" && option == "C") // CheckList Form
-                        {
-                            toolbar.Visible = true;
-                        }
-                        else if (strFormType == "R" && option == "R") // Report Form
-                        {
-                            toolbar.Visible = true;
-                        }
-                        else if (options.Contains(option)) // Check if the form's options list contains the current option
-                        {
-                            toolbar.Visible = true;
-                        }
-                    }
+                    // Hide all toolstrips first
+                    toolbar.Visible = false;
                 }
             }
 
+            string formName = gobjActiveForm.Name; // Get the Form object
+
+            foreach (string option in options)
+            {
+                string mode = GetMode(gobjActiveForm);
+                string key = string.IsNullOrEmpty(mode) ? formName : $"{formName}-{mode}";
+                if (toolbarDictionary1.ContainsKey(key))
+                {
+                    List<ToolStrip> toolbars = toolbarDictionary1[key];
+
+                    foreach (ToolStrip toolbar in toolbars)
+                    {
+                        toolbar.Visible = true;
+                    }
+                }
+            }
         }
+
+
+        //-------------- newst old
+        ////for MAINFORM
+        //public static void BringToolStripToFront(string formOptions)
+        //{
+        //    // Split the formOptions into individual option codes
+        //    string[] options = formOptions.Split(',');
+
+        //    foreach (ToolStrip toolbar in toolbarDictionarywith_frmnm.Values)
+        //    {
+        //        // Hide all toolstrips first
+        //        toolbar.Visible = false;
+        //    }
+        //    //------old
+        //    //foreach (string option in options)
+        //    //{
+        //    //    foreach (var kvp in toolbarDictionary)
+        //    //    {
+        //    //        Form form = kvp.Key;
+        //    //        ToolStrip toolbar = kvp.Value;
+        //    //        string formName = form.Name.Trim();
+        //    //        string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper() : string.Empty;
+
+        //    //        if (strFormType == "C" && option == "C") // CheckList Form
+        //    //        {
+        //    //            toolbar.Visible = true;
+        //    //        }
+        //    //        else if (strFormType == "R" && option == "R") // Report Form
+        //    //        {
+        //    //            toolbar.Visible = true;
+        //    //        }
+        //    //        else if (options.Contains(option)) // Check if the form's options list contains the current option
+        //    //        {
+        //    //            toolbar.Visible = true;
+        //    //        }
+        //    //    }
+        //    //}
+        //    foreach (string option in options)
+        //    {
+        //        foreach (var kvp in toolbarDictionarywith_frmnm)
+        //        {
+        //            if (gobjActiveForm.Text.ToLower() == kvp.Key.ToString().ToLower())
+        //            {
+        //                string formName = gobjActiveForm.Name; // Get the Form object
+        //                ToolStrip toolbar = kvp.Value;
+        //                // string formName = form.Name.Trim();--old
+        //                string strFormType = formName.Length > 3 ? formName.Substring(3, 1).ToUpper() : string.Empty;
+
+        //                if (strFormType == "C" && option == "C") // CheckList Form
+        //                {
+        //                    toolbar.Visible = true;
+        //                }
+        //                else if (strFormType == "R" && option == "R") // Report Form
+        //                {
+        //                    toolbar.Visible = true;
+        //                }
+        //                else if (options.Contains(option)) // Check if the form's options list contains the current option
+        //                {
+        //                    toolbar.Visible = true;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //}
         //public static void BringToolStripToFront(string formOptions)
         //{
         //    // Split the formOptions into individual option codes
@@ -2062,7 +3174,7 @@ namespace softgen
 
                 if (isMainformAct)
                 {
-                    if (toolbarDictionarywith_frmnm.Count <= 2)
+                    if (toolbarDictionary1.Count <= 1)
                     {
                         Messages.ErrorMsg("Help Not Ready for Menu.");
 
@@ -2094,7 +3206,7 @@ namespace softgen
                     return;
                 }
                 else
-                {
+                    {
                     Messages msg = new Messages();
                     msg.VBError(ex, "DeTools", "CallHelp", null);
                 }
@@ -2156,6 +3268,64 @@ namespace softgen
         //}
 
 
+
+
+        public static void SwitchMode(Form form, string strAppMode)
+        {
+            // Retrieve the current form's name
+            string formName = form.Name;
+
+            // Determine the key for the toolbar dictionary
+            string currentMode = GetMode(form);
+            currentKey = string.IsNullOrEmpty(currentMode) ? formName : $"{formName}-{currentMode}";
+
+            SetModeCaption(gobjActiveForm, strAppMode);
+            string getmode = GetMode(gobjActiveForm);
+            // Create a new key for the selected mode
+            newKey = $"{formName}-{getmode}";
+
+            // Check if the current mode and the new mode are the same; no need to switch
+            if (currentKey == newKey)
+            {
+                return;
+            }
+
+            if (toolbarDictionary1.ContainsKey(currentKey))
+            {
+                // Get the list of ToolStrip objects from the current dictionary
+                List<ToolStrip> toolstrips = toolbarDictionary1[currentKey];
+
+                if (!newToolbarDictionary.ContainsKey(newKey))
+                {
+                    // If the new dictionary doesn't contain the new mode's key yet, create a new list of ToolStrip
+                    newToolbarDictionary[newKey] = new List<ToolStrip>();
+                }
+
+                // Copy the ToolStrip objects to the new dictionary
+                newToolbarDictionary[newKey].AddRange(toolstrips);
+
+                // Create a new ToolStrip for the gobjActiveForm
+                ToolStrip newToolbar = new ToolStrip();
+
+                // Clear the items from the current mode's ToolStrip
+                toolbarDictionary1.Remove(currentKey);
+
+                // Check how many items are in the newToolStrip
+                int itemCountInNewToolbar = newToolbar.Items.Count;
+                // itemCountInNewToolbar now contains the number of items in the newToolStrip
+
+                // Add the new ToolStrip to the old dictionary
+                if (!toolbarDictionary1.ContainsKey(newKey))
+                {
+                    // If the key doesn't exist, create it and associate it with a new ToolStrip
+                    toolbarDictionary1[newKey] = new List<ToolStrip>();
+                }
+
+                toolbarDictionary1[newKey].Add(newToolbar);
+            
+            }
+
+        }
 
 
 
