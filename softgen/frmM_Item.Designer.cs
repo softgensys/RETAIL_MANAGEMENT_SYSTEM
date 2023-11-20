@@ -29,53 +29,53 @@
         private void InitializeComponent()
         {
             label24 = new Label();
-            label23 = new Label();
-            txtdiscperc = new TextBox();
-            label22 = new Label();
-            locidcomb = new ComboBox();
-            label21 = new Label();
-            chkboxbarcodapp = new CheckBox();
-            label20 = new Label();
-            chkboxactiv = new CheckBox();
-            label19 = new Label();
-            txtcessperc = new TextBox();
-            label18 = new Label();
-            gstperccomb = new ComboBox();
-            label17 = new Label();
-            txthsn = new TextBox();
-            label16 = new Label();
-            txtdecupto = new TextBox();
-            label15 = new Label();
-            chkboxdecim = new CheckBox();
-            label14 = new Label();
-            txtrepfreq = new TextBox();
-            label13 = new Label();
+            lblStock = new Label();
+            txtDisc = new TextBox();
+            lblDisc = new Label();
+            cboLoc = new ComboBox();
+            lblLoc = new Label();
+            chkBarYN = new CheckBox();
+            lblBarYN = new Label();
+            chkAct = new CheckBox();
+            lblAct = new Label();
+            txtCess = new TextBox();
+            lblCess = new Label();
+            cboSaleTax = new ComboBox();
+            lblSaleTax = new Label();
+            txtHSN = new TextBox();
+            lblHSN = new Label();
+            txtDecimalupto = new TextBox();
+            lblDecimalupto = new Label();
+            chkDecimal = new CheckBox();
+            lblDecimal = new Label();
+            txtLT = new TextBox();
+            lblLT = new Label();
             txtexisper = new TextBox();
-            label12 = new Label();
-            txtstyle = new TextBox();
-            label11 = new Label();
-            txtmaxlvl = new TextBox();
-            label10 = new Label();
-            txtreordlvl = new TextBox();
-            label9 = new Label();
-            txtminlvl = new TextBox();
-            label8 = new Label();
-            txtopbal = new TextBox();
-            label7 = new Label();
-            txtconv = new TextBox();
-            label5 = new Label();
-            label6 = new Label();
-            txtshortdesc = new TextBox();
-            label3 = new Label();
-            colidcomb = new ComboBox();
-            label4 = new Label();
-            label1 = new Label();
-            manufcomb = new ComboBox();
-            label2 = new Label();
-            cboSizeID = new ComboBox();
-            lblSizeID = new Label();
-            cboSSGroupID = new ComboBox();
-            lblSSGroupID = new Label();
+            lblExcis = new Label();
+            txtStyle = new TextBox();
+            lblStyle = new Label();
+            txtMaxLevel = new TextBox();
+            lblMaxLevel = new Label();
+            txtReOLevel = new TextBox();
+            lblReOLevel = new Label();
+            txtMinLevel = new TextBox();
+            lblMinLevel = new Label();
+            txtOpBal = new TextBox();
+            lblOpBal = new Label();
+            txtConv = new TextBox();
+            lblConv = new Label();
+            lblSaleUnit = new Label();
+            txtShDesc = new TextBox();
+            lblShDesc = new Label();
+            cboColorDesc = new ComboBox();
+            lblColorDesc = new Label();
+            lblPurUnit = new Label();
+            cboManuf = new ComboBox();
+            lblManuf = new Label();
+            cboSizeDesc = new ComboBox();
+            lblSizeDesc = new Label();
+            cboSSGroupDesc = new ComboBox();
+            lblSSGroupDesc = new Label();
             cboSGroup = new ComboBox();
             lblSubGroup = new Label();
             cboGroup = new ComboBox();
@@ -86,40 +86,25 @@
             lblItemDesc = new Label();
             txtItemId = new TextBox();
             lblItemId = new Label();
-            panel1 = new Panel();
-            checkBox4 = new CheckBox();
-            label31 = new Label();
-            textBox28 = new TextBox();
-            label30 = new Label();
-            textBox27 = new TextBox();
-            label29 = new Label();
-            textBox26 = new TextBox();
-            label28 = new Label();
-            textBox25 = new TextBox();
-            label27 = new Label();
-            textBox24 = new TextBox();
-            label26 = new Label();
-            textBox23 = new TextBox();
-            label25 = new Label();
             rotType = new Label();
             rotGroup = new Label();
             rotSGroup = new Label();
             rotSSGroupDesc = new Label();
             rotSizeDesc = new Label();
-            lblcolid = new Label();
-            lblmanuf = new Label();
-            lblpurunit = new Label();
-            lblsalunit = new Label();
-            lblgstperc = new Label();
-            lbllocid = new Label();
-            label33 = new Label();
-            lblstck2 = new Label();
-            lblmargin = new Label();
-            salunitcomb = new ComboBox();
-            purunitcomb = new ComboBox();
+            rotColorDesc = new Label();
+            rotManuf = new Label();
+            rotPurUnit = new Label();
+            rotSaleUnit = new Label();
+            rotSaleTax = new Label();
+            rotLoc = new Label();
+            rotStock = new Label();
+            rotNetRate = new Label();
+            lblMargin = new Label();
+            cboSaleUnit = new ComboBox();
+            cboPurUnit = new ComboBox();
             panel2 = new Panel();
             panel3 = new Panel();
-            dataGridView1 = new DataGridView();
+            dbgBarDet = new DataGridView();
             PLU = new DataGridViewTextBoxColumn();
             BARCODE = new DataGridViewTextBoxColumn();
             cp = new DataGridViewTextBoxColumn();
@@ -127,8 +112,10 @@
             salepric = new DataGridViewTextBoxColumn();
             netrate = new DataGridViewTextBoxColumn();
             ACTIVE = new DataGridViewCheckBoxColumn();
-            panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            label25 = new Label();
+            chkNodisc = new CheckBox();
+            label1 = new Label();
+            ((System.ComponentModel.ISupportInitialize)dbgBarDet).BeginInit();
             SuspendLayout();
             // 
             // label24
@@ -142,206 +129,215 @@
             label24.TabIndex = 153;
             label24.Text = "%";
             // 
-            // label23
+            // lblStock
             // 
-            label23.AutoSize = true;
-            label23.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label23.ImeMode = ImeMode.NoControl;
-            label23.Location = new Point(506, 260);
-            label23.Name = "label23";
-            label23.Size = new Size(39, 15);
-            label23.TabIndex = 150;
-            label23.Text = "Stock";
+            lblStock.AutoSize = true;
+            lblStock.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblStock.ImeMode = ImeMode.NoControl;
+            lblStock.Location = new Point(506, 260);
+            lblStock.Name = "lblStock";
+            lblStock.Size = new Size(39, 15);
+            lblStock.TabIndex = 150;
+            lblStock.Text = "Stock";
             // 
-            // txtdiscperc
+            // txtDisc
             // 
-            txtdiscperc.Location = new Point(449, 254);
-            txtdiscperc.Name = "txtdiscperc";
-            txtdiscperc.Size = new Size(50, 23);
-            txtdiscperc.TabIndex = 149;
+            txtDisc.Location = new Point(449, 254);
+            txtDisc.Name = "txtDisc";
+            txtDisc.Size = new Size(50, 23);
+            txtDisc.TabIndex = 149;
             // 
-            // label22
+            // lblDisc
             // 
-            label22.AutoSize = true;
-            label22.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label22.ImeMode = ImeMode.NoControl;
-            label22.Location = new Point(395, 259);
-            label22.Name = "label22";
-            label22.Size = new Size(51, 15);
-            label22.TabIndex = 148;
-            label22.Text = "Disc (%)";
+            lblDisc.AutoSize = true;
+            lblDisc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDisc.ImeMode = ImeMode.NoControl;
+            lblDisc.Location = new Point(395, 259);
+            lblDisc.Name = "lblDisc";
+            lblDisc.Size = new Size(51, 15);
+            lblDisc.TabIndex = 148;
+            lblDisc.Text = "Disc (%)";
             // 
-            // locidcomb
+            // cboLoc
             // 
-            locidcomb.FormattingEnabled = true;
-            locidcomb.Location = new Point(268, 254);
-            locidcomb.Name = "locidcomb";
-            locidcomb.Size = new Size(58, 23);
-            locidcomb.TabIndex = 146;
+            cboLoc.DropDownHeight = 60;
+            cboLoc.FormattingEnabled = true;
+            cboLoc.IntegralHeight = false;
+            cboLoc.Location = new Point(268, 254);
+            cboLoc.Name = "cboLoc";
+            cboLoc.Size = new Size(58, 23);
+            cboLoc.TabIndex = 146;
             // 
-            // label21
+            // lblLoc
             // 
-            label21.AutoSize = true;
-            label21.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label21.ImeMode = ImeMode.NoControl;
-            label21.Location = new Point(221, 258);
-            label21.Name = "label21";
-            label21.Size = new Size(40, 15);
-            label21.TabIndex = 145;
-            label21.Text = "Loc Id";
+            lblLoc.AutoSize = true;
+            lblLoc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblLoc.ImeMode = ImeMode.NoControl;
+            lblLoc.Location = new Point(221, 258);
+            lblLoc.Name = "lblLoc";
+            lblLoc.Size = new Size(40, 15);
+            lblLoc.TabIndex = 145;
+            lblLoc.Text = "Loc Id";
             // 
-            // chkboxbarcodapp
+            // chkBarYN
             // 
-            chkboxbarcodapp.AutoSize = true;
-            chkboxbarcodapp.Location = new Point(198, 257);
-            chkboxbarcodapp.Name = "chkboxbarcodapp";
-            chkboxbarcodapp.Size = new Size(15, 14);
-            chkboxbarcodapp.TabIndex = 144;
-            chkboxbarcodapp.UseVisualStyleBackColor = true;
+            chkBarYN.AutoSize = true;
+            chkBarYN.Checked = true;
+            chkBarYN.CheckState = CheckState.Checked;
+            chkBarYN.Location = new Point(198, 257);
+            chkBarYN.Name = "chkBarYN";
+            chkBarYN.Size = new Size(15, 14);
+            chkBarYN.TabIndex = 144;
+            chkBarYN.UseVisualStyleBackColor = true;
             // 
-            // label20
+            // lblBarYN
             // 
-            label20.AutoSize = true;
-            label20.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label20.ImeMode = ImeMode.NoControl;
-            label20.Location = new Point(77, 256);
-            label20.Name = "label20";
-            label20.Size = new Size(117, 15);
-            label20.TabIndex = 143;
-            label20.Text = "Bar Code Applicable";
+            lblBarYN.AutoSize = true;
+            lblBarYN.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblBarYN.ImeMode = ImeMode.NoControl;
+            lblBarYN.Location = new Point(77, 256);
+            lblBarYN.Name = "lblBarYN";
+            lblBarYN.Size = new Size(117, 15);
+            lblBarYN.TabIndex = 143;
+            lblBarYN.Text = "Bar Code Applicable";
             // 
-            // chkboxactiv
+            // chkAct
             // 
-            chkboxactiv.AutoSize = true;
-            chkboxactiv.Location = new Point(57, 256);
-            chkboxactiv.Name = "chkboxactiv";
-            chkboxactiv.Size = new Size(15, 14);
-            chkboxactiv.TabIndex = 142;
-            chkboxactiv.UseVisualStyleBackColor = true;
+            chkAct.AutoSize = true;
+            chkAct.Checked = true;
+            chkAct.CheckState = CheckState.Checked;
+            chkAct.Location = new Point(57, 256);
+            chkAct.Name = "chkAct";
+            chkAct.Size = new Size(15, 14);
+            chkAct.TabIndex = 142;
+            chkAct.UseVisualStyleBackColor = true;
             // 
-            // label19
+            // lblAct
             // 
-            label19.AutoSize = true;
-            label19.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label19.ImeMode = ImeMode.NoControl;
-            label19.Location = new Point(8, 255);
-            label19.Name = "label19";
-            label19.Size = new Size(43, 15);
-            label19.TabIndex = 141;
-            label19.Text = "Active";
+            lblAct.AutoSize = true;
+            lblAct.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblAct.ImeMode = ImeMode.NoControl;
+            lblAct.Location = new Point(8, 255);
+            lblAct.Name = "lblAct";
+            lblAct.Size = new Size(43, 15);
+            lblAct.TabIndex = 141;
+            lblAct.Text = "Active";
             // 
-            // txtcessperc
+            // txtCess
             // 
-            txtcessperc.Location = new Point(676, 225);
-            txtcessperc.Name = "txtcessperc";
-            txtcessperc.Size = new Size(43, 23);
-            txtcessperc.TabIndex = 140;
+            txtCess.Location = new Point(676, 225);
+            txtCess.Name = "txtCess";
+            txtCess.Size = new Size(43, 23);
+            txtCess.TabIndex = 140;
             // 
-            // label18
+            // lblCess
             // 
-            label18.AutoSize = true;
-            label18.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label18.ImeMode = ImeMode.NoControl;
-            label18.Location = new Point(631, 228);
-            label18.Name = "label18";
-            label18.Size = new Size(41, 15);
-            label18.TabIndex = 139;
-            label18.Text = "Cess%";
+            lblCess.AutoSize = true;
+            lblCess.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblCess.ImeMode = ImeMode.NoControl;
+            lblCess.Location = new Point(631, 228);
+            lblCess.Name = "lblCess";
+            lblCess.Size = new Size(41, 15);
+            lblCess.TabIndex = 139;
+            lblCess.Text = "Cess%";
             // 
-            // gstperccomb
+            // cboSaleTax
             // 
-            gstperccomb.FormattingEnabled = true;
-            gstperccomb.Location = new Point(457, 224);
-            gstperccomb.Name = "gstperccomb";
-            gstperccomb.Size = new Size(88, 23);
-            gstperccomb.TabIndex = 137;
-            gstperccomb.SelectedIndexChanged += gstperccomb_SelectedIndexChanged;
-            gstperccomb.MouseDown += gstperccomb_MouseDown;
+            cboSaleTax.DropDownHeight = 100;
+            cboSaleTax.FormattingEnabled = true;
+            cboSaleTax.IntegralHeight = false;
+            cboSaleTax.Location = new Point(457, 224);
+            cboSaleTax.Name = "cboSaleTax";
+            cboSaleTax.Size = new Size(88, 23);
+            cboSaleTax.TabIndex = 137;
+            cboSaleTax.DropDown += cboSaleTax_DropDown;
+            cboSaleTax.SelectedIndexChanged += cboSaleTax_SelectedIndexChanged;
+            cboSaleTax.MouseDown += gstperccomb_MouseDown;
             // 
-            // label17
+            // lblSaleTax
             // 
-            label17.AutoSize = true;
-            label17.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label17.ImeMode = ImeMode.NoControl;
-            label17.Location = new Point(403, 228);
-            label17.Name = "label17";
-            label17.Size = new Size(51, 15);
-            label17.TabIndex = 136;
-            label17.Text = "GST (%)";
+            lblSaleTax.AutoSize = true;
+            lblSaleTax.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSaleTax.ImeMode = ImeMode.NoControl;
+            lblSaleTax.Location = new Point(403, 228);
+            lblSaleTax.Name = "lblSaleTax";
+            lblSaleTax.Size = new Size(51, 15);
+            lblSaleTax.TabIndex = 136;
+            lblSaleTax.Text = "GST (%)";
             // 
-            // txthsn
+            // txtHSN
             // 
-            txthsn.Location = new Point(312, 224);
-            txthsn.Name = "txthsn";
-            txthsn.Size = new Size(85, 23);
-            txthsn.TabIndex = 135;
+            txtHSN.Location = new Point(312, 224);
+            txtHSN.Name = "txtHSN";
+            txtHSN.Size = new Size(85, 23);
+            txtHSN.TabIndex = 135;
             // 
-            // label16
+            // lblHSN
             // 
-            label16.AutoSize = true;
-            label16.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label16.ImeMode = ImeMode.NoControl;
-            label16.Location = new Point(275, 228);
-            label16.Name = "label16";
-            label16.Size = new Size(32, 15);
-            label16.TabIndex = 134;
-            label16.Text = "HSN";
+            lblHSN.AutoSize = true;
+            lblHSN.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblHSN.ImeMode = ImeMode.NoControl;
+            lblHSN.Location = new Point(275, 228);
+            lblHSN.Name = "lblHSN";
+            lblHSN.Size = new Size(32, 15);
+            lblHSN.TabIndex = 134;
+            lblHSN.Text = "HSN";
             // 
-            // txtdecupto
+            // txtDecimalupto
             // 
-            txtdecupto.Location = new Point(243, 224);
-            txtdecupto.Name = "txtdecupto";
-            txtdecupto.Size = new Size(24, 23);
-            txtdecupto.TabIndex = 133;
+            txtDecimalupto.Location = new Point(243, 224);
+            txtDecimalupto.Name = "txtDecimalupto";
+            txtDecimalupto.Size = new Size(24, 23);
+            txtDecimalupto.TabIndex = 133;
             // 
-            // label15
+            // lblDecimalupto
             // 
-            label15.AutoSize = true;
-            label15.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label15.ImeMode = ImeMode.NoControl;
-            label15.Location = new Point(179, 228);
-            label15.Name = "label15";
-            label15.Size = new Size(60, 15);
-            label15.TabIndex = 132;
-            label15.Text = "Dec Upto";
+            lblDecimalupto.AutoSize = true;
+            lblDecimalupto.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDecimalupto.ImeMode = ImeMode.NoControl;
+            lblDecimalupto.Location = new Point(179, 228);
+            lblDecimalupto.Name = "lblDecimalupto";
+            lblDecimalupto.Size = new Size(60, 15);
+            lblDecimalupto.TabIndex = 132;
+            lblDecimalupto.Text = "Dec Upto";
             // 
-            // chkboxdecim
+            // chkDecimal
             // 
-            chkboxdecim.AutoSize = true;
-            chkboxdecim.Location = new Point(154, 229);
-            chkboxdecim.Name = "chkboxdecim";
-            chkboxdecim.Size = new Size(15, 14);
-            chkboxdecim.TabIndex = 131;
-            chkboxdecim.UseVisualStyleBackColor = true;
+            chkDecimal.AutoSize = true;
+            chkDecimal.Location = new Point(154, 229);
+            chkDecimal.Name = "chkDecimal";
+            chkDecimal.Size = new Size(15, 14);
+            chkDecimal.TabIndex = 131;
+            chkDecimal.UseVisualStyleBackColor = true;
             // 
-            // label14
+            // lblDecimal
             // 
-            label14.AutoSize = true;
-            label14.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label14.ImeMode = ImeMode.NoControl;
-            label14.Location = new Point(96, 228);
-            label14.Name = "label14";
-            label14.Size = new Size(52, 15);
-            label14.TabIndex = 130;
-            label14.Text = "Decimal";
+            lblDecimal.AutoSize = true;
+            lblDecimal.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDecimal.ImeMode = ImeMode.NoControl;
+            lblDecimal.Location = new Point(96, 228);
+            lblDecimal.Name = "lblDecimal";
+            lblDecimal.Size = new Size(52, 15);
+            lblDecimal.TabIndex = 130;
+            lblDecimal.Text = "Decimal";
             // 
-            // txtrepfreq
+            // txtLT
             // 
-            txtrepfreq.Location = new Point(66, 223);
-            txtrepfreq.Name = "txtrepfreq";
-            txtrepfreq.Size = new Size(24, 23);
-            txtrepfreq.TabIndex = 129;
+            txtLT.Location = new Point(66, 223);
+            txtLT.Name = "txtLT";
+            txtLT.Size = new Size(24, 23);
+            txtLT.TabIndex = 129;
             // 
-            // label13
+            // lblLT
             // 
-            label13.AutoSize = true;
-            label13.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label13.ImeMode = ImeMode.NoControl;
-            label13.Location = new Point(4, 227);
-            label13.Name = "label13";
-            label13.Size = new Size(63, 15);
-            label13.TabIndex = 128;
-            label13.Text = "Req. Freq.";
+            lblLT.AutoSize = true;
+            lblLT.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblLT.ImeMode = ImeMode.NoControl;
+            lblLT.Location = new Point(4, 227);
+            lblLT.Name = "lblLT";
+            lblLT.Size = new Size(63, 15);
+            lblLT.TabIndex = 128;
+            lblLT.Text = "Req. Freq.";
             // 
             // txtexisper
             // 
@@ -350,260 +346,275 @@
             txtexisper.Size = new Size(33, 23);
             txtexisper.TabIndex = 127;
             // 
-            // label12
+            // lblExcis
             // 
-            label12.AutoSize = true;
-            label12.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label12.ImeMode = ImeMode.NoControl;
-            label12.Location = new Point(641, 194);
-            label12.Name = "label12";
-            label12.Size = new Size(44, 15);
-            label12.TabIndex = 126;
-            label12.Text = "Excis%";
+            lblExcis.AutoSize = true;
+            lblExcis.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblExcis.ImeMode = ImeMode.NoControl;
+            lblExcis.Location = new Point(641, 194);
+            lblExcis.Name = "lblExcis";
+            lblExcis.Size = new Size(44, 15);
+            lblExcis.TabIndex = 126;
+            lblExcis.Text = "Excis%";
             // 
-            // txtstyle
+            // txtStyle
             // 
-            txtstyle.Location = new Point(570, 191);
-            txtstyle.Name = "txtstyle";
-            txtstyle.Size = new Size(68, 23);
-            txtstyle.TabIndex = 125;
+            txtStyle.Location = new Point(570, 191);
+            txtStyle.Name = "txtStyle";
+            txtStyle.Size = new Size(68, 23);
+            txtStyle.TabIndex = 125;
             // 
-            // label11
+            // lblStyle
             // 
-            label11.AutoSize = true;
-            label11.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label11.ImeMode = ImeMode.NoControl;
-            label11.Location = new Point(533, 194);
-            label11.Name = "label11";
-            label11.Size = new Size(35, 15);
-            label11.TabIndex = 124;
-            label11.Text = "Style";
+            lblStyle.AutoSize = true;
+            lblStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblStyle.ImeMode = ImeMode.NoControl;
+            lblStyle.Location = new Point(533, 194);
+            lblStyle.Name = "lblStyle";
+            lblStyle.Size = new Size(35, 15);
+            lblStyle.TabIndex = 124;
+            lblStyle.Text = "Style";
             // 
-            // txtmaxlvl
+            // txtMaxLevel
             // 
-            txtmaxlvl.Location = new Point(440, 191);
-            txtmaxlvl.Name = "txtmaxlvl";
-            txtmaxlvl.Size = new Size(85, 23);
-            txtmaxlvl.TabIndex = 123;
+            txtMaxLevel.Location = new Point(440, 191);
+            txtMaxLevel.Name = "txtMaxLevel";
+            txtMaxLevel.Size = new Size(85, 23);
+            txtMaxLevel.TabIndex = 123;
             // 
-            // label10
+            // lblMaxLevel
             // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label10.ImeMode = ImeMode.NoControl;
-            label10.Location = new Point(368, 194);
-            label10.Name = "label10";
-            label10.Size = new Size(64, 15);
-            label10.TabIndex = 122;
-            label10.Text = "Max Level";
+            lblMaxLevel.AutoSize = true;
+            lblMaxLevel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblMaxLevel.ImeMode = ImeMode.NoControl;
+            lblMaxLevel.Location = new Point(368, 194);
+            lblMaxLevel.Name = "lblMaxLevel";
+            lblMaxLevel.Size = new Size(64, 15);
+            lblMaxLevel.TabIndex = 122;
+            lblMaxLevel.Text = "Max Level";
             // 
-            // txtreordlvl
+            // txtReOLevel
             // 
-            txtreordlvl.Location = new Point(243, 191);
-            txtreordlvl.Name = "txtreordlvl";
-            txtreordlvl.Size = new Size(109, 23);
-            txtreordlvl.TabIndex = 121;
+            txtReOLevel.Location = new Point(243, 191);
+            txtReOLevel.Name = "txtReOLevel";
+            txtReOLevel.Size = new Size(109, 23);
+            txtReOLevel.TabIndex = 121;
             // 
-            // label9
+            // lblReOLevel
             // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label9.ImeMode = ImeMode.NoControl;
-            label9.Location = new Point(180, 191);
-            label9.Name = "label9";
-            label9.Size = new Size(61, 30);
-            label9.TabIndex = 120;
-            label9.Text = "Re- order\r\nLevel";
+            lblReOLevel.AutoSize = true;
+            lblReOLevel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblReOLevel.ImeMode = ImeMode.NoControl;
+            lblReOLevel.Location = new Point(180, 191);
+            lblReOLevel.Name = "lblReOLevel";
+            lblReOLevel.Size = new Size(61, 30);
+            lblReOLevel.TabIndex = 120;
+            lblReOLevel.Text = "Re- order Level";
             // 
-            // txtminlvl
+            // txtMinLevel
             // 
-            txtminlvl.Location = new Point(61, 190);
-            txtminlvl.Name = "txtminlvl";
-            txtminlvl.Size = new Size(109, 23);
-            txtminlvl.TabIndex = 119;
+            txtMinLevel.Location = new Point(61, 190);
+            txtMinLevel.Name = "txtMinLevel";
+            txtMinLevel.Size = new Size(109, 23);
+            txtMinLevel.TabIndex = 119;
             // 
-            // label8
+            // lblMinLevel
             // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label8.ImeMode = ImeMode.NoControl;
-            label8.Location = new Point(12, 189);
-            label8.Name = "label8";
-            label8.Size = new Size(37, 30);
-            label8.TabIndex = 118;
-            label8.Text = "MIn.\r\nLevel";
+            lblMinLevel.AutoSize = true;
+            lblMinLevel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblMinLevel.ImeMode = ImeMode.NoControl;
+            lblMinLevel.Location = new Point(12, 189);
+            lblMinLevel.Name = "lblMinLevel";
+            lblMinLevel.Size = new Size(37, 30);
+            lblMinLevel.TabIndex = 118;
+            lblMinLevel.Text = "MIn. Level";
             // 
-            // txtopbal
+            // txtOpBal
             // 
-            txtopbal.Location = new Point(607, 158);
-            txtopbal.Name = "txtopbal";
-            txtopbal.Size = new Size(109, 23);
-            txtopbal.TabIndex = 117;
+            txtOpBal.Location = new Point(627, 158);
+            txtOpBal.Name = "txtOpBal";
+            txtOpBal.Size = new Size(84, 23);
+            txtOpBal.TabIndex = 117;
             // 
-            // label7
+            // lblOpBal
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label7.ImeMode = ImeMode.NoControl;
-            label7.Location = new Point(531, 162);
-            label7.Name = "label7";
-            label7.Size = new Size(69, 15);
-            label7.TabIndex = 116;
-            label7.Text = "OP Balance";
+            lblOpBal.AutoSize = true;
+            lblOpBal.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblOpBal.ImeMode = ImeMode.NoControl;
+            lblOpBal.Location = new Point(551, 162);
+            lblOpBal.Name = "lblOpBal";
+            lblOpBal.Size = new Size(69, 15);
+            lblOpBal.TabIndex = 116;
+            lblOpBal.Text = "OP Balance";
             // 
-            // txtconv
+            // txtConv
             // 
-            txtconv.Location = new Point(439, 158);
-            txtconv.Name = "txtconv";
-            txtconv.Size = new Size(85, 23);
-            txtconv.TabIndex = 115;
+            txtConv.Location = new Point(456, 158);
+            txtConv.Name = "txtConv";
+            txtConv.Size = new Size(85, 23);
+            txtConv.TabIndex = 115;
             // 
-            // label5
+            // lblConv
             // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label5.ImeMode = ImeMode.NoControl;
-            label5.Location = new Point(362, 163);
-            label5.Name = "label5";
-            label5.Size = new Size(69, 15);
-            label5.TabIndex = 114;
-            label5.Text = "Conversion";
+            lblConv.AutoSize = true;
+            lblConv.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblConv.ImeMode = ImeMode.NoControl;
+            lblConv.Location = new Point(381, 163);
+            lblConv.Name = "lblConv";
+            lblConv.Size = new Size(69, 15);
+            lblConv.TabIndex = 114;
+            lblConv.Text = "Conversion";
             // 
-            // label6
+            // lblSaleUnit
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label6.ImeMode = ImeMode.NoControl;
-            label6.Location = new Point(18, 158);
-            label6.Name = "label6";
-            label6.Size = new Size(31, 30);
-            label6.TabIndex = 111;
-            label6.Text = "Sale\r\nUnit";
+            lblSaleUnit.AutoSize = true;
+            lblSaleUnit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSaleUnit.ImeMode = ImeMode.NoControl;
+            lblSaleUnit.Location = new Point(18, 158);
+            lblSaleUnit.Name = "lblSaleUnit";
+            lblSaleUnit.Size = new Size(31, 30);
+            lblSaleUnit.TabIndex = 111;
+            lblSaleUnit.Text = "Sale Unit";
             // 
-            // txtshortdesc
+            // txtShDesc
             // 
-            txtshortdesc.AutoCompleteSource = AutoCompleteSource.HistoryList;
-            txtshortdesc.Enabled = false;
-            txtshortdesc.Location = new Point(438, 96);
-            txtshortdesc.Name = "txtshortdesc";
-            txtshortdesc.Size = new Size(275, 23);
-            txtshortdesc.TabIndex = 110;
+            txtShDesc.AutoCompleteSource = AutoCompleteSource.HistoryList;
+            txtShDesc.Enabled = false;
+            txtShDesc.Location = new Point(438, 96);
+            txtShDesc.Name = "txtShDesc";
+            txtShDesc.Size = new Size(275, 23);
+            txtShDesc.TabIndex = 110;
             // 
-            // label3
+            // lblShDesc
             // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label3.ImeMode = ImeMode.NoControl;
-            label3.Location = new Point(361, 100);
-            label3.Name = "label3";
-            label3.Size = new Size(71, 15);
-            label3.TabIndex = 109;
-            label3.Text = "Short Desc.";
+            lblShDesc.AutoSize = true;
+            lblShDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblShDesc.ImeMode = ImeMode.NoControl;
+            lblShDesc.Location = new Point(361, 100);
+            lblShDesc.Name = "lblShDesc";
+            lblShDesc.Size = new Size(71, 15);
+            lblShDesc.TabIndex = 109;
+            lblShDesc.Text = "Short Desc.";
             // 
-            // colidcomb
+            // cboColorDesc
             // 
-            colidcomb.FormattingEnabled = true;
-            colidcomb.Location = new Point(61, 96);
-            colidcomb.Name = "colidcomb";
-            colidcomb.Size = new Size(88, 23);
-            colidcomb.TabIndex = 107;
-            colidcomb.SelectedIndexChanged += colidcomb_SelectedIndexChanged;
-            colidcomb.MouseDown += colidcomb_MouseDown;
+            cboColorDesc.DropDownHeight = 50;
+            cboColorDesc.FormattingEnabled = true;
+            cboColorDesc.IntegralHeight = false;
+            cboColorDesc.Location = new Point(61, 96);
+            cboColorDesc.Name = "cboColorDesc";
+            cboColorDesc.Size = new Size(88, 23);
+            cboColorDesc.TabIndex = 107;
+            cboColorDesc.DropDown += cboColorDesc_DropDown;
+            cboColorDesc.SelectedIndexChanged += colidcomb_SelectedIndexChanged;
+            cboColorDesc.MouseDown += colidcomb_MouseDown;
             // 
-            // label4
+            // lblColorDesc
             // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label4.ImeMode = ImeMode.NoControl;
-            label4.Location = new Point(4, 99);
-            label4.Name = "label4";
-            label4.Size = new Size(50, 15);
-            label4.TabIndex = 106;
-            label4.Text = "Color Id";
+            lblColorDesc.AutoSize = true;
+            lblColorDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblColorDesc.ImeMode = ImeMode.NoControl;
+            lblColorDesc.Location = new Point(4, 99);
+            lblColorDesc.Name = "lblColorDesc";
+            lblColorDesc.Size = new Size(50, 15);
+            lblColorDesc.TabIndex = 106;
+            lblColorDesc.Text = "Color Id";
             // 
-            // label1
+            // lblPurUnit
             // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.ImeMode = ImeMode.NoControl;
-            label1.Location = new Point(378, 128);
-            label1.Name = "label1";
-            label1.Size = new Size(57, 30);
-            label1.TabIndex = 103;
-            label1.Text = "Purchase\r\n Unit";
+            lblPurUnit.AutoSize = true;
+            lblPurUnit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblPurUnit.ImeMode = ImeMode.NoControl;
+            lblPurUnit.Location = new Point(378, 128);
+            lblPurUnit.Name = "lblPurUnit";
+            lblPurUnit.Size = new Size(57, 30);
+            lblPurUnit.TabIndex = 103;
+            lblPurUnit.Text = "Purchase  Unit";
             // 
-            // manufcomb
+            // cboManuf
             // 
-            manufcomb.FormattingEnabled = true;
-            manufcomb.Location = new Point(61, 127);
-            manufcomb.Name = "manufcomb";
-            manufcomb.Size = new Size(88, 23);
-            manufcomb.TabIndex = 101;
-            manufcomb.SelectedIndexChanged += manufcomb_SelectedIndexChanged;
-            manufcomb.MouseDown += comboBox2_MouseDown;
+            cboManuf.DropDownHeight = 100;
+            cboManuf.FormattingEnabled = true;
+            cboManuf.IntegralHeight = false;
+            cboManuf.Location = new Point(61, 127);
+            cboManuf.Name = "cboManuf";
+            cboManuf.Size = new Size(88, 23);
+            cboManuf.TabIndex = 101;
+            cboManuf.DropDown += cboManuf_DropDown;
+            cboManuf.SelectedIndexChanged += manufcomb_SelectedIndexChanged;
+            cboManuf.MouseDown += comboBox2_MouseDown;
             // 
-            // label2
+            // lblManuf
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label2.ImeMode = ImeMode.NoControl;
-            label2.Location = new Point(9, 130);
-            label2.Name = "label2";
-            label2.Size = new Size(45, 15);
-            label2.TabIndex = 100;
-            label2.Text = "Manuf.";
+            lblManuf.AutoSize = true;
+            lblManuf.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblManuf.ImeMode = ImeMode.NoControl;
+            lblManuf.Location = new Point(9, 130);
+            lblManuf.Name = "lblManuf";
+            lblManuf.Size = new Size(45, 15);
+            lblManuf.TabIndex = 100;
+            lblManuf.Text = "Manuf.";
             // 
-            // cboSizeID
+            // cboSizeDesc
             // 
-            cboSizeID.FormattingEnabled = true;
-            cboSizeID.Location = new Point(437, 65);
-            cboSizeID.Name = "cboSizeID";
-            cboSizeID.Size = new Size(85, 23);
-            cboSizeID.TabIndex = 98;
-            cboSizeID.SelectedIndexChanged += sizecomb_SelectedIndexChanged;
-            cboSizeID.MouseDown += sizecomb_MouseDown;
+            cboSizeDesc.DropDownHeight = 100;
+            cboSizeDesc.FormattingEnabled = true;
+            cboSizeDesc.IntegralHeight = false;
+            cboSizeDesc.Location = new Point(437, 65);
+            cboSizeDesc.Name = "cboSizeDesc";
+            cboSizeDesc.Size = new Size(85, 23);
+            cboSizeDesc.TabIndex = 98;
+            cboSizeDesc.DropDown += cboSizeDesc_DropDown;
+            cboSizeDesc.SelectedIndexChanged += sizecomb_SelectedIndexChanged;
+            cboSizeDesc.MouseDown += sizecomb_MouseDown;
             // 
-            // lblSizeID
+            // lblSizeDesc
             // 
-            lblSizeID.AutoSize = true;
-            lblSizeID.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblSizeID.ImeMode = ImeMode.NoControl;
-            lblSizeID.Location = new Point(381, 69);
-            lblSizeID.Name = "lblSizeID";
-            lblSizeID.Size = new Size(44, 15);
-            lblSizeID.TabIndex = 97;
-            lblSizeID.Text = "Size Id";
+            lblSizeDesc.AutoSize = true;
+            lblSizeDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSizeDesc.ImeMode = ImeMode.NoControl;
+            lblSizeDesc.Location = new Point(381, 69);
+            lblSizeDesc.Name = "lblSizeDesc";
+            lblSizeDesc.Size = new Size(44, 15);
+            lblSizeDesc.TabIndex = 97;
+            lblSizeDesc.Text = "Size Id";
             // 
-            // cboSSGroupID
+            // cboSSGroupDesc
             // 
-            cboSSGroupID.Enabled = false;
-            cboSSGroupID.FormattingEnabled = true;
-            cboSSGroupID.Location = new Point(65, 65);
-            cboSSGroupID.Name = "cboSSGroupID";
-            cboSSGroupID.Size = new Size(88, 23);
-            cboSSGroupID.TabIndex = 95;
-            cboSSGroupID.SelectedIndexChanged += ssgrpcomb_SelectedIndexChanged;
-            cboSSGroupID.MouseDown += ssgrpcomb_MouseDown;
+            cboSSGroupDesc.DropDownHeight = 100;
+            cboSSGroupDesc.Enabled = false;
+            cboSSGroupDesc.FormattingEnabled = true;
+            cboSSGroupDesc.IntegralHeight = false;
+            cboSSGroupDesc.Location = new Point(65, 65);
+            cboSSGroupDesc.Name = "cboSSGroupDesc";
+            cboSSGroupDesc.Size = new Size(88, 23);
+            cboSSGroupDesc.TabIndex = 95;
+            cboSSGroupDesc.DropDown += cboSSGroupDesc_DropDown;
+            cboSSGroupDesc.SelectedIndexChanged += ssgrpcomb_SelectedIndexChanged;
+            cboSSGroupDesc.MouseDown += ssgrpcomb_MouseDown;
             // 
-            // lblSSGroupID
+            // lblSSGroupDesc
             // 
-            lblSSGroupID.AutoSize = true;
-            lblSSGroupID.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblSSGroupID.ImeMode = ImeMode.NoControl;
-            lblSSGroupID.Location = new Point(1, 68);
-            lblSSGroupID.Name = "lblSSGroupID";
-            lblSSGroupID.Size = new Size(62, 15);
-            lblSSGroupID.TabIndex = 94;
-            lblSSGroupID.Text = "S.S Group";
+            lblSSGroupDesc.AutoSize = true;
+            lblSSGroupDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSSGroupDesc.ImeMode = ImeMode.NoControl;
+            lblSSGroupDesc.Location = new Point(1, 68);
+            lblSSGroupDesc.Name = "lblSSGroupDesc";
+            lblSSGroupDesc.Size = new Size(62, 15);
+            lblSSGroupDesc.TabIndex = 94;
+            lblSSGroupDesc.Text = "S.S Group";
             // 
             // cboSGroup
             // 
+            cboSGroup.DropDownHeight = 100;
             cboSGroup.Enabled = false;
             cboSGroup.FormattingEnabled = true;
+            cboSGroup.IntegralHeight = false;
             cboSGroup.Location = new Point(437, 34);
             cboSGroup.Name = "cboSGroup";
             cboSGroup.Size = new Size(85, 23);
             cboSGroup.TabIndex = 92;
+            cboSGroup.DropDown += cboSGroup_DropDown;
             cboSGroup.SelectedIndexChanged += subgrpcomb_SelectedIndexChanged;
             cboSGroup.MouseDown += subgrpcomb_MouseDown;
             // 
@@ -620,12 +631,16 @@
             // 
             // cboGroup
             // 
-            cboGroup.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cboGroup.DropDownHeight = 100;
             cboGroup.FormattingEnabled = true;
+            cboGroup.IntegralHeight = false;
+            cboGroup.ItemHeight = 15;
             cboGroup.Location = new Point(61, 34);
+            cboGroup.MaxDropDownItems = 5;
             cboGroup.Name = "cboGroup";
             cboGroup.Size = new Size(88, 23);
             cboGroup.TabIndex = 89;
+            cboGroup.DropDown += cboGroup_DropDown;
             cboGroup.SelectedIndexChanged += grpcomb_SelectedIndexChanged;
             cboGroup.MouseDown += grpcomb_MouseDown;
             // 
@@ -643,12 +658,16 @@
             // cboType
             // 
             cboType.AutoCompleteSource = AutoCompleteSource.ListItems;
+            cboType.DropDownHeight = 100;
             cboType.FormattingEnabled = true;
+            cboType.IntegralHeight = false;
             cboType.Location = new Point(500, 4);
             cboType.Name = "cboType";
             cboType.Size = new Size(49, 23);
             cboType.TabIndex = 86;
+            cboType.DropDown += cboType_DropDown;
             cboType.SelectedIndexChanged += typcomb_SelectedIndexChanged;
+            cboType.MouseClick += cboType_MouseClick;
             cboType.MouseDown += typcomb_MouseDown;
             // 
             // lblType
@@ -701,156 +720,6 @@
             lblItemId.TabIndex = 81;
             lblItemId.Text = "Item Id";
             // 
-            // panel1
-            // 
-            panel1.BackColor = Color.CadetBlue;
-            panel1.Controls.Add(checkBox4);
-            panel1.Controls.Add(label31);
-            panel1.Controls.Add(textBox28);
-            panel1.Controls.Add(label30);
-            panel1.Controls.Add(textBox27);
-            panel1.Controls.Add(label29);
-            panel1.Controls.Add(textBox26);
-            panel1.Controls.Add(label28);
-            panel1.Controls.Add(textBox25);
-            panel1.Controls.Add(label27);
-            panel1.Controls.Add(textBox24);
-            panel1.Controls.Add(label26);
-            panel1.Controls.Add(textBox23);
-            panel1.Controls.Add(label25);
-            panel1.Location = new Point(3, 288);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(714, 51);
-            panel1.TabIndex = 164;
-            // 
-            // checkBox4
-            // 
-            checkBox4.AutoSize = true;
-            checkBox4.Location = new Point(661, 26);
-            checkBox4.Name = "checkBox4";
-            checkBox4.Size = new Size(15, 14);
-            checkBox4.TabIndex = 82;
-            checkBox4.UseVisualStyleBackColor = true;
-            // 
-            // label31
-            // 
-            label31.AutoSize = true;
-            label31.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label31.ImeMode = ImeMode.NoControl;
-            label31.Location = new Point(649, 5);
-            label31.Name = "label31";
-            label31.Size = new Size(43, 15);
-            label31.TabIndex = 82;
-            label31.Text = "Active";
-            // 
-            // textBox28
-            // 
-            textBox28.Location = new Point(542, 22);
-            textBox28.Name = "textBox28";
-            textBox28.Size = new Size(88, 23);
-            textBox28.TabIndex = 85;
-            // 
-            // label30
-            // 
-            label30.AutoSize = true;
-            label30.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label30.ImeMode = ImeMode.NoControl;
-            label30.Location = new Point(551, 4);
-            label30.Name = "label30";
-            label30.Size = new Size(60, 15);
-            label30.TabIndex = 86;
-            label30.Text = "NET RATE";
-            // 
-            // textBox27
-            // 
-            textBox27.Location = new Point(448, 22);
-            textBox27.Name = "textBox27";
-            textBox27.Size = new Size(88, 23);
-            textBox27.TabIndex = 87;
-            // 
-            // label29
-            // 
-            label29.AutoSize = true;
-            label29.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label29.ImeMode = ImeMode.NoControl;
-            label29.Location = new Point(459, 5);
-            label29.Name = "label29";
-            label29.Size = new Size(69, 15);
-            label29.TabIndex = 88;
-            label29.Text = "SALE PRICE";
-            // 
-            // textBox26
-            // 
-            textBox26.Location = new Point(352, 22);
-            textBox26.Name = "textBox26";
-            textBox26.Size = new Size(88, 23);
-            textBox26.TabIndex = 85;
-            // 
-            // label28
-            // 
-            label28.AutoSize = true;
-            label28.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label28.ImeMode = ImeMode.NoControl;
-            label28.Location = new Point(375, 5);
-            label28.Name = "label28";
-            label28.Size = new Size(33, 15);
-            label28.TabIndex = 86;
-            label28.Text = "MRP";
-            // 
-            // textBox25
-            // 
-            textBox25.Location = new Point(256, 22);
-            textBox25.Name = "textBox25";
-            textBox25.Size = new Size(88, 23);
-            textBox25.TabIndex = 83;
-            // 
-            // label27
-            // 
-            label27.AutoSize = true;
-            label27.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label27.ImeMode = ImeMode.NoControl;
-            label27.Location = new Point(266, 4);
-            label27.Name = "label27";
-            label27.Size = new Size(72, 15);
-            label27.TabIndex = 84;
-            label27.Text = "COST PRICE";
-            // 
-            // textBox24
-            // 
-            textBox24.Location = new Point(105, 22);
-            textBox24.Name = "textBox24";
-            textBox24.Size = new Size(144, 23);
-            textBox24.TabIndex = 83;
-            // 
-            // label26
-            // 
-            label26.AutoSize = true;
-            label26.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label26.ImeMode = ImeMode.NoControl;
-            label26.Location = new Point(152, 4);
-            label26.Name = "label26";
-            label26.Size = new Size(53, 15);
-            label26.TabIndex = 84;
-            label26.Text = "Barcode";
-            // 
-            // textBox23
-            // 
-            textBox23.Location = new Point(5, 22);
-            textBox23.Name = "textBox23";
-            textBox23.Size = new Size(95, 23);
-            textBox23.TabIndex = 82;
-            // 
-            // label25
-            // 
-            label25.AutoSize = true;
-            label25.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label25.ImeMode = ImeMode.NoControl;
-            label25.Location = new Point(38, 4);
-            label25.Name = "label25";
-            label25.Size = new Size(29, 15);
-            label25.TabIndex = 82;
-            label25.Text = "PLU";
-            // 
             // rotType
             // 
             rotType.BackColor = Color.Bisque;
@@ -897,106 +766,112 @@
             rotSizeDesc.Size = new Size(184, 23);
             rotSizeDesc.TabIndex = 170;
             // 
-            // lblcolid
+            // rotColorDesc
             // 
-            lblcolid.BackColor = Color.Bisque;
-            lblcolid.BorderStyle = BorderStyle.Fixed3D;
-            lblcolid.Location = new Point(154, 96);
-            lblcolid.Name = "lblcolid";
-            lblcolid.Size = new Size(202, 23);
-            lblcolid.TabIndex = 171;
+            rotColorDesc.BackColor = Color.Bisque;
+            rotColorDesc.BorderStyle = BorderStyle.Fixed3D;
+            rotColorDesc.Location = new Point(154, 96);
+            rotColorDesc.Name = "rotColorDesc";
+            rotColorDesc.Size = new Size(202, 23);
+            rotColorDesc.TabIndex = 171;
             // 
-            // lblmanuf
+            // rotManuf
             // 
-            lblmanuf.BackColor = Color.Bisque;
-            lblmanuf.BorderStyle = BorderStyle.Fixed3D;
-            lblmanuf.Location = new Point(153, 126);
-            lblmanuf.Name = "lblmanuf";
-            lblmanuf.Size = new Size(202, 23);
-            lblmanuf.TabIndex = 172;
+            rotManuf.BackColor = Color.Bisque;
+            rotManuf.BorderStyle = BorderStyle.Fixed3D;
+            rotManuf.Location = new Point(153, 126);
+            rotManuf.Name = "rotManuf";
+            rotManuf.Size = new Size(202, 23);
+            rotManuf.TabIndex = 172;
             // 
-            // lblpurunit
+            // rotPurUnit
             // 
-            lblpurunit.BackColor = Color.Bisque;
-            lblpurunit.BorderStyle = BorderStyle.Fixed3D;
-            lblpurunit.Location = new Point(529, 126);
-            lblpurunit.Name = "lblpurunit";
-            lblpurunit.Size = new Size(184, 23);
-            lblpurunit.TabIndex = 173;
+            rotPurUnit.BackColor = Color.Bisque;
+            rotPurUnit.BorderStyle = BorderStyle.Fixed3D;
+            rotPurUnit.Location = new Point(529, 126);
+            rotPurUnit.Name = "rotPurUnit";
+            rotPurUnit.Size = new Size(184, 23);
+            rotPurUnit.TabIndex = 173;
             // 
-            // lblsalunit
+            // rotSaleUnit
             // 
-            lblsalunit.BackColor = Color.Bisque;
-            lblsalunit.BorderStyle = BorderStyle.Fixed3D;
-            lblsalunit.Location = new Point(153, 157);
-            lblsalunit.Name = "lblsalunit";
-            lblsalunit.Size = new Size(202, 23);
-            lblsalunit.TabIndex = 174;
+            rotSaleUnit.BackColor = Color.Bisque;
+            rotSaleUnit.BorderStyle = BorderStyle.Fixed3D;
+            rotSaleUnit.Location = new Point(153, 157);
+            rotSaleUnit.Name = "rotSaleUnit";
+            rotSaleUnit.Size = new Size(123, 23);
+            rotSaleUnit.TabIndex = 174;
             // 
-            // lblgstperc
+            // rotSaleTax
             // 
-            lblgstperc.BackColor = Color.Bisque;
-            lblgstperc.BorderStyle = BorderStyle.Fixed3D;
-            lblgstperc.Location = new Point(552, 224);
-            lblgstperc.Name = "lblgstperc";
-            lblgstperc.Size = new Size(73, 23);
-            lblgstperc.TabIndex = 175;
+            rotSaleTax.BackColor = Color.Bisque;
+            rotSaleTax.BorderStyle = BorderStyle.Fixed3D;
+            rotSaleTax.Location = new Point(552, 224);
+            rotSaleTax.Name = "rotSaleTax";
+            rotSaleTax.Size = new Size(73, 23);
+            rotSaleTax.TabIndex = 175;
             // 
-            // lbllocid
+            // rotLoc
             // 
-            lbllocid.BackColor = Color.Bisque;
-            lbllocid.BorderStyle = BorderStyle.Fixed3D;
-            lbllocid.Location = new Point(331, 254);
-            lbllocid.Name = "lbllocid";
-            lbllocid.Size = new Size(59, 23);
-            lbllocid.TabIndex = 176;
+            rotLoc.BackColor = Color.Bisque;
+            rotLoc.BorderStyle = BorderStyle.Fixed3D;
+            rotLoc.Location = new Point(331, 254);
+            rotLoc.Name = "rotLoc";
+            rotLoc.Size = new Size(59, 23);
+            rotLoc.TabIndex = 176;
             // 
-            // label33
+            // rotStock
             // 
-            label33.BackColor = Color.Bisque;
-            label33.BorderStyle = BorderStyle.Fixed3D;
-            label33.Location = new Point(545, 256);
-            label33.Name = "label33";
-            label33.Size = new Size(59, 23);
-            label33.TabIndex = 177;
+            rotStock.BackColor = Color.Bisque;
+            rotStock.BorderStyle = BorderStyle.Fixed3D;
+            rotStock.Location = new Point(545, 256);
+            rotStock.Name = "rotStock";
+            rotStock.Size = new Size(59, 23);
+            rotStock.TabIndex = 177;
             // 
-            // lblstck2
+            // rotNetRate
             // 
-            lblstck2.BackColor = Color.Bisque;
-            lblstck2.BorderStyle = BorderStyle.Fixed3D;
-            lblstck2.Location = new Point(607, 256);
-            lblstck2.Name = "lblstck2";
-            lblstck2.Size = new Size(48, 23);
-            lblstck2.TabIndex = 178;
+            rotNetRate.BackColor = Color.Bisque;
+            rotNetRate.BorderStyle = BorderStyle.Fixed3D;
+            rotNetRate.Location = new Point(607, 256);
+            rotNetRate.Name = "rotNetRate";
+            rotNetRate.Size = new Size(48, 23);
+            rotNetRate.TabIndex = 178;
             // 
-            // lblmargin
+            // lblMargin
             // 
-            lblmargin.BackColor = Color.Bisque;
-            lblmargin.BorderStyle = BorderStyle.Fixed3D;
-            lblmargin.Location = new Point(677, 256);
-            lblmargin.Name = "lblmargin";
-            lblmargin.Size = new Size(57, 23);
-            lblmargin.TabIndex = 179;
+            lblMargin.BackColor = Color.Bisque;
+            lblMargin.BorderStyle = BorderStyle.Fixed3D;
+            lblMargin.Location = new Point(677, 256);
+            lblMargin.Name = "lblMargin";
+            lblMargin.Size = new Size(57, 23);
+            lblMargin.TabIndex = 179;
             // 
-            // salunitcomb
+            // cboSaleUnit
             // 
-            salunitcomb.FormattingEnabled = true;
-            salunitcomb.Location = new Point(61, 157);
-            salunitcomb.Name = "salunitcomb";
-            salunitcomb.Size = new Size(88, 23);
-            salunitcomb.TabIndex = 180;
-            salunitcomb.SelectedIndexChanged += salunitcomb_SelectedIndexChanged;
-            salunitcomb.MouseDown += salunitcomb_MouseDown;
+            cboSaleUnit.DropDownHeight = 100;
+            cboSaleUnit.FormattingEnabled = true;
+            cboSaleUnit.IntegralHeight = false;
+            cboSaleUnit.Location = new Point(61, 157);
+            cboSaleUnit.Name = "cboSaleUnit";
+            cboSaleUnit.Size = new Size(88, 23);
+            cboSaleUnit.TabIndex = 180;
+            cboSaleUnit.DropDown += cboSaleUnit_DropDown;
+            cboSaleUnit.SelectedIndexChanged += salunitcomb_SelectedIndexChanged;
+            cboSaleUnit.MouseDown += salunitcomb_MouseDown;
             // 
-            // purunitcomb
+            // cboPurUnit
             // 
-            purunitcomb.FormattingEnabled = true;
-            purunitcomb.Location = new Point(438, 126);
-            purunitcomb.Name = "purunitcomb";
-            purunitcomb.Size = new Size(88, 23);
-            purunitcomb.TabIndex = 181;
-            purunitcomb.SelectedIndexChanged += purunitcomb_SelectedIndexChanged;
-            purunitcomb.MouseDown += purunitcomb_MouseDown;
+            cboPurUnit.DropDownHeight = 100;
+            cboPurUnit.FormattingEnabled = true;
+            cboPurUnit.IntegralHeight = false;
+            cboPurUnit.Location = new Point(438, 126);
+            cboPurUnit.Name = "cboPurUnit";
+            cboPurUnit.Size = new Size(88, 23);
+            cboPurUnit.TabIndex = 181;
+            cboPurUnit.DropDown += cboPurUnit_DropDown;
+            cboPurUnit.SelectedIndexChanged += purunitcomb_SelectedIndexChanged;
+            cboPurUnit.MouseDown += purunitcomb_MouseDown;
             // 
             // panel2
             // 
@@ -1012,23 +887,26 @@
             panel3.Size = new Size(733, 114);
             panel3.TabIndex = 185;
             // 
-            // dataGridView1
+            // dbgBarDet
             // 
-            dataGridView1.BorderStyle = BorderStyle.Fixed3D;
-            dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.Raised;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { PLU, BARCODE, cp, MRP, salepric, netrate, ACTIVE });
-            dataGridView1.Location = new Point(-2, 342);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(730, 112);
-            dataGridView1.TabIndex = 165;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-            dataGridView1.CellEndEdit += dataGridView1_CellEndEdit;
-            dataGridView1.CellFormatting += dataGridView1_CellFormatting;
-            dataGridView1.CellValidating += dataGridView1_CellValidating;
-            dataGridView1.EditingControlShowing += dataGridView1_EditingControlShowing;
-            dataGridView1.KeyDown += dataGridView1_KeyDown;
+            dbgBarDet.BorderStyle = BorderStyle.Fixed3D;
+            dbgBarDet.CellBorderStyle = DataGridViewCellBorderStyle.Raised;
+            dbgBarDet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dbgBarDet.Columns.AddRange(new DataGridViewColumn[] { PLU, BARCODE, cp, MRP, salepric, netrate, ACTIVE });
+            dbgBarDet.Location = new Point(-2, 310);
+            dbgBarDet.Name = "dbgBarDet";
+            dbgBarDet.RowTemplate.Height = 25;
+            dbgBarDet.Size = new Size(730, 134);
+            dbgBarDet.TabIndex = 165;
+            dbgBarDet.CellEndEdit += dataGridView1_CellEndEdit;
+            dbgBarDet.CellFormatting += dataGridView1_CellFormatting;
+            dbgBarDet.CellLeave += dbgBarDet_CellLeave;
+            dbgBarDet.CellValidating += dbgBarDet_CellValidating;
+            dbgBarDet.CellValueChanged += dbgBarDet_CellValueChanged;
+            dbgBarDet.EditingControlShowing += dataGridView1_EditingControlShowing;
+            dbgBarDet.RowsAdded += dbgBarDet_RowsAdded;
+            dbgBarDet.KeyDown += dataGridView1_KeyDown;
+            dbgBarDet.KeyPress += dbgBarDet_KeyPress;
             // 
             // PLU
             // 
@@ -1070,81 +948,116 @@
             ACTIVE.Name = "ACTIVE";
             ACTIVE.Resizable = DataGridViewTriState.True;
             ACTIVE.SortMode = DataGridViewColumnSortMode.Automatic;
+            ACTIVE.ThreeState = true;
             ACTIVE.TrueValue = "Y";
             ACTIVE.Width = 50;
+            // 
+            // label25
+            // 
+            label25.BackColor = Color.CadetBlue;
+            label25.Font = new Font("Comic Sans MS", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label25.ImeMode = ImeMode.NoControl;
+            label25.Location = new Point(1, 291);
+            label25.Name = "label25";
+            label25.Size = new Size(721, 17);
+            label25.TabIndex = 186;
+            label25.Text = "Barcode Linking";
+            label25.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // chkNodisc
+            // 
+            chkNodisc.AutoSize = true;
+            chkNodisc.Location = new Point(344, 162);
+            chkNodisc.Name = "chkNodisc";
+            chkNodisc.Size = new Size(15, 14);
+            chkNodisc.TabIndex = 188;
+            chkNodisc.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.ImeMode = ImeMode.NoControl;
+            label1.Location = new Point(286, 161);
+            label1.Name = "label1";
+            label1.Size = new Size(52, 15);
+            label1.TabIndex = 187;
+            label1.Text = "No Disc.";
             // 
             // frmM_Item
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
-            ClientSize = new Size(724, 458);
-            Controls.Add(purunitcomb);
-            Controls.Add(salunitcomb);
-            Controls.Add(lblmargin);
-            Controls.Add(lblstck2);
-            Controls.Add(label33);
-            Controls.Add(lbllocid);
-            Controls.Add(lblgstperc);
-            Controls.Add(lblsalunit);
-            Controls.Add(lblpurunit);
-            Controls.Add(lblmanuf);
-            Controls.Add(lblcolid);
+            ClientSize = new Size(724, 447);
+            Controls.Add(chkNodisc);
+            Controls.Add(label1);
+            Controls.Add(label25);
+            Controls.Add(cboPurUnit);
+            Controls.Add(cboSaleUnit);
+            Controls.Add(lblMargin);
+            Controls.Add(rotNetRate);
+            Controls.Add(rotStock);
+            Controls.Add(rotLoc);
+            Controls.Add(rotSaleTax);
+            Controls.Add(rotSaleUnit);
+            Controls.Add(rotPurUnit);
+            Controls.Add(rotManuf);
+            Controls.Add(rotColorDesc);
             Controls.Add(rotSizeDesc);
             Controls.Add(rotSSGroupDesc);
             Controls.Add(rotSGroup);
             Controls.Add(rotGroup);
             Controls.Add(rotType);
-            Controls.Add(dataGridView1);
-            Controls.Add(panel1);
+            Controls.Add(dbgBarDet);
             Controls.Add(label24);
-            Controls.Add(label23);
-            Controls.Add(txtdiscperc);
-            Controls.Add(label22);
-            Controls.Add(locidcomb);
-            Controls.Add(label21);
-            Controls.Add(chkboxbarcodapp);
-            Controls.Add(label20);
-            Controls.Add(chkboxactiv);
-            Controls.Add(label19);
-            Controls.Add(txtcessperc);
-            Controls.Add(label18);
-            Controls.Add(gstperccomb);
-            Controls.Add(label17);
-            Controls.Add(txthsn);
-            Controls.Add(label16);
-            Controls.Add(txtdecupto);
-            Controls.Add(label15);
-            Controls.Add(chkboxdecim);
-            Controls.Add(label14);
-            Controls.Add(txtrepfreq);
-            Controls.Add(label13);
+            Controls.Add(lblStock);
+            Controls.Add(txtDisc);
+            Controls.Add(lblDisc);
+            Controls.Add(cboLoc);
+            Controls.Add(lblLoc);
+            Controls.Add(chkBarYN);
+            Controls.Add(lblBarYN);
+            Controls.Add(chkAct);
+            Controls.Add(lblAct);
+            Controls.Add(txtCess);
+            Controls.Add(lblCess);
+            Controls.Add(cboSaleTax);
+            Controls.Add(lblSaleTax);
+            Controls.Add(txtHSN);
+            Controls.Add(lblHSN);
+            Controls.Add(txtDecimalupto);
+            Controls.Add(lblDecimalupto);
+            Controls.Add(chkDecimal);
+            Controls.Add(lblDecimal);
+            Controls.Add(txtLT);
+            Controls.Add(lblLT);
             Controls.Add(txtexisper);
-            Controls.Add(label12);
-            Controls.Add(txtstyle);
-            Controls.Add(label11);
-            Controls.Add(txtmaxlvl);
-            Controls.Add(label10);
-            Controls.Add(txtreordlvl);
-            Controls.Add(label9);
-            Controls.Add(txtminlvl);
-            Controls.Add(label8);
-            Controls.Add(txtopbal);
-            Controls.Add(label7);
-            Controls.Add(txtconv);
-            Controls.Add(label5);
-            Controls.Add(label6);
-            Controls.Add(txtshortdesc);
-            Controls.Add(label3);
-            Controls.Add(colidcomb);
-            Controls.Add(label4);
-            Controls.Add(label1);
-            Controls.Add(manufcomb);
-            Controls.Add(label2);
-            Controls.Add(cboSizeID);
-            Controls.Add(lblSizeID);
-            Controls.Add(cboSSGroupID);
-            Controls.Add(lblSSGroupID);
+            Controls.Add(lblExcis);
+            Controls.Add(txtStyle);
+            Controls.Add(lblStyle);
+            Controls.Add(txtMaxLevel);
+            Controls.Add(lblMaxLevel);
+            Controls.Add(txtReOLevel);
+            Controls.Add(lblReOLevel);
+            Controls.Add(txtMinLevel);
+            Controls.Add(lblMinLevel);
+            Controls.Add(txtOpBal);
+            Controls.Add(lblOpBal);
+            Controls.Add(txtConv);
+            Controls.Add(lblConv);
+            Controls.Add(lblSaleUnit);
+            Controls.Add(txtShDesc);
+            Controls.Add(lblShDesc);
+            Controls.Add(cboColorDesc);
+            Controls.Add(lblColorDesc);
+            Controls.Add(lblPurUnit);
+            Controls.Add(cboManuf);
+            Controls.Add(lblManuf);
+            Controls.Add(cboSizeDesc);
+            Controls.Add(lblSizeDesc);
+            Controls.Add(cboSSGroupDesc);
+            Controls.Add(lblSSGroupDesc);
             Controls.Add(cboSGroup);
             Controls.Add(lblSubGroup);
             Controls.Add(cboGroup);
@@ -1157,77 +1070,75 @@
             Controls.Add(lblItemId);
             Controls.Add(panel2);
             Controls.Add(panel3);
+            Location = new Point(10, 10);
             MdiChildrenMinimizedAnchorBottom = false;
             Name = "frmM_Item";
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.Manual;
             Text = "Item Master";
+            TopMost = true;
+            FormClosing += frmM_Item_FormClosing;
             FormClosed += Item_FormClosed;
             Load += Item_Load;
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dbgBarDet).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
         private Label label24;
-        private Label label23;
-        private TextBox txtdiscperc;
-        private Label label22;
-        private ComboBox locidcomb;
-        private Label label21;
-        private CheckBox chkboxbarcodapp;
-        private Label label20;
-        private CheckBox chkboxactiv;
-        private Label label19;
-        private TextBox txtcessperc;
-        private Label label18;
-        public ComboBox gstperccomb;
-        private Label label17;
-        private TextBox txthsn;
-        private Label label16;
-        private TextBox txtdecupto;
-        private Label label15;
-        private CheckBox chkboxdecim;
-        private Label label14;
-        private TextBox txtrepfreq;
-        private Label label13;
+        private Label lblStock;
+        private TextBox txtDisc;
+        private Label lblDisc;
+        private ComboBox cboLoc;
+        private Label lblLoc;
+        private CheckBox chkBarYN;
+        private Label lblBarYN;
+        private CheckBox chkAct;
+        private Label lblAct;
+        private TextBox txtCess;
+        private Label lblCess;
+        public ComboBox cboSaleTax;
+        private Label lblSaleTax;
+        private TextBox txtHSN;
+        private Label lblHSN;
+        private TextBox txtDecimalupto;
+        private Label lblDecimalupto;
+        private CheckBox chkDecimal;
+        private Label lblDecimal;
+        private TextBox txtLT;
+        private Label lblLT;
         private TextBox txtexisper;
-        private Label label12;
-        private TextBox txtstyle;
-        private Label label11;
-        private TextBox txtmaxlvl;
-        private Label label10;
-        private TextBox txtreordlvl;
-        private Label label9;
-        private TextBox txtminlvl;
-        private Label label8;
-        private TextBox txtopbal;
-        private Label label7;
-        private TextBox txtconv;
-        private Label label5;
+        private Label lblExcis;
+        private TextBox txtStyle;
+        private Label lblStyle;
+        private TextBox txtMaxLevel;
+        private Label lblMaxLevel;
+        private TextBox txtReOLevel;
+        private Label lblReOLevel;
+        private TextBox txtMinLevel;
+        private Label lblMinLevel;
+        private TextBox txtOpBal;
+        private Label lblOpBal;
+        private TextBox txtConv;
+        private Label lblConv;
         private TextBox textBox5;
         private ComboBox comboBox3;
-        private Label label6;
-        private TextBox txtshortdesc;
-        private Label label3;
+        private Label lblSaleUnit;
+        private TextBox txtShDesc;
+        private Label lblShDesc;
         private TextBox textBox4;
-        private ComboBox colidcomb;
-        private Label label4;
+        private ComboBox cboColorDesc;
+        private Label lblColorDesc;
         private TextBox textBox1;
-        private ComboBox purunitcomb;
-        private Label label1;
+        private ComboBox cboPurUnit;
+        private Label lblPurUnit;
         private TextBox textBox2;
-        private ComboBox manufcomb;
-        private Label label2;
-        private ComboBox cboSizeID;
-        private Label lblSizeID;
-        private ComboBox cboSSGroupID;
-        private Label lblSSGroupID;
-        private ComboBox cboSGroup;
+        private ComboBox cboManuf;
+        private Label lblManuf;
+        private ComboBox cboSizeDesc;
+        private Label lblSizeDesc;
+        private Label lblSSGroupDesc;
         private Label lblSubGroup;
-        private ComboBox cboGroup;
         private Label lblGroup;
         private ComboBox cboType;
         private Label lblType;
@@ -1235,39 +1146,28 @@
         private Label lblItemDesc;
         private TextBox txtItemId;
         private Label lblItemId;
-        private Panel panel1;
-        private CheckBox checkBox4;
-        private Label label31;
-        private TextBox textBox28;
-        private Label label30;
-        private TextBox textBox27;
-        private Label label29;
-        private TextBox textBox26;
-        private Label label28;
-        private TextBox textBox25;
-        private Label label27;
-        private TextBox textBox24;
-        private Label label26;
-        private TextBox textBox23;
-        private Label label25;
         private Label rotType;
         private Label rotGroup;
         private Label rotSGroup;
         private Label rotSSGroupDesc;
         private Label rotSizeDesc;
-        private Label lblcolid;
-        private Label lblmanuf;
-        private Label lblpurunit;
-        private Label lblsalunit;
-        private Label lblgstperc;
-        private Label lbllocid;
-        private Label label33;
-        private Label lblstck2;
-        private Label lblmargin;
-        private ComboBox salunitcomb;
+        private Label rotColorDesc;
+        private Label rotManuf;
+        private Label rotPurUnit;
+        private Label rotSaleUnit;
+        private Label rotSaleTax;
+        private Label rotLoc;
+        private Label rotStock;
+        private Label rotNetRate;
+        private Label lblMargin;
+        private ComboBox cboSaleUnit;
         private Panel panel2;
         private Panel panel3;
-        private DataGridView dataGridView1;
+        private Label label25;
+        public ComboBox cboGroup;
+        public ComboBox cboSGroup;
+        public ComboBox cboSSGroupDesc;
+        public DataGridView dbgBarDet;
         private DataGridViewTextBoxColumn PLU;
         private DataGridViewTextBoxColumn BARCODE;
         private DataGridViewTextBoxColumn cp;
@@ -1275,5 +1175,7 @@
         private DataGridViewTextBoxColumn salepric;
         private DataGridViewTextBoxColumn netrate;
         private DataGridViewCheckBoxColumn ACTIVE;
+        private CheckBox chkNodisc;
+        private Label label1;
     }
 }

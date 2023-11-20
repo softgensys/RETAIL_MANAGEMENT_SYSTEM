@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySqlX.XDevAPI.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -85,6 +86,30 @@ namespace softgen
             mblnSearch = StartVal;
         }
 
+        public void ClearForm()
+        {
+            mblnDataEntered= false;
+            mstrEntBy = null;
+            mstrEntOn = null;
+            mstrAuthBy = null;
+            mstrAuthOn = null;
+            DeTools.ClearTextNComboControls(this);
+
+            chkStatus.Checked = true;
+            txtGrpId.Enabled = true;
+            txtGrpId.Focus();
+
+            //if (txtGrpId.Text != "" )
+            //{
+            //    txtGrpId.Text = string.Empty;
+            //}
+            //if (txtGrpDesc.Text != "" )
+            //{
+            //    txtGrpDesc.Text = string.Empty;
+            //}
+
+        }
+
         private void frmM_Group_FormClosed(object sender, FormClosedEventArgs e)
         {
             DeTools.DestroyToolbar(this);
@@ -106,74 +131,92 @@ namespace softgen
 
                 //dbConnector.transactiono=new OdbcTransaction;
 
+                    DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" + txtGrpId.Text.Trim() + "'";
+                    OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                    dbConnector.connection.Open();
+                    OdbcDataReader reader = cmd.ExecuteReader();
+
                 // Check if the record with the specified Group_id exists
-                DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" + txtGrpId.Text.Trim() + "'";
-                OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-                dbConnector.connection.Open();
-                OdbcDataReader reader = cmd.ExecuteReader();
-
-                if (reader.HasRows)
+                if (DeTools.GetMode(this) != DeTools.ADDMODE)
                 {
-                    // The record exists, so update it
-                    reader.Close();
-                    transaction = dbConnector.connection.BeginTransaction();
-                    cmd.Transaction = transaction;
-                    Messages.SavingMsg();
 
-                    DeTools.gstrSQL = "UPDATE m_Group SET group_desc = ?, active_yn = ?, sales_tax = ?, ent_by = ?, ent_on = ?, trans_status = ? WHERE Group_id = ?";
-                    cmd.CommandText = DeTools.gstrSQL;
-                    cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
-                    cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                    cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
-                    cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                    //cmd.Parameters.Add(new OdbcParameter("ent_on", "NOW()"));
-                    cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                    cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                    cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
-
-                    cmd.ExecuteNonQuery();
-
-                    string quer = "update temp_m_group set closed_yn='N' where group_id=? order by ent_on desc ";
-
-                    transaction.Commit();
-                }
-                else
-                {
-                    // The record does not exist, so insert a new one
-                    reader.Close();
-                    transaction = dbConnector.connection.BeginTransaction();
-                    cmd.Transaction = transaction;
-                    if (DeTools.CheckTemporaryTableExists("m_group") != null)
+                    if (reader.HasRows)
                     {
 
-                        Messages.SavingMsg();
 
-                        DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn,comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        // The record exists, so update it
+                        reader.Close();
+                        //transaction = dbConnector.connection.BeginTransaction();
+
+                        Cursor.Current = Cursors.WaitCursor;
+
+                        DeTools.gstrSQL = "UPDATE m_Group SET group_desc = ?, active_yn = ?, sales_tax = ?, ent_by = ?, ent_on = ?, trans_status = ? WHERE Group_id = ?";
                         cmd.CommandText = DeTools.gstrSQL;
-                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
                         cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
                         cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
                         cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
                         cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                        //cmd.Parameters.Add(new OdbcParameter("ent_on", "NOW()"));
                         cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
                         cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                        cmd.Parameters.Add(new OdbcParameter("closed_yn", "N"));
-                        cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-                        //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
 
                         cmd.ExecuteNonQuery();
 
-                        //DeTools.SelectDataFromTemporaryTable("m_group");
+                        Messages.SavingMsg();
+                        string quer1 = "update temp_m_group set closed_yn='N' where group_id=? order by ent_on desc ";
+                        Cursor.Current = Cursors.Default;
+                        
+                        //string quer = "update temp_m_group set closed_yn='N' where group_id=? order by ent_on desc ";
 
-                        transaction.Commit();
-                        DeTools.InsertDataIntoMainTable("m_group", "group_id", txtGrpId.Text.ToString().Trim());
+                        //transaction.Commit();
+                    }
+                }
+
+                else
+                {
+                    // cmd.Transaction = transaction;
+                            
+                        // The record does not exist, so insert a new one
+                        reader.Close();
+
+                    if (DeTools.CheckTemporaryTableExists("m_group") != null)
+                    {
+                       Cursor.Current= Cursors.WaitCursor;
+
+                            DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn,comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            cmd.CommandText = DeTools.gstrSQL;
+                            cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                            cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                            cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                            cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                            cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                            cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                            cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                            cmd.Parameters.Add(new OdbcParameter("closed_yn", "N"));
+                            cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+                            //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+
+                            cmd.ExecuteNonQuery();
+
+                            //DeTools.SelectDataFromTemporaryTable("m_group");
+
+                            DeTools.InsertDataIntoMainTable("m_group", "group_id", txtGrpId.Text.ToString().Trim());
+                            // transaction.Commit();
+                        
+                            Messages.SavingMsg();
+                        Cursor.Current = Cursors.Default;
+                string quer1 = "update temp_m_group set closed_yn='N' where group_id=? order by ent_on desc ";
                     }
                 }
                 dbConnector.connection.Close();
 
                 Messages.SavedMsg();
 
+                ClearForm();
+
                 // Additional logic here for clearing fields, displaying messages, etc.
+                
             }
             catch (Exception ex)
             {
@@ -183,13 +226,15 @@ namespace softgen
                 // Rollback the transaction if an error occurs
                 if (transaction != null)
                 {
-                    transaction.Rollback();
+                    //transaction.Rollback();
                 }
 
                 // Additional error handling and messages
+
             }
             finally
             {
+                //transaction.Dispose();
                 dbConnector.CloseConnection();
             }
 
@@ -271,6 +316,9 @@ namespace softgen
                 {
                     return;
                 }
+
+                ClearForm();
+
             }
             catch (Exception ex)
             {
@@ -307,40 +355,51 @@ namespace softgen
                 dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
                 dbConnector.connection.Open();
 
-                transaction = dbConnector.connection.BeginTransaction();
+                // transaction = dbConnector.connection.BeginTransaction();
 
                 string selectid_toenter = "select group_id from m_group where group_id='" + txtGrpId.Text.Trim() + "'";
-                using (OdbcDataReader reader = dbConnector.CreateResultset(selectid_toenter))
+                string selectidtemp_toenter = "select group_id from temp_m_group where group_id='" + txtGrpId.Text.Trim() + "'";
+
+                using (OdbcDataReader readertemp = dbConnector.CreateResultset(selectidtemp_toenter))
                 {
-                    if (!reader.HasRows)
+                    if (!readertemp.HasRows)
                     {
-                        string insert = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn, comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
-                        cmd.Transaction = transaction;
-
-
-                        cmd.CommandText = insert;
-                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
-                        cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
-                        cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                        cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
-                        cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                        cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                        cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                        cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
-                        cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-                        //cmd.Parameters.Add(new OdbcParameter("status", "V"));
-
-                        cmd.ExecuteNonQuery();
-
-                        //DeTools.SelectDataFromTemporaryTable("m_group");
 
                     }
+
+
+                    using (OdbcDataReader reader = dbConnector.CreateResultset(selectid_toenter))
+                    {
+                        if (!reader.HasRows)
+                        {
+                            string insert = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, closed_yn, comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
+                            //cmd.Transaction = transaction;
+
+
+                            cmd.CommandText = insert;
+                            cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                            cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                            cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                            cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                            cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                            cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                            cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                            cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                            cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+                            //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+
+                            cmd.ExecuteNonQuery();
+
+                            //DeTools.SelectDataFromTemporaryTable("m_group");
+
+                        }
+                    }
+
+
+                    // transaction.Commit();
+                    dbConnector.connection.Close();
                 }
-
-
-                transaction.Commit();
-                dbConnector.connection.Close();
             }
         }
 

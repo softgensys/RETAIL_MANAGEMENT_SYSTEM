@@ -78,6 +78,7 @@ namespace softgen
 
         public string GetDesc(string strTable,string strId_Field,string strDesc_Field,string strType,Object vntId_Value)
         {
+            DbConnector dbConnector = new DbConnector();
             string result = string.Empty;
 
             if (vntId_Value == null || string.IsNullOrWhiteSpace(vntId_Value.ToString()))
@@ -120,6 +121,63 @@ namespace softgen
 
             return result;
 
+        }
+
+        public void ValidateColumn(DataGridView dataGridView, int rowIndex, int columnIndex)
+        {
+            decimal cpValue=0, mrpValue=0, spValue = 0, nrValue = 0;
+            // Get the values of adjacent cells
+            if (dataGridView.Rows[rowIndex].Cells[3].Value != null)
+            {
+            cpValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].EditedFormattedValue);
+            mrpValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[3].EditedFormattedValue);
+                
+            }
+            spValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[4].EditedFormattedValue);
+            nrValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[5].EditedFormattedValue);
+
+            switch (columnIndex)
+            {
+                case 3: // MRP column
+                    if (Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].Value) == cpValue && Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].Value) == mrpValue)
+                    {
+                    ShowValidationError("mrp should be less than MRP, SP, and NR.", rowIndex, columnIndex);                        
+                    }
+                    break;
+
+                case 4: // MRP column
+                        // Validation logic for MRP column
+                    break;
+            }
+
+            switch (columnIndex)
+            {
+                case 2: // CP column
+                    break;
+
+                case 3: // MRP column
+                        // Validation logic for MRP column
+                    break;
+
+                case 4: // SP column
+                        // Validation logic for SP column
+                    break;
+
+                case 5: // NR column
+                        // Validation logic for NR column
+                    break;
+
+                    // Add more cases for other columns if needed
+            }
+        }
+
+        private void ShowValidationError(string message, int rowIndex, int columnIndex)
+        {
+            frmM_Item m_Item = new frmM_Item();
+            MessageBox.Show(message, "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            // Set a flag to indicate that validation has occurred for this cell
+            m_Item.dbgBarDet.Rows[rowIndex].Cells[columnIndex].Tag = true;
         }
 
         public string GetuserName(string struserId)
@@ -460,11 +518,24 @@ namespace softgen
             return rowafftected > 0;
         }
 
-        public void FillCombo(ComboBox combo, string fieldName, string tableName, DbConnector dbConnector, bool forReport = false, string criteria = "", string condition = "")
+        public void FillCombo(ComboBox combo, string fieldName, string tableName,  bool forReport, string criteria = "", string condition = "")
         {
             try
             {
-                string sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldName + " LIKE @Criteria";
+                string sql;
+                DbConnector dbConnector = new DbConnector();
+
+                if (criteria=="")
+                {
+                sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName;
+                    
+                }
+                else
+                {
+                sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldName + " LIKE " + criteria;
+                    
+                }
+                
                 if (!string.IsNullOrEmpty(condition))
                 {
                     sql += " AND " + condition;
@@ -484,12 +555,14 @@ namespace softgen
                     while (reader.Read())
                     {
                         combo.Items.Add(Trim(reader[fieldName].ToString()));
+                     
                     }
 
                     if (!forReport)
                     {
                         combo.Text = oldValue;
                     }
+                        combo.MaxDropDownItems = 5;
                 }
             }
             catch (Exception ex)
@@ -538,7 +611,7 @@ namespace softgen
             {
 
             dbConnector = new DbConnector();
-            gstrSQl = "Select sub_sub_group_id from m_sub_sub_group where sub_group_id= @strGId";
+            gstrSQl = "Select sub_sub_group_id from m_sub_sub_group where sub_group_id= "+"'"+strGId+"'";
 
             using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl)) 
             { 
@@ -570,7 +643,7 @@ namespace softgen
             try
             {
             dbConnector = new DbConnector();
-            gstrSQl = "SELECT sub_group_id FROM m_sub_group WHERE group_id = @strGId";
+            gstrSQl = "SELECT sub_group_id FROM m_sub_group WHERE group_id = "+"'"+strGId+"'";
 
             using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl)) 
             { 
@@ -731,8 +804,7 @@ namespace softgen
                 DbConnector dbConnector = new DbConnector();
 
                 gstrSQl1 = "SELECT next_no FROM m_doc_series " +
-                     "WHERE doc_type_id = @strDocTypeId " +
-                     "AND status = 'A'";
+                     "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A'";
 
                 using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl1))
                 {
@@ -744,10 +816,9 @@ namespace softgen
                         Console.WriteLine("Next No is:" + curDocNo);
                         intFlag = 2;
 
-                        gstrSQl1 = "UPDATE m_doc_series SET next_no = next_no + 1 " +
-                    "WHERE doc_type_id = @strDocTypeId " +                 
-                    "AND status = 'A'";
-                        dbConnector.ExecuteNonQuery(gstrSQl1);
+                        //gstrSQl1 = "UPDATE m_doc_series SET next_no = next_no + 1 " +
+                        //            "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A'";
+                        //dbConnector.ExecuteNonQuery(gstrSQl1);
                     }
                 }
                 if (intFlag == 2)
@@ -844,9 +915,10 @@ namespace softgen
 
             dbConnector.OpenConnection();
 
-            gstrSQl1 = "Select @strFieldName1 ,@strFieldName2 from @strTableName";
+            gstrSQl1 = "SELECT " + strFieldName1 + ", " + strFieldName2 + " FROM " + strTableName;
 
-            using(OdbcDataReader reader=dbConnector.CreateResultset(gstrSQl1))
+
+            using (OdbcDataReader reader=dbConnector.CreateResultset(gstrSQl1))
             { if (reader.HasRows) 
                 {
                     chkfld = reader[strFieldName1].ToString();

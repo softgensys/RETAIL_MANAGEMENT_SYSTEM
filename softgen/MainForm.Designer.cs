@@ -31,7 +31,6 @@ namespace softgen
         /// </summary>
         private void InitializeComponent()
         {
-            
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -278,26 +277,27 @@ namespace softgen
             // Mgroupmenu
             // 
             Mgroupmenu.Name = "Mgroupmenu";
-            Mgroupmenu.Size = new Size(163, 22);
+            Mgroupmenu.Size = new Size(180, 22);
             Mgroupmenu.Text = "Group";
             Mgroupmenu.Click += groupToolStripMenuItem_Click;
             // 
             // MItemmenu
             // 
             MItemmenu.Name = "MItemmenu";
-            MItemmenu.Size = new Size(163, 22);
+            MItemmenu.Size = new Size(180, 22);
             MItemmenu.Text = "Item";
+            MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
-            documentSeriesToolStripMenuItem.Size = new Size(163, 22);
+            documentSeriesToolStripMenuItem.Size = new Size(180, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
-            documentTypeToolStripMenuItem.Size = new Size(163, 22);
+            documentTypeToolStripMenuItem.Size = new Size(180, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
             // 
             // transactionToolStripMenuItem
@@ -516,7 +516,6 @@ namespace softgen
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem masterToolStripMenuItem;
         public ToolStripMenuItem Mgroupmenu;
-        private ToolStripMenuItem MItemmenu;
         private ToolStripMenuItem documentSeriesToolStripMenuItem;
         private ToolStripMenuItem documentTypeToolStripMenuItem;
         private ToolStripMenuItem transactionToolStripMenuItem;
@@ -569,5 +568,6 @@ namespace softgen
         public Label pnlPosted_date;
         public Label pnlPosted_by;
         public Label pnlUserName;
+        public ToolStripMenuItem MItemmenu;
     }
 }

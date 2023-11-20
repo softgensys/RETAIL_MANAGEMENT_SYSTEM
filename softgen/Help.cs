@@ -608,11 +608,23 @@ namespace softgen
                         frmHelp.grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
                         frmHelp.grdHelp.ColumnHeadersHeight = 450;
                         frmHelp.grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+
+                        //for 2nd column width
+                        int columnIndex = 1; // Set to 1 for the 2nd column
+                        int newWidth = 250; // Set the desired width
+
+                        if (columnIndex >= 0 && columnIndex < frmHelp.grdHelp.Columns.Count)
+                        {
+                            frmHelp.grdHelp.Columns[columnIndex].Width = newWidth;
+                        }
+
+
                         // Iterate through the columns and make them read-only
                         foreach (DataGridViewColumn column in frmHelp.grdHelp.Columns)
                         {
                             column.ReadOnly = true;
                         }
+                        
 
 
                         frmHelp.pgbStatus.Minimum = 0;

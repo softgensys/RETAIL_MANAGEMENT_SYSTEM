@@ -405,7 +405,7 @@
             lblPayAmt.Name = "lblPayAmt";
             lblPayAmt.Size = new Size(51, 31);
             lblPayAmt.TabIndex = 235;
-            lblPayAmt.Text = "Amt. To\r\nPay";
+            lblPayAmt.Text = "Amt. To Pay";
             lblPayAmt.Click += label22_Click;
             // 
             // rotNetAmt

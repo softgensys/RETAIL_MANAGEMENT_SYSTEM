@@ -171,7 +171,7 @@
             lblCPBill.Name = "lblCPBill";
             lblCPBill.Size = new Size(89, 34);
             lblCPBill.TabIndex = 194;
-            lblCPBill.Text = "Cost Price\r\nBilling";
+            lblCPBill.Text = "Cost Price Billing";
             // 
             // chkDealer
             // 

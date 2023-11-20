@@ -685,7 +685,7 @@ namespace softgen
                 DeTools.gstrsetup[3] = d_Date.ToString("dd MMMM yyyy, dddd");
                 DeTools.gstrsetup[4] = p_Date.ToString("dd-MM-yyyy");
 
-               // frmStart.lblDate.Text = DeTools.gstrsetup[3];
+                // frmStart.lblDate.Text = DeTools.gstrsetup[3];
                 //frmStart.lblDate.Refresh();
 
                 //frmStart.lblMsg.Text = "Starting...";
@@ -775,6 +775,13 @@ namespace softgen
             {
                 messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
             }
+        }
+
+        private void MItemmenu_Click(object sender, EventArgs e)
+        {
+            OpenChildForm2();
+            MItemmenu.Enabled = false;
+
         }
 
 

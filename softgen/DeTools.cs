@@ -227,7 +227,7 @@ namespace softgen
 
         public static void ClearTextNComboControls(Form form)
         {
-            form.BackColor = System.Drawing.Color.FromArgb(15, 0, 0, 128); // Use the appropriate color format
+           // form.BackColor = System.Drawing.Color.FromArgb(15, 0, 0, 128); // Use the appropriate color format
 
             foreach (Control control in form.Controls)
             {
@@ -312,131 +312,135 @@ namespace softgen
         {
             try
             {
-                // Retrieve the current form's name
-                string formName = form.Name;
-
-                // Determine the key for the toolbar dictionary
-                  string mode = GetMode(form);
-                  string key = string.IsNullOrEmpty(mode) ? form.Name : $"{form.Name}-{mode}";
-
-                // Access the ToolStrip for the current form from the dictionary
-                ToolStrip toolStrip = toolbarDictionary1[key].Last();
-
-                ToolStripItem toolStripItem = null;
-
-                string strOptions = GetStrOptions(form); // Assign a value before the switch
-
-                foreach (ToolStripItem item in toolStrip.Items)
+                // Check if gobjActiveForm is not null and implements the ISearchableForm interface
+                if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
                 {
-                    if (item is ToolStripButton button)
+                    // Retrieve the current form's name
+                    string formName = form.Name;
+
+                    // Determine the key for the toolbar dictionary
+                    string mode = GetMode(form);
+                    string key = string.IsNullOrEmpty(mode) ? form.Name : $"{form.Name}-{mode}";
+
+                    // Access the ToolStrip for the current form from the dictionary
+                    ToolStrip toolStrip = toolbarDictionary1[key].Last();
+
+                    ToolStripItem toolStripItem = null;
+
+                    string strOptions = GetStrOptions(form); // Assign a value before the switch
+
+                    foreach (ToolStripItem item in toolStrip.Items)
                     {
-                        if (item.Tag != null && item.Tag?.ToString() == form.Tag?.ToString())
+                        if (item is ToolStripButton button)
                         {
-                            toolStripItem = item;
-                            break;
+                            if (item.Tag != null && item.Tag?.ToString() == form.Tag?.ToString())
+                            {
+                                toolStripItem = item;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (toolStripItem != null && toolStripItem.Tag != null)
-                {
-                    // Retrieve the Tag property of the ToolStripItem and assign it to strOptions   
-                    strOptions = toolStripItem.Tag.ToString();
-                }
+                    if (toolStripItem != null && toolStripItem.Tag != null)
+                    {
+                        // Retrieve the Tag property of the ToolStripItem and assign it to strOptions   
+                        strOptions = toolStripItem.Tag.ToString();
+                    }
 
-                switch (KeyCode)
-                {
-                    case Keys.F2:
-                        if (GetMode(form) != null)
-                        {
-                            // form.ClearForm();
-                            // ClearCreatedByPanel();
-                        }
-                        break;
-                    case Keys.F3:
-                        if (GetMode(form) == null)
-                        {
-                            if (HasOption(strOptions, 'A'))
+                    switch (KeyCode)
+                    {
+                        case Keys.F2:
+                            if (GetMode(form) != null)
                             {
-                                ButtonClick((int)form.Tag, "ADDMODE");
+                               // searchableForm.ClearForm();
+                                // ClearCreatedByPanel();
                             }
-                        }
-                        break;
-                    case Keys.F4:
-                        if (GetMode(form) == null)
-                        {
-                            if (HasOption(strOptions, 'M'))
+                            break;
+                        case Keys.F3:
+                            if (GetMode(form) == null)
                             {
-                                ButtonClick((int)form.Tag, "MODIFYMODE");
-                            }
-                        }
-                        break;
-                    case Keys.F5:
-                        switch (GetMode(form))
-                        {
-                            case null:
-                                if (HasOption(strOptions, 'D'))
+                                if (HasOption(strOptions, 'A'))
                                 {
-                                    ButtonClick((int)form.Tag, "DELETEMODE");
+                                    ButtonClick((int)form.Tag, "ADDMODE");
                                 }
-                                break;
-                            case "DELETEMODE":
-                                // form.DeleteForm();
-                                break;
-                        }
-                        break;
-                    case Keys.F6:
-                        if (GetMode(form) == null)
-                        {
-                            if (HasOption(strOptions, 'I'))
-                            {
-                                ButtonClick((int)form.Tag, "INQUIREMODE");
                             }
-                        }
-                        break;
-                    case Keys.F7:
-                        switch (GetMode(form))
-                        {
-                            case null:
-                                if (HasOption(strOptions, 'P'))
+                            break;
+                        case Keys.F4:
+                            if (GetMode(form) == null)
+                            {
+                                if (HasOption(strOptions, 'M'))
                                 {
-                                    ButtonClick((int)form.Tag, "POSTMODE");
+                                    ButtonClick((int)form.Tag, "MODIFYMODE");
                                 }
-                                break;
-                            case "POSTMODE":
-                                // form.PostForm();
-                                break;
-                        }
-                        break;
-                    case Keys.F8:
-                        if (GetMode(form) != null)
-                        {
-                            if (HasOption(strOptions, 'R'))
-                            {
-                                // form.PrintDoc();
                             }
-                        }
-                        break;
-                    case Keys.F10:
-                        switch (GetMode(form))
-                        {
-                            case "ADDMODE":
-                            case "MODIFYMODE":
-                                // form.SaveForm();
-                                break;
-                        }
-                        break;
-                    case Keys.Escape:
-                        switch (GetMode(form))
-                        {
-                            case null:
-                                ButtonClick((int)form.Tag, "Quit");
-                                break;
-                            default:
-                                ButtonClick((int)form.Tag, "ModeQuit");
-                                break;
-                        }
-                        break;
+                            break;
+                        case Keys.F5:
+                            switch (GetMode(form))
+                            {
+                                case null:
+                                    if (HasOption(strOptions, 'D'))
+                                    {
+                                        ButtonClick((int)form.Tag, "DELETEMODE");
+                                    }
+                                    break;
+                                case "DELETEMODE":
+                                    // form.DeleteForm();
+                                    break;
+                            }
+                            break;
+                        case Keys.F6:
+                            if (GetMode(form) == null)
+                            {
+                                if (HasOption(strOptions, 'I'))
+                                {
+                                    ButtonClick((int)form.Tag, "INQUIREMODE");
+                                }
+                            }
+                            break;
+                        case Keys.F7:
+                            switch (GetMode(form))
+                            {
+                                case null:
+                                    if (HasOption(strOptions, 'P'))
+                                    {
+                                        ButtonClick((int)form.Tag, "POSTMODE");
+                                    }
+                                    break;
+                                case "POSTMODE":
+                                    // form.PostForm();
+                                    break;
+                            }
+                            break;
+                        case Keys.F8:
+                            if (GetMode(form) != null)
+                            {
+                                if (HasOption(strOptions, 'R'))
+                                {
+                                    // form.PrintDoc();
+                                }
+                            }
+                            break;
+                        case Keys.F10:
+                            switch (GetMode(form))
+                            {
+                                case "ADDMODE":
+                                case "MODIFYMODE":
+                                    searchableForm.SaveForm();
+                                    break;
+                            }
+                            break;
+                        case Keys.Escape:
+                            switch (GetMode(form))
+                            {
+                                case null:
+                                    ButtonClick((int)form.Tag, "Quit");
+                                    break;
+                                default:
+                                    ButtonClick((int)form.Tag, "ModeQuit");
+                                    break;
+                            }
+                            break;
+                    }
                 }
             }
             catch (System.Exception ex)
@@ -830,6 +834,9 @@ namespace softgen
                             searchableForm.SetSearchVar(true);
                             MainForm.Instance.mnuAdd.Checked = true;
                             searchableForm.check_temp_login_sytemname();//for loading unsaved data
+                            
+                            
+
                             break;
                         case MODIFYMODE:
                             strAppMode = MODIFYMODE;
@@ -969,6 +976,11 @@ namespace softgen
                             mobjToolbar.Items.Add(mobjbutton);
 
                             CreateButton(mobjToolbar, "Help", "Help Information");
+
+                            if (gobjActiveForm.Name == "frmM_Item")
+                            {
+                                searchableForm.ClearForm();
+                            }
                             break;
 
 
@@ -1010,14 +1022,14 @@ namespace softgen
                             {
                                 //  gobjActiveForm.SaveTempDataForm();
                             }
-                            //gobjActiveForm.ClearForm();
+                            //searchableForm.ClearForm();
                             //ClearCreatedByPanel();
                             ClearStatusBarHelp();
 
                             break;
 
                         case "Retrieve":
-                            //gobjActiveForm.SearchForm();
+                            searchableForm.SearchForm();
 
                             break;
 
@@ -3195,7 +3207,7 @@ namespace softgen
 
                     frmhelp.pnlToptxt.Text = RestoreCaption(gobjActiveForm);
                     Messages.gstrMsg = "Help cannot be opened for non-active fields.";
-                    Messages.gstrMsg += "\r\nClear the form for reactivating the fields.";
+                    Messages.gstrMsg += " Clear the form for reactivating the fields.";
                     frmhelp.pnlText.Text = Messages.gstrMsg;
                     frmhelp.pnlText.Visible = true;
                     frmhelp.Show();
@@ -3249,7 +3261,7 @@ namespace softgen
 
         //            frmhelp.pnlToptxt.Text = RestoreCaption(gobjActiveForm);
         //            Messages.gstrMsg = "Help cannot be opened for non-active fields.";
-        //            Messages.gstrMsg += "\r\nClear the form for reactivating the fields.";
+        //            Messages.gstrMsg += " Clear the form for reactivating the fields.";
         //            frmhelp.pnlText.Text = Messages.gstrMsg;
         //            frmhelp.pnlText.Visible = true;
         //            frmhelp.Show();
