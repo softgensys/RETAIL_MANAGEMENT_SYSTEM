@@ -624,8 +624,9 @@ namespace softgen
                         combo.Items.Add(reader["sub_sub_group_id"].ToString());
                     }
                 }
-             
-                reader.Close();
+                    
+
+                    reader.Close();
             }
             }
             

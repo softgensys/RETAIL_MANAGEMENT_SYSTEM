@@ -149,18 +149,7 @@ namespace softgen
             dbgBarDet.Update();
             //transaction = dbConnector.connection.BeginTransaction();
 
-            if (chkItemid == "Y" && strMode != string.Empty && saveflag == true)
-            {
-                txtItemId.Text = General.GenMDocno("ITSN").ToString().Trim();
-                if (txtItemId.Text.Length == 0)
-                {
-                    txtItemId.Text = "";
-                    string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
-                    Messages.ErrorMsg(gstrMsg);
-                    saveflag = false;
-                }
-
-            }
+           
             if (mblnSearch == true)
             {
                 if (!CheckMandatoryFields())
@@ -172,7 +161,7 @@ namespace softgen
                 {
         
                     blnItem_H = true;
-                    DeTools.gstrSQL = "select a.*,b.* from m_item_det a join m_item_hdr b on a.item_desc=b.item_desc and  a.item_desc = '" + txtItemId.Text.Trim() + "' and b.item_desc ='" + txtItemId.Text.Trim() + "'  limit 1;  ";
+                    DeTools.gstrSQL = "select a.*,b.* from m_item_det a join m_item_hdr b on a.item_id=b.item_id and  a.item_id = '" + txtItemId.Text.Trim() + "' and b.item_id ='" + txtItemId.Text.Trim() + "'  limit 1;  ";
                     OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
                     dbConnector.connection.Open();
                     
@@ -377,102 +366,109 @@ namespace softgen
                                         // Step 2: Compare existing data with the DataGridView (dbgBarDet)
                                         foreach (DataGridViewRow row in dbgBarDet.Rows)
                                         {
-                                            string plu = row.Cells["0"].Value.ToString();
-                                            string barCode = row.Cells["1"].Value.ToString();
-                                            decimal costPrice = Convert.ToDecimal(row.Cells["2"].Value);
-                                            decimal mrp = Convert.ToDecimal(row.Cells["3"].Value);
-                                            decimal netRate = Convert.ToDecimal(row.Cells["4"].Value);
-
-                                            DataRow[] existingRows = existingData.Select($"plu = '{plu}'");
-
-                                            if (existingRows.Length > 0)
+                                            if (row.Cells[0].Value != null && row.Cells[2].Value != null)
                                             {
-                                                DataRow existingRow = existingRows[0];
 
-                                                if (existingRow["bar_code"].ToString() != barCode ||
-                                                    (decimal)existingRow["cost_price"] != costPrice ||
-                                                    (decimal)existingRow["mrp"] != mrp ||
-                                                    (decimal)existingRow["net_rate"] != netRate)
+                                            
+                                                string plu = row.Cells[0].Value.ToString();
+                                                string barCode = row.Cells[1].Value.ToString();
+                                                decimal costPrice = Convert.ToDecimal(row.Cells[2].Value);
+                                                decimal mrp = Convert.ToDecimal(row.Cells[3].Value);
+                                                decimal netRate = Convert.ToDecimal(row.Cells[4].Value);
+
+                                                DataRow[] existingRows = existingData.Select($"plu = '{plu}'");
+
+                                                if (existingRows.Length > 0)
                                                 {
-                                                    existingRow["bar_code"] = barCode;
-                                                    existingRow["cost_price"] = costPrice;
-                                                    existingRow["mrp"] = mrp;
-                                                    existingRow["net_rate"] = netRate;
+                                                    DataRow existingRow = existingRows[0];
 
-                                                    // Perform the update in the database using your UPDATE query
-                                                    // Perform the update in the database using your UPDATE query
-
-                                                    //--------------------- then insert into temp det table----------//
-
-                                                    string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, closed_yn, comp_name) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, 'Y' AS closed_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_det WHERE item_id = ?";
-
-                                                    using (OdbcCommand insertQuerytempdetCmd1 = new OdbcCommand(insertQuerytempdet, dbConnector.connection))
+                                                    if (existingRow["bar_code"].ToString() != barCode ||
+                                                        (decimal)existingRow["cost_price"] != costPrice ||
+                                                        (decimal)existingRow["mrp"] != mrp ||
+                                                        (decimal)existingRow["net_rate"] != netRate)
                                                     {
-                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                                        insertQuerytempdetCmd1.ExecuteNonQuery();
-                                                    }
+                                                        existingRow["bar_code"] = barCode;
+                                                        existingRow["cost_price"] = costPrice;
+                                                        existingRow["mrp"] = mrp;
+                                                        existingRow["net_rate"] = netRate;
 
-                                                    //--------for a check that 
-                                                    string selfrmtempdet = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and closed_yn='Y'";
-                                                    OdbcCommand selfrmtempdetcmd = new OdbcCommand(selfrmtempdet, dbConnector.connection);
+                                                        // Perform the update in the database using your UPDATE query
+                                                        // Perform the update in the database using your UPDATE query
 
-                                                    OdbcDataReader selfrmtempdetread = selfrmtempdetcmd.ExecuteReader();
+                                                        //--------------------- then insert into temp det table----------//
 
-                                                    if (selfrmtempdetread.HasRows)
-                                                    {
+                                                        string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, closed_yn, comp_name) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, 'Y' AS closed_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_det WHERE item_id = ?";
 
-
-                                                        string updateQuery = "UPDATE temp_m_item_det " +
-                                                                             "SET bar_code = ?, cost_price = ?, mrp = ?, net_rate = ? " +
-                                                                             "WHERE item_id = '" + txtItemId.Text.Trim() + "'";
-
-                                                        using (OdbcCommand updateCmd = new OdbcCommand(updateQuery, dbConnector.connection))
+                                                        using (OdbcCommand insertQuerytempdetCmd1 = new OdbcCommand(insertQuerytempdet, dbConnector.connection))
                                                         {
-                                                            updateCmd.Parameters.Add(new OdbcParameter("bar_code", barCode));
-                                                            updateCmd.Parameters.Add(new OdbcParameter("cost_price", costPrice));
-                                                            updateCmd.Parameters.Add(new OdbcParameter("mrp", mrp));
-                                                            updateCmd.Parameters.Add(new OdbcParameter("net_rate", netRate));
-                                                            updateCmd.Parameters.Add(new OdbcParameter("plu", plu));
-
-                                                            updateCmd.ExecuteNonQuery();
+                                                            insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                            insertQuerytempdetCmd1.ExecuteNonQuery();
                                                         }
 
+                                                        //--------for a check that 
+                                                        string selfrmtempdet = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and closed_yn='Y'";
+                                                        OdbcCommand selfrmtempdetcmd = new OdbcCommand(selfrmtempdet, dbConnector.connection);
 
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    // Step 3: Add new rows
-                                                    DataRow newRow = existingData.NewRow();
-                                                    newRow["plu"] = plu;
-                                                    newRow["bar_code"] = barCode;
-                                                    newRow["cost_price"] = costPrice;
-                                                    newRow["mrp"] = mrp;
-                                                    newRow["net_rate"] = netRate;
+                                                        OdbcDataReader selfrmtempdetread = selfrmtempdetcmd.ExecuteReader();
 
-                                                    existingData.Rows.Add(newRow);
-
-                                                    // Execute your INSERT query for new rows
-                                                    foreach (DataRow row1 in existingData.Rows)
-                                                    {
-
-                                                        string insert = "Insert into temp_m_item_det (plu,bar_code,cost_price,mrp,net_rate) values (?,?,?,?,?) where item_id='" + txtItemId.Text.Trim() + "'";
-                                                        using (OdbcCommand insertCmd = new OdbcCommand(insert, dbConnector.connection))
+                                                        if (selfrmtempdetread.HasRows)
                                                         {
-                                                            // Add parameters for your INSERT query
-                                                            insertCmd.Parameters.Add(new OdbcParameter("plu", row1["plu"].ToString()));
-                                                            insertCmd.Parameters.Add(new OdbcParameter("bar_code", row1["bar_code"].ToString()));
-                                                            insertCmd.Parameters.Add(new OdbcParameter("cost_price", row1["cost_price"]));
-                                                            insertCmd.Parameters.Add(new OdbcParameter("mrp", row1["mrp"]));
-                                                            insertCmd.Parameters.Add(new OdbcParameter("net_rate", row1["net_rate"]));
 
-                                                            // Execute the INSERT query
-                                                            insertCmd.ExecuteNonQuery();
+
+                                                            string updateQuery = "UPDATE temp_m_item_det " +
+                                                                                 "SET bar_code = ?, cost_price = ?, mrp = ?, net_rate = ? " +
+                                                                                 "WHERE item_id = '" + txtItemId.Text.Trim() + "'";
+
+                                                            using (OdbcCommand updateCmd = new OdbcCommand(updateQuery, dbConnector.connection))
+                                                            {
+                                                                updateCmd.Parameters.Add(new OdbcParameter("bar_code", barCode));
+                                                                updateCmd.Parameters.Add(new OdbcParameter("cost_price", costPrice));
+                                                                updateCmd.Parameters.Add(new OdbcParameter("mrp", mrp));
+                                                                updateCmd.Parameters.Add(new OdbcParameter("net_rate", netRate));
+                                                                updateCmd.Parameters.Add(new OdbcParameter("plu", plu));
+
+                                                                updateCmd.ExecuteNonQuery();
+                                                            }
+
+                                                            selfrmtempdetread.Close();
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // Step 3: Add new rows
+                                                        DataRow newRow = existingData.NewRow();
+                                                        newRow["plu"] = plu;
+                                                        newRow["bar_code"] = barCode;
+                                                        newRow["cost_price"] = costPrice;
+                                                        newRow["mrp"] = mrp;
+                                                        newRow["net_rate"] = netRate;
+
+                                                        existingData.Rows.Add(newRow);
+
+                                                        // Execute your INSERT query for new rows
+                                                        foreach (DataRow row1 in existingData.Rows)
+                                                        {
+
+                                                            string insert = "Insert into temp_m_item_det (plu,bar_code,cost_price,mrp,net_rate) values (?,?,?,?,?) where item_id='" + txtItemId.Text.Trim() + "'";
+                                                            using (OdbcCommand insertCmd = new OdbcCommand(insert, dbConnector.connection))
+                                                            {
+                                                                // Add parameters for your INSERT query
+                                                                insertCmd.Parameters.Add(new OdbcParameter("plu", row1["plu"].ToString()));
+                                                                insertCmd.Parameters.Add(new OdbcParameter("bar_code", row1["bar_code"].ToString()));
+                                                                insertCmd.Parameters.Add(new OdbcParameter("cost_price", row1["cost_price"]));
+                                                                insertCmd.Parameters.Add(new OdbcParameter("mrp", row1["mrp"]));
+                                                                insertCmd.Parameters.Add(new OdbcParameter("net_rate", row1["net_rate"]));
+
+                                                                // Execute the INSERT query
+                                                                insertCmd.ExecuteNonQuery();
+
+
+
+                                                            }
 
                                                         }
 
                                                     }
-
                                                 }
 
                                             }
@@ -481,28 +477,31 @@ namespace softgen
 
 
                                         string selfrmtempdet2 = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and closed_yn='Y'";
-                                        OdbcCommand selfrmtempdetcmd1 = new OdbcCommand(selfrmtempdet2, dbConnector.connection);
+                                        OdbcCommand selfrmtempdetcmd2 = new OdbcCommand(selfrmtempdet2, dbConnector.connection);
 
-                                        OdbcDataReader selfrmtempdetread2 = selfrmtempdetcmd1.ExecuteReader();
+                                        OdbcDataReader selfrmtempdetread2 = selfrmtempdetcmd2.ExecuteReader();
 
                                         //-------------updating rest columns other than dbgbardet--//
 
+
                                         if (selfrmtempdetread2.HasRows)
                                         {
+                                        selfrmtempdetread2.Close();
+                                            
                                             DeTools.gstrSQL = "UPDATE temp_m_item_det SET item_desc = ?, active_yn = ?, Trans_status = ?, local_rate_yn = ?, mod_date = ?, mod_by = ? WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
 
-                                            selfrmtempdetcmd1.CommandText = DeTools.gstrSQL;
+                                            selfrmtempdetcmd2.CommandText = DeTools.gstrSQL;
 
-                                            selfrmtempdetcmd1.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
 
-                                            selfrmtempdetcmd1.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
-                                            selfrmtempdetcmd1.Parameters.Add(new OdbcParameter("Trans_status", "N"));
-                                            selfrmtempdetcmd1.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                                            selfrmtempdetcmd1.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
-                                            selfrmtempdetcmd1.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("Trans_status", "N"));
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
 
 
-                                            selfrmtempdetcmd1.ExecuteNonQuery();
+                                            selfrmtempdetcmd2.ExecuteNonQuery();
                                         }
 
                                         //-------------After updation complete insert into Main det tbl-------------//
@@ -554,7 +553,18 @@ namespace softgen
                         {
                             // The record does not exist, so insert a new one
                             reader.Close();
+                            if (chkItemid == "Y" && strMode != string.Empty && saveflag == true)
+                            {
+                                txtItemId.Text = General.GenMDocno("ITSN").ToString().Trim();
+                                if (txtItemId.Text.Length == 0)
+                                {
+                                    txtItemId.Text = "";
+                                    string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
+                                    Messages.ErrorMsg(gstrMsg);
+                                    saveflag = false;
+                                }
 
+                            }
                             if (DeTools.CheckTemporaryTableExists("m_item_hdr") != null)
                             {
                                 if (DeTools.CheckTemporaryTableExists("m_item_det") != null)
@@ -746,9 +756,329 @@ namespace softgen
         }
         public void SearchForm()
         {
+            try
+            {
 
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
+
+                if (!string.IsNullOrWhiteSpace(txtItemId.Text) && !mblnSearch)
+                {
+                    msg.HelpMsg("Information retrieving. Please wait...");
+
+                    DeTools.gstrSQL = "SELECT * FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'";
+
+                    OdbcCommand hdrcmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                    
+                    OdbcDataReader hdrread = hdrcmd.ExecuteReader();
+
+                    if (hdrread.HasRows)
+                    {
+                        hdrcmd.CommandText = DeTools.gstrSQL;
+                    
+                        txtShDesc.Text = hdrread["short_desc"].ToString().Trim();
+                        txtItemDesc.Text = hdrread["item_desc"].ToString().Trim();
+
+                        //-------------------------Item Type combo----------------------------//
+                        general.FillCombo(cboType, "item_type_id", "m_item_type", false);
+                        string typIDFromDatabase = hdrread["item_type_id"].ToString().Trim();
+
+                        if (typIDFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem = cboType.Items.Cast<object>().FirstOrDefault(item => item.ToString() == typIDFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem != null)
+                            {
+                                cboType.SelectedItem = selectedItem;
+                                rotType.Text = general.GetDesc("m_item_type", "item_type_id", "item_type_desc", "C", cboType.SelectedItem.ToString().Trim());
+                            }
+
+
+                        }
+
+                        //------------------------Group combo----------------------------//
+                        general.FillCombo(cboGroup, "group_id", "m_group", false);
+                        string groupIDFromDatabase = hdrread["group_id"].ToString().Trim();
+
+                        if (groupIDFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem1 = cboGroup.Items.Cast<object>().FirstOrDefault(item => item.ToString() == groupIDFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem1 != null)
+                            {
+                                cboGroup.SelectedItem = selectedItem1;
+                                rotGroup.Text = general.GetDesc("m_group", "group_id", "group_desc", "C", cboGroup.SelectedItem.ToString().Trim());
+                            }
+
+                            //------------------------Sub Group combo----------------------------//
+                            general.FillSubGroup(cboSGroup, selectedItem1.ToString().Trim());
+                            string SgroupIDFromDatabase = hdrread["sub_group_id"].ToString().Trim();
+                            if (SgroupIDFromDatabase != "")
+                            {
+                                // Find the item in the ComboBox's items collection
+                                object selectedItem2 = cboSGroup.Items.Cast<object>().FirstOrDefault(item => item.ToString() == SgroupIDFromDatabase);
+
+                                // Set the selected item if found
+                                if (selectedItem2 != null)
+                                {
+                                    cboSGroup.SelectedItem = selectedItem2;
+                                    rotSGroup.Text = general.GetDesc("m_sub_group", "sub_group_id", "sub_group_desc", "C", cboSGroup.SelectedItem.ToString().Trim());
+                                }
+
+                                //------------------------Sub Sub Group combo----------------------------//
+                                general.FillSSubGroup(cboSSGroupDesc, selectedItem2.ToString().Trim());
+
+                                string SSgroupIDFromDatabase = hdrread["sub_sub_group_id"].ToString().Trim();
+                                if (SSgroupIDFromDatabase != "")
+                                {
+                                    // Find the item in the ComboBox's items collection
+                                    object selectedItem3 = cboSSGroupDesc.Items.Cast<object>().FirstOrDefault(item => item.ToString() == SSgroupIDFromDatabase);
+
+                                    // Set the selected item if found
+                                    if (selectedItem3 != null)
+                                    {
+                                        cboSSGroupDesc.SelectedItem = selectedItem3;
+
+                                        rotSSGroupDesc.Text = general.GetDesc("m_sub_sub_group", "sub_sub_group_id", "sub_sub_group_desc", "C", cboSSGroupDesc.SelectedItem.ToString().Trim());
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        //------------------------Size combo----------------------------//
+                        general.FillCombo(cboSizeDesc, "size_id", "m_size", false);
+                        string sizeFromDatabase = hdrread["size_id"].ToString().Trim();
+                        if (sizeFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem4 = cboSizeDesc.Items.Cast<object>().FirstOrDefault(item => item.ToString() == sizeFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem4 != null)
+                            {
+                                cboSizeDesc.SelectedItem = selectedItem4;
+                                rotSizeDesc.Text = general.GetDesc("m_size", "size_id", "size_desc", "C", cboSizeDesc.SelectedItem.ToString().Trim());
+                            }
+
+                        }
+                        //------------------------Color combo----------------------------//
+                        general.FillCombo(cboColorDesc, "color_id", "m_color", false);
+                        string colorFromDatabase = hdrread["color_id"].ToString().Trim();
+                        if (colorFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem5 = cboColorDesc.Items.Cast<object>().FirstOrDefault(item => item.ToString() == colorFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem5 != null)
+                            {
+                                cboSizeDesc.SelectedItem = selectedItem5;
+                                rotColorDesc.Text = general.GetDesc("m_color", "colot_id", "color_desc", "C", cboColorDesc.SelectedItem.ToString().Trim());
+                            }
+
+                        }
+
+                        txtStyle.Text = hdrread["style"].ToString().Trim();
+
+                        //------------------------Manuf combo----------------------------//
+                        general.FillCombo(cboManuf, "manuf_id", "m_manuf", false);
+                        string manufFromDatabase = hdrread["manuf_id"].ToString().Trim();
+                        if (manufFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem6 = cboManuf.Items.Cast<object>().FirstOrDefault(item => item.ToString() == manufFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem6 != null)
+                            {
+                                cboManuf.SelectedItem = selectedItem6;
+                                rotManuf.Text = general.GetDesc("m_manuf", "manuf_id", "manuf_name", "C", cboManuf.SelectedItem.ToString().Trim());
+                            }
+
+                        }
+
+                        //------------------------Pur Unit combo----------------------------//
+                        general.FillCombo(cboPurUnit, "unit_id", "m_unit", false);
+                        string purunitFromDatabase = hdrread["pur_unit_id"].ToString().Trim();
+                        if (purunitFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem7 = cboPurUnit.Items.Cast<object>().FirstOrDefault(item => item.ToString() == purunitFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem7 != null)
+                            {
+                                cboPurUnit.SelectedItem = selectedItem7;
+                                rotPurUnit.Text = general.GetDesc("m_unit", "unit_id", "unit_desc", "C", cboPurUnit.SelectedItem.ToString().Trim());
+                            }
+
+                        }
+
+                        //------------------------Sale Unit combo----------------------------//
+                        general.FillCombo(cboSaleUnit, "unit_id", "m_unit", false);
+                        string saleunitFromDatabase = hdrread["sale_unit_id"].ToString().Trim();
+                        if (saleunitFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem8 = cboSaleUnit.Items.Cast<object>().FirstOrDefault(item => item.ToString() == saleunitFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem8 != null)
+                            {
+                                cboSaleUnit.SelectedItem = selectedItem8;
+                                rotSaleUnit.Text = general.GetDesc("m_unit", "unit_id", "unit_desc", "C", cboSaleUnit.SelectedItem.ToString().Trim());
+                            }
+
+                        }
+
+
+                        txtConv.Text = hdrread["conv_pur_sale"].ToString().Trim();
+                        txtOpBal.Text = hdrread["op_bal_unit"].ToString().Trim();
+                        txtMinLevel.Text = hdrread["min_level"].ToString().Trim();
+                        txtReOLevel.Text = hdrread["re_order_level"].ToString().Trim();
+                        txtMaxLevel.Text = hdrread["max_level"].ToString().Trim();
+                        if (hdrread["qty_decimal_yn"].ToString() == "Y")
+                        {
+                            chkDecimal.Checked = true;
+                        }
+                        else
+                        {
+                            chkDecimal.Checked = false;
+                        }
+
+                        //------------------------Sale Tax combo----------------------------//
+                        general.FillCombo(cboSaleTax, "tax_type_id", "m_tax_type", false);
+                        string saletaxFromDatabase = hdrread["sale_tax_paid"].ToString().Trim();
+                        if (saletaxFromDatabase != "")
+                        {
+                            // Find the item in the ComboBox's items collection
+                            object selectedItem9 = cboSaleTax.Items.Cast<object>().FirstOrDefault(item => item.ToString() == saletaxFromDatabase);
+
+                            // Set the selected item if found
+                            if (selectedItem9 != null)
+                            {
+                                cboSaleTax.SelectedItem = selectedItem9;
+                                rotSaleTax.Text = general.GetDesc("m_tax_type", "tax_type_id", "tax_type_desc", "C", cboSaleTax.SelectedItem.ToString().Trim());
+                            }
+
+                        }
+
+
+                        if (hdrread["bar_yn"].ToString() == "Y")
+                        {
+                            chkBarYN.Checked = true;
+                        }
+                        else
+                        {
+                            chkBarYN.Checked = false;
+                        }
+                        if (hdrread["active_yn"].ToString() == "Y")
+                        {
+                            chkAct.Checked = true;
+                        }
+                        else
+                        {
+                            chkAct.Checked = false;
+                        }
+
+                        rotNetRate.Text = hdrread["net_rate"].ToString().Trim();
+                        txtLT.Text = hdrread["lt"].ToString().Trim();
+                        txtDisc.Text = hdrread["disc_per"].ToString().Trim();
+                        txtHSN.Text = hdrread["HSN_CODE"].ToString().Trim();
+                        txtCess.Text = hdrread["cess_perc"].ToString().Trim();
+                        txtexisper.Text = hdrread["excis_perc"].ToString().Trim();
+
+                        hdrread.Close();
+
+                        //------------HDR DATA LOAD CLOSED---------------------//
+
+                        // Create a DataTable to store the results
+                        DataTable dataTable = new DataTable();
+
+                        // Your SQL query
+                        DeTools.gstrSQL = "SELECT plu, bar_code, cost_price, mrp, sale_price, net_rate FROM m_item_det WHERE item_id = '" + txtItemId.Text.Trim() + "' order by plu ";
+
+                        // Create OdbcCommand
+                        OdbcCommand detcmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+
+                        // Execute the reader
+                        OdbcDataReader detread = detcmd.ExecuteReader();
+
+                        if (detread.HasRows)
+                        {
+                            detcmd.CommandText = DeTools.gstrSQL;
+                            // Load the results into the DataTable
+                            dataTable.Load(detread);
+
+                            // Close the reader
+                            detread.Close();
+
+                            // Clear existing rows in the DataGridView
+                            dbgBarDet.Rows.Clear();
+
+                            // Add new rows to the DataGridView from the DataTable
+                            foreach (DataRow row in dataTable.Rows)
+                            {
+                                // Add a new row to the DataGridView
+                                int rowIndex = dbgBarDet.Rows.Add();
+
+                                // Populate the cells in the DataGridView with data from the DataTable
+                                dbgBarDet.Rows[rowIndex].Cells[0].Value = row["plu"];
+                                dbgBarDet.Rows[rowIndex].Cells[1].Value = row["bar_code"];
+                                dbgBarDet.Rows[rowIndex].Cells[2].Value = row["cost_price"];
+                                dbgBarDet.Rows[rowIndex].Cells[3].Value = row["mrp"];
+                                dbgBarDet.Rows[rowIndex].Cells[4].Value = row["sale_price"];
+                                dbgBarDet.Rows[rowIndex].Cells[5].Value = row["net_rate"];
+                            }
+                                                  
+                        }
+                        //------------DATAGRID DET DATA LOAD CLOSED---------------------//
+
+                        // Your SQL query
+                        DeTools.gstrSQL = "SELECT active_yn FROM m_item_det WHERE item_id = '" + txtItemId.Text.Trim() + "'";
+
+                        // Create OdbcCommand
+                        OdbcCommand detcmd2 = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+
+                        // Execute the reader
+                        OdbcDataReader detread2 = detcmd2.ExecuteReader();
+
+                        if (detread2.HasRows)
+                        {
+                            detcmd2.CommandText = DeTools.gstrSQL;
+                            if (detread2["active_yn"] == "Y")
+                            {
+                                chkAct.Checked = true;
+                            }
+                            else
+                            {
+                                chkAct.Checked = false;
+                            }
+                        
+
+                            detread2.Close();
+                            mblnSearch = true;
+                        }
+
+
+                    }
+
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
-
         
 
         public void UnsavedData()
