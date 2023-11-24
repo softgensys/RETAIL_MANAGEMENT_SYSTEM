@@ -23,7 +23,7 @@ namespace softgen
         // Define the list of where clause variables and values
         private Dictionary<int, string> pluValues = new Dictionary<int, string>();
         public int pluCounter = 0; // Counter to track the auto-generated PLU number
-        bool saveflag=true;
+        bool saveflag = true;
         // Assuming existingData is a DataTable declared at the class level
         public DataTable existingData;
         public frmM_Item()
@@ -136,35 +136,35 @@ namespace softgen
             try
             {
 
-         
+
                 dbConnector = new DbConnector();
-            // dbConnector.connectionString= new OdbcConnection();
-            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                // dbConnector.connectionString= new OdbcConnection();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
 
-            saveflag = true;
+                saveflag = true;
 
-            bool blnItem_H, blnItem_D;
-            int J;
+                bool blnItem_H, blnItem_D;
+                int J;
 
-            dbgBarDet.Update();
-            //transaction = dbConnector.connection.BeginTransaction();
+                dbgBarDet.Update();
+                //transaction = dbConnector.connection.BeginTransaction();
 
-           
-            if (mblnSearch == true)
-            {
-                if (!CheckMandatoryFields())
+
+                if (mblnSearch == true)
                 {
-                    saveflag = false;
-                }
+                    if (!CheckMandatoryFields())
+                    {
+                        saveflag = false;
+                    }
 
-                else
-                {
-        
-                    blnItem_H = true;
-                    DeTools.gstrSQL = "select a.*,b.* from m_item_det a join m_item_hdr b on a.item_id=b.item_id and  a.item_id = '" + txtItemId.Text.Trim() + "' and b.item_id ='" + txtItemId.Text.Trim() + "'  limit 1;  ";
-                    OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-                    dbConnector.connection.Open();
-                    
+                    else
+                    {
+
+                        blnItem_H = true;
+                        DeTools.gstrSQL = "select a.*,b.* from m_item_det a join m_item_hdr b on a.item_id=b.item_id and  a.item_id = '" + txtItemId.Text.Trim() + "' and b.item_id ='" + txtItemId.Text.Trim() + "'  limit 1;  ";
+                        OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                        dbConnector.connection.Open();
+
                         OdbcDataReader reader = cmd.ExecuteReader();
 
                         // Check if the record with the specified Group_id exists
@@ -280,7 +280,7 @@ namespace softgen
                                             cmd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
                                             cmd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
                                             cmd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
-                                            
+
                                             cmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
                                             cmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
 
@@ -369,7 +369,7 @@ namespace softgen
                                             if (row.Cells[0].Value != null && row.Cells[2].Value != null)
                                             {
 
-                                            
+
                                                 string plu = row.Cells[0].Value.ToString();
                                                 string barCode = row.Cells[1].Value.ToString();
                                                 decimal costPrice = Convert.ToDecimal(row.Cells[2].Value);
@@ -486,8 +486,8 @@ namespace softgen
 
                                         if (selfrmtempdetread2.HasRows)
                                         {
-                                        selfrmtempdetread2.Close();
-                                            
+                                            selfrmtempdetread2.Close();
+
                                             DeTools.gstrSQL = "UPDATE temp_m_item_det SET item_desc = ?, active_yn = ?, Trans_status = ?, local_rate_yn = ?, mod_date = ?, mod_by = ? WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
 
                                             selfrmtempdetcmd2.CommandText = DeTools.gstrSQL;
@@ -673,9 +673,9 @@ namespace softgen
                                         insertCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
                                         insertCmd.ExecuteNonQuery();
 
-                                        
+
                                     }
-                                    
+
                                     //-------------------------------Hdr end done-----------------------//
 
 
@@ -720,7 +720,7 @@ namespace softgen
                                     Messages.SavingMsg();
                                     Cursor.Current = Cursors.Default;
 
-                                    string quer1 = "update temp_m_item_hdr set closed_yn='N' where item_id='"+ txtItemId.Text.ToString().Trim() + "' order by ent_on desc ";
+                                    string quer1 = "update temp_m_item_hdr set closed_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "' order by ent_on desc ";
                                     using (OdbcCommand qurCmd = new OdbcCommand(quer1, dbConnector.connection))
                                     {
                                         qurCmd.ExecuteNonQuery();
@@ -735,23 +735,23 @@ namespace softgen
 
                             }//-----end of CheckTemporaryTableExists("m_item_hdr")----//
                         }
-                      
+
 
                         Messages.SavedMsg();
                         dbConnector.connection.Close();
                         ClearForm();
                     }
 
-            }
+                }
 
             }
             catch (Exception ex)
             {
-              
-                Messages msg= new Messages();
-                msg.VBError(ex,this.Name, "Save Form", null);
+
+                Messages msg = new Messages();
+                msg.VBError(ex, this.Name, "Save Form", null);
             }
-            
+
 
         }
         public void SearchForm()
@@ -770,13 +770,13 @@ namespace softgen
                     DeTools.gstrSQL = "SELECT * FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'";
 
                     OdbcCommand hdrcmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-                    
+
                     OdbcDataReader hdrread = hdrcmd.ExecuteReader();
 
                     if (hdrread.HasRows)
                     {
                         hdrcmd.CommandText = DeTools.gstrSQL;
-                    
+
                         txtShDesc.Text = hdrread["short_desc"].ToString().Trim();
                         txtItemDesc.Text = hdrread["item_desc"].ToString().Trim();
 
@@ -1038,7 +1038,7 @@ namespace softgen
                                 dbgBarDet.Rows[rowIndex].Cells[4].Value = row["sale_price"];
                                 dbgBarDet.Rows[rowIndex].Cells[5].Value = row["net_rate"];
                             }
-                                                  
+
                         }
                         //------------DATAGRID DET DATA LOAD CLOSED---------------------//
 
@@ -1062,7 +1062,7 @@ namespace softgen
                             {
                                 chkAct.Checked = false;
                             }
-                        
+
 
                             detread2.Close();
                             mblnSearch = true;
@@ -1079,7 +1079,7 @@ namespace softgen
                 throw;
             }
         }
-        
+
 
         public void UnsavedData()
         {
@@ -1099,7 +1099,7 @@ namespace softgen
 
                         saveflag = true;
 
-                      
+
 
                         string query = "SELECT a.* FROM temp_m_item_det a,temp_m_item_hdr b  WHERE a.closed_yn='Y' and b.ent_by='" + user.Trim() + "' and a.comp_name='" + compname.Trim() + "' order by ent_on desc limit 1;";
 
@@ -1113,11 +1113,11 @@ namespace softgen
                                 // Populate other text fields similarly
                                 Messages.UnsavedMsg(null);
                                 //txtItemId.Text = reader["item_id"].ToString().Trim();
-                                txtItemDesc.Text= reader["item_desc"].ToString().Trim();
+                                txtItemDesc.Text = reader["item_desc"].ToString().Trim();
                                 dbgBarDet.Rows[0].Cells[1].Value = reader["bar_code"].ToString().Trim();
                                 string plu = reader["plu"].ToString().Trim();
-                               
-                                    dbgBarDet.Rows[0].Cells[0].Value = plu;
+
+                                dbgBarDet.Rows[0].Cells[0].Value = plu;
 
                                 dbgBarDet.Rows[0].Cells[2].Value = reader["cost_price"].ToString().Trim();
                                 dbgBarDet.Rows[0].Cells[3].Value = reader["mrp"].ToString().Trim();
@@ -1135,7 +1135,7 @@ namespace softgen
                                 reader.Close();
 
                             }
-                               
+
                         }
                     }
 
@@ -1154,7 +1154,7 @@ namespace softgen
                             general.FillCombo(cboType, "item_type_id", "m_item_type", false);
                             string typIDFromDatabase = reader["item_type_id"].ToString().Trim();
 
-                            if (typIDFromDatabase !="")
+                            if (typIDFromDatabase != "")
                             {
                                 // Find the item in the ComboBox's items collection
                                 object selectedItem = cboType.Items.Cast<object>().FirstOrDefault(item => item.ToString() == typIDFromDatabase);
@@ -1163,10 +1163,10 @@ namespace softgen
                                 if (selectedItem != null)
                                 {
                                     cboType.SelectedItem = selectedItem;
-                                    rotType.Text = general.GetDesc("m_item_type", "item_type_id", "item_type_desc", "C", cboType.SelectedItem.ToString().Trim());                                
+                                    rotType.Text = general.GetDesc("m_item_type", "item_type_id", "item_type_desc", "C", cboType.SelectedItem.ToString().Trim());
                                 }
-                            
-                                
+
+
                             }
 
                             //------------------------Group combo----------------------------//
@@ -1196,7 +1196,7 @@ namespace softgen
                                     // Set the selected item if found
                                     if (selectedItem2 != null)
                                     {
-                                        cboSGroup.SelectedItem = selectedItem2;                                    
+                                        cboSGroup.SelectedItem = selectedItem2;
                                         rotSGroup.Text = general.GetDesc("m_sub_group", "sub_group_id", "sub_group_desc", "C", cboSGroup.SelectedItem.ToString().Trim());
                                     }
 
@@ -1213,7 +1213,7 @@ namespace softgen
                                         if (selectedItem3 != null)
                                         {
                                             cboSSGroupDesc.SelectedItem = selectedItem3;
-                                    
+
                                             rotSSGroupDesc.Text = general.GetDesc("m_sub_sub_group", "sub_sub_group_id", "sub_sub_group_desc", "C", cboSSGroupDesc.SelectedItem.ToString().Trim());
                                         }
 
@@ -1224,37 +1224,37 @@ namespace softgen
                             }
 
                             //------------------------Size combo----------------------------//
-                             general.FillCombo(cboSizeDesc, "size_id", "m_size", false);
-                             string sizeFromDatabase = reader["size_id"].ToString().Trim();
-                             if (sizeFromDatabase != "")
-                             {
+                            general.FillCombo(cboSizeDesc, "size_id", "m_size", false);
+                            string sizeFromDatabase = reader["size_id"].ToString().Trim();
+                            if (sizeFromDatabase != "")
+                            {
                                 // Find the item in the ComboBox's items collection
                                 object selectedItem4 = cboSizeDesc.Items.Cast<object>().FirstOrDefault(item => item.ToString() == sizeFromDatabase);
 
                                 // Set the selected item if found
-                                   if (selectedItem4 != null)
-                                   {
-                                      cboSizeDesc.SelectedItem = selectedItem4;                                                                               
-                                      rotSizeDesc.Text = general.GetDesc("m_size", "size_id", "size_desc", "C", cboSizeDesc.SelectedItem.ToString().Trim());
-                                    }
+                                if (selectedItem4 != null)
+                                {
+                                    cboSizeDesc.SelectedItem = selectedItem4;
+                                    rotSizeDesc.Text = general.GetDesc("m_size", "size_id", "size_desc", "C", cboSizeDesc.SelectedItem.ToString().Trim());
+                                }
 
-                             }
+                            }
                             //------------------------Color combo----------------------------//
-                             general.FillCombo(cboColorDesc, "color_id", "m_color", false);
-                             string colorFromDatabase = reader["color_id"].ToString().Trim();
-                             if (colorFromDatabase != "")
-                             {
+                            general.FillCombo(cboColorDesc, "color_id", "m_color", false);
+                            string colorFromDatabase = reader["color_id"].ToString().Trim();
+                            if (colorFromDatabase != "")
+                            {
                                 // Find the item in the ComboBox's items collection
                                 object selectedItem5 = cboColorDesc.Items.Cast<object>().FirstOrDefault(item => item.ToString() == colorFromDatabase);
 
                                 // Set the selected item if found
-                                   if (selectedItem5 != null)
-                                   {
-                                      cboSizeDesc.SelectedItem = selectedItem5;                                                                                                                     
-                                      rotColorDesc.Text = general.GetDesc("m_color", "colot_id", "color_desc", "C", cboColorDesc.SelectedItem.ToString().Trim());
-                                    }
+                                if (selectedItem5 != null)
+                                {
+                                    cboSizeDesc.SelectedItem = selectedItem5;
+                                    rotColorDesc.Text = general.GetDesc("m_color", "colot_id", "color_desc", "C", cboColorDesc.SelectedItem.ToString().Trim());
+                                }
 
-                             }
+                            }
 
                             txtStyle.Text = reader["style"].ToString().Trim();
 
@@ -1269,7 +1269,7 @@ namespace softgen
                                 // Set the selected item if found
                                 if (selectedItem6 != null)
                                 {
-                                    cboManuf.SelectedItem = selectedItem6;                                    
+                                    cboManuf.SelectedItem = selectedItem6;
                                     rotManuf.Text = general.GetDesc("m_manuf", "manuf_id", "manuf_name", "C", cboManuf.SelectedItem.ToString().Trim());
                                 }
 
@@ -1286,7 +1286,7 @@ namespace softgen
                                 // Set the selected item if found
                                 if (selectedItem7 != null)
                                 {
-                                    cboPurUnit.SelectedItem = selectedItem7;                                                                        
+                                    cboPurUnit.SelectedItem = selectedItem7;
                                     rotPurUnit.Text = general.GetDesc("m_unit", "unit_id", "unit_desc", "C", cboPurUnit.SelectedItem.ToString().Trim());
                                 }
 
@@ -1303,7 +1303,7 @@ namespace softgen
                                 // Set the selected item if found
                                 if (selectedItem8 != null)
                                 {
-                                    cboSaleUnit.SelectedItem = selectedItem8;                                                                                                        
+                                    cboSaleUnit.SelectedItem = selectedItem8;
                                     rotSaleUnit.Text = general.GetDesc("m_unit", "unit_id", "unit_desc", "C", cboSaleUnit.SelectedItem.ToString().Trim());
                                 }
 
@@ -1335,7 +1335,7 @@ namespace softgen
                                 // Set the selected item if found
                                 if (selectedItem9 != null)
                                 {
-                                    cboSaleTax.SelectedItem = selectedItem9;                                    
+                                    cboSaleTax.SelectedItem = selectedItem9;
                                     rotSaleTax.Text = general.GetDesc("m_tax_type", "tax_type_id", "tax_type_desc", "C", cboSaleTax.SelectedItem.ToString().Trim());
                                 }
 
@@ -1350,7 +1350,7 @@ namespace softgen
                             {
                                 chkBarYN.Checked = false;
                             }
-                              if (reader["active_yn"].ToString() == "Y")
+                            if (reader["active_yn"].ToString() == "Y")
                             {
                                 chkAct.Checked = true;
                             }
@@ -1373,10 +1373,10 @@ namespace softgen
                     }
 
 
-                  
+
                 }
 
-             
+
             }
             catch (Exception ex)
             {
@@ -2117,10 +2117,10 @@ namespace softgen
 
         private void frmM_Item_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
-              
 
-            if ( txtItemDesc.Text != "" && dbgBarDet.Rows[0].Cells[3].Value != "0.00")
+
+
+            if (txtItemDesc.Text != "" && dbgBarDet.Rows[0].Cells[3].Value != "0.00")
             {
                 dbConnector = new DbConnector();
                 // dbConnector.connectionString= new OdbcConnection();
@@ -2142,26 +2142,26 @@ namespace softgen
                             {
                                 if (!reader.HasRows)
                                 {
-                              
+
 
                                     string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, closed_yn, comp_name) VALUES" +
                                              " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
                                              " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
                                              " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                     OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
-                                   // cmd.Transaction = transaction;
+                                    // cmd.Transaction = transaction;
 
-                        
+
 
                                     cmd.CommandText = insert;
-                
+
                                     cmd.Parameters.Add(new OdbcParameter("item_id", i.ToString().Trim()));
                                     cmd.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
                                     cmd.Parameters.Add(new OdbcParameter("short_desc", txtShDesc.Text.Trim()));
                                     string type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString().Trim() : string.Empty;
                                     cmd.Parameters.Add(new OdbcParameter("item_type_id", type));
 
-                                    string grp = cboGroup.SelectedItem != null ? cboGroup.SelectedItem.ToString().Trim() : string.Empty;                        
+                                    string grp = cboGroup.SelectedItem != null ? cboGroup.SelectedItem.ToString().Trim() : string.Empty;
                                     cmd.Parameters.Add(new OdbcParameter("group_id", grp));
 
                                     string sgrp = cboSGroup.SelectedItem != null ? cboSGroup.SelectedItem.ToString().Trim() : string.Empty;
@@ -2170,7 +2170,7 @@ namespace softgen
                                     string ssgrp = cboSSGroupDesc.SelectedItem != null ? cboSSGroupDesc.SelectedItem.ToString().Trim() : string.Empty;
                                     cmd.Parameters.Add(new OdbcParameter("sub_sub_group_id", ssgrp));
 
-                                    string size = cboSizeDesc.SelectedItem != null? cboSizeDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                    string size = cboSizeDesc.SelectedItem != null ? cboSizeDesc.SelectedItem.ToString().Trim() : string.Empty;
                                     cmd.Parameters.Add(new OdbcParameter("size_id", size));
 
                                     string color = cboColorDesc.SelectedItem != null ? cboColorDesc.SelectedItem.ToString().Trim() : string.Empty;
@@ -2216,7 +2216,7 @@ namespace softgen
                                     cmd.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
                                     cmd.Parameters.Add(new OdbcParameter("disc_per", txtDisc.Text.ToString().Trim()));
                                     cmd.Parameters.Add(new OdbcParameter("HSN_CODE", txtHSN.Text.ToString().Trim()));
-                        
+
                                     string cessValue = string.IsNullOrEmpty(txtCess.Text) ? "0.00" : txtCess.Text.ToString().Trim();
                                     string excisperc = string.IsNullOrEmpty(txtexisper.Text) ? "0.00" : txtexisper.Text.ToString().Trim();
 
@@ -2224,10 +2224,10 @@ namespace softgen
                                     cmd.Parameters.Add(new OdbcParameter("excis_perc", excisperc));
                                     cmd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
                                     cmd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
-                                    cmd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked? "N":"Y"));
+                                    cmd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
                                     cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
                                     cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-                        
+
 
                                     cmd.ExecuteNonQuery();
                                     //transaction.Commit();
@@ -2241,7 +2241,7 @@ namespace softgen
                     }
                 }
 
-                 string selectid_toenterdet = "select item_desc from m_item_det where item_desc='" + txtItemDesc.Text.Trim() + "'";
+                string selectid_toenterdet = "select item_desc from m_item_det where item_desc='" + txtItemDesc.Text.Trim() + "'";
                 using (OdbcDataReader reader = dbConnector.CreateResultset(selectid_toenterdet))
                 {
                     if (!reader.HasRows)

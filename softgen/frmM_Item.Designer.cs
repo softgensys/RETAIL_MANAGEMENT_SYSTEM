@@ -395,9 +395,9 @@
             // 
             // txtReOLevel
             // 
-            txtReOLevel.Location = new Point(243, 191);
+            txtReOLevel.Location = new Point(277, 191);
             txtReOLevel.Name = "txtReOLevel";
-            txtReOLevel.Size = new Size(109, 23);
+            txtReOLevel.Size = new Size(84, 23);
             txtReOLevel.TabIndex = 121;
             // 
             // lblReOLevel
@@ -405,17 +405,17 @@
             lblReOLevel.AutoSize = true;
             lblReOLevel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblReOLevel.ImeMode = ImeMode.NoControl;
-            lblReOLevel.Location = new Point(180, 191);
+            lblReOLevel.Location = new Point(180, 194);
             lblReOLevel.Name = "lblReOLevel";
-            lblReOLevel.Size = new Size(61, 30);
+            lblReOLevel.Size = new Size(94, 15);
             lblReOLevel.TabIndex = 120;
             lblReOLevel.Text = "Re- order Level";
             // 
             // txtMinLevel
             // 
-            txtMinLevel.Location = new Point(61, 190);
+            txtMinLevel.Location = new Point(79, 190);
             txtMinLevel.Name = "txtMinLevel";
-            txtMinLevel.Size = new Size(109, 23);
+            txtMinLevel.Size = new Size(91, 23);
             txtMinLevel.TabIndex = 119;
             // 
             // lblMinLevel
@@ -423,9 +423,9 @@
             lblMinLevel.AutoSize = true;
             lblMinLevel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblMinLevel.ImeMode = ImeMode.NoControl;
-            lblMinLevel.Location = new Point(12, 189);
+            lblMinLevel.Location = new Point(12, 193);
             lblMinLevel.Name = "lblMinLevel";
-            lblMinLevel.Size = new Size(37, 30);
+            lblMinLevel.Size = new Size(65, 15);
             lblMinLevel.TabIndex = 118;
             lblMinLevel.Text = "MIn. Level";
             // 
@@ -470,9 +470,9 @@
             lblSaleUnit.AutoSize = true;
             lblSaleUnit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblSaleUnit.ImeMode = ImeMode.NoControl;
-            lblSaleUnit.Location = new Point(18, 158);
+            lblSaleUnit.Location = new Point(5, 159);
             lblSaleUnit.Name = "lblSaleUnit";
-            lblSaleUnit.Size = new Size(31, 30);
+            lblSaleUnit.Size = new Size(57, 15);
             lblSaleUnit.TabIndex = 111;
             lblSaleUnit.Text = "Sale Unit";
             // 
@@ -527,7 +527,7 @@
             lblPurUnit.ImeMode = ImeMode.NoControl;
             lblPurUnit.Location = new Point(378, 128);
             lblPurUnit.Name = "lblPurUnit";
-            lblPurUnit.Size = new Size(57, 30);
+            lblPurUnit.Size = new Size(87, 15);
             lblPurUnit.TabIndex = 103;
             lblPurUnit.Text = "Purchase  Unit";
             // 
@@ -598,7 +598,7 @@
             lblSSGroupDesc.AutoSize = true;
             lblSSGroupDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblSSGroupDesc.ImeMode = ImeMode.NoControl;
-            lblSSGroupDesc.Location = new Point(1, 68);
+            lblSSGroupDesc.Location = new Point(3, 68);
             lblSSGroupDesc.Name = "lblSSGroupDesc";
             lblSSGroupDesc.Size = new Size(62, 15);
             lblSSGroupDesc.TabIndex = 94;

@@ -97,8 +97,17 @@ namespace softgen
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
                 // Transfer data to another form
-                Help.TransferData();
-                
+                if (DeTools.gobjActiveForm.Name == "frmT_Invoice")
+                {
+                    Help.TransferDataInv();
+                }
+
+                else
+                {
+
+                    Help.TransferData();
+                }
+
                 this.Hide();
 
             }

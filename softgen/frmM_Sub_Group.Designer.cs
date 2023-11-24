@@ -40,7 +40,7 @@
             label4 = new Label();
             chkDisc = new CheckBox();
             lblDisc = new Label();
-            checkBox1 = new CheckBox();
+            ChkAct = new CheckBox();
             label2 = new Label();
             chkSPChange = new CheckBox();
             txtSTaxPer = new TextBox();
@@ -123,7 +123,7 @@
             M_Sub_Group.Controls.Add(label4);
             M_Sub_Group.Controls.Add(chkDisc);
             M_Sub_Group.Controls.Add(lblDisc);
-            M_Sub_Group.Controls.Add(checkBox1);
+            M_Sub_Group.Controls.Add(ChkAct);
             M_Sub_Group.Controls.Add(label2);
             M_Sub_Group.Controls.Add(chkSPChange);
             M_Sub_Group.Controls.Add(txtSTaxPer);
@@ -181,15 +181,15 @@
             lblDisc.TabIndex = 185;
             lblDisc.Text = "Discount Allowed";
             // 
-            // checkBox1
+            // ChkAct
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.ImeMode = ImeMode.NoControl;
-            checkBox1.Location = new Point(67, 131);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(15, 14);
-            checkBox1.TabIndex = 184;
-            checkBox1.UseVisualStyleBackColor = true;
+            ChkAct.AutoSize = true;
+            ChkAct.ImeMode = ImeMode.NoControl;
+            ChkAct.Location = new Point(67, 131);
+            ChkAct.Name = "ChkAct";
+            ChkAct.Size = new Size(15, 14);
+            ChkAct.TabIndex = 184;
+            ChkAct.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -251,6 +251,7 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmM_Sub_Group";
             Text = "Sub Group Master";
+            Load += frmM_Sub_Group_Load;
             M_Sub_Group.ResumeLayout(false);
             M_Sub_Group.PerformLayout();
             ResumeLayout(false);
@@ -274,7 +275,7 @@
         private Label label4;
         private CheckBox chkDisc;
         private Label lblDisc;
-        private CheckBox checkBox1;
+        private CheckBox ChkAct;
         private Label label2;
     }
 }

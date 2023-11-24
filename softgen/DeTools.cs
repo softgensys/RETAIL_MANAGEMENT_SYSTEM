@@ -97,6 +97,8 @@ namespace softgen
         ///////////-------------
         public static string currentKey;
         public static string newKey;
+        public static DataGridViewCell dgvCell;
+        public static DataGridView dgv;
 
 
         ///////
@@ -978,6 +980,10 @@ namespace softgen
                             CreateButton(mobjToolbar, "Help", "Help Information");
 
                             if (gobjActiveForm.Name == "frmM_Item")
+                            {
+                                searchableForm.ClearForm();
+                            }
+                            else
                             {
                                 searchableForm.ClearForm();
                             }
@@ -3175,6 +3181,8 @@ namespace softgen
             {
                 Control cntrl;
                 bool isMainformAct = false;
+                DataGridViewCell focusedcell;
+               
                 foreach (Form OpenForm in Application.OpenForms)
                 {
                     if (OpenForm.Name == "MainForm")
@@ -3186,15 +3194,127 @@ namespace softgen
 
                 if (isMainformAct)
                 {
-                    if (toolbarDictionary1.Count <= 1)
-                    {
-                        Messages.ErrorMsg("Help Not Ready for Menu.");
+                    frmHelp frmHelp = new frmHelp();
 
+                    if (Help.dgvCellToHelpTopicMapping.Count > 0 && gobjActiveForm.ActiveControl is DataGridView)
+                    {
+                        dgv = (DataGridView)gobjActiveForm.ActiveControl;
+                        Help.o_form = gobjActiveForm;
+                        Help.s_Mode = GetMode(gobjActiveForm);
+
+                        // Get the current cell
+                        dgvCell = dgv.CurrentCell;
+
+                        if (dgvCell != null)
+                        {
+                            Tuple<DataGridView, int, int> key = Tuple.Create(dgv, dgvCell.RowIndex, dgvCell.ColumnIndex);
+
+                            if (Help.dgvCellToHelpTopicMapping.TryGetValue(key, out var helpTopic))
+
+                            {
+                                //Help.i_Help_id = Int32.Parse(helpTopic);
+
+                                //    // Handle the help topic as needed
+                                //    switch (Help.i_Help_id)
+                                //    {
+                                //        case 0:
+                                //            // Currently Help is not available
+                                //            frmHelp.pnlText.Text = "Currently Help is not available.";
+                                //            frmHelp.pnlText.Visible = true;
+                                //            break;
+
+                                //        case var _ when Help.i_Help_id < 3000:
+                                //            // In add mode, don't display the grid help.
+                                //            if (Help.s_Mode == ADDMODE)
+                                //            {
+                                //                Help.PrepareGridHelp();
+                                //            }
+                                //            else
+                                //            {
+                                //                Help.PrepareGridHelp();
+                                //            }
+                                //            break;
+
+                                //        case var _ when Help.i_Help_id > 9000:
+                                //            // These helps are for a substitute for combo help.
+                                //            Help.PrepareGridHelp();
+                                //            break;
+
+                                //        case var _ when Help.i_Help_id > 3000:
+                                //            Help.PrepareTextHelp();
+                                //            break;
+                                //    }
+                                //    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(gobjActiveForm) + " (" + Help.i_NoOfRecords.ToString().Trim() + ")";
+                                //    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(gobjActiveForm);
+                                //    Help.FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                //    Help.FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                //    frmHelp.Show();
+
+                                //    switch (Help.i_Help_id)
+                                //    {
+                                //        case 9001:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Item Description");
+                                //            break;
+                                //        case 9002:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Customer Name");
+                                //            break;
+                                //        case 9005:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Supplier Name");
+                                //            break;
+                                //        case 9010:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Item Description");
+                                //            break;
+                                //        case 9011:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Item Description");
+                                //            break;
+                                //        case 1005:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Customer Name");
+                                //            break;
+                                //        case 1006:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Item Name");
+                                //            break;
+                                //        case 1013:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Supplier Name");
+                                //            break;
+                                //        case 9014:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Description");
+                                //            break;
+                                //        case 9018:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Description");
+                                //            break;
+                                //        case 9006:
+                                //            frmHelp.cboDataType.Items.Add(1);
+                                //            frmHelp.cboFields.Items.Add("Description");
+                                //            break;
+                                //    }
+                                //}
+                                mobjActiveControl = gobjActiveForm.ActiveControl;
+                                Help.DisplayHelp(gobjActiveForm, (int)Keys.F1, mobjActiveControl);
+                            }
+                        }
                     }
+
+                    else if (toolbarDictionary1.Count <= 1)
+                         {
+                            Messages.ErrorMsg("Help Not Ready for Menu.");
+
+                         }
                     else
                     {
-                        mobjActiveControl = gobjActiveForm.ActiveControl;
-                        Help.DisplayHelp(gobjActiveForm, (int)Keys.F1, mobjActiveControl);
+                      
+                       mobjActiveControl = gobjActiveForm.ActiveControl;
+                       Help.DisplayHelp(gobjActiveForm, (int)Keys.F1, mobjActiveControl);
+                    
                     }
                 }
 

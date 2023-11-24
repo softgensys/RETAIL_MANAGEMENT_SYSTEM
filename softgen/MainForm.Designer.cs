@@ -60,6 +60,8 @@ namespace softgen
             documentSeriesToolStripMenuItem = new ToolStripMenuItem();
             documentTypeToolStripMenuItem = new ToolStripMenuItem();
             transactionToolStripMenuItem = new ToolStripMenuItem();
+            Tbillmodule = new ToolStripMenuItem();
+            TInvGenmenu = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
             utilitiesToolStripMenuItem = new ToolStripMenuItem();
             windowsToolStripMenuItem = new ToolStripMenuItem();
@@ -76,6 +78,7 @@ namespace softgen
             pnlCreated_by = new Label();
             imageList1 = new ImageList(components);
             tmrActiveForm = new System.Windows.Forms.Timer(components);
+            mnuMSGroup = new ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel.SuspendLayout();
@@ -269,7 +272,7 @@ namespace softgen
             // 
             // masterToolStripMenuItem
             // 
-            masterToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { Mgroupmenu, MItemmenu, documentSeriesToolStripMenuItem, documentTypeToolStripMenuItem });
+            masterToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MItemmenu, documentSeriesToolStripMenuItem, documentTypeToolStripMenuItem, Mgroupmenu, mnuMSGroup });
             masterToolStripMenuItem.Name = "masterToolStripMenuItem";
             masterToolStripMenuItem.Size = new Size(55, 20);
             masterToolStripMenuItem.Text = "Master";
@@ -302,9 +305,24 @@ namespace softgen
             // 
             // transactionToolStripMenuItem
             // 
+            transactionToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { Tbillmodule });
             transactionToolStripMenuItem.Name = "transactionToolStripMenuItem";
             transactionToolStripMenuItem.Size = new Size(79, 20);
             transactionToolStripMenuItem.Text = "Transaction";
+            // 
+            // Tbillmodule
+            // 
+            Tbillmodule.DropDownItems.AddRange(new ToolStripItem[] { TInvGenmenu });
+            Tbillmodule.Name = "Tbillmodule";
+            Tbillmodule.Size = new Size(151, 22);
+            Tbillmodule.Text = "Billing Module";
+            // 
+            // TInvGenmenu
+            // 
+            TInvGenmenu.Name = "TInvGenmenu";
+            TInvGenmenu.Size = new Size(173, 22);
+            TInvGenmenu.Text = "Invoice Generation";
+            TInvGenmenu.Click += invoiceGenerationToolStripMenuItem_Click;
             // 
             // reportToolStripMenuItem
             // 
@@ -457,6 +475,13 @@ namespace softgen
             tmrActiveForm.Enabled = true;
             tmrActiveForm.Tick += tmrActiveForm_Tick;
             // 
+            // mnuMSGroup
+            // 
+            mnuMSGroup.Name = "mnuMSGroup";
+            mnuMSGroup.Size = new Size(180, 22);
+            mnuMSGroup.Text = "Sub Group";
+            mnuMSGroup.Click += mnuMSGroup_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -569,5 +594,8 @@ namespace softgen
         public Label pnlPosted_by;
         public Label pnlUserName;
         public ToolStripMenuItem MItemmenu;
+        private ToolStripMenuItem Tbillmodule;
+        private ToolStripMenuItem TInvGenmenu;
+        private ToolStripMenuItem mnuMSGroup;
     }
 }

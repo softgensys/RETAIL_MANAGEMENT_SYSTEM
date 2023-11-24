@@ -307,6 +307,16 @@ namespace softgen
             childForm2.Show();
 
         }
+
+        //for item
+        private void OpenChildForm5()
+        {
+            frmT_Invoice childForm5 = new frmT_Invoice();
+            childForm5.MdiParent = this; // Set the MDI parent form
+            childForm5.Show();
+
+        }
+
         //for doc series
         private void OpenChildForm3()
         {
@@ -321,6 +331,14 @@ namespace softgen
             DoctypeMas childForm4 = new DoctypeMas();
             childForm4.MdiParent = this; // Set the MDI parent form
             childForm4.Show();
+
+        }
+        //for sub group
+        private void OpenChildForm6()
+        {
+            frmM_Sub_Group childForm = new frmM_Sub_Group();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
 
         }
 
@@ -782,6 +800,19 @@ namespace softgen
             OpenChildForm2();
             MItemmenu.Enabled = false;
 
+        }
+
+        private void invoiceGenerationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenChildForm5();
+            TInvGenmenu.Enabled = false;
+
+        }
+
+        private void mnuMSGroup_Click(object sender, EventArgs e)
+        {
+            OpenChildForm6();
+            mnuMSGroup.Enabled = false;
         }
 
 

@@ -14,12 +14,18 @@ namespace softgen
 {
     public static class Help
     {
-        private static string s_Mode="";
-        private static int i_Help_id;
-        private static int i_NoOfRecords;
-        private static Form o_form;
+        public static string s_Mode="";
+        public static int i_Help_id;
+        public static int i_NoOfRecords;
+        public static Form o_form;
         public static Control o_control;  
+        public static DataGridViewCell o_cell;
         public static Dictionary<Control, string> controlToHelpTopicMapping = new Dictionary<Control, string>();
+        public static Dictionary<Tuple<DataGridView, int, int>, string> dgvCellToHelpTopicMapping = new Dictionary<Tuple<DataGridView, int, int>, string>();
+        // Declare a HashSet to store unique field names with aliases
+        private static HashSet<string> fieldNamesWithAliases = new HashSet<string>();
+
+
         public static frmHelp frmHelp= new frmHelp();
         public static DbConnector dbConnector;
         public static int selectedIndex = frmHelp.cboDataType.SelectedIndex;
@@ -38,6 +44,8 @@ namespace softgen
             i_NoOfRecords = 0;
 
             s_Mode = DeTools.GetMode(form);
+
+
 
             if (controlToHelpTopicMapping.TryGetValue(control, out var helpTopic))
             {
@@ -80,22 +88,23 @@ namespace softgen
             FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
             frmHelp.Show();
         }
-
-
+        
+      
 
         public static void DisplayHelp(Form form, int keyCode, Control control)
         {
+            var helpTopic="";
             if (keyCode == (int)Keys.F1)
             {
                 o_form = form;
                 o_control = control;
-
+            
                 i_NoOfRecords = 0;
 
                 s_Mode = DeTools.GetMode(form);
                 //i_Help_id = control.HelpContextID;
 
-                if (controlToHelpTopicMapping.TryGetValue(control, out var helpTopic))
+                if (controlToHelpTopicMapping.TryGetValue(control, out helpTopic) && !string.IsNullOrEmpty(helpTopic))
                 {
                    i_Help_id = Int32.Parse(helpTopic);
 
@@ -130,6 +139,45 @@ namespace softgen
                             break;
                     }
                 }
+
+                else 
+                {
+                    Tuple<DataGridView, int, int> key = Tuple.Create(DeTools.dgv, DeTools.dgvCell.RowIndex, DeTools.dgvCell.ColumnIndex);
+                    dgvCellToHelpTopicMapping.TryGetValue(key, out helpTopic);
+                     i_Help_id = Int32.Parse(helpTopic);
+
+
+                    switch (i_Help_id)
+                    {
+                        case 0:
+                            // Currently Help is not available
+                            frmHelp.pnlText.Text = "Currently Help is not available.";
+                            frmHelp.pnlText.Visible = true;
+                            break;
+
+                        case var _ when i_Help_id < 3000:
+                            // In add mode, don't display the grid help.
+                            if (s_Mode == DeTools.ADDMODE)
+                            {
+                                PrepareGridHelp();
+                            }
+                            else
+                            {
+                                PrepareGridHelp();
+                            }
+                            break;
+
+                        case var _ when i_Help_id > 9000:
+                            // These helps are for a substitute for combo help.
+                            PrepareGridHelp();
+                            break;
+
+                        case var _ when i_Help_id > 3000:
+                            PrepareTextHelp();
+                            break;
+                    }
+                }
+                
 
                 frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
                 frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
@@ -243,7 +291,7 @@ namespace softgen
             frmHelp.cboDataType.Items.Clear();
             frmHelp.cboDataType.SelectedIndex = -1;
 
-            using (OdbcDataReader rs_Query = dbConnector.CreateResultset(strQuery))
+            using (OdbcDataReader rs_Query = dbConnector.CreateResultset(strQuery+" limit 200"))
             {
                 for (int J = 0; J < i_Cols; J++)
                 {
@@ -267,6 +315,21 @@ namespace softgen
             for (int I = 0; I < i_Cols; I++)
             {
                 strFieldName = strField[I].Trim();
+
+                // Check if the field name contains a dot (.)
+                if (strFieldName.Contains("."))
+                {
+                    // Split the field name based on the dot (.)
+                    string[] parts = strFieldName.Split('.');
+
+                    // If the split results in two parts, consider the second part as the actual field name
+                    if (parts.Length == 2)
+                    {
+                        strFieldName = parts[0]+"."+parts[1].Trim();
+                    }
+                }
+                fieldNamesWithAliases.Add(strFieldName);
+
                 if (strFieldName.Contains("="))
                 {
                     string[] strCase = strFieldName.Split('=');
@@ -355,19 +418,32 @@ namespace softgen
                     default:
                         DeTools.gstrSQL += string.Empty;
                         break;
+                       
                 }
 
-                //-----------------------
-                string innerquery_for_cols = rs_Query["query"].ToString().Trim();
-                using (OdbcDataReader innerQueryReader = dbConnector.CreateResultset(innerquery_for_cols))
-                {
-                    int i_Cols = innerQueryReader.FieldCount;
 
-                    for (int J = 0; J < i_Cols; J++)
-                    {
-                        string columnName = innerQueryReader.GetName(J);
-                        cmb_for_query_cols.Items.Add(columnName);
-                    }
+                //-----------------------
+                //string innerquery_for_cols = DeTools.gstrSQL.ToString().Trim()+ " limit 1";
+                //using (OdbcDataReader innerQueryReader = dbConnector.CreateResultset(innerquery_for_cols))
+                //{
+                //    int i_Cols = innerQueryReader.FieldCount;
+
+                //    for (int J = 0; J < i_Cols; J++)
+                //    {
+                //        string columnName = innerQueryReader.GetName(J);
+                //        cmb_for_query_cols.Items.Add(columnName);
+                //    }
+                //}
+                foreach (string columnName in fieldNamesWithAliases)
+                {
+
+                    int firstSpaceIndex = columnName.IndexOf(' ');
+
+                    string fieldName = (firstSpaceIndex != -1) ? columnName.Substring(0, firstSpaceIndex) : columnName;
+
+
+
+                    cmb_for_query_cols.Items.Add(fieldName);
                 }
 
                 if (frmHelp.cboFields.SelectedItem == null)
@@ -533,7 +609,7 @@ namespace softgen
                 }
 
                 // Adjust the SQL query to limit the number of records
-                DeTools.gstrSQL = DeTools.gstrSQL+" Limit 2000";
+                DeTools.gstrSQL = DeTools.gstrSQL+" Limit 200";
 
                 // Execute the query and retrieve results
                 using (OdbcDataReader rs_Result = dbConnector.CreateResultset(DeTools.gstrSQL))
@@ -617,6 +693,15 @@ namespace softgen
                         {
                             frmHelp.grdHelp.Columns[columnIndex].Width = newWidth;
                         }
+                        
+                        //for 1st column width
+                        int columnIndex1 = 0; // Set to 1 for the 2nd column
+                        int newWidth1 = 250; // Set the desired width
+
+                        if (columnIndex1 >= 0 && columnIndex1 < frmHelp.grdHelp.Columns.Count)
+                        {
+                            frmHelp.grdHelp.Columns[columnIndex1].Width = newWidth1;
+                        }
 
 
                         // Iterate through the columns and make them read-only
@@ -633,7 +718,7 @@ namespace softgen
 
                         if (data.Count > 0)
                         {
-                        frmHelp.pnlToptxt.Text = strheading + " (0)";
+                            frmHelp.pnlToptxt.Text = strheading + " (0)";
 
                         }
 
@@ -1168,7 +1253,59 @@ namespace softgen
             }
         }
 
-        
+        //---for invoice---------------//
+        public static void TransferDataInv()
+        {
+            // Transfer data from help form to main form.
+            if (i_Help_id == 9001 && DeTools.gobjActiveForm.Name == "frmT_Invoice")
+            {
+                // Single key fields
+                if (frmHelp.grdHelp.CurrentRow != null)
+                {
+                    // Assuming that targetGrid is your DataGridView
+                    DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDet", true).FirstOrDefault();
+
+                    // Get the current row index
+                    int rowIndex = targetGrid.Rows.Add();
+
+                    // Assuming that grdHelp is your source DataGridView in frmHelp
+                    DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+
+                    if (selectedRow != null)
+                    {
+                        // Assuming you have a list of column indexes to transfer data
+                        List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4 }; // Add the column indexes you want to transfer
+
+                        foreach (int columnIndex in columnIndexesToTransfer)
+                        {
+                            // Check if the column index is within the bounds
+                            if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                            {
+                                // Assuming that targetGrid has enough columns
+                                targetGrid.Rows[rowIndex].Cells[1].Value = selectedRow.Cells[0].Value;
+                                targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[1].Value;
+                                targetGrid.Rows[rowIndex].Cells[3].Value = 1;
+                                targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value;
+                                targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value;
+                                targetGrid.Rows[rowIndex].Cells[13].Value = selectedRow.Cells[4].Value;
+
+                            }
+                            else
+                            {
+                                // Handle the case where the column index is out of bounds
+                                // You can log a message or take appropriate action
+                            }
+                        }
+
+                        // Set the focus to the newly added row and the 2nd column
+                        targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1]; // Adjust column index as needed
+
+                    }
+                }
+            }
+        }
+
+
 
 
 

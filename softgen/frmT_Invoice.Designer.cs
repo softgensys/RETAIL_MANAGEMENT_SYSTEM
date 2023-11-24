@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             T_Invoice = new Panel();
+            rotInvCust = new Label();
             rotRefund = new Label();
             pnlPayDet = new Panel();
             dbgPayDet = new DataGridView();
@@ -73,19 +74,6 @@
             pnlItemDet = new Panel();
             lblItemDet = new Label();
             dbgItemDet = new DataGridView();
-            srno = new DataGridViewTextBoxColumn();
-            BarItemCode = new DataGridViewTextBoxColumn();
-            Qty = new DataGridViewTextBoxColumn();
-            Mrp = new DataGridViewTextBoxColumn();
-            UnitPrice = new DataGridViewTextBoxColumn();
-            Disc = new DataGridViewTextBoxColumn();
-            DiscAmt = new DataGridViewTextBoxColumn();
-            Gst = new DataGridViewTextBoxColumn();
-            GstAmt = new DataGridViewTextBoxColumn();
-            Cess = new DataGridViewTextBoxColumn();
-            CessAmt = new DataGridViewTextBoxColumn();
-            Amount = new DataGridViewTextBoxColumn();
-            Itemid = new DataGridViewTextBoxColumn();
             label11 = new Label();
             optBillPrev = new RadioButton();
             label10 = new Label();
@@ -109,7 +97,20 @@
             dtpInvDate = new DateTimePicker();
             txtInvNo = new TextBox();
             lblInvNo = new Label();
-            rotInvCust = new Label();
+            srno = new DataGridViewTextBoxColumn();
+            Itemname = new DataGridViewTextBoxColumn();
+            BarItemCode = new DataGridViewTextBoxColumn();
+            Qty = new DataGridViewTextBoxColumn();
+            Mrp = new DataGridViewTextBoxColumn();
+            UnitPrice = new DataGridViewTextBoxColumn();
+            Disc = new DataGridViewTextBoxColumn();
+            DiscAmt = new DataGridViewTextBoxColumn();
+            Gst = new DataGridViewTextBoxColumn();
+            GstAmt = new DataGridViewTextBoxColumn();
+            Cess = new DataGridViewTextBoxColumn();
+            CessAmt = new DataGridViewTextBoxColumn();
+            Amount = new DataGridViewTextBoxColumn();
+            Itemid = new DataGridViewTextBoxColumn();
             T_Invoice.SuspendLayout();
             pnlPayDet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dbgPayDet).BeginInit();
@@ -173,6 +174,15 @@
             T_Invoice.TabIndex = 0;
             T_Invoice.Paint += T_Invoice_Paint;
             // 
+            // rotInvCust
+            // 
+            rotInvCust.BackColor = Color.Bisque;
+            rotInvCust.BorderStyle = BorderStyle.Fixed3D;
+            rotInvCust.Location = new Point(590, 7);
+            rotInvCust.Name = "rotInvCust";
+            rotInvCust.Size = new Size(155, 23);
+            rotInvCust.TabIndex = 246;
+            // 
             // rotRefund
             // 
             rotRefund.BackColor = Color.Bisque;
@@ -189,45 +199,45 @@
             pnlPayDet.BackColor = Color.Pink;
             pnlPayDet.Controls.Add(dbgPayDet);
             pnlPayDet.Controls.Add(lblPayDet);
-            pnlPayDet.Location = new Point(7, 401);
+            pnlPayDet.Location = new Point(7, 400);
             pnlPayDet.Name = "pnlPayDet";
-            pnlPayDet.Size = new Size(903, 152);
+            pnlPayDet.Size = new Size(903, 142);
             pnlPayDet.TabIndex = 243;
             // 
             // dbgPayDet
             // 
             dbgPayDet.AllowUserToOrderColumns = true;
             dbgPayDet.BackgroundColor = SystemColors.Info;
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dbgPayDet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dbgPayDet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dbgPayDet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dbgPayDet.Columns.AddRange(new DataGridViewColumn[] { PaySrno, Paymod, PayAmt, CashTend, CCCode, CCNo, Coupon, Custid, Bank, Chno, Chdt, VouchNo, VouchAmt });
-            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = SystemColors.Window;
-            dataGridViewCellStyle8.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle8.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
-            dbgPayDet.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dbgPayDet.DefaultCellStyle = dataGridViewCellStyle2;
             dbgPayDet.Location = new Point(5, 20);
             dbgPayDet.Name = "dbgPayDet";
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = SystemColors.Control;
-            dataGridViewCellStyle9.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle9.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = DataGridViewTriState.True;
-            dbgPayDet.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dbgPayDet.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dbgPayDet.RowTemplate.Height = 25;
-            dbgPayDet.Size = new Size(893, 129);
+            dbgPayDet.Size = new Size(893, 116);
             dbgPayDet.TabIndex = 227;
             // 
             // PaySrno
@@ -503,7 +513,7 @@
             pnlItemDet.BorderStyle = BorderStyle.Fixed3D;
             pnlItemDet.Controls.Add(lblItemDet);
             pnlItemDet.Controls.Add(dbgItemDet);
-            pnlItemDet.Location = new Point(5, 99);
+            pnlItemDet.Location = new Point(5, 93);
             pnlItemDet.Name = "pnlItemDet";
             pnlItemDet.Size = new Size(905, 238);
             pnlItemDet.TabIndex = 224;
@@ -524,119 +534,41 @@
             // 
             dbgItemDet.AllowUserToOrderColumns = true;
             dbgItemDet.BackgroundColor = SystemColors.Info;
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = SystemColors.Control;
-            dataGridViewCellStyle10.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle10.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = DataGridViewTriState.True;
-            dbgItemDet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
-            dbgItemDet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dbgItemDet.Columns.AddRange(new DataGridViewColumn[] { srno, BarItemCode, Qty, Mrp, UnitPrice, Disc, DiscAmt, Gst, GstAmt, Cess, CessAmt, Amount, Itemid });
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = SystemColors.Window;
-            dataGridViewCellStyle11.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle11.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = DataGridViewTriState.False;
-            dbgItemDet.DefaultCellStyle = dataGridViewCellStyle11;
+            dbgItemDet.BorderStyle = BorderStyle.Fixed3D;
+            dbgItemDet.CellBorderStyle = DataGridViewCellBorderStyle.Raised;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle4.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dbgItemDet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dbgItemDet.ColumnHeadersHeight = 35;
+            dbgItemDet.Columns.AddRange(new DataGridViewColumn[] { srno, Itemname, BarItemCode, Qty, Mrp, UnitPrice, Disc, DiscAmt, Gst, GstAmt, Cess, CessAmt, Amount, Itemid });
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = SystemColors.Window;
+            dataGridViewCellStyle5.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle5.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
+            dbgItemDet.DefaultCellStyle = dataGridViewCellStyle5;
             dbgItemDet.Location = new Point(5, 20);
             dbgItemDet.Name = "dbgItemDet";
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = SystemColors.Control;
-            dataGridViewCellStyle12.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle12.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = DataGridViewTriState.True;
-            dbgItemDet.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Control;
+            dataGridViewCellStyle6.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle6.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
+            dbgItemDet.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dbgItemDet.RowTemplate.Height = 25;
             dbgItemDet.Size = new Size(891, 208);
             dbgItemDet.TabIndex = 223;
-            // 
-            // srno
-            // 
-            srno.HeaderText = "Sr No.";
-            srno.Name = "srno";
-            srno.ReadOnly = true;
-            srno.Width = 30;
-            // 
-            // BarItemCode
-            // 
-            BarItemCode.HeaderText = "Bar/ItemCode";
-            BarItemCode.Name = "BarItemCode";
-            BarItemCode.ReadOnly = true;
-            BarItemCode.Width = 145;
-            // 
-            // Qty
-            // 
-            Qty.HeaderText = "Qty";
-            Qty.Name = "Qty";
-            Qty.Width = 80;
-            // 
-            // Mrp
-            // 
-            Mrp.HeaderText = "MRP";
-            Mrp.Name = "Mrp";
-            Mrp.Width = 80;
-            // 
-            // UnitPrice
-            // 
-            UnitPrice.HeaderText = "Unit Price";
-            UnitPrice.Name = "UnitPrice";
-            UnitPrice.Width = 70;
-            // 
-            // Disc
-            // 
-            Disc.HeaderText = "Disc%";
-            Disc.Name = "Disc";
-            Disc.Width = 60;
-            // 
-            // DiscAmt
-            // 
-            DiscAmt.HeaderText = "Disc. Amt";
-            DiscAmt.Name = "DiscAmt";
-            DiscAmt.Width = 70;
-            // 
-            // Gst
-            // 
-            Gst.HeaderText = "GST%";
-            Gst.Name = "Gst";
-            Gst.Width = 50;
-            // 
-            // GstAmt
-            // 
-            GstAmt.HeaderText = "GST Amt.";
-            GstAmt.Name = "GstAmt";
-            GstAmt.ReadOnly = true;
-            GstAmt.Width = 70;
-            // 
-            // Cess
-            // 
-            Cess.HeaderText = "CESS%";
-            Cess.Name = "Cess";
-            Cess.Width = 40;
-            // 
-            // CessAmt
-            // 
-            CessAmt.HeaderText = "CESS Amt.";
-            CessAmt.Name = "CessAmt";
-            CessAmt.ReadOnly = true;
-            CessAmt.Width = 60;
-            // 
-            // Amount
-            // 
-            Amount.HeaderText = "AMOUNT";
-            Amount.Name = "Amount";
-            Amount.ReadOnly = true;
-            // 
-            // Itemid
-            // 
-            Itemid.HeaderText = "Item Id";
-            Itemid.Name = "Itemid";
-            Itemid.ReadOnly = true;
+            dbgItemDet.CellClick += dbgItemDet_CellClick;
+            dbgItemDet.EditingControlShowing += dbgItemDet_EditingControlShowing;
             // 
             // label11
             // 
@@ -846,6 +778,7 @@
             txtInvNo.Name = "txtInvNo";
             txtInvNo.Size = new Size(112, 23);
             txtInvNo.TabIndex = 83;
+            txtInvNo.TextChanged += txtInvNo_TextChanged;
             // 
             // lblInvNo
             // 
@@ -858,26 +791,107 @@
             lblInvNo.TabIndex = 82;
             lblInvNo.Text = "Invoice No";
             // 
-            // rotInvCust
+            // srno
             // 
-            rotInvCust.BackColor = Color.Bisque;
-            rotInvCust.BorderStyle = BorderStyle.Fixed3D;
-            rotInvCust.Location = new Point(590, 7);
-            rotInvCust.Name = "rotInvCust";
-            rotInvCust.Size = new Size(155, 23);
-            rotInvCust.TabIndex = 246;
+            srno.HeaderText = "Sr No.";
+            srno.Name = "srno";
+            srno.ReadOnly = true;
+            srno.Width = 30;
+            // 
+            // Itemname
+            // 
+            Itemname.HeaderText = "Item Name";
+            Itemname.Name = "Itemname";
+            Itemname.ReadOnly = true;
+            Itemname.Width = 160;
+            // 
+            // BarItemCode
+            // 
+            BarItemCode.HeaderText = "Bar/ItemCode";
+            BarItemCode.Name = "BarItemCode";
+            BarItemCode.Width = 145;
+            // 
+            // Qty
+            // 
+            Qty.HeaderText = "Qty";
+            Qty.Name = "Qty";
+            Qty.Width = 75;
+            // 
+            // Mrp
+            // 
+            Mrp.HeaderText = "MRP";
+            Mrp.Name = "Mrp";
+            Mrp.Width = 80;
+            // 
+            // UnitPrice
+            // 
+            UnitPrice.HeaderText = "Unit Price";
+            UnitPrice.Name = "UnitPrice";
+            UnitPrice.Width = 70;
+            // 
+            // Disc
+            // 
+            Disc.HeaderText = "Disc%";
+            Disc.Name = "Disc";
+            Disc.Width = 45;
+            // 
+            // DiscAmt
+            // 
+            DiscAmt.HeaderText = "Disc. Amt";
+            DiscAmt.Name = "DiscAmt";
+            DiscAmt.Width = 60;
+            // 
+            // Gst
+            // 
+            Gst.HeaderText = "GST%";
+            Gst.Name = "Gst";
+            Gst.Width = 50;
+            // 
+            // GstAmt
+            // 
+            GstAmt.HeaderText = "GST Amt.";
+            GstAmt.Name = "GstAmt";
+            GstAmt.ReadOnly = true;
+            GstAmt.Width = 70;
+            // 
+            // Cess
+            // 
+            Cess.HeaderText = "CESS%";
+            Cess.Name = "Cess";
+            Cess.Width = 40;
+            // 
+            // CessAmt
+            // 
+            CessAmt.HeaderText = "CESS Amt.";
+            CessAmt.Name = "CessAmt";
+            CessAmt.ReadOnly = true;
+            CessAmt.Width = 60;
+            // 
+            // Amount
+            // 
+            Amount.HeaderText = "AMOUNT";
+            Amount.Name = "Amount";
+            Amount.ReadOnly = true;
+            // 
+            // Itemid
+            // 
+            Itemid.HeaderText = "Item Id";
+            Itemid.Name = "Itemid";
+            Itemid.ReadOnly = true;
             // 
             // frmT_Invoice
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoValidate = AutoValidate.EnablePreventFocusChange;
-            ClientSize = new Size(917, 558);
+            ClientSize = new Size(917, 548);
             Controls.Add(T_Invoice);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmT_Invoice";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Invoice Generation";
+            Load += frmT_Invoice_Load;
             T_Invoice.ResumeLayout(false);
             T_Invoice.PerformLayout();
             pnlPayDet.ResumeLayout(false);
@@ -911,22 +925,8 @@
         private RadioButton optCoup;
         private Label label11;
         private RadioButton optBillPrev;
-        private DataGridView dbgItemDet;
         private Panel pnlItemDet;
         private Label lblItemDet;
-        private DataGridViewTextBoxColumn srno;
-        private DataGridViewTextBoxColumn BarItemCode;
-        private DataGridViewTextBoxColumn Qty;
-        private DataGridViewTextBoxColumn Mrp;
-        private DataGridViewTextBoxColumn UnitPrice;
-        private DataGridViewTextBoxColumn Disc;
-        private DataGridViewTextBoxColumn DiscAmt;
-        private DataGridViewTextBoxColumn Gst;
-        private DataGridViewTextBoxColumn GstAmt;
-        private DataGridViewTextBoxColumn Cess;
-        private DataGridViewTextBoxColumn CessAmt;
-        private DataGridViewTextBoxColumn Amount;
-        private DataGridViewTextBoxColumn Itemid;
         private TextBox txtDiscPer;
         private Label lblDiscPer;
         private Label rotGAmt;
@@ -968,5 +968,20 @@
         private TextBox textBox5;
         private TextBox rotCust;
         private Label rotInvCust;
+        public DataGridView dbgItemDet;
+        private DataGridViewTextBoxColumn srno;
+        private DataGridViewTextBoxColumn Itemname;
+        private DataGridViewTextBoxColumn BarItemCode;
+        private DataGridViewTextBoxColumn Qty;
+        private DataGridViewTextBoxColumn Mrp;
+        private DataGridViewTextBoxColumn UnitPrice;
+        private DataGridViewTextBoxColumn Disc;
+        private DataGridViewTextBoxColumn DiscAmt;
+        private DataGridViewTextBoxColumn Gst;
+        private DataGridViewTextBoxColumn GstAmt;
+        private DataGridViewTextBoxColumn Cess;
+        private DataGridViewTextBoxColumn CessAmt;
+        private DataGridViewTextBoxColumn Amount;
+        private DataGridViewTextBoxColumn Itemid;
     }
 }

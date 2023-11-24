@@ -817,9 +817,9 @@ namespace softgen
                         Console.WriteLine("Next No is:" + curDocNo);
                         intFlag = 2;
 
-                        //gstrSQl1 = "UPDATE m_doc_series SET next_no = next_no + 1 " +
-                        //            "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A'";
-                        //dbConnector.ExecuteNonQuery(gstrSQl1);
+                        gstrSQl1 = "UPDATE m_doc_series SET next_no = next_no + 1 " +
+                                   "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A'";
+                        dbConnector.ExecuteNonQuery(gstrSQl1);
                     }
                 }
                 if (intFlag == 2)
