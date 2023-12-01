@@ -1076,9 +1076,11 @@
             StartPosition = FormStartPosition.Manual;
             Text = "Item Master";
             TopMost = true;
+            Deactivate += frmM_Item_Deactivate;
             FormClosing += frmM_Item_FormClosing;
             FormClosed += Item_FormClosed;
             Load += Item_Load;
+            Resize += frmM_Item_Resize;
             ((System.ComponentModel.ISupportInitialize)dbgBarDet).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -1147,7 +1149,6 @@
         private TextBox txtItemId;
         private Label lblItemId;
         private Label rotType;
-        private Label rotGroup;
         private Label rotSGroup;
         private Label rotSSGroupDesc;
         private Label rotSizeDesc;
@@ -1177,5 +1178,6 @@
         private DataGridViewCheckBoxColumn ACTIVE;
         private CheckBox chkNodisc;
         private Label label1;
+        public Label rotGroup;
     }
 }

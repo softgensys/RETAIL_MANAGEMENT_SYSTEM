@@ -29,12 +29,15 @@
         private void InitializeComponent()
         {
             M_Supplier = new Panel();
+            txtAgency = new TextBox();
+            lblAgency = new Label();
+            txtFreqVisit = new TextBox();
+            lblFreqVisit = new Label();
             lblVisitDay = new Label();
             cboVisitDay = new ComboBox();
             txtPayTerms = new TextBox();
             lblPayTerms = new Label();
             txtContPers = new TextBox();
-            lblGL = new Label();
             txtTinNo = new TextBox();
             lblTinNo = new Label();
             txtOpBal = new TextBox();
@@ -46,7 +49,6 @@
             lblContPers = new Label();
             txtEmail = new TextBox();
             lblEmail = new Label();
-            txtPhone2 = new TextBox();
             txtPhone1 = new TextBox();
             lblPhone = new Label();
             txtMobNo = new TextBox();
@@ -69,14 +71,8 @@
             txtAdd2 = new TextBox();
             txtAdd1 = new TextBox();
             lblAdd = new Label();
-            txtCustId = new TextBox();
-            lblCustId = new Label();
-            txtFreqVisit = new TextBox();
-            lblFreqVisit = new Label();
-            txtAgency = new TextBox();
-            lblAgency = new Label();
-            rotGL = new Label();
-            cboGL = new ComboBox();
+            txtSuppId = new TextBox();
+            lblSuppId = new Label();
             M_Supplier.SuspendLayout();
             SuspendLayout();
             // 
@@ -84,8 +80,6 @@
             // 
             M_Supplier.BackColor = Color.PowderBlue;
             M_Supplier.BorderStyle = BorderStyle.Fixed3D;
-            M_Supplier.Controls.Add(rotGL);
-            M_Supplier.Controls.Add(cboGL);
             M_Supplier.Controls.Add(txtAgency);
             M_Supplier.Controls.Add(lblAgency);
             M_Supplier.Controls.Add(txtFreqVisit);
@@ -95,7 +89,6 @@
             M_Supplier.Controls.Add(txtPayTerms);
             M_Supplier.Controls.Add(lblPayTerms);
             M_Supplier.Controls.Add(txtContPers);
-            M_Supplier.Controls.Add(lblGL);
             M_Supplier.Controls.Add(txtTinNo);
             M_Supplier.Controls.Add(lblTinNo);
             M_Supplier.Controls.Add(txtOpBal);
@@ -107,7 +100,6 @@
             M_Supplier.Controls.Add(lblContPers);
             M_Supplier.Controls.Add(txtEmail);
             M_Supplier.Controls.Add(lblEmail);
-            M_Supplier.Controls.Add(txtPhone2);
             M_Supplier.Controls.Add(txtPhone1);
             M_Supplier.Controls.Add(lblPhone);
             M_Supplier.Controls.Add(txtMobNo);
@@ -130,13 +122,47 @@
             M_Supplier.Controls.Add(txtAdd2);
             M_Supplier.Controls.Add(txtAdd1);
             M_Supplier.Controls.Add(lblAdd);
-            M_Supplier.Controls.Add(txtCustId);
-            M_Supplier.Controls.Add(lblCustId);
+            M_Supplier.Controls.Add(txtSuppId);
+            M_Supplier.Controls.Add(lblSuppId);
             M_Supplier.Location = new Point(2, 2);
             M_Supplier.Name = "M_Supplier";
             M_Supplier.Size = new Size(619, 446);
             M_Supplier.TabIndex = 2;
             M_Supplier.Paint += M_Supplier_Paint;
+            // 
+            // txtAgency
+            // 
+            txtAgency.Location = new Point(113, 341);
+            txtAgency.Multiline = true;
+            txtAgency.Name = "txtAgency";
+            txtAgency.ScrollBars = ScrollBars.Vertical;
+            txtAgency.Size = new Size(473, 41);
+            txtAgency.TabIndex = 205;
+            // 
+            // lblAgency
+            // 
+            lblAgency.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblAgency.Location = new Point(13, 349);
+            lblAgency.Name = "lblAgency";
+            lblAgency.Size = new Size(77, 18);
+            lblAgency.TabIndex = 204;
+            lblAgency.Text = "Agencies";
+            // 
+            // txtFreqVisit
+            // 
+            txtFreqVisit.Location = new Point(394, 283);
+            txtFreqVisit.Name = "txtFreqVisit";
+            txtFreqVisit.Size = new Size(193, 23);
+            txtFreqVisit.TabIndex = 203;
+            // 
+            // lblFreqVisit
+            // 
+            lblFreqVisit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblFreqVisit.Location = new Point(307, 286);
+            lblFreqVisit.Name = "lblFreqVisit";
+            lblFreqVisit.Size = new Size(82, 18);
+            lblFreqVisit.TabIndex = 202;
+            lblFreqVisit.Text = "Freq. of Visit";
             // 
             // lblVisitDay
             // 
@@ -179,16 +205,6 @@
             txtContPers.Name = "txtContPers";
             txtContPers.Size = new Size(221, 23);
             txtContPers.TabIndex = 197;
-            // 
-            // lblGL
-            // 
-            lblGL.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblGL.Location = new Point(14, 393);
-            lblGL.Name = "lblGL";
-            lblGL.Size = new Size(53, 18);
-            lblGL.TabIndex = 194;
-            lblGL.Text = "GL Code";
-            lblGL.Click += lblComm_Click;
             // 
             // txtTinNo
             // 
@@ -283,18 +299,11 @@
             lblEmail.TabIndex = 107;
             lblEmail.Text = "EMail";
             // 
-            // txtPhone2
-            // 
-            txtPhone2.Location = new Point(226, 201);
-            txtPhone2.Name = "txtPhone2";
-            txtPhone2.Size = new Size(109, 23);
-            txtPhone2.TabIndex = 106;
-            // 
             // txtPhone1
             // 
             txtPhone1.Location = new Point(114, 201);
             txtPhone1.Name = "txtPhone1";
-            txtPhone1.Size = new Size(109, 23);
+            txtPhone1.Size = new Size(179, 23);
             txtPhone1.TabIndex = 105;
             // 
             // lblPhone
@@ -405,6 +414,8 @@
             // chkStatus
             // 
             chkStatus.AutoSize = true;
+            chkStatus.Checked = true;
+            chkStatus.CheckState = CheckState.Checked;
             chkStatus.Location = new Point(576, 15);
             chkStatus.Name = "chkStatus";
             chkStatus.Size = new Size(15, 14);
@@ -466,83 +477,32 @@
             lblAdd.TabIndex = 84;
             lblAdd.Text = "Address";
             // 
-            // txtCustId
+            // txtSuppId
             // 
-            txtCustId.Location = new Point(115, 9);
-            txtCustId.Name = "txtCustId";
-            txtCustId.Size = new Size(106, 23);
-            txtCustId.TabIndex = 83;
+            txtSuppId.Location = new Point(115, 9);
+            txtSuppId.Name = "txtSuppId";
+            txtSuppId.Size = new Size(106, 23);
+            txtSuppId.TabIndex = 83;
             // 
-            // lblCustId
+            // lblSuppId
             // 
-            lblCustId.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblCustId.Location = new Point(11, 12);
-            lblCustId.Name = "lblCustId";
-            lblCustId.Size = new Size(77, 18);
-            lblCustId.TabIndex = 0;
-            lblCustId.Text = "Customer Id";
-            // 
-            // txtFreqVisit
-            // 
-            txtFreqVisit.Location = new Point(394, 283);
-            txtFreqVisit.Name = "txtFreqVisit";
-            txtFreqVisit.Size = new Size(193, 23);
-            txtFreqVisit.TabIndex = 203;
-            // 
-            // lblFreqVisit
-            // 
-            lblFreqVisit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblFreqVisit.Location = new Point(307, 286);
-            lblFreqVisit.Name = "lblFreqVisit";
-            lblFreqVisit.Size = new Size(82, 18);
-            lblFreqVisit.TabIndex = 202;
-            lblFreqVisit.Text = "Freq. of Visit";
-            // 
-            // txtAgency
-            // 
-            txtAgency.Location = new Point(113, 341);
-            txtAgency.Multiline = true;
-            txtAgency.Name = "txtAgency";
-            txtAgency.ScrollBars = ScrollBars.Vertical;
-            txtAgency.Size = new Size(473, 41);
-            txtAgency.TabIndex = 205;
-            // 
-            // lblAgency
-            // 
-            lblAgency.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblAgency.Location = new Point(13, 349);
-            lblAgency.Name = "lblAgency";
-            lblAgency.Size = new Size(77, 18);
-            lblAgency.TabIndex = 204;
-            lblAgency.Text = "Agencies";
-            // 
-            // rotGL
-            // 
-            rotGL.BackColor = Color.Bisque;
-            rotGL.BorderStyle = BorderStyle.Fixed3D;
-            rotGL.Location = new Point(381, 389);
-            rotGL.Name = "rotGL";
-            rotGL.Size = new Size(205, 23);
-            rotGL.TabIndex = 207;
-            // 
-            // cboGL
-            // 
-            cboGL.BackColor = SystemColors.Window;
-            cboGL.FlatStyle = FlatStyle.Flat;
-            cboGL.FormattingEnabled = true;
-            cboGL.Location = new Point(113, 390);
-            cboGL.Name = "cboGL";
-            cboGL.Size = new Size(260, 23);
-            cboGL.TabIndex = 206;
+            lblSuppId.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSuppId.Location = new Point(11, 12);
+            lblSuppId.Name = "lblSuppId";
+            lblSuppId.Size = new Size(77, 18);
+            lblSuppId.TabIndex = 0;
+            lblSuppId.Text = "Supplier Id";
             // 
             // frmM_Supplier
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(602, 434);
+            ClientSize = new Size(602, 402);
             Controls.Add(M_Supplier);
             Name = "frmM_Supplier";
             Text = "Supplier Master";
+            FormClosing += frmM_Supplier_FormClosing;
+            FormClosed += frmM_Supplier_FormClosed;
             Load += frmM_Supplier_Load;
             M_Supplier.ResumeLayout(false);
             M_Supplier.PerformLayout();
@@ -552,7 +512,6 @@
         #endregion
 
         private Panel M_Supplier;
-        private Label lblGL;
         private TextBox txtTinNo;
         private Label lblTinNo;
         private TextBox txtAgency;
@@ -569,7 +528,6 @@
         private DateTimePicker dtpDoB;
         private TextBox txtEmail;
         private Label lblEmail;
-        private TextBox txtPhone2;
         private TextBox txtPhone1;
         private Label lblPhone;
         private TextBox txtMobNo;
@@ -584,7 +542,6 @@
         private Label lblDist;
         private TextBox txtCity;
         private Label lblCity;
-        private CheckBox chkStatus;
         private Label lblStatus;
         private TextBox txtName;
         private Label lblName;
@@ -592,8 +549,8 @@
         private TextBox txtAdd2;
         private TextBox txtAdd1;
         private Label lblAdd;
-        private TextBox txtCustId;
-        private Label lblCustId;
+        private TextBox txtSuppId;
+        private Label lblSuppId;
         private TextBox txtContPers;
         private TextBox txtPayTerms;
         private Label lblPayTerms;
@@ -601,7 +558,6 @@
         private Label lblVisitDay;
         private TextBox txtFreqVisit;
         private Label lblFreqVisit;
-        private Label rotGL;
-        private ComboBox cboGL;
+        private CheckBox chkStatus;
     }
 }

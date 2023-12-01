@@ -29,10 +29,14 @@
         private void InitializeComponent()
         {
             M_Sub_Subgroup = new Panel();
-            textBox1 = new TextBox();
+            rotSubGrpDesc = new Label();
+            chkDisc = new CheckBox();
+            cboSubGrpId = new ComboBox();
+            lblSubSGrpId = new Label();
+            txtDisc = new TextBox();
             label4 = new Label();
             lblDisc = new Label();
-            checkBox1 = new CheckBox();
+            chkAct = new CheckBox();
             label2 = new Label();
             chkSPChange = new CheckBox();
             txtSTaxPer = new TextBox();
@@ -45,10 +49,6 @@
             rotGrpDesc = new Label();
             cboGrpId = new ComboBox();
             lblGrpId = new Label();
-            lblSubSGrpId = new Label();
-            cboSubGrpId = new ComboBox();
-            chkDisc = new CheckBox();
-            rotSubGrpDesc = new Label();
             M_Sub_Subgroup.SuspendLayout();
             SuspendLayout();
             // 
@@ -60,10 +60,10 @@
             M_Sub_Subgroup.Controls.Add(chkDisc);
             M_Sub_Subgroup.Controls.Add(cboSubGrpId);
             M_Sub_Subgroup.Controls.Add(lblSubSGrpId);
-            M_Sub_Subgroup.Controls.Add(textBox1);
+            M_Sub_Subgroup.Controls.Add(txtDisc);
             M_Sub_Subgroup.Controls.Add(label4);
             M_Sub_Subgroup.Controls.Add(lblDisc);
-            M_Sub_Subgroup.Controls.Add(checkBox1);
+            M_Sub_Subgroup.Controls.Add(chkAct);
             M_Sub_Subgroup.Controls.Add(label2);
             M_Sub_Subgroup.Controls.Add(chkSPChange);
             M_Sub_Subgroup.Controls.Add(txtSTaxPer);
@@ -81,12 +81,54 @@
             M_Sub_Subgroup.Size = new Size(629, 254);
             M_Sub_Subgroup.TabIndex = 0;
             // 
-            // textBox1
+            // rotSubGrpDesc
             // 
-            textBox1.Location = new Point(363, 124);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(138, 23);
-            textBox1.TabIndex = 204;
+            rotSubGrpDesc.BackColor = Color.Bisque;
+            rotSubGrpDesc.BorderStyle = BorderStyle.Fixed3D;
+            rotSubGrpDesc.Location = new Point(264, 37);
+            rotSubGrpDesc.Name = "rotSubGrpDesc";
+            rotSubGrpDesc.Size = new Size(237, 23);
+            rotSubGrpDesc.TabIndex = 208;
+            // 
+            // chkDisc
+            // 
+            chkDisc.AutoSize = true;
+            chkDisc.ImeMode = ImeMode.NoControl;
+            chkDisc.Location = new Point(455, 161);
+            chkDisc.Name = "chkDisc";
+            chkDisc.Size = new Size(15, 14);
+            chkDisc.TabIndex = 207;
+            chkDisc.UseVisualStyleBackColor = true;
+            // 
+            // cboSubGrpId
+            // 
+            cboSubGrpId.BackColor = SystemColors.Window;
+            cboSubGrpId.FlatStyle = FlatStyle.Flat;
+            cboSubGrpId.FormattingEnabled = true;
+            cboSubGrpId.Location = new Point(135, 38);
+            cboSubGrpId.Name = "cboSubGrpId";
+            cboSubGrpId.Size = new Size(121, 23);
+            cboSubGrpId.TabIndex = 206;
+            cboSubGrpId.DropDown += cboSubGrpId_DropDown;
+            cboSubGrpId.SelectedIndexChanged += cboSubGrpId_SelectedIndexChanged;
+            // 
+            // lblSubSGrpId
+            // 
+            lblSubSGrpId.AutoSize = true;
+            lblSubSGrpId.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSubSGrpId.ImeMode = ImeMode.NoControl;
+            lblSubSGrpId.Location = new Point(17, 73);
+            lblSubSGrpId.Name = "lblSubSGrpId";
+            lblSubSGrpId.Size = new Size(104, 15);
+            lblSubSGrpId.TabIndex = 205;
+            lblSubSGrpId.Text = "Sub Sub Group Id";
+            // 
+            // txtDisc
+            // 
+            txtDisc.Location = new Point(363, 124);
+            txtDisc.Name = "txtDisc";
+            txtDisc.Size = new Size(138, 23);
+            txtDisc.TabIndex = 204;
             // 
             // label4
             // 
@@ -110,15 +152,15 @@
             lblDisc.TabIndex = 202;
             lblDisc.Text = "Discount Allowed";
             // 
-            // checkBox1
+            // chkAct
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.ImeMode = ImeMode.NoControl;
-            checkBox1.Location = new Point(72, 159);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(15, 14);
-            checkBox1.TabIndex = 201;
-            checkBox1.UseVisualStyleBackColor = true;
+            chkAct.AutoSize = true;
+            chkAct.ImeMode = ImeMode.NoControl;
+            chkAct.Location = new Point(72, 159);
+            chkAct.Name = "chkAct";
+            chkAct.Size = new Size(15, 14);
+            chkAct.TabIndex = 201;
+            chkAct.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -223,6 +265,7 @@
             cboGrpId.Name = "cboGrpId";
             cboGrpId.Size = new Size(121, 23);
             cboGrpId.TabIndex = 190;
+            cboGrpId.SelectedIndexChanged += cboGrpId_SelectedIndexChanged;
             // 
             // lblGrpId
             // 
@@ -235,46 +278,6 @@
             lblGrpId.TabIndex = 189;
             lblGrpId.Text = "Group Id";
             // 
-            // lblSubSGrpId
-            // 
-            lblSubSGrpId.AutoSize = true;
-            lblSubSGrpId.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblSubSGrpId.ImeMode = ImeMode.NoControl;
-            lblSubSGrpId.Location = new Point(17, 73);
-            lblSubSGrpId.Name = "lblSubSGrpId";
-            lblSubSGrpId.Size = new Size(104, 15);
-            lblSubSGrpId.TabIndex = 205;
-            lblSubSGrpId.Text = "Sub Sub Group Id";
-            // 
-            // cboSubGrpId
-            // 
-            cboSubGrpId.BackColor = SystemColors.Window;
-            cboSubGrpId.FlatStyle = FlatStyle.Flat;
-            cboSubGrpId.FormattingEnabled = true;
-            cboSubGrpId.Location = new Point(135, 38);
-            cboSubGrpId.Name = "cboSubGrpId";
-            cboSubGrpId.Size = new Size(121, 23);
-            cboSubGrpId.TabIndex = 206;
-            // 
-            // chkDisc
-            // 
-            chkDisc.AutoSize = true;
-            chkDisc.ImeMode = ImeMode.NoControl;
-            chkDisc.Location = new Point(455, 161);
-            chkDisc.Name = "chkDisc";
-            chkDisc.Size = new Size(15, 14);
-            chkDisc.TabIndex = 207;
-            chkDisc.UseVisualStyleBackColor = true;
-            // 
-            // rotSubGrpDesc
-            // 
-            rotSubGrpDesc.BackColor = Color.Bisque;
-            rotSubGrpDesc.BorderStyle = BorderStyle.Fixed3D;
-            rotSubGrpDesc.Location = new Point(264, 37);
-            rotSubGrpDesc.Name = "rotSubGrpDesc";
-            rotSubGrpDesc.Size = new Size(237, 23);
-            rotSubGrpDesc.TabIndex = 208;
-            // 
             // frmM_Sub_Subgroup
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -284,6 +287,9 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmM_Sub_Subgroup";
             Text = "Sub Subgroup Master";
+            FormClosing += frmM_Sub_Subgroup_FormClosing;
+            FormClosed += frmM_Sub_Subgroup_FormClosed;
+            Load += frmM_Sub_Subgroup_Load;
             M_Sub_Subgroup.ResumeLayout(false);
             M_Sub_Subgroup.PerformLayout();
             ResumeLayout(false);
@@ -292,25 +298,25 @@
         #endregion
 
         private Panel M_Sub_Subgroup;
-        private TextBox textBox1;
         private Label label4;
         private Label lblDisc;
-        private CheckBox checkBox1;
         private Label label2;
-        private CheckBox chkSPChange;
-        private TextBox txtSTaxPer;
         private Label lblSPChange;
         private Label lblSTaxPer;
-        private TextBox txtSubSGrpId;
-        private TextBox txtSubSGrpDesc;
         private Label lblSubGrpDesc;
         private Label lblSubGrpId;
-        private Label rotGrpDesc;
-        private ComboBox cboGrpId;
         private Label lblGrpId;
         private Label lblSubSGrpId;
-        private CheckBox chkDisc;
-        private ComboBox cboSubGrpId;
-        private Label rotSubGrpDesc;
+        public TextBox txtDisc;
+        public TextBox txtSTaxPer;
+        public TextBox txtSubSGrpId;
+        public TextBox txtSubSGrpDesc;
+        public Label rotGrpDesc;
+        public ComboBox cboGrpId;
+        public ComboBox cboSubGrpId;
+        public Label rotSubGrpDesc;
+        public CheckBox chkAct;
+        public CheckBox chkSPChange;
+        public CheckBox chkDisc;
     }
 }

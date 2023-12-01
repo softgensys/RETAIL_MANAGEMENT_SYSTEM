@@ -830,7 +830,9 @@ namespace softgen
 
                     switch (BtnKey)
                     {
+                        
                         case ADDMODE:
+                            
                             strAppMode = ADDMODE;
                             ActivateForm(gobjActiveForm, true, ADDMODE);
                             searchableForm.SetSearchVar(true);
@@ -899,6 +901,7 @@ namespace softgen
                             mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                             mobjbutton.TextImageRelation = TextImageRelation.Overlay;
 
+                            
                             // Attach a click event handler for the button
                             mobjbutton.Click += (sender, e) =>
                             {
@@ -1513,6 +1516,16 @@ namespace softgen
 
         //       }
 
+        public static void Form_KeyUp(object sender, KeyEventArgs e)
+        {
+            // Check if F1 key is pressed
+            if (e.KeyCode == Keys.F1)
+            {
+                // Call your Help function
+                CallHelp();
+            }
+           
+        }
 
         private static void CreateButton(ToolStrip ToolBar, string BtnKey, string ToolTip)
         {
@@ -1523,31 +1536,6 @@ namespace softgen
 
                 
 
-                //ImageList imageList = new ImageList();
-                //foreach (Image image in MainForm.Instance.imageList1.Images)
-                //{
-                //    imageList.Images.Add(image);
-                //}
-                // ImageList newImageList = new ImageList();
-                //   newImageList.ImageSize = MainForm.Instance.imageList1.ImageSize; // Set the image size
-
-                //foreach (var key in MainForm.Instance.imageList1.Images.Keys)
-                //{
-                //    Image image = MainForm.Instance.imageList1.Images[key];
-                //    newImageList.Images.Add(key, image);
-                //}
-
-                //// Iterate through the images in the copied ImageList
-                //for (int i = 0; i < newImageList.Images.Count; i++)
-                //{
-                //    // Compare the image name at index i with the known image name
-                //    if (newImageList.Images.Keys[i].Trim().ToLower() == imageNameToFind.ToLower())
-                //    {
-                //        // The image name at index i matches the known image name
-                //        foundImage = newImageList.Images[i]; // Capture the matched image
-                //        break; // Exit the loop since you found the image
-                //    }
-                //}
                string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
                // string imageFolderPath = Path.Combine("Softgen//", "Icons");
                 string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
@@ -1611,6 +1599,7 @@ namespace softgen
 
                     if (foundImage != null)
                     {
+
                         mobjbutton = new ToolStripButton(BtnKey.Trim(), foundImage, null, BtnKey.Trim());
 
                         mobjbutton.AutoSize = false;
@@ -1624,8 +1613,10 @@ namespace softgen
                         mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                         mobjbutton.TextImageRelation = TextImageRelation.Overlay;
                         mobjbutton.ToolTipText = ToolTip;
+                     
 
                         ////// Imp....                    // Attach a click event handler for the button
+                       
                         mobjbutton.Click += (sender, e) =>
                         {
                             // Call the ButtonClick method with the appropriate parameters
@@ -3066,7 +3057,7 @@ namespace softgen
             DbConnector dbConnector = new DbConnector();
             dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
             // Define the column name and its data type
-            string columnName = "closed_yn";
+            string columnName = "open_yn"; //for checking y/n if data oen in temp or sended to main tbl  
             string columnType = "CHAR(1)";  // Modify the data type as needed
             string columnName1 = "comp_name";
             string columnType1 = "VARCHAR(100)";  // Modify the data type as needed

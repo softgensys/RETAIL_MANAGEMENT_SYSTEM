@@ -37,8 +37,12 @@ namespace softgen
             this.Activated += MyForm_Activated;
             dbgBarDet.CellValidating += dbgBarDet_CellValidating;
             dbgBarDet.KeyPress += dbgBarDet_KeyPress;
+            this.KeyPreview = true; // Make sure the form has key preview enabled
+            this.KeyUp += DeTools.Form_KeyUp; // Subscribe to the KeyUp event
+        
 
         }
+     
 
         private void MyForm_Activated(object sender, EventArgs e)
         {
@@ -47,7 +51,7 @@ namespace softgen
             DeTools.CreatedBy(mstrEntBy, mstrEntOn);
             DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
 
-
+          
 
         }
 
@@ -183,15 +187,15 @@ namespace softgen
                                         Cursor.Current = Cursors.WaitCursor;
 
                                         string gstrSQL1 = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                                 "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by,closed_yn,comp_name) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp, sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                                 "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by, 'Y' AS closed_yn,  '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
+                                                 "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by,open_yn,comp_name) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp, sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                                 "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by, 'Y' AS open_yn,  '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
 
                                         using (OdbcCommand insertintemp1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
                                         {
                                             insertintemp1.ExecuteNonQuery();
                                         }
 
-                                        string gstrSQL2 = "Select * from temp_m_item_hdr where item_id='" + txtItemId.Text.Trim() + "' and closed_yn='Y'";
+                                        string gstrSQL2 = "Select * from temp_m_item_hdr where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
                                         OdbcCommand selectintemp1 = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
 
                                         OdbcDataReader selectread = selectintemp1.ExecuteReader();
@@ -308,7 +312,7 @@ namespace softgen
 
 
                                             }
-                                            string querupdN1 = "update temp_m_item_hdr set closed_yn='N' where item_id=? order by ent_on desc ";
+                                            string querupdN1 = "update temp_m_item_hdr set open_yn='N' where item_id=? order by ent_on desc ";
 
                                             using (OdbcCommand querupdNCmd = new OdbcCommand(querupdN1, dbConnector.connection))
                                             {
@@ -397,7 +401,7 @@ namespace softgen
 
                                                         //--------------------- then insert into temp det table----------//
 
-                                                        string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, closed_yn, comp_name) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, 'Y' AS closed_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_det WHERE item_id = ?";
+                                                        string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, open_yn, comp_name) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, 'Y' AS open_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_det WHERE item_id = ?";
 
                                                         using (OdbcCommand insertQuerytempdetCmd1 = new OdbcCommand(insertQuerytempdet, dbConnector.connection))
                                                         {
@@ -406,7 +410,7 @@ namespace softgen
                                                         }
 
                                                         //--------for a check that 
-                                                        string selfrmtempdet = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and closed_yn='Y'";
+                                                        string selfrmtempdet = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
                                                         OdbcCommand selfrmtempdetcmd = new OdbcCommand(selfrmtempdet, dbConnector.connection);
 
                                                         OdbcDataReader selfrmtempdetread = selfrmtempdetcmd.ExecuteReader();
@@ -476,7 +480,7 @@ namespace softgen
                                         }
 
 
-                                        string selfrmtempdet2 = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and closed_yn='Y'";
+                                        string selfrmtempdet2 = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
                                         OdbcCommand selfrmtempdetcmd2 = new OdbcCommand(selfrmtempdet2, dbConnector.connection);
 
                                         OdbcDataReader selfrmtempdetread2 = selfrmtempdetcmd2.ExecuteReader();
@@ -524,7 +528,7 @@ namespace softgen
 
                                         //---------for update N in temp det-----------------------------//
 
-                                        string UPDATEQuerydet1 = "Update temp_m_item_det set closed_yn='N' WHERE item_id = ?";
+                                        string UPDATEQuerydet1 = "Update temp_m_item_det set open_yn='N' WHERE item_id = ?";
 
                                         using (OdbcCommand UPDATEQuerydetcmd1 = new OdbcCommand(UPDATEQuerydet1, dbConnector.connection))
                                         {
@@ -533,7 +537,7 @@ namespace softgen
                                         }
 
                                         //-------- for delete data from the temp tbl after insert in det----------------//
-                                        string DelQuerydet1 = "delete from temp_m_item_det WHERE item_id = ? and closed_yn='N'";
+                                        string DelQuerydet1 = "delete from temp_m_item_det WHERE item_id = ? and open_yn='N'";
 
                                         using (OdbcCommand DelQuerydetcmd1 = new OdbcCommand(DelQuerydet1, dbConnector.connection))
                                         {
@@ -571,7 +575,7 @@ namespace softgen
                                 {
                                     Cursor.Current = Cursors.WaitCursor;
 
-                                    string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, closed_yn, comp_name) VALUES" +
+                                    string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, open_yn, comp_name) VALUES" +
                                             " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
                                             " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
                                             " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -652,7 +656,7 @@ namespace softgen
                                     cmdd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
                                     cmdd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
                                     cmdd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
-                                    cmdd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                                    cmdd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
                                     cmdd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
 
 
@@ -679,7 +683,7 @@ namespace softgen
                                     //-------------------------------Hdr end done-----------------------//
 
 
-                                    string inserttempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, closed_yn, comp_name) VALUES" +
+                                    string inserttempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, open_yn, comp_name) VALUES" +
                                        " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                     OdbcCommand cmddet = new OdbcCommand(inserttempdet, dbConnector.connection);
 
@@ -698,7 +702,7 @@ namespace softgen
                                     cmddet.Parameters.Add(new OdbcParameter("Trans_status", "N"));
                                     cmddet.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
                                     cmddet.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                                    cmddet.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                                    cmddet.Parameters.Add(new OdbcParameter("open_yn", "Y"));
                                     cmddet.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
 
                                     //cmd.Parameters.Add(new OdbcParameter("status", "V"));
@@ -720,12 +724,12 @@ namespace softgen
                                     Messages.SavingMsg();
                                     Cursor.Current = Cursors.Default;
 
-                                    string quer1 = "update temp_m_item_hdr set closed_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "' order by ent_on desc ";
+                                    string quer1 = "update temp_m_item_hdr set open_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "' order by ent_on desc ";
                                     using (OdbcCommand qurCmd = new OdbcCommand(quer1, dbConnector.connection))
                                     {
                                         qurCmd.ExecuteNonQuery();
                                     }
-                                    string quer2 = "update temp_m_item_det set closed_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "'";
+                                    string quer2 = "update temp_m_item_det set open_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "'";
                                     using (OdbcCommand qur2Cmd = new OdbcCommand(quer2, dbConnector.connection))
                                     {
                                         qur2Cmd.ExecuteNonQuery();
@@ -1101,7 +1105,7 @@ namespace softgen
 
 
 
-                        string query = "SELECT a.* FROM temp_m_item_det a,temp_m_item_hdr b  WHERE a.closed_yn='Y' and b.ent_by='" + user.Trim() + "' and a.comp_name='" + compname.Trim() + "' order by ent_on desc limit 1;";
+                        string query = "SELECT a.* FROM temp_m_item_det a,temp_m_item_hdr b  WHERE a.open_yn='Y' and b.ent_by='" + user.Trim() + "' and a.comp_name='" + compname.Trim() + "' order by ent_on desc limit 1;";
 
                         OdbcParameter[] parameters = new OdbcParameter[0];
 
@@ -1139,7 +1143,7 @@ namespace softgen
                         }
                     }
 
-                    string query1 = "SELECT * FROM temp_m_item_hdr WHERE closed_yn='Y' and ent_by='" + user.Trim() + "' and comp_name='" + compname.Trim() + "' order by ent_on desc limit 1;";
+                    string query1 = "SELECT * FROM temp_m_item_hdr WHERE open_yn='Y' and ent_by='" + user.Trim() + "' and comp_name='" + compname.Trim() + "' order by ent_on desc limit 1;";
 
                     OdbcParameter[] parameters1 = new OdbcParameter[0];
 
@@ -1443,9 +1447,17 @@ namespace softgen
             General.MasterParam("item_id_am", "item_id_sn", "m_mast_param", out chkItemid, out chkItemsn);
 
             Help.controlToHelpTopicMapping.Add(txtItemId, "1006"); /////For Help ContextId///IMP...
+            Help.controlToHelpTopicMapping.Add(cboGroup, "9007"); /////For Help ContextId///IMP...
+            Help.controlToHelpTopicMapping.Add(cboSGroup, "9008"); /////For Help ContextId///IMP...
 
             DeTools.CheckTemporaryTableExists("m_item_hdr");
             DeTools.CheckTemporaryTableExists("m_item_det");
+
+            UpdateToolbarVisibility();
+
+            this.Resize += frmM_Item_Resize;
+            this.Deactivate += frmM_Item_Deactivate;
+
         }
 
         //////Set Text On Form ///////////////////////
@@ -2144,7 +2156,7 @@ namespace softgen
                                 {
 
 
-                                    string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, closed_yn, comp_name) VALUES" +
+                                    string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, open_yn, comp_name) VALUES" +
                                              " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
                                              " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
                                              " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -2225,7 +2237,7 @@ namespace softgen
                                     cmd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
                                     cmd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
                                     cmd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
-                                    cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                                    cmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
                                     cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
 
 
@@ -2255,7 +2267,7 @@ namespace softgen
                                 if (!reader.HasRows)
                                 {
 
-                                    string insert = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, closed_yn, comp_name) VALUES" +
+                                    string insert = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, open_yn, comp_name) VALUES" +
                                         " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                                     OdbcCommand cmd = new OdbcCommand(insert, dbConnector.connection);
 
@@ -2274,7 +2286,7 @@ namespace softgen
                                     cmd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
                                     cmd.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
                                     cmd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                                    cmd.Parameters.Add(new OdbcParameter("closed_yn", "Y"));
+                                    cmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
                                     cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
 
                                     //cmd.Parameters.Add(new OdbcParameter("status", "V"));
@@ -2295,6 +2307,52 @@ namespace softgen
                 dbConnector.connection.Close();
             }
 
+        }
+
+        //private Form lastActiveChildForm;
+
+        private void UpdateToolbarVisibility()
+        {
+            DeTools.mobjToolbar.Visible = true;
+            string key = "", mode = "";
+
+            // Determine the key for the toolbar dictionary
+            mode = DeTools.GetMode(DeTools.gobjActiveForm);
+            key = string.IsNullOrEmpty(mode) ? DeTools.gobjActiveForm.Name : $"{DeTools.gobjActiveForm.Name}-{mode}";
+
+            // Use gobjActiveForm directly
+            DeTools.mobjToolbar = DeTools.toolbarDictionary1[key].Last();
+
+            if (DeTools.gobjActiveForm != null)
+            {
+                if (DeTools.gobjActiveForm.WindowState == FormWindowState.Minimized || !DeTools.gobjActiveForm.Focused)
+                {
+                    // Form is minimized or does not have focus, hide the ToolStrip
+                    DeTools.mobjToolbar.Visible = false;
+                }
+                else
+                {
+                    // Form is restored or maximized and has focus, show the ToolStrip
+                    DeTools.mobjToolbar.Visible = true;
+                }
+            }
+        }
+
+        // Get a unique key for each form based on its type and mode
+        private string GetFormKey(Form form)
+        {
+            string mode = DeTools.GetMode(form);
+            return string.IsNullOrEmpty(mode) ? form.Name : $"{form.Name}-{mode}";
+        }
+
+        private void frmM_Item_Resize(object sender, EventArgs e)
+        {
+            //UpdateToolbarVisibility();
+        }
+
+        private void frmM_Item_Deactivate(object sender, EventArgs e)
+        {
+            UpdateToolbarVisibility();
         }
     }///////////////////////End
 

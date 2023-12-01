@@ -55,16 +55,23 @@ namespace softgen
             mnuPrint = new ToolStripMenuItem();
             mnuAuthorise = new ToolStripMenuItem();
             masterToolStripMenuItem = new ToolStripMenuItem();
-            Mgroupmenu = new ToolStripMenuItem();
             MItemmenu = new ToolStripMenuItem();
             documentSeriesToolStripMenuItem = new ToolStripMenuItem();
             documentTypeToolStripMenuItem = new ToolStripMenuItem();
+            Mgroupmenu = new ToolStripMenuItem();
+            mnuMSGroup = new ToolStripMenuItem();
+            mnuMSSGroup = new ToolStripMenuItem();
+            mnuMCust = new ToolStripMenuItem();
+            mnuMSupplier = new ToolStripMenuItem();
+            mnuMManuf = new ToolStripMenuItem();
             transactionToolStripMenuItem = new ToolStripMenuItem();
             Tbillmodule = new ToolStripMenuItem();
             TInvGenmenu = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
             utilitiesToolStripMenuItem = new ToolStripMenuItem();
             windowsToolStripMenuItem = new ToolStripMenuItem();
+            mnuWTileH = new ToolStripMenuItem();
+            mnuWCascade = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1 = new MenuStrip();
             statusStrip1 = new StatusStrip();
@@ -78,7 +85,7 @@ namespace softgen
             pnlCreated_by = new Label();
             imageList1 = new ImageList(components);
             tmrActiveForm = new System.Windows.Forms.Timer(components);
-            mnuMSGroup = new ToolStripMenuItem();
+            muWTIleV = new ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel.SuspendLayout();
@@ -272,36 +279,71 @@ namespace softgen
             // 
             // masterToolStripMenuItem
             // 
-            masterToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MItemmenu, documentSeriesToolStripMenuItem, documentTypeToolStripMenuItem, Mgroupmenu, mnuMSGroup });
+            masterToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { MItemmenu, documentSeriesToolStripMenuItem, documentTypeToolStripMenuItem, Mgroupmenu, mnuMSGroup, mnuMSSGroup, mnuMCust, mnuMSupplier, mnuMManuf });
             masterToolStripMenuItem.Name = "masterToolStripMenuItem";
             masterToolStripMenuItem.Size = new Size(55, 20);
             masterToolStripMenuItem.Text = "Master";
             // 
-            // Mgroupmenu
-            // 
-            Mgroupmenu.Name = "Mgroupmenu";
-            Mgroupmenu.Size = new Size(180, 22);
-            Mgroupmenu.Text = "Group";
-            Mgroupmenu.Click += groupToolStripMenuItem_Click;
-            // 
             // MItemmenu
             // 
             MItemmenu.Name = "MItemmenu";
-            MItemmenu.Size = new Size(180, 22);
+            MItemmenu.Size = new Size(165, 22);
             MItemmenu.Text = "Item";
             MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
-            documentSeriesToolStripMenuItem.Size = new Size(180, 22);
+            documentSeriesToolStripMenuItem.Size = new Size(165, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
-            documentTypeToolStripMenuItem.Size = new Size(180, 22);
+            documentTypeToolStripMenuItem.Size = new Size(165, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
+            // 
+            // Mgroupmenu
+            // 
+            Mgroupmenu.Name = "Mgroupmenu";
+            Mgroupmenu.Size = new Size(165, 22);
+            Mgroupmenu.Text = "Group";
+            Mgroupmenu.Click += groupToolStripMenuItem_Click;
+            // 
+            // mnuMSGroup
+            // 
+            mnuMSGroup.Name = "mnuMSGroup";
+            mnuMSGroup.Size = new Size(165, 22);
+            mnuMSGroup.Text = "Sub Group";
+            mnuMSGroup.Click += mnuMSGroup_Click;
+            // 
+            // mnuMSSGroup
+            // 
+            mnuMSSGroup.Name = "mnuMSSGroup";
+            mnuMSSGroup.Size = new Size(165, 22);
+            mnuMSSGroup.Text = "Sub Sub Group";
+            mnuMSSGroup.Click += mnuMSSGroup_Click;
+            // 
+            // mnuMCust
+            // 
+            mnuMCust.Name = "mnuMCust";
+            mnuMCust.Size = new Size(165, 22);
+            mnuMCust.Text = "Customer Master";
+            mnuMCust.Click += mnuMCust_Click;
+            // 
+            // mnuMSupplier
+            // 
+            mnuMSupplier.Name = "mnuMSupplier";
+            mnuMSupplier.Size = new Size(165, 22);
+            mnuMSupplier.Text = "Supplier Master";
+            mnuMSupplier.Click += mnuMSupplier_Click;
+            // 
+            // mnuMManuf
+            // 
+            mnuMManuf.Name = "mnuMManuf";
+            mnuMManuf.Size = new Size(165, 22);
+            mnuMManuf.Text = "Manufacturer";
+            mnuMManuf.Click += mnuMManuf_Click;
             // 
             // transactionToolStripMenuItem
             // 
@@ -338,9 +380,24 @@ namespace softgen
             // 
             // windowsToolStripMenuItem
             // 
+            windowsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { mnuWTileH, muWTIleV, mnuWCascade });
             windowsToolStripMenuItem.Name = "windowsToolStripMenuItem";
             windowsToolStripMenuItem.Size = new Size(68, 20);
             windowsToolStripMenuItem.Text = "Windows";
+            // 
+            // mnuWTileH
+            // 
+            mnuWTileH.Name = "mnuWTileH";
+            mnuWTileH.Size = new Size(180, 22);
+            mnuWTileH.Text = "Tile- Horizontal";
+            mnuWTileH.Click += mnuWTile_Click;
+            // 
+            // mnuWCascade
+            // 
+            mnuWCascade.Name = "mnuWCascade";
+            mnuWCascade.Size = new Size(180, 22);
+            mnuWCascade.Text = "Cascade";
+            mnuWCascade.Click += mnuWCascade_Click;
             // 
             // helpToolStripMenuItem
             // 
@@ -475,12 +532,12 @@ namespace softgen
             tmrActiveForm.Enabled = true;
             tmrActiveForm.Tick += tmrActiveForm_Tick;
             // 
-            // mnuMSGroup
+            // muWTIleV
             // 
-            mnuMSGroup.Name = "mnuMSGroup";
-            mnuMSGroup.Size = new Size(180, 22);
-            mnuMSGroup.Text = "Sub Group";
-            mnuMSGroup.Click += mnuMSGroup_Click;
+            muWTIleV.Name = "muWTIleV";
+            muWTIleV.Size = new Size(180, 22);
+            muWTIleV.Text = "Tile-Vertical";
+            muWTIleV.Click += muWTIleV_Click;
             // 
             // MainForm
             // 
@@ -596,6 +653,13 @@ namespace softgen
         public ToolStripMenuItem MItemmenu;
         private ToolStripMenuItem Tbillmodule;
         private ToolStripMenuItem TInvGenmenu;
-        private ToolStripMenuItem mnuMSGroup;
+        public ToolStripMenuItem mnuMSGroup;
+        public ToolStripMenuItem mnuMSSGroup;
+        public ToolStripMenuItem mnuMCust;
+        public ToolStripMenuItem mnuMSupplier;
+        public ToolStripMenuItem mnuMManuf;
+        private ToolStripMenuItem mnuWTileH;
+        private ToolStripMenuItem mnuWCascade;
+        private ToolStripMenuItem muWTIleV;
     }
 }

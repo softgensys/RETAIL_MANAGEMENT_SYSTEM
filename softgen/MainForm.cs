@@ -297,7 +297,7 @@ namespace softgen
             frmM_Group childForm = new frmM_Group();
             childForm.MdiParent = this; // Set the MDI parent form
             childForm.Show();
-
+            childForm.Activate();
         }
         //for item
         private void OpenChildForm2()
@@ -305,6 +305,7 @@ namespace softgen
             frmM_Item childForm2 = new frmM_Item();
             childForm2.MdiParent = this; // Set the MDI parent form
             childForm2.Show();
+            childForm2.Activate();
 
         }
 
@@ -314,7 +315,7 @@ namespace softgen
             frmT_Invoice childForm5 = new frmT_Invoice();
             childForm5.MdiParent = this; // Set the MDI parent form
             childForm5.Show();
-
+            childForm5.Activate();
         }
 
         //for doc series
@@ -323,7 +324,7 @@ namespace softgen
             DocSeriesMas childForm3 = new DocSeriesMas();
             childForm3.MdiParent = this; // Set the MDI parent form
             childForm3.Show();
-
+            childForm3.Activate();
         }
         //for doc type
         private void OpenChildForm4()
@@ -331,7 +332,7 @@ namespace softgen
             DoctypeMas childForm4 = new DoctypeMas();
             childForm4.MdiParent = this; // Set the MDI parent form
             childForm4.Show();
-
+            childForm4.Activate();
         }
         //for sub group
         private void OpenChildForm6()
@@ -339,7 +340,39 @@ namespace softgen
             frmM_Sub_Group childForm = new frmM_Sub_Group();
             childForm.MdiParent = this; // Set the MDI parent form
             childForm.Show();
-
+            childForm.Activate();
+        }
+        //for sub sub group
+        private void OpenChildForm7()
+        {
+            frmM_Sub_Subgroup childForm = new frmM_Sub_Subgroup();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
+        }
+        //for Customer Master
+        private void OpenChildForm8()
+        {
+            frmM_Cust childForm = new frmM_Cust();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
+        }
+        //for Supplier Master
+        private void OpenChildForm9()
+        {
+            frmM_Supplier childForm = new frmM_Supplier();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
+        }
+        //for Manuf Master
+        private void OpenChildForm10()
+        {
+            frmM_Manuf childForm = new frmM_Manuf();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -813,6 +846,47 @@ namespace softgen
         {
             OpenChildForm6();
             mnuMSGroup.Enabled = false;
+        }
+
+        private void mnuMSSGroup_Click(object sender, EventArgs e)
+        {
+            OpenChildForm7();
+            mnuMSSGroup.Enabled = false;
+        }
+
+        private void mnuMCust_Click(object sender, EventArgs e)
+        {
+            OpenChildForm8();
+            mnuMCust.Enabled = false;
+        }
+
+        private void mnuMSupplier_Click(object sender, EventArgs e)
+        {
+            OpenChildForm9();
+            mnuMSupplier.Enabled = false;
+        }
+
+        private void mnuMManuf_Click(object sender, EventArgs e)
+        {
+            OpenChildForm10();
+            mnuMManuf.Enabled = false;
+        }
+
+        private void mnuWTile_Click(object sender, EventArgs e)
+        {
+            // Arrange MDI child forms horizontally
+            LayoutMdi(MdiLayout.TileHorizontal);
+        }
+
+        private void mnuWCascade_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.Cascade);
+        }
+       
+
+        private void muWTIleV_Click(object sender, EventArgs e)
+        {
+            LayoutMdi(MdiLayout.TileVertical);
         }
 
 

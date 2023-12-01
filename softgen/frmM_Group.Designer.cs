@@ -99,10 +99,12 @@
             Controls.Add(lblGrpDesc);
             Controls.Add(lblGrpId);
             Name = "frmM_Group";
+            Deactivate += frmM_Group_Deactivate;
             FormClosing += frmM_Group_FormClosing;
             FormClosed += frmM_Group_FormClosed;
             Load += Group_Load;
             KeyPress += frmM_Group_KeyPress;
+            Resize += frmM_Group_Resize;
             ResumeLayout(false);
             PerformLayout();
         }

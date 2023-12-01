@@ -79,6 +79,7 @@
             grdHelp.RowTemplate.Height = 25;
             grdHelp.Size = new Size(676, 247);
             grdHelp.TabIndex = 3;
+            grdHelp.CellContentClick += grdHelp_CellContentClick;
             grdHelp.CellDoubleClick += grdHelp_CellDoubleClick;
             // 
             // pnlText
@@ -254,6 +255,7 @@
             Controls.Add(panel1);
             Name = "frmHelp";
             Text = "Help";
+            FormClosing += frmHelp_FormClosing;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)grdHelp).EndInit();

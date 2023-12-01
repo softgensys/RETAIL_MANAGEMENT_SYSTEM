@@ -556,6 +556,9 @@
             Controls.Add(M_Cust);
             Name = "frmM_Cust";
             Text = "Customer Master";
+            FormClosing += frmM_Cust_FormClosing;
+            FormClosed += frmM_Cust_FormClosed;
+            Load += frmM_Cust_Load;
             M_Cust.ResumeLayout(false);
             M_Cust.PerformLayout();
             ResumeLayout(false);

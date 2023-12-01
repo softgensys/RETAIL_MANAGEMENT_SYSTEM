@@ -36,7 +36,7 @@
             txtSubGrpDesc = new TextBox();
             txtSubGrpId = new TextBox();
             M_Sub_Group = new Panel();
-            textBox1 = new TextBox();
+            txtDisc = new TextBox();
             label4 = new Label();
             chkDisc = new CheckBox();
             lblDisc = new Label();
@@ -69,6 +69,7 @@
             cboGrpId.Name = "cboGrpId";
             cboGrpId.Size = new Size(121, 23);
             cboGrpId.TabIndex = 27;
+            cboGrpId.SelectedIndexChanged += cboGrpId_SelectedIndexChanged;
             // 
             // rotGrpDesc
             // 
@@ -119,7 +120,7 @@
             // 
             M_Sub_Group.BackColor = Color.PowderBlue;
             M_Sub_Group.BorderStyle = BorderStyle.Fixed3D;
-            M_Sub_Group.Controls.Add(textBox1);
+            M_Sub_Group.Controls.Add(txtDisc);
             M_Sub_Group.Controls.Add(label4);
             M_Sub_Group.Controls.Add(chkDisc);
             M_Sub_Group.Controls.Add(lblDisc);
@@ -142,12 +143,12 @@
             M_Sub_Group.TabIndex = 0;
             M_Sub_Group.Paint += panel1_Paint;
             // 
-            // textBox1
+            // txtDisc
             // 
-            textBox1.Location = new Point(334, 96);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(138, 23);
-            textBox1.TabIndex = 188;
+            txtDisc.Location = new Point(334, 96);
+            txtDisc.Name = "txtDisc";
+            txtDisc.Size = new Size(138, 23);
+            txtDisc.TabIndex = 188;
             // 
             // label4
             // 
@@ -251,6 +252,8 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmM_Sub_Group";
             Text = "Sub Group Master";
+            FormClosing += frmM_Sub_Group_FormClosing;
+            FormClosed += frmM_Sub_Group_FormClosed;
             Load += frmM_Sub_Group_Load;
             M_Sub_Group.ResumeLayout(false);
             M_Sub_Group.PerformLayout();
@@ -260,22 +263,22 @@
         #endregion
 
         private Label lblGrpId;
-        private ComboBox cboGrpId;
-        private Label rotGrpDesc;
         private Label lblSubGrpId;
         private Label lblSubGrpDesc;
-        private TextBox txtSubGrpDesc;
-        private TextBox txtSubGrpId;
         private Panel M_Sub_Group;
-        private CheckBox chkSPChange;
-        private TextBox txtSTaxPer;
         private Label lblSPChange;
         private Label lblSTaxPer;
-        private TextBox textBox1;
         private Label label4;
-        private CheckBox chkDisc;
         private Label lblDisc;
-        private CheckBox ChkAct;
         private Label label2;
+        public ComboBox cboGrpId;
+        public Label rotGrpDesc;
+        public TextBox txtSubGrpDesc;
+        public TextBox txtSubGrpId;
+        public CheckBox chkSPChange;
+        public TextBox txtSTaxPer;
+        public TextBox txtDisc;
+        public CheckBox chkDisc;
+        public CheckBox ChkAct;
     }
 }

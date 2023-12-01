@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             M_Manuf = new Panel();
+            txtNotes = new TextBox();
+            lblNotes = new Label();
             txtName = new TextBox();
             lblName = new Label();
             txtManufId = new TextBox();
@@ -54,6 +56,8 @@
             // 
             M_Manuf.BackColor = Color.PowderBlue;
             M_Manuf.BorderStyle = BorderStyle.Fixed3D;
+            M_Manuf.Controls.Add(txtNotes);
+            M_Manuf.Controls.Add(lblNotes);
             M_Manuf.Controls.Add(txtName);
             M_Manuf.Controls.Add(lblName);
             M_Manuf.Controls.Add(txtManufId);
@@ -61,8 +65,26 @@
             M_Manuf.Controls.Add(lblCity);
             M_Manuf.Location = new Point(-2, 1);
             M_Manuf.Name = "M_Manuf";
-            M_Manuf.Size = new Size(574, 215);
+            M_Manuf.Size = new Size(574, 258);
             M_Manuf.TabIndex = 0;
+            // 
+            // txtNotes
+            // 
+            txtNotes.Location = new Point(85, 205);
+            txtNotes.Multiline = true;
+            txtNotes.Name = "txtNotes";
+            txtNotes.ScrollBars = ScrollBars.Vertical;
+            txtNotes.Size = new Size(381, 41);
+            txtNotes.TabIndex = 207;
+            // 
+            // lblNotes
+            // 
+            lblNotes.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblNotes.Location = new Point(15, 213);
+            lblNotes.Name = "lblNotes";
+            lblNotes.Size = new Size(66, 18);
+            lblNotes.TabIndex = 206;
+            lblNotes.Text = "Notes";
             // 
             // txtName
             // 
@@ -220,7 +242,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(567, 215);
+            ClientSize = new Size(567, 255);
             Controls.Add(txtZip);
             Controls.Add(lblZip);
             Controls.Add(txtCountry);
@@ -238,6 +260,8 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmM_Manuf";
             Text = "Manufacturer Master";
+            FormClosing += frmM_Manuf_FormClosing;
+            FormClosed += frmM_Manuf_FormClosed;
             Load += frmM_Manuf_Load;
             M_Manuf.ResumeLayout(false);
             M_Manuf.PerformLayout();
@@ -264,7 +288,9 @@
         private Label lblCity;
         private TextBox txtAdd3;
         private TextBox txtAdd2;
-        private TextBox txtAdd1;
         private Label lblAdd;
+        private TextBox txtNotes;
+        private Label lblNotes;
+        public TextBox txtAdd1;
     }
 }

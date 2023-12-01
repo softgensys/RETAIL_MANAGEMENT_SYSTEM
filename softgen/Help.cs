@@ -24,15 +24,16 @@ namespace softgen
         public static Dictionary<Tuple<DataGridView, int, int>, string> dgvCellToHelpTopicMapping = new Dictionary<Tuple<DataGridView, int, int>, string>();
         // Declare a HashSet to store unique field names with aliases
         private static HashSet<string> fieldNamesWithAliases = new HashSet<string>();
-
+        public static ComboBox combo;
 
         public static frmHelp frmHelp= new frmHelp();
         public static DbConnector dbConnector;
         public static int selectedIndex = frmHelp.cboDataType.SelectedIndex;
         public static ComboBox data_type_index_copy = new ComboBox();
         public static string send_combo_box_value;
+        public static General general = new General();
+        public static string getcbogrpval="";
 
-        
 
         /////////////////////////////////---start-----///////////////////////////////////
 
@@ -396,11 +397,34 @@ namespace softgen
                 switch (s_Mode)
                 {
                     case DeTools.ADDMODE:
-                        DeTools.gstrSQL += (rs_Query["A_Mode_Cond"] + " ").Trim();
+                          //-------this is for getting data of the particular group id for sub group . I have modified in the database added additon ?
+                            if (getcbogrpval != string.Empty)
+                            {
+                                string originalQuery = rs_Query["A_Mode_Cond"].ToString();
+                                string modifiedQuery = originalQuery.Replace("?", "'"+getcbogrpval+ "'");
+                                DeTools.gstrSQL += (modifiedQuery + " ").Trim();
+
+                            }
+                        
+                            else
+                            {
+                                DeTools.gstrSQL += (rs_Query["A_Mode_Cond"] + " ").Trim();
+                            }
                         break;
 
                     case DeTools.MODIFYMODE:
-                        DeTools.gstrSQL += (rs_Query["M_Mode_Cond"] + " ");
+                        if (getcbogrpval != string.Empty)
+                        {  //-------this is for getting data of the particular group id  . I have modified in the database added additon ?
+                            string originalQuery = rs_Query["M_Mode_Cond"].ToString();
+                            string modifiedQuery = originalQuery.Replace("?", "'" + getcbogrpval + "'");
+                            DeTools.gstrSQL += (modifiedQuery + " ").Trim();
+
+                        }
+                        else
+                        {
+                            DeTools.gstrSQL += (rs_Query["M_Mode_Cond"] + " ");
+
+                        }
                         break;
 
                     case DeTools.DELETEMODE:
@@ -1216,6 +1240,10 @@ namespace softgen
 
         public static void TransferData()
         {
+            string comboval="";
+            frmM_Item frmM_Item = new frmM_Item();
+            frmM_Sub_Group frmM_Subgrp = new frmM_Sub_Group();
+
             if (s_Mode == DeTools.ADDMODE && i_Help_id <= 9000)
             {
                 if (o_form.Name != "frmM_Gift_Item")
@@ -1238,13 +1266,128 @@ namespace softgen
                     }
                 }
             }
-            else
+
+            //=======for group combobox------------------//
+            else if(i_Help_id == 9007)
             {
                 // Multiple key fields
                 //TransferMultipleKeyData();
+
+                
+                DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+                if (selectedRow.Cells.Count > 0)
+                {
+                    if (o_form.Name == "frmM_Sub_Group")
+                    {
+                        
+                        // Assuming that cmbExample is your target ComboBox in frmT_Invoice
+                        ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboGrpId", true).FirstOrDefault();
+
+                        // Transfer data to the ComboBox
+                        if (targetComboBox != null)
+                        {
+                            // Assuming the data you want to transfer is in the first cell of the selected row
+                            targetComboBox.SelectedItem = selectedRow.Cells[0].Value;
+
+                            // If the ComboBox allows free text entry, you can use the following instead
+                            // targetComboBox.Text = selectedRow.Cells[0].Value.ToString();
+                        }
+
+                    }
+                    
+                    else if (o_form.Name == "frmM_Sub_Subgroup")
+                    {
+                        
+                        // Assuming that cmbExample is your target ComboBox in frmT_Invoice
+                        ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboGrpId", true).FirstOrDefault();
+
+                        // Transfer data to the ComboBox
+                        if (targetComboBox != null)
+                        {
+                            // Assuming the data you want to transfer is in the first cell of the selected row
+                            targetComboBox.SelectedItem = selectedRow.Cells[0].Value;
+
+                            // If the ComboBox allows free text entry, you can use the following instead
+                            // targetComboBox.Text = selectedRow.Cells[0].Value.ToString();
+                        }
+
+                    }
+
+                    else if (o_form.Name == "frmM_Item")
+                    {
+                        
+                        // Assuming that cmbExample is your target ComboBox in frmT_Invoice
+                        ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboGrpId", true).FirstOrDefault();
+
+                        // Transfer data to the ComboBox
+                        if (targetComboBox != null)
+                        {
+                            // Assuming the data you want to transfer is in the first cell of the selected row
+                            targetComboBox.SelectedItem = selectedRow.Cells[0].Value;
+
+                            // If the ComboBox allows free text entry, you can use the following instead
+                            // targetComboBox.Text = selectedRow.Cells[0].Value.ToString();
+                        }
+
+                    }
+
+                }
+
+             
             }
 
-            if (!o_form.Name.StartsWith("frmR"))
+            //=======for Sub group combobox------------------//
+            else if (i_Help_id == 9008)
+            {
+                // Multiple key fields
+                //TransferMultipleKeyData();
+
+
+                DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+                if (selectedRow.Cells.Count > 0)
+                {
+                    if (o_form.Name == "frmM_Sub_Subgroup")
+                    {
+
+                        // Assuming that cmbExample is your target ComboBox in frmT_Invoice
+                        ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboSubGrpId", true).FirstOrDefault();
+
+                        // Transfer data to the ComboBox
+                        if (targetComboBox != null)
+                        {
+                            // Assuming the data you want to transfer is in the first cell of the selected row
+                            targetComboBox.SelectedItem = selectedRow.Cells[0].Value;
+
+                            // If the ComboBox allows free text entry, you can use the following instead
+                            // targetComboBox.Text = selectedRow.Cells[0].Value.ToString();
+                        }
+
+                    }
+
+                    if (o_form.Name == "frmM_Item")
+                    {
+
+                        // Assuming that cmbExample is your target ComboBox in frmT_Invoice
+                        ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboSGroup", true).FirstOrDefault();
+
+                        // Transfer data to the ComboBox
+                        if (targetComboBox != null)
+                        {
+                            // Assuming the data you want to transfer is in the first cell of the selected row
+                            targetComboBox.SelectedItem = selectedRow.Cells[0].Value;
+
+                            // If the ComboBox allows free text entry, you can use the following instead
+                            // targetComboBox.Text = selectedRow.Cells[0].Value.ToString();
+                        }
+
+                    }
+
+                }
+
+
+            }
+
+            else if (!o_form.Name.StartsWith("frmR"))
             {
                 if (o_form is Interface_for_Common_methods.ISearchableForm searchableForm)
                 {

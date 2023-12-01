@@ -15,6 +15,8 @@ namespace softgen
         public frmHelp()
         {
             InitializeComponent();
+            
+            
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -111,6 +113,20 @@ namespace softgen
                 this.Hide();
 
             }
+        }
+
+        private void grdHelp_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void frmHelp_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Prevent the form from closing
+            e.Cancel = true;
+
+            // Hide the form instead
+            this.Hide();
         }
     }
 }
