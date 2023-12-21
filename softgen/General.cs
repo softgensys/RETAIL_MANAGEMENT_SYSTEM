@@ -12,6 +12,7 @@ using Org.BouncyCastle.Crypto;
 using Google.Protobuf.WellKnownTypes;
 using Google.Protobuf;
 using System.Globalization;
+using Org.BouncyCastle.Utilities.Collections;
 
 namespace softgen
 {
@@ -977,39 +978,90 @@ namespace softgen
             shpControl.Visible = true;
         }
 
+        //public double StocksPosition(string Item_id, string AsOn)
+        //{
+        //    double result = 0;
+
+        //    DbConnector dbConnector = new DbConnector();
+        //    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+        //    dbConnector.connection.Open();
+
+        //    //dbConnector.OpenConnection();
+
+        //        DateTime AsOnDate;
+        //        string gstrSQL = "{ Call GetItemStocks(?,?,?) }";
+
+        //            OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection);
+        //            command.CommandType = CommandType.StoredProcedure;
+
+        //            command.Parameters.Add("RETURN_VALUE", OdbcType.Double).Direction = ParameterDirection.ReturnValue;
+        //            command.Parameters.Add("@Item_id", OdbcType.NVarChar).Value = Item_id;
+        //            command.Parameters.Add("@AsOn", OdbcType.NVarChar).Value = MySQLDate(AsOn);
+        //            command.Parameters.Add("@Stocks", OdbcType.Double).Direction = ParameterDirection.Output;
+
+        //            command.ExecuteNonQuery();
+
+        //            if (command.Parameters["@Stocks"].Value != DBNull.Value)
+        //            {
+        //                result = Convert.ToDouble(command.Parameters["@Stocks"].Value);
+        //            }
+
+
+        //        dbConnector.CloseConnection();
+
+
+        //        return result;
+
+        //}
+
         public double StocksPosition(string Item_id, string AsOn)
         {
             double result = 0;
+            double cl_bal = 0;
 
-            dbConnector = new DbConnector();
-            
-                dbConnector.OpenConnection();
+            DbConnector dbConnector = new DbConnector();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
 
-                DateTime AsOnDate;
-                string gstrSQL = "{ ? = Call GetItemStocks(?,?,?) }";
+            try
+            {
+                dbConnector.connection.Open();
 
-                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.GetConnection()))
+                string gstrSQL = "{ CALL GetItemStocks(?, ?) }";
+
+                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add("RETURN_VALUE", OdbcType.Double).Direction = ParameterDirection.ReturnValue;
-                    command.Parameters.Add("@Item_id", OdbcType.NVarChar).Value = Item_id;
-                    command.Parameters.Add("@AsOn", OdbcType.NVarChar).Value = MySQLDate(AsOn);
-                    command.Parameters.Add("@Stocks", OdbcType.Double).Direction = ParameterDirection.Output;
+                    command.Parameters.AddWithValue("@Item_id", Item_id);
+                    command.Parameters.AddWithValue("@AsOn", MySQLDate(AsOn));
 
-                    command.ExecuteNonQuery();
-
-                    if (command.Parameters["@Stocks"].Value != DBNull.Value)
+                    using (OdbcDataReader reader = command.ExecuteReader())
                     {
-                        result = Convert.ToDouble(command.Parameters["@Stocks"].Value);
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                // Assuming 'cl_bal' is a column in your result set
+                                cl_bal = Convert.ToDouble(reader["cl_bal"]);
+                                // Process other columns as needed
+                            }
+                        }
                     }
                 }
-
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception, log it, or throw it as needed.
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
                 dbConnector.CloseConnection();
-            
+            }
 
             return result;
         }
+
 
         public void CenterForm(Form form)
         {

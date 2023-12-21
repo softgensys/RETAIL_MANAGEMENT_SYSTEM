@@ -12,7 +12,7 @@ using System.Data.Common;
 namespace softgen
 {
      public class DbConnector
-       {
+    {
            public OdbcConnection connection;
         public OdbcTransaction transactiono;
         public MySqlTransaction transaction;
@@ -24,7 +24,7 @@ namespace softgen
            {
                connectionString = "Dsn=softgen_db_my;uid=root";
                mysql_connectionString = "Server=localhost;Database=softgen_db;Uid=root"; 
-        }
+           }
 
            public bool OpenConnection()
            {
@@ -58,6 +58,7 @@ namespace softgen
                 return false;
             }
         }
+
 
 
         public bool ConnectSGS_db()

@@ -57,7 +57,29 @@ namespace softgen
             txtCustId.Focus();
         }
 
+        public void ResetControls(Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                // Check if the control is a TextBox and its ID starts with "txt"
+                if (control is TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                {
+                    TextBox textBox = (TextBox)control;
 
+                    // Reset the value
+                    textBox.Text = "";
+
+                    // Enable the TextBox
+                    textBox.Enabled = true;
+                }
+
+                // Recursively call the method for nested controls
+                if (control.Controls.Count > 0)
+                {
+                    ResetControls(control.Controls);
+                }
+            }
+        }
 
 
 

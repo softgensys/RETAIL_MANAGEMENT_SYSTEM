@@ -63,6 +63,9 @@
             txtGrpId.AutoCompleteSource = AutoCompleteSource.HistoryList;
             resources.ApplyResources(txtGrpId, "txtGrpId");
             txtGrpId.Name = "txtGrpId";
+            txtGrpId.TextChanged += txtGrpId_TextChanged;
+            txtGrpId.KeyDown += txtGrpId_KeyDown;
+            txtGrpId.KeyPress += txtGrpId_KeyPress;
             txtGrpId.Validating += txtGrpId_Validating;
             // 
             // lblStatus

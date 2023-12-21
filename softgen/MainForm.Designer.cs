@@ -71,6 +71,7 @@ namespace softgen
             utilitiesToolStripMenuItem = new ToolStripMenuItem();
             windowsToolStripMenuItem = new ToolStripMenuItem();
             mnuWTileH = new ToolStripMenuItem();
+            muWTIleV = new ToolStripMenuItem();
             mnuWCascade = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1 = new MenuStrip();
@@ -85,7 +86,6 @@ namespace softgen
             pnlCreated_by = new Label();
             imageList1 = new ImageList(components);
             tmrActiveForm = new System.Windows.Forms.Timer(components);
-            muWTIleV = new ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             menuStrip1.SuspendLayout();
             panel.SuspendLayout();
@@ -388,14 +388,21 @@ namespace softgen
             // mnuWTileH
             // 
             mnuWTileH.Name = "mnuWTileH";
-            mnuWTileH.Size = new Size(180, 22);
+            mnuWTileH.Size = new Size(155, 22);
             mnuWTileH.Text = "Tile- Horizontal";
             mnuWTileH.Click += mnuWTile_Click;
+            // 
+            // muWTIleV
+            // 
+            muWTIleV.Name = "muWTIleV";
+            muWTIleV.Size = new Size(155, 22);
+            muWTIleV.Text = "Tile-Vertical";
+            muWTIleV.Click += muWTIleV_Click;
             // 
             // mnuWCascade
             // 
             mnuWCascade.Name = "mnuWCascade";
-            mnuWCascade.Size = new Size(180, 22);
+            mnuWCascade.Size = new Size(155, 22);
             mnuWCascade.Text = "Cascade";
             mnuWCascade.Click += mnuWCascade_Click;
             // 
@@ -526,18 +533,12 @@ namespace softgen
             imageList1.Images.SetKeyName(11, "Retrieve");
             imageList1.Images.SetKeyName(12, "Continue");
             imageList1.Images.SetKeyName(13, "DeleteMode");
+            imageList1.Images.SetKeyName(14, "Quit.png");
             // 
             // tmrActiveForm
             // 
             tmrActiveForm.Enabled = true;
             tmrActiveForm.Tick += tmrActiveForm_Tick;
-            // 
-            // muWTIleV
-            // 
-            muWTIleV.Name = "muWTIleV";
-            muWTIleV.Size = new Size(180, 22);
-            muWTIleV.Text = "Tile-Vertical";
-            muWTIleV.Click += muWTIleV_Click;
             // 
             // MainForm
             // 

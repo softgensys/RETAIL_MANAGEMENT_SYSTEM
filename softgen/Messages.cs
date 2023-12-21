@@ -91,8 +91,12 @@ namespace softgen
         
         public static void SavedMsg()
         {
-            MainForm.Instance.pnlHelp.Text = "Information Saved.!";
-            InfoMsg("Information Saved Successfully!");
+            if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+            {
+                MainForm.Instance.pnlHelp.Text = "Information Saved.!";
+                InfoMsg("Information Saved Successfully!");
+                searchableForm.ResetControls(DeTools.gobjActiveForm.Controls);
+            }
         }
 
         public static void UnsavedMsg(string id)

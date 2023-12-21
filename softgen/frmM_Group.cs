@@ -22,6 +22,7 @@ namespace softgen
         public bool mblnSearch, mblnDataEntered;
         private OdbcTransaction transaction;
         Messages msg = new Messages();
+        private bool isUpdating = false;
 
         public frmM_Group()
         {
@@ -32,7 +33,9 @@ namespace softgen
             // Add this event handler in the form's constructor or Load event
             this.KeyPreview = true; // Make sure the form has key preview enabled
             this.KeyUp += DeTools.Form_KeyUp; // Subscribe to the KeyUp event
-           
+            //txtGrpId.KeyDown += txtGrpId_KeyDown;
+            txtGrpId.TextChanged += txtGrpId_TextChanged;
+
 
         }
 
@@ -43,48 +46,53 @@ namespace softgen
             DeTools.ActiveFileMenu(this);
             DeTools.CreatedBy(mstrEntBy, mstrEntOn);
             DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
+            //ResetControls(this.Controls);
 
-            
+            //UpdateToolbarVisibility();
 
 
         }
 
         //private Form lastActiveChildForm;
 
+        public void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Convert the text to uppercase
+                textBox.Text = textBox.Text.ToUpper();
+            }
+        }
+
+
         private void UpdateToolbarVisibility()
         {
-            if (DeTools.mobjToolbar == null)
+            foreach (var kvp in DeTools.toolbarDictionary1)
             {
-                
-            }
-            else
-            {
-                
-            }
-            DeTools.mobjToolbar.Visible = true;
-            string key = "", mode = "";
+                string formKey = kvp.Key;
+                List<ToolStrip> toolstrips = kvp.Value;
 
-            // Determine the key for the toolbar dictionary
-            mode = DeTools.GetMode(DeTools.gobjActiveForm);
-            key = string.IsNullOrEmpty(mode) ? DeTools.gobjActiveForm.Name : $"{DeTools.gobjActiveForm.Name}-{mode}";
+                // Split the formKey to get form name and mode
+                string[] keyParts = formKey.Split('-');
+                string formName = keyParts[0];
+                string mode = keyParts.Length > 1 ? keyParts[1] : null;
 
-            // Use gobjActiveForm directly
-            DeTools.mobjToolbar = DeTools.toolbarDictionary1[key].Last();
+                // Find the form by name
+                Form form = Application.OpenForms.OfType<Form>().FirstOrDefault(f => f.Name == formName);
 
-            if (DeTools.gobjActiveForm != null)
-            {
-                if (DeTools.gobjActiveForm.WindowState == FormWindowState.Minimized || !DeTools.gobjActiveForm.Focused)
+                if (form != null)
                 {
-                    // Form is minimized or does not have focus, hide the ToolStrip
-                    DeTools.mobjToolbar.Visible = false;
-                }
-                else
-                {
-                    // Form is restored or maximized and has focus, show the ToolStrip
-                    DeTools.mobjToolbar.Visible = true;
+                    bool isFormActive = form == DeTools.gobjActiveForm;
+                    bool shouldShowToolbar = !form.Visible || (isFormActive && form.WindowState != FormWindowState.Minimized);
+
+                    foreach (ToolStrip toolStrip in toolstrips)
+                    {
+                        toolStrip.Visible = shouldShowToolbar;
+                    }
                 }
             }
         }
+
 
 
         // Get a unique key for each form based on its type and mode
@@ -104,7 +112,7 @@ namespace softgen
             Help.controlToHelpTopicMapping.Add(txtGrpId, "1004"); /////For Help ContextId///IMP...
             DeTools.CheckTemporaryTableExists("m_group");
 
-            UpdateToolbarVisibility();
+            //UpdateToolbarVisibility();
             this.Deactivate += frmM_Group_Deactivate;
             this.Resize += frmM_Group_Resize;
 
@@ -271,7 +279,8 @@ namespace softgen
 
                 Messages.SavedMsg();
 
-                ClearForm();
+                ResetControls(this.Controls);
+                txtGrpId.Focus();
 
                 // Additional logic here for clearing fields, displaying messages, etc.
 
@@ -298,6 +307,35 @@ namespace softgen
             }
 
         }
+
+        public void ResetControls(Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                // Check if the control is a TextBox and its ID starts with "txt"
+                if (control is TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                {
+                    TextBox textBox = (TextBox)control;
+
+                    // Reset the value
+                    textBox.Text = "";
+
+                    // Enable the TextBox
+                    textBox.Enabled = true;
+                    if (Help.o_control != null)
+                    {
+                        Help.o_control.Focus();
+                    }
+                }
+
+                // Recursively call the method for nested controls
+                if (control.Controls.Count > 0)
+                {
+                    ResetControls(control.Controls);
+                }
+            }
+        }
+
         //-------to get the data in modified form-------//
         public void SearchForm()
         {
@@ -570,7 +608,34 @@ namespace softgen
 
         private void frmM_Group_Deactivate(object sender, EventArgs e)
         {
-            UpdateToolbarVisibility();
+            //UpdateToolbarVisibility();
+        }
+
+        private void txtGrpId_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Convert the text to uppercase
+                textBox.Text = textBox.Text.ToUpper();
+                // Set the cursor at the end of the text
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
+
+        private void txtGrpId_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void txtGrpId_KeyDown(object sender, KeyEventArgs e)
+        {
+            //    if (sender is TextBox textBox)
+            //    {
+
+            //        // Convert the text to uppercase
+            //        textBox.Text = textBox.Text.ToUpper();
+
+            //    }
         }
     }////////////////End///////////
 }

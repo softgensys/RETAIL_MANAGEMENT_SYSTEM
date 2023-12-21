@@ -57,6 +57,30 @@ namespace softgen
             cboGrpId.Focus();
         }
 
+        public void ResetControls(Control.ControlCollection controls)
+        {
+            foreach (Control control in controls)
+            {
+                // Check if the control is a TextBox and its ID starts with "txt"
+                if (control is TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                {
+                    TextBox textBox = (TextBox)control;
+
+                    // Reset the value
+                    textBox.Text = "";
+
+                    // Enable the TextBox
+                    textBox.Enabled = true;
+                }
+
+                // Recursively call the method for nested controls
+                if (control.Controls.Count > 0)
+                {
+                    ResetControls(control.Controls);
+                }
+            }
+        }
+
         private void lblAdd_Click(object sender, EventArgs e)
         {
 
@@ -155,8 +179,9 @@ namespace softgen
                                     delfrmhdr1.ExecuteNonQuery();
                                 }
 
-                                DeTools.gstrSQL = "update temp_m_sub_group set group_id = ?, sub_group_id = ?, sub_group_desc = ?, active_yn = ?, sales_tax = ?, sp_change_yn = ?, disc_yn = ?, disc_per = ?, status = ?, Trans_status = ?," +
-                                    " comp_name  = ?, mod_date = ?, mod_by = ? where sub_group_id= '" + txtSubGrpId.Text.Trim() + "'";
+                                DeTools.gstrSQL = "update temp_m_sub_group set group_id = ?, sub_group_id = ?, sub_group_desc = ?, active_yn = ?, sales_tax = ?, sp_change_yn = ?," +
+                                    " disc_yn = ?, disc_per = ?, status = ?, Trans_status = ?," +
+                                    " comp_name  = '" + DeTools.fOSMachineName.GetMachineName() + "', mod_date = ?, mod_by = ? where sub_group_id= '" + txtSubGrpId.Text.Trim() + "'";
 
                                 cmd.CommandText = DeTools.gstrSQL;
 

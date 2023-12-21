@@ -24,6 +24,8 @@ namespace softgen
 
             void ClearForm();
 
+            void ResetControls(Control.ControlCollection controls);
+
         }
 
     }

@@ -104,7 +104,7 @@ namespace softgen
         ///////
         /// //////////////////////////////////////////////////////////////////
 
-
+        
         public static void ActivateForm(Form form,bool TF,string mode) 
         {
             try
@@ -354,7 +354,7 @@ namespace softgen
                         case Keys.F2:
                             if (GetMode(form) != null)
                             {
-                               // searchableForm.ClearForm();
+                                searchableForm.ResetControls(gobjActiveForm.Controls);
                                 // ClearCreatedByPanel();
                             }
                             break;
@@ -806,21 +806,58 @@ namespace softgen
                 // Access the ToolStripItem at the specified TBRIndex
                 ToolStripItem toolStripItem = mobjToolbar.Items[TBRIndex];
 
-                string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
-                // string imageFolderPath = Path.Combine("Softgen//", "Icons");
-                string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
+                //string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
+                //// string imageFolderPath = Path.Combine("Softgen//", "Icons");
+                //string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
 
 
 
+
+                //ImageList dynamicImageList = new ImageList();
+
+                //foreach (string imageFile in Directory.GetFiles(imageFolderPath, "*.png")) // Change the file extension to match your image type
+                //{
+                //    string imageName = Path.GetFileNameWithoutExtension(imageFile);
+                //    Image image = Image.FromFile(imageFile);
+                //    dynamicImageList.Images.Add(imageName, image);
+                //}
+
+                string imageNameToFind = BtnKey.Trim(); // The name of the image you want to find
+                Image foundImage = null;
 
                 ImageList dynamicImageList = new ImageList();
-                
-                foreach (string imageFile in Directory.GetFiles(imageFolderPath, "*.png")) // Change the file extension to match your image type
+                dynamicImageList.ImageSize = new Size(26, 26);
+
+                // Assuming "ImageKey1" and "ImageKey2" are the resource names
+                dynamicImageList.Images.Add("Add", Images.Add);
+                dynamicImageList.Images.Add("Authorization", Images.Authorization);
+                dynamicImageList.Images.Add("Continue", Images.Continue);
+                dynamicImageList.Images.Add("Delete", Images.Delete);
+                dynamicImageList.Images.Add("DeleteMode", Images.DeleteMode);
+                dynamicImageList.Images.Add("Fresh", Images.Fresh);
+                dynamicImageList.Images.Add("Help", Images.Help);
+                dynamicImageList.Images.Add("Inquire", Images.Inquire);
+                dynamicImageList.Images.Add("Modify", Images.Modify);
+                dynamicImageList.Images.Add("Post", Images.Post);
+                dynamicImageList.Images.Add("Print", Images.Print);
+                dynamicImageList.Images.Add("Quit", Images.Quit);
+                dynamicImageList.Images.Add("Retrieve", Images.Retrieve);
+                dynamicImageList.Images.Add("Save", Images.Save);
+
+
+                // Add more images as needed
+
+                for (int i = 0; i < dynamicImageList.Images.Count; i++)
                 {
-                    string imageName = Path.GetFileNameWithoutExtension(imageFile);
-                    Image image = Image.FromFile(imageFile);
-                    dynamicImageList.Images.Add(imageName, image);
+                    // Compare the image name at index i with the known image name
+                    if (dynamicImageList.Images.Keys[i] == imageNameToFind)
+                    {
+                        // The image name at index i matches the known image name
+                        foundImage = dynamicImageList.Images[i]; // Capture the matched image
+                        break; // Exit the loop since you found the image
+                    }
                 }
+
 
                 // Check if gobjActiveForm is not null and implements the ISearchableForm interface
                 if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
@@ -984,11 +1021,11 @@ namespace softgen
 
                             if (gobjActiveForm.Name == "frmM_Item")
                             {
-                                searchableForm.ClearForm();
+                                searchableForm.ResetControls(gobjActiveForm.Controls);
                             }
                             else
                             {
-                                searchableForm.ClearForm();
+                                searchableForm.ResetControls(gobjActiveForm.Controls);
                             }
                             break;
 
@@ -1031,7 +1068,7 @@ namespace softgen
                             {
                                 //  gobjActiveForm.SaveTempDataForm();
                             }
-                            //searchableForm.ClearForm();
+                            searchableForm.ResetControls(gobjActiveForm.Controls);
                             //ClearCreatedByPanel();
                             ClearStatusBarHelp();
 
@@ -1534,29 +1571,51 @@ namespace softgen
                 string imageNameToFind = BtnKey.Trim(); // The name of the image you want to find
                 Image foundImage = null;
 
-                
-
-               string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
-               // string imageFolderPath = Path.Combine("Softgen//", "Icons");
-                string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
 
 
+                // string imageFolderPath = System.IO.Path.Combine(Application.StartupPath, "Icons");
+                // // string imageFolderPath = Path.Combine("Softgen//", "Icons");
+                //  string imagePath = System.IO.Path.Combine(imageFolderPath, "your_image.png");
 
+
+
+
+                //  ImageList dynamicImageList = new ImageList();
+                //  dynamicImageList.ImageSize = new Size(23, 23); // Set the image size as needed
+
+                //  // Load images from file locations and add them to the ImageList
+                ////  dynamicImageList.Images.Add("ImageKey1", Image.FromFile("softgen\\Icons.png"));
+                //  //dynamicImageList.Images.Add("ImageKey2", Image.FromFile("path_to_image2.png"));
+
+                //  // Load images from the folder and add them to the ImageList
+                //  foreach (string imageFile in Directory.GetFiles(imageFolderPath, "*.png")) // Change the file extension to match your image type
+                //  {
+                //      string imageName = Path.GetFileNameWithoutExtension(imageFile);
+                //      Image image = Image.FromFile(imageFile);
+                //      dynamicImageList.Images.Add(imageName, image);
+                //  }
 
                 ImageList dynamicImageList = new ImageList();
-                dynamicImageList.ImageSize = new Size(23, 23); // Set the image size as needed
+                dynamicImageList.ImageSize = new Size(26, 26);
 
-                // Load images from file locations and add them to the ImageList
-              //  dynamicImageList.Images.Add("ImageKey1", Image.FromFile("softgen\\Icons.png"));
-                //dynamicImageList.Images.Add("ImageKey2", Image.FromFile("path_to_image2.png"));
-
-                // Load images from the folder and add them to the ImageList
-                foreach (string imageFile in Directory.GetFiles(imageFolderPath, "*.png")) // Change the file extension to match your image type
-                {
-                    string imageName = Path.GetFileNameWithoutExtension(imageFile);
-                    Image image = Image.FromFile(imageFile);
-                    dynamicImageList.Images.Add(imageName, image);
-                }
+                // Assuming "ImageKey1" and "ImageKey2" are the resource names
+                dynamicImageList.Images.Add("Add", Images.Add);
+                dynamicImageList.Images.Add("Authorization", Images.Authorization);
+                dynamicImageList.Images.Add("Continue", Images.Continue);
+                dynamicImageList.Images.Add("Delete", Images.Delete);
+                dynamicImageList.Images.Add("DeleteMode", Images.DeleteMode);
+                dynamicImageList.Images.Add("Fresh", Images.Fresh);
+                dynamicImageList.Images.Add("Help", Images.Help);
+                dynamicImageList.Images.Add("Inquire", Images.Inquire);
+                dynamicImageList.Images.Add("Modify", Images.Modify);
+                dynamicImageList.Images.Add("Post", Images.Post);
+                dynamicImageList.Images.Add("Print", Images.Print);
+                dynamicImageList.Images.Add("Quit", Images.Quit);
+                dynamicImageList.Images.Add("Retrieve", Images.Retrieve);
+                dynamicImageList.Images.Add("Save", Images.Save);
+              
+                
+                // Add more images as needed
 
                 for (int i = 0; i < dynamicImageList.Images.Count; i++)
                 {
@@ -1571,7 +1630,7 @@ namespace softgen
 
                 if (BtnKey == "Quit")
                 {
-                    mobjbutton = new ToolStripButton(BtnKey.Trim(), dynamicImageList.Images[11], null, QUITCAPTION.Trim());
+                    mobjbutton = new ToolStripButton(BtnKey.Trim(), dynamicImageList.Images[3], null, QUITCAPTION.Trim());
 
                     mobjbutton.AutoSize = false;
                     mobjbutton.BackColor = Color.Lavender;
@@ -1906,15 +1965,16 @@ namespace softgen
                 {
                     if (MainForm.Instance.MdiChildren.Length == 0)
                     {
-                        mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[7], null, "SystemQuit");
+                        mobjbutton = new ToolStripButton(QUITCAPTION, MainForm.Instance.imageList1.Images[14], null, "SystemQuit");
 
                         mobjbutton.AutoSize = false;
                         mobjbutton.BackColor = Color.Lavender;
                         mobjbutton.BackgroundImageLayout = ImageLayout.Center;
                         mobjbutton.Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
                         mobjbutton.ImageAlign = ContentAlignment.TopCenter;
-                        mobjbutton.ImageScaling = ToolStripItemImageScaling.None;
+                        mobjbutton.ImageScaling = ToolStripItemImageScaling.SizeToFit;
                         mobjbutton.Margin = new Padding(3);
+                        MainForm.Instance.imageList1.ImageSize = new Size(48, 48);
                         mobjbutton.Size = new Size(51, 47);
                         mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                         mobjbutton.TextImageRelation = TextImageRelation.Overlay;

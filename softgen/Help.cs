@@ -1263,6 +1263,11 @@ namespace softgen
                     if (selectedRow.Cells.Count > 0)
                     {
                         o_control.Text = selectedRow.Cells[0].Value.ToString();
+                        if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+                        {
+                            searchableForm.SearchForm();
+                        }
+
                     }
                 }
             }

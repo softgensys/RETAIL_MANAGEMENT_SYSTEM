@@ -111,6 +111,7 @@ namespace softgen
                 }
 
                 this.Hide();
+                this.Refresh();
 
             }
         }
@@ -127,6 +128,7 @@ namespace softgen
 
             // Hide the form instead
             this.Hide();
+            this.Refresh();
         }
     }
 }
