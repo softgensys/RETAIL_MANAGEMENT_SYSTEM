@@ -25,7 +25,7 @@ namespace softgen
         // Declare a HashSet to store unique field names with aliases
         private static HashSet<string> fieldNamesWithAliases = new HashSet<string>();
         public static ComboBox combo;
-
+        public static decimal qtysp;
         public static frmHelp frmHelp= new frmHelp();
         public static DbConnector dbConnector;
         public static int selectedIndex = frmHelp.cboDataType.SelectedIndex;
@@ -701,13 +701,20 @@ namespace softgen
                         {
                             string columnName = rs_Result.GetName(j);
                             frmHelp.grdHelp.Columns.Add(columnName, columnName);
-                           
+
+                            if (columnName == "cess_perc1" || columnName == "disc_per1" || columnName == "tax_per1")
+                            {
+                                frmHelp.grdHelp.Columns[columnName].Visible = false;
+
+                            }
+
                         }
 
                         // Initialize the DataGridView's properties
                         frmHelp.grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
                         frmHelp.grdHelp.ColumnHeadersHeight = 450;
                         frmHelp.grdHelp.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+
 
                         //for 2nd column width
                         int columnIndex = 1; // Set to 1 for the 2nd column
@@ -1422,7 +1429,7 @@ namespace softgen
                     if (selectedRow != null)
                     {
                         // Assuming you have a list of column indexes to transfer data
-                        List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4 }; // Add the column indexes you want to transfer
+                        List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7}; // Add the column indexes you want to transfer
 
                         foreach (int columnIndex in columnIndexesToTransfer)
                         {
@@ -1430,12 +1437,21 @@ namespace softgen
                             if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
                             {
                                 // Assuming that targetGrid has enough columns
-                                targetGrid.Rows[rowIndex].Cells[1].Value = selectedRow.Cells[0].Value;
-                                targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[1].Value;
-                                targetGrid.Rows[rowIndex].Cells[3].Value = 1;
-                                targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value;
-                                targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value;
+                                targetGrid.Rows[rowIndex].Cells[1].Value = selectedRow.Cells[1].Value; //barcode
+                                targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[0].Value; //itemnm
+                                targetGrid.Rows[rowIndex].Cells[3].Value = "1";
+                                targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value; //mrp
+                                targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value; //unitprice
+                                targetGrid.Rows[rowIndex].Cells[6].Value = selectedRow.Cells[6].Value; //disc%
+                                targetGrid.Rows[rowIndex].Cells[7].Value = "0.00"; //discamt
+                                targetGrid.Rows[rowIndex].Cells[8].Value = selectedRow.Cells[5].Value; //gst%
+                                targetGrid.Rows[rowIndex].Cells[9].Value = selectedRow.Cells[7].Value; //cess%
+                                targetGrid.Rows[rowIndex].Cells[10].Value = ((decimal.Parse(selectedRow.Cells[3].Value.ToString()) * 1) - decimal.Parse(targetGrid.Rows[rowIndex].Cells[7].Value.ToString())).ToString();
+
+                                //targetGrid.Rows[rowIndex].Cells[10].Value = selectedRow.Cells[5].Value;
                                 targetGrid.Rows[rowIndex].Cells[13].Value = selectedRow.Cells[4].Value;
+
+
 
                             }
                             else
@@ -1445,8 +1461,10 @@ namespace softgen
                             }
                         }
 
-                        // Set the focus to the newly added row and the 2nd column
-                        targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1]; // Adjust column index as needed
+                        //targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1];
+
+                        //// Begin the edit to activate the cell for editing
+                        //targetGrid.BeginEdit(true);
 
                     }
                 }

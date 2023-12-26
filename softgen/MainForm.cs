@@ -23,30 +23,38 @@ namespace softgen
 
         public MainForm()
         {
-            InitializeComponent();
-
-            // Initialize the static property with the current instance
-            Instance = this;
+            try
+            {
 
 
+                InitializeComponent();
 
-            IsMdiContainer = true; // Set the form as an MDI container
-            //MainMenuStrip.BackColor = Color.LightPink;
-            this.Load += MainForm_Load;
-            //btnAdd.Visible = false;
-            //btnModify.Visible = false;
-            //btnInquire.Visible = false;
-            //btnMDelete.Visible = false;
-            //btnDelete.Visible = false;
-            //btnFresh.Visible = false;
-            //btnAuth.Visible = false;
-            //btnPost.Visible = false;
-            //btnPrint.Visible = false;
-            //btnSave.Visible = false;
-            //btnRetrieve.Visible = false;
+                // Initialize the static property with the current instance
+                Instance = this;
 
-            this.Activated += MyForm_Activated;
 
+
+                IsMdiContainer = true; // Set the form as an MDI container
+                                       //MainMenuStrip.BackColor = Color.LightPink;
+                this.Load += MainForm_Load;
+                //btnAdd.Visible = false;
+                //btnModify.Visible = false;
+                //btnInquire.Visible = false;
+                //btnMDelete.Visible = false;
+                //btnDelete.Visible = false;
+                //btnFresh.Visible = false;
+                //btnAuth.Visible = false;
+                //btnPost.Visible = false;
+                //btnPrint.Visible = false;
+                //btnSave.Visible = false;
+                //btnRetrieve.Visible = false;
+
+                this.Activated += MyForm_Activated;
+            }
+            catch (Exception ex)
+            {
+             
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)

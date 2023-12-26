@@ -35,6 +35,10 @@
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             T_Invoice = new Panel();
+            rotTotmrp = new Label();
+            lblTotMrp = new Label();
+            rotTotdisc = new Label();
+            lblTotDisc = new Label();
             rotInvCust = new Label();
             rotRefund = new Label();
             pnlPayDet = new Panel();
@@ -55,7 +59,7 @@
             lblPayDet = new Label();
             rotTotQty = new Label();
             lblTotQty = new Label();
-            txtNOI = new Label();
+            rotNOI = new Label();
             lblNOI = new Label();
             rotItDesc = new Label();
             lblItDesc = new Label();
@@ -74,6 +78,20 @@
             pnlItemDet = new Panel();
             lblItemDet = new Label();
             dbgItemDet = new DataGridView();
+            srno = new DataGridViewTextBoxColumn();
+            BarItemCode = new DataGridViewTextBoxColumn();
+            Itemname = new DataGridViewTextBoxColumn();
+            Qty = new DataGridViewTextBoxColumn();
+            Mrp = new DataGridViewTextBoxColumn();
+            UnitPrice = new DataGridViewTextBoxColumn();
+            Disc = new DataGridViewTextBoxColumn();
+            DiscAmt = new DataGridViewTextBoxColumn();
+            Gst = new DataGridViewTextBoxColumn();
+            Cess = new DataGridViewTextBoxColumn();
+            Amount = new DataGridViewTextBoxColumn();
+            GstAmt = new DataGridViewTextBoxColumn();
+            CessAmt = new DataGridViewTextBoxColumn();
+            Itemid = new DataGridViewTextBoxColumn();
             label11 = new Label();
             optBillPrev = new RadioButton();
             label10 = new Label();
@@ -97,20 +115,6 @@
             dtpInvDate = new DateTimePicker();
             txtInvNo = new TextBox();
             lblInvNo = new Label();
-            srno = new DataGridViewTextBoxColumn();
-            Itemname = new DataGridViewTextBoxColumn();
-            BarItemCode = new DataGridViewTextBoxColumn();
-            Qty = new DataGridViewTextBoxColumn();
-            Mrp = new DataGridViewTextBoxColumn();
-            UnitPrice = new DataGridViewTextBoxColumn();
-            Disc = new DataGridViewTextBoxColumn();
-            DiscAmt = new DataGridViewTextBoxColumn();
-            Gst = new DataGridViewTextBoxColumn();
-            GstAmt = new DataGridViewTextBoxColumn();
-            Cess = new DataGridViewTextBoxColumn();
-            CessAmt = new DataGridViewTextBoxColumn();
-            Amount = new DataGridViewTextBoxColumn();
-            Itemid = new DataGridViewTextBoxColumn();
             T_Invoice.SuspendLayout();
             pnlPayDet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dbgPayDet).BeginInit();
@@ -123,12 +127,16 @@
             T_Invoice.BackColor = Color.PowderBlue;
             T_Invoice.BackgroundImageLayout = ImageLayout.None;
             T_Invoice.BorderStyle = BorderStyle.Fixed3D;
+            T_Invoice.Controls.Add(rotTotmrp);
+            T_Invoice.Controls.Add(lblTotMrp);
+            T_Invoice.Controls.Add(rotTotdisc);
+            T_Invoice.Controls.Add(lblTotDisc);
             T_Invoice.Controls.Add(rotInvCust);
             T_Invoice.Controls.Add(rotRefund);
             T_Invoice.Controls.Add(pnlPayDet);
             T_Invoice.Controls.Add(rotTotQty);
             T_Invoice.Controls.Add(lblTotQty);
-            T_Invoice.Controls.Add(txtNOI);
+            T_Invoice.Controls.Add(rotNOI);
             T_Invoice.Controls.Add(lblNOI);
             T_Invoice.Controls.Add(rotItDesc);
             T_Invoice.Controls.Add(lblItDesc);
@@ -168,11 +176,53 @@
             T_Invoice.Controls.Add(dtpInvDate);
             T_Invoice.Controls.Add(txtInvNo);
             T_Invoice.Controls.Add(lblInvNo);
-            T_Invoice.Location = new Point(0, 0);
+            T_Invoice.Location = new Point(0, -1);
             T_Invoice.Name = "T_Invoice";
-            T_Invoice.Size = new Size(915, 562);
+            T_Invoice.Size = new Size(941, 562);
             T_Invoice.TabIndex = 0;
             T_Invoice.Paint += T_Invoice_Paint;
+            // 
+            // rotTotmrp
+            // 
+            rotTotmrp.BackColor = SystemColors.Info;
+            rotTotmrp.BorderStyle = BorderStyle.Fixed3D;
+            rotTotmrp.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotTotmrp.Location = new Point(839, 371);
+            rotTotmrp.Name = "rotTotmrp";
+            rotTotmrp.Size = new Size(83, 22);
+            rotTotmrp.TabIndex = 250;
+            rotTotmrp.Click += label2_Click_1;
+            // 
+            // lblTotMrp
+            // 
+            lblTotMrp.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTotMrp.Location = new Point(779, 375);
+            lblTotMrp.Name = "lblTotMrp";
+            lblTotMrp.Size = new Size(60, 18);
+            lblTotMrp.TabIndex = 249;
+            lblTotMrp.Text = "Tot. MRP";
+            lblTotMrp.Click += lblTotMrp_Click;
+            // 
+            // rotTotdisc
+            // 
+            rotTotdisc.BackColor = Color.Bisque;
+            rotTotdisc.BorderStyle = BorderStyle.Fixed3D;
+            rotTotdisc.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotTotdisc.Location = new Point(716, 372);
+            rotTotdisc.Name = "rotTotdisc";
+            rotTotdisc.Size = new Size(59, 22);
+            rotTotdisc.TabIndex = 248;
+            rotTotdisc.Click += label1_Click;
+            // 
+            // lblTotDisc
+            // 
+            lblTotDisc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblTotDisc.Location = new Point(655, 374);
+            lblTotDisc.Name = "lblTotDisc";
+            lblTotDisc.Size = new Size(60, 18);
+            lblTotDisc.TabIndex = 247;
+            lblTotDisc.Text = "Tot. Disc.";
+            lblTotDisc.Click += lblTotDisc_Click;
             // 
             // rotInvCust
             // 
@@ -201,7 +251,7 @@
             pnlPayDet.Controls.Add(lblPayDet);
             pnlPayDet.Location = new Point(7, 400);
             pnlPayDet.Name = "pnlPayDet";
-            pnlPayDet.Size = new Size(903, 142);
+            pnlPayDet.Size = new Size(924, 142);
             pnlPayDet.TabIndex = 243;
             // 
             // dbgPayDet
@@ -237,7 +287,7 @@
             dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
             dbgPayDet.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dbgPayDet.RowTemplate.Height = 25;
-            dbgPayDet.Size = new Size(893, 116);
+            dbgPayDet.Size = new Size(916, 116);
             dbgPayDet.TabIndex = 227;
             // 
             // PaySrno
@@ -336,7 +386,7 @@
             lblPayDet.ImeMode = ImeMode.NoControl;
             lblPayDet.Location = new Point(2, 2);
             lblPayDet.Name = "lblPayDet";
-            lblPayDet.Size = new Size(899, 18);
+            lblPayDet.Size = new Size(918, 18);
             lblPayDet.TabIndex = 226;
             lblPayDet.Text = "Payment Details";
             lblPayDet.TextAlign = ContentAlignment.MiddleCenter;
@@ -345,35 +395,36 @@
             // 
             rotTotQty.BackColor = Color.Bisque;
             rotTotQty.BorderStyle = BorderStyle.Fixed3D;
-            rotTotQty.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            rotTotQty.Location = new Point(648, 368);
+            rotTotQty.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotTotQty.Location = new Point(436, 373);
             rotTotQty.Name = "rotTotQty";
-            rotTotQty.Size = new Size(78, 22);
+            rotTotQty.Size = new Size(54, 22);
             rotTotQty.TabIndex = 242;
+            rotTotQty.Click += rotTotQty_Click;
             // 
             // lblTotQty
             // 
             lblTotQty.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTotQty.Location = new Point(577, 371);
+            lblTotQty.Location = new Point(376, 374);
             lblTotQty.Name = "lblTotQty";
-            lblTotQty.Size = new Size(59, 18);
+            lblTotQty.Size = new Size(57, 18);
             lblTotQty.TabIndex = 241;
             lblTotQty.Text = "Total Qty";
             // 
-            // txtNOI
+            // rotNOI
             // 
-            txtNOI.BackColor = Color.Bisque;
-            txtNOI.BorderStyle = BorderStyle.Fixed3D;
-            txtNOI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            txtNOI.Location = new Point(482, 369);
-            txtNOI.Name = "txtNOI";
-            txtNOI.Size = new Size(76, 22);
-            txtNOI.TabIndex = 240;
+            rotNOI.BackColor = Color.Bisque;
+            rotNOI.BorderStyle = BorderStyle.Fixed3D;
+            rotNOI.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotNOI.Location = new Point(592, 371);
+            rotNOI.Name = "rotNOI";
+            rotNOI.Size = new Size(62, 22);
+            rotNOI.TabIndex = 240;
             // 
             // lblNOI
             // 
             lblNOI.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblNOI.Location = new Point(398, 372);
+            lblNOI.Location = new Point(505, 374);
             lblNOI.Name = "lblNOI";
             lblNOI.Size = new Size(80, 18);
             lblNOI.TabIndex = 239;
@@ -383,15 +434,16 @@
             // 
             rotItDesc.BackColor = Color.PaleGreen;
             rotItDesc.BorderStyle = BorderStyle.Fixed3D;
-            rotItDesc.Location = new Point(86, 371);
+            rotItDesc.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            rotItDesc.Location = new Point(72, 371);
             rotItDesc.Name = "rotItDesc";
-            rotItDesc.Size = new Size(305, 22);
+            rotItDesc.Size = new Size(290, 22);
             rotItDesc.TabIndex = 238;
             // 
             // lblItDesc
             // 
             lblItDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblItDesc.Location = new Point(11, 372);
+            lblItDesc.Location = new Point(4, 372);
             lblItDesc.Name = "lblItDesc";
             lblItDesc.Size = new Size(68, 18);
             lblItDesc.TabIndex = 237;
@@ -401,19 +453,19 @@
             // 
             rotPayAmt.BackColor = Color.Pink;
             rotPayAmt.BorderStyle = BorderStyle.Fixed3D;
-            rotPayAmt.Font = new Font("Sitka Heading", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            rotPayAmt.Location = new Point(806, 343);
+            rotPayAmt.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotPayAmt.Location = new Point(797, 335);
             rotPayAmt.Name = "rotPayAmt";
-            rotPayAmt.Size = new Size(96, 38);
+            rotPayAmt.Size = new Size(129, 29);
             rotPayAmt.TabIndex = 236;
             rotPayAmt.Click += label21_Click;
             // 
             // lblPayAmt
             // 
             lblPayAmt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblPayAmt.Location = new Point(749, 345);
+            lblPayAmt.Location = new Point(727, 340);
             lblPayAmt.Name = "lblPayAmt";
-            lblPayAmt.Size = new Size(51, 31);
+            lblPayAmt.Size = new Size(77, 19);
             lblPayAmt.TabIndex = 235;
             lblPayAmt.Text = "Amt. To Pay";
             lblPayAmt.Click += label22_Click;
@@ -422,7 +474,8 @@
             // 
             rotNetAmt.BackColor = Color.Bisque;
             rotNetAmt.BorderStyle = BorderStyle.Fixed3D;
-            rotNetAmt.Location = new Point(651, 342);
+            rotNetAmt.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotNetAmt.Location = new Point(479, 340);
             rotNetAmt.Name = "rotNetAmt";
             rotNetAmt.Size = new Size(90, 22);
             rotNetAmt.TabIndex = 234;
@@ -430,7 +483,7 @@
             // lblNetAmt
             // 
             lblNetAmt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblNetAmt.Location = new Point(590, 344);
+            lblNetAmt.Location = new Point(417, 342);
             lblNetAmt.Name = "lblNetAmt";
             lblNetAmt.Size = new Size(60, 18);
             lblNetAmt.TabIndex = 233;
@@ -440,32 +493,36 @@
             // 
             rotRO.BackColor = SystemColors.Info;
             rotRO.BorderStyle = BorderStyle.Fixed3D;
-            rotRO.Location = new Point(508, 342);
+            rotRO.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotRO.Location = new Point(637, 339);
             rotRO.Name = "rotRO";
-            rotRO.Size = new Size(77, 22);
+            rotRO.Size = new Size(67, 22);
             rotRO.TabIndex = 232;
+            rotRO.Click += rotRO_Click;
             // 
             // lblRO
             // 
             lblRO.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblRO.Location = new Point(447, 344);
+            lblRO.Location = new Point(575, 342);
             lblRO.Name = "lblRO";
             lblRO.Size = new Size(60, 18);
             lblRO.TabIndex = 231;
             lblRO.Text = "R/O Amt.";
+            lblRO.Click += lblRO_Click;
             // 
             // txtDiscAmt
             // 
-            txtDiscAmt.Location = new Point(369, 343);
+            txtDiscAmt.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            txtDiscAmt.Location = new Point(339, 341);
             txtDiscAmt.Name = "txtDiscAmt";
-            txtDiscAmt.Size = new Size(71, 23);
+            txtDiscAmt.Size = new Size(71, 21);
             txtDiscAmt.TabIndex = 230;
             // 
             // lblDiscAmt
             // 
-            lblDiscAmt.Font = new Font("Georgia", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDiscAmt.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
             lblDiscAmt.ImeMode = ImeMode.NoControl;
-            lblDiscAmt.Location = new Point(292, 346);
+            lblDiscAmt.Location = new Point(277, 345);
             lblDiscAmt.Name = "lblDiscAmt";
             lblDiscAmt.Size = new Size(69, 14);
             lblDiscAmt.TabIndex = 229;
@@ -473,16 +530,17 @@
             // 
             // txtDiscPer
             // 
-            txtDiscPer.Location = new Point(225, 343);
+            txtDiscPer.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            txtDiscPer.Location = new Point(209, 341);
             txtDiscPer.Name = "txtDiscPer";
-            txtDiscPer.Size = new Size(61, 23);
+            txtDiscPer.Size = new Size(61, 21);
             txtDiscPer.TabIndex = 228;
             // 
             // lblDiscPer
             // 
-            lblDiscPer.Font = new Font("Georgia", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDiscPer.Font = new Font("Segoe UI", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
             lblDiscPer.ImeMode = ImeMode.NoControl;
-            lblDiscPer.Location = new Point(169, 346);
+            lblDiscPer.Location = new Point(156, 344);
             lblDiscPer.Name = "lblDiscPer";
             lblDiscPer.Size = new Size(55, 14);
             lblDiscPer.TabIndex = 227;
@@ -492,7 +550,8 @@
             // 
             rotGAmt.BackColor = Color.Bisque;
             rotGAmt.BorderStyle = BorderStyle.Fixed3D;
-            rotGAmt.Location = new Point(85, 343);
+            rotGAmt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            rotGAmt.Location = new Point(73, 340);
             rotGAmt.Name = "rotGAmt";
             rotGAmt.Size = new Size(79, 22);
             rotGAmt.TabIndex = 226;
@@ -501,7 +560,7 @@
             // lblGAmt
             // 
             lblGAmt.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblGAmt.Location = new Point(11, 346);
+            lblGAmt.Location = new Point(2, 342);
             lblGAmt.Name = "lblGAmt";
             lblGAmt.Size = new Size(69, 18);
             lblGAmt.TabIndex = 225;
@@ -515,7 +574,7 @@
             pnlItemDet.Controls.Add(dbgItemDet);
             pnlItemDet.Location = new Point(5, 93);
             pnlItemDet.Name = "pnlItemDet";
-            pnlItemDet.Size = new Size(905, 238);
+            pnlItemDet.Size = new Size(929, 238);
             pnlItemDet.TabIndex = 224;
             // 
             // lblItemDet
@@ -525,7 +584,7 @@
             lblItemDet.ImeMode = ImeMode.NoControl;
             lblItemDet.Location = new Point(2, 1);
             lblItemDet.Name = "lblItemDet";
-            lblItemDet.Size = new Size(897, 18);
+            lblItemDet.Size = new Size(920, 18);
             lblItemDet.TabIndex = 225;
             lblItemDet.Text = "Item Details";
             lblItemDet.TextAlign = ContentAlignment.MiddleCenter;
@@ -545,7 +604,7 @@
             dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
             dbgItemDet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dbgItemDet.ColumnHeadersHeight = 35;
-            dbgItemDet.Columns.AddRange(new DataGridViewColumn[] { srno, Itemname, BarItemCode, Qty, Mrp, UnitPrice, Disc, DiscAmt, Gst, GstAmt, Cess, CessAmt, Amount, Itemid });
+            dbgItemDet.Columns.AddRange(new DataGridViewColumn[] { srno, BarItemCode, Itemname, Qty, Mrp, UnitPrice, Disc, DiscAmt, Gst, Cess, Amount, GstAmt, CessAmt, Itemid });
             dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = SystemColors.Window;
             dataGridViewCellStyle5.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
@@ -554,7 +613,7 @@
             dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = DataGridViewTriState.False;
             dbgItemDet.DefaultCellStyle = dataGridViewCellStyle5;
-            dbgItemDet.Location = new Point(5, 20);
+            dbgItemDet.Location = new Point(3, 20);
             dbgItemDet.Name = "dbgItemDet";
             dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = SystemColors.Control;
@@ -565,10 +624,106 @@
             dataGridViewCellStyle6.WrapMode = DataGridViewTriState.True;
             dbgItemDet.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             dbgItemDet.RowTemplate.Height = 25;
-            dbgItemDet.Size = new Size(891, 208);
+            dbgItemDet.Size = new Size(921, 208);
             dbgItemDet.TabIndex = 223;
             dbgItemDet.CellClick += dbgItemDet_CellClick;
+            dbgItemDet.CellContentClick += dbgItemDet_CellContentClick;
+            dbgItemDet.CellEndEdit += dbgItemDet_CellEndEdit;
+            dbgItemDet.CellEnter += dbgItemDet_CellEnter;
+            dbgItemDet.CellValueChanged += dbgItemDet_CellValueChanged;
             dbgItemDet.EditingControlShowing += dbgItemDet_EditingControlShowing;
+            dbgItemDet.RowLeave += dbgItemDet_RowLeave;
+            dbgItemDet.RowPostPaint += dbgItemDet_RowPostPaint;
+            dbgItemDet.KeyDown += dbgItemDet_KeyDown;
+            // 
+            // srno
+            // 
+            srno.HeaderText = "Sr No.";
+            srno.Name = "srno";
+            srno.ReadOnly = true;
+            srno.Width = 30;
+            // 
+            // BarItemCode
+            // 
+            BarItemCode.HeaderText = "Bar/ItemCode";
+            BarItemCode.Name = "BarItemCode";
+            BarItemCode.Width = 145;
+            // 
+            // Itemname
+            // 
+            Itemname.HeaderText = "Item Name";
+            Itemname.Name = "Itemname";
+            Itemname.ReadOnly = true;
+            Itemname.Width = 160;
+            // 
+            // Qty
+            // 
+            Qty.HeaderText = "Qty";
+            Qty.Name = "Qty";
+            Qty.Width = 75;
+            // 
+            // Mrp
+            // 
+            Mrp.HeaderText = "MRP";
+            Mrp.Name = "Mrp";
+            Mrp.Width = 80;
+            // 
+            // UnitPrice
+            // 
+            UnitPrice.HeaderText = "Unit Price";
+            UnitPrice.Name = "UnitPrice";
+            UnitPrice.Width = 70;
+            // 
+            // Disc
+            // 
+            Disc.HeaderText = "Disc%";
+            Disc.Name = "Disc";
+            Disc.Width = 45;
+            // 
+            // DiscAmt
+            // 
+            DiscAmt.HeaderText = "Disc. Amt";
+            DiscAmt.Name = "DiscAmt";
+            DiscAmt.Width = 60;
+            // 
+            // Gst
+            // 
+            Gst.HeaderText = "GST%";
+            Gst.Name = "Gst";
+            Gst.Width = 50;
+            // 
+            // Cess
+            // 
+            Cess.HeaderText = "CESS%";
+            Cess.Name = "Cess";
+            Cess.Width = 40;
+            // 
+            // Amount
+            // 
+            Amount.HeaderText = "AMOUNT";
+            Amount.MinimumWidth = 4;
+            Amount.Name = "Amount";
+            Amount.ReadOnly = true;
+            // 
+            // GstAmt
+            // 
+            GstAmt.HeaderText = "GST Amt.";
+            GstAmt.Name = "GstAmt";
+            GstAmt.ReadOnly = true;
+            GstAmt.Width = 70;
+            // 
+            // CessAmt
+            // 
+            CessAmt.HeaderText = "CESS Amt.";
+            CessAmt.Name = "CessAmt";
+            CessAmt.ReadOnly = true;
+            CessAmt.Width = 60;
+            // 
+            // Itemid
+            // 
+            Itemid.HeaderText = "Item Id";
+            Itemid.Name = "Itemid";
+            Itemid.ReadOnly = true;
             // 
             // label11
             // 
@@ -791,100 +946,12 @@
             lblInvNo.TabIndex = 82;
             lblInvNo.Text = "Invoice No";
             // 
-            // srno
-            // 
-            srno.HeaderText = "Sr No.";
-            srno.Name = "srno";
-            srno.ReadOnly = true;
-            srno.Width = 30;
-            // 
-            // Itemname
-            // 
-            Itemname.HeaderText = "Item Name";
-            Itemname.Name = "Itemname";
-            Itemname.ReadOnly = true;
-            Itemname.Width = 160;
-            // 
-            // BarItemCode
-            // 
-            BarItemCode.HeaderText = "Bar/ItemCode";
-            BarItemCode.Name = "BarItemCode";
-            BarItemCode.Width = 145;
-            // 
-            // Qty
-            // 
-            Qty.HeaderText = "Qty";
-            Qty.Name = "Qty";
-            Qty.Width = 75;
-            // 
-            // Mrp
-            // 
-            Mrp.HeaderText = "MRP";
-            Mrp.Name = "Mrp";
-            Mrp.Width = 80;
-            // 
-            // UnitPrice
-            // 
-            UnitPrice.HeaderText = "Unit Price";
-            UnitPrice.Name = "UnitPrice";
-            UnitPrice.Width = 70;
-            // 
-            // Disc
-            // 
-            Disc.HeaderText = "Disc%";
-            Disc.Name = "Disc";
-            Disc.Width = 45;
-            // 
-            // DiscAmt
-            // 
-            DiscAmt.HeaderText = "Disc. Amt";
-            DiscAmt.Name = "DiscAmt";
-            DiscAmt.Width = 60;
-            // 
-            // Gst
-            // 
-            Gst.HeaderText = "GST%";
-            Gst.Name = "Gst";
-            Gst.Width = 50;
-            // 
-            // GstAmt
-            // 
-            GstAmt.HeaderText = "GST Amt.";
-            GstAmt.Name = "GstAmt";
-            GstAmt.ReadOnly = true;
-            GstAmt.Width = 70;
-            // 
-            // Cess
-            // 
-            Cess.HeaderText = "CESS%";
-            Cess.Name = "Cess";
-            Cess.Width = 40;
-            // 
-            // CessAmt
-            // 
-            CessAmt.HeaderText = "CESS Amt.";
-            CessAmt.Name = "CessAmt";
-            CessAmt.ReadOnly = true;
-            CessAmt.Width = 60;
-            // 
-            // Amount
-            // 
-            Amount.HeaderText = "AMOUNT";
-            Amount.Name = "Amount";
-            Amount.ReadOnly = true;
-            // 
-            // Itemid
-            // 
-            Itemid.HeaderText = "Item Id";
-            Itemid.Name = "Itemid";
-            Itemid.ReadOnly = true;
-            // 
             // frmT_Invoice
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoValidate = AutoValidate.EnablePreventFocusChange;
-            ClientSize = new Size(917, 548);
+            ClientSize = new Size(938, 548);
             Controls.Add(T_Invoice);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             FormBorderStyle = FormBorderStyle.Fixed3D;
@@ -927,26 +994,17 @@
         private RadioButton optBillPrev;
         private Panel pnlItemDet;
         private Label lblItemDet;
-        private TextBox txtDiscPer;
         private Label lblDiscPer;
-        private Label rotGAmt;
         private Label lblGAmt;
-        private TextBox txtDiscAmt;
         private Label lblDiscAmt;
-        private Label rotRO;
         private Label lblRO;
-        private Label rotPayAmt;
         private Label lblPayAmt;
-        private Label rotNetAmt;
         private Label lblNetAmt;
-        private Label rotTotQty;
         private Label lblTotQty;
-        private Label txtNOI;
         private Label lblNOI;
         private Label rotItDesc;
         private Label lblItDesc;
         private Panel pnlPayDet;
-        private DataGridView dbgPayDet;
         private Label lblPayDet;
         private DataGridViewTextBoxColumn PaySrno;
         private DataGridViewComboBoxColumn Paymod;
@@ -963,25 +1021,37 @@
         private DataGridViewTextBoxColumn VouchAmt;
         private Label rotSalesMan;
         private Label rotBonusAmt;
-        private Label label3;
         private Label rotRefund;
-        private TextBox textBox5;
         private TextBox rotCust;
         private Label rotInvCust;
         public DataGridView dbgItemDet;
         private DataGridViewTextBoxColumn srno;
-        private DataGridViewTextBoxColumn Itemname;
         private DataGridViewTextBoxColumn BarItemCode;
+        private DataGridViewTextBoxColumn Itemname;
         private DataGridViewTextBoxColumn Qty;
         private DataGridViewTextBoxColumn Mrp;
         private DataGridViewTextBoxColumn UnitPrice;
         private DataGridViewTextBoxColumn Disc;
         private DataGridViewTextBoxColumn DiscAmt;
         private DataGridViewTextBoxColumn Gst;
-        private DataGridViewTextBoxColumn GstAmt;
         private DataGridViewTextBoxColumn Cess;
-        private DataGridViewTextBoxColumn CessAmt;
         private DataGridViewTextBoxColumn Amount;
+        private DataGridViewTextBoxColumn GstAmt;
+        private DataGridViewTextBoxColumn CessAmt;
         private DataGridViewTextBoxColumn Itemid;
+        private Label label1;
+        private Label lblTotDisc;
+        private Label lblTotMrp;
+        public TextBox txtDiscPer;
+        public Label rotGAmt;
+        public TextBox txtDiscAmt;
+        public Label rotNetAmt;
+        public Label rotTotQty;
+        public Label rotPayAmt;
+        public Label rotTotdisc;
+        public Label rotRO;
+        public Label rotNOI;
+        public DataGridView dbgPayDet;
+        public Label rotTotmrp;
     }
 }

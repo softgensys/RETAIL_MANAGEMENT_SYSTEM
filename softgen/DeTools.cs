@@ -1092,12 +1092,13 @@ namespace softgen
                             break;
 
                         case "Help":
-                            mobjbutton.Click += (sender, e) =>
-                            {
-                                // Call searchableForm's SaveForm method
+                            //mobjbutton.Click += (sender, e) =>
+                            //{
+                            //    // Call searchableForm's SaveForm method
 
-                                CallHelp();
-                            };
+                            //    CallHelp();
+                            //};
+                            CallHelp();
 
                             break;
 

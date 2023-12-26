@@ -17,8 +17,8 @@ namespace softgen
         public OdbcTransaction transactiono;
         public MySqlTransaction transaction;
         
-        public string connectionString;
-        public string mysql_connectionString;
+        public string connectionString = "";
+        public string mysql_connectionString="";
 
            public DbConnector()
            {
