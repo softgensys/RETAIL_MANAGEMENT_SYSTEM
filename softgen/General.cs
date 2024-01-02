@@ -237,6 +237,7 @@ namespace softgen
             }
         }
 
+        //--To check item id in item master 
         public bool CheckId(string strCaption,string strFieldName,string strTableName,string strValue)
         {
             result=string.Empty;
@@ -258,6 +259,8 @@ namespace softgen
             }
             return checkId;
         }
+
+        //--To check item name in item master 
         public bool CheckFromMaster(string strCaption, string strFieldName, string strTableName, string strValue)
         {
             result= string.Empty;
@@ -519,7 +522,7 @@ namespace softgen
             return rowafftected > 0;
         }
 
-        public void FillCombo(ComboBox combo, string fieldName, string tableName,  bool forReport, string criteria = "", string condition = "")
+        public void FillCombo(ComboBox combo, string fieldName, string tableName,  bool forReport, string criteria = "", string condition = "", string fieldwhereName="")
         {
             try
             {
@@ -531,12 +534,15 @@ namespace softgen
                 sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName;
                     
                 }
+                else if (fieldwhereName != "")
+                {
+                    sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldwhereName + " LIKE '" + criteria+"'";
+                }
                 else
                 {
-                sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldName + " LIKE " + criteria;
-                    
+                    sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldName + " LIKE " + criteria;
                 }
-                
+
                 if (!string.IsNullOrEmpty(condition))
                 {
                     sql += " AND " + condition;

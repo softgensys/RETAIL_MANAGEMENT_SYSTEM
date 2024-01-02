@@ -40,7 +40,6 @@
             rotTotdisc = new Label();
             lblTotDisc = new Label();
             rotInvCust = new Label();
-            rotRefund = new Label();
             pnlPayDet = new Panel();
             dbgPayDet = new DataGridView();
             PaySrno = new DataGridViewTextBoxColumn();
@@ -100,7 +99,6 @@
             lblAddress = new Label();
             txtCustName = new TextBox();
             lblCustName = new Label();
-            label7 = new Label();
             button2 = new Button();
             rotSalesMan = new Label();
             lblSalesMan = new Label();
@@ -132,7 +130,6 @@
             T_Invoice.Controls.Add(rotTotdisc);
             T_Invoice.Controls.Add(lblTotDisc);
             T_Invoice.Controls.Add(rotInvCust);
-            T_Invoice.Controls.Add(rotRefund);
             T_Invoice.Controls.Add(pnlPayDet);
             T_Invoice.Controls.Add(rotTotQty);
             T_Invoice.Controls.Add(lblTotQty);
@@ -161,7 +158,6 @@
             T_Invoice.Controls.Add(lblAddress);
             T_Invoice.Controls.Add(txtCustName);
             T_Invoice.Controls.Add(lblCustName);
-            T_Invoice.Controls.Add(label7);
             T_Invoice.Controls.Add(button2);
             T_Invoice.Controls.Add(rotSalesMan);
             T_Invoice.Controls.Add(lblSalesMan);
@@ -233,17 +229,6 @@
             rotInvCust.Size = new Size(155, 23);
             rotInvCust.TabIndex = 246;
             // 
-            // rotRefund
-            // 
-            rotRefund.BackColor = Color.Bisque;
-            rotRefund.BorderStyle = BorderStyle.Fixed3D;
-            rotRefund.Enabled = false;
-            rotRefund.Location = new Point(727, 36);
-            rotRefund.Name = "rotRefund";
-            rotRefund.Size = new Size(150, 23);
-            rotRefund.TabIndex = 245;
-            rotRefund.Click += rotGrpDesc_Click;
-            // 
             // pnlPayDet
             // 
             pnlPayDet.BackColor = Color.Pink;
@@ -289,6 +274,10 @@
             dbgPayDet.RowTemplate.Height = 25;
             dbgPayDet.Size = new Size(916, 116);
             dbgPayDet.TabIndex = 227;
+            dbgPayDet.CellEndEdit += dbgPayDet_CellEndEdit;
+            dbgPayDet.EditingControlShowing += dbgPayDet_EditingControlShowing;
+            dbgPayDet.RowLeave += dbgPayDet_RowLeave;
+            dbgPayDet.RowPostPaint += dbgPayDet_RowPostPaint;
             // 
             // PaySrno
             // 
@@ -626,10 +615,12 @@
             dbgItemDet.RowTemplate.Height = 25;
             dbgItemDet.Size = new Size(921, 208);
             dbgItemDet.TabIndex = 223;
+            dbgItemDet.CellBeginEdit += dbgItemDet_CellBeginEdit;
             dbgItemDet.CellClick += dbgItemDet_CellClick;
             dbgItemDet.CellContentClick += dbgItemDet_CellContentClick;
             dbgItemDet.CellEndEdit += dbgItemDet_CellEndEdit;
             dbgItemDet.CellEnter += dbgItemDet_CellEnter;
+            dbgItemDet.CellValidating += dbgItemDet_CellValidating;
             dbgItemDet.CellValueChanged += dbgItemDet_CellValueChanged;
             dbgItemDet.EditingControlShowing += dbgItemDet_EditingControlShowing;
             dbgItemDet.RowLeave += dbgItemDet_RowLeave;
@@ -802,15 +793,6 @@
             lblCustName.TabIndex = 215;
             lblCustName.Text = "Cust. Name";
             // 
-            // label7
-            // 
-            label7.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label7.Location = new Point(664, 39);
-            label7.Name = "label7";
-            label7.Size = new Size(69, 18);
-            label7.TabIndex = 213;
-            label7.Text = "Ref. Amt.";
-            // 
             // button2
             // 
             button2.Location = new Point(596, 36);
@@ -906,6 +888,9 @@
             cboCust.Name = "cboCust";
             cboCust.Size = new Size(133, 23);
             cboCust.TabIndex = 202;
+            cboCust.DropDown += cboCust_DropDown;
+            cboCust.SelectedIndexChanged += cboCust_SelectedIndexChanged;
+            cboCust.TextChanged += cboCust_TextChanged;
             // 
             // lblInvDate
             // 
@@ -958,6 +943,7 @@
             Name = "frmT_Invoice";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Invoice Generation";
+            FormClosed += frmT_Invoice_FormClosed;
             Load += frmT_Invoice_Load;
             T_Invoice.ResumeLayout(false);
             T_Invoice.PerformLayout();
@@ -976,13 +962,11 @@
         private Label lblInvDate;
         private DateTimePicker dtpInvDate;
         private Label lblCust;
-        private ComboBox cboCust;
         private Button button1;
         private Label lblSalesMan;
         private ComboBox cboSalesMan;
         private Label rotBillTime;
         private Label lblBillTime;
-        private Label label7;
         private Button button2;
         private TextBox txtCustName;
         private Label lblCustName;
@@ -1021,7 +1005,6 @@
         private DataGridViewTextBoxColumn VouchAmt;
         private Label rotSalesMan;
         private Label rotBonusAmt;
-        private Label rotRefund;
         private TextBox rotCust;
         private Label rotInvCust;
         public DataGridView dbgItemDet;
@@ -1053,5 +1036,6 @@
         public Label rotNOI;
         public DataGridView dbgPayDet;
         public Label rotTotmrp;
+        private ComboBox cboCust;
     }
 }
