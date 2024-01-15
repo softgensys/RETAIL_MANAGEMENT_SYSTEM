@@ -15,6 +15,7 @@ using MySql.Data.MySqlClient;
 using System.Security.Cryptography.X509Certificates;
 using System.Data.Odbc;
 using System.Data;
+using Windows.Devices.Spi;
 
 namespace softgen
 
@@ -875,7 +876,25 @@ namespace softgen
                             searchableForm.SetSearchVar(true);
                             MainForm.Instance.mnuAdd.Checked = true;
                             searchableForm.check_temp_login_sytemname();//for loading unsaved data
-                            
+                            if (gobjActiveForm.Name == "frmT_Invoice")
+                            {
+                                frmT_Invoice frminv = new frmT_Invoice();
+                                frminv.strMode = GetMode(gobjActiveForm);
+                                
+
+                                if (frminv.strMode == DeTools.ADDMODE)
+                                {
+
+                                    frminv.txtInvNo.Enabled = false;
+                                    frminv.cboCust.Focus();
+
+                                }
+                                else
+                                {
+                                    frminv.txtInvNo.Enabled = true;
+                                    frminv.txtInvNo.Focus();
+                                }
+                            }
                             
 
                             break;

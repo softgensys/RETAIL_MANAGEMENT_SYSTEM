@@ -896,11 +896,12 @@ namespace softgen
                    DeTools.strTin = reader["tin_no"].ToString();
                    DeTools.strLst = reader["lst"].ToString();
                    DeTools.strCst = reader["cst"].ToString();
-                    DeTools.strPhone = "Phone: " + reader["phone"].ToString();
-                    DeTools.strNote1 = reader["note1"].ToString();
-                    DeTools.strNote2 = reader["note2"].ToString();
-                    DeTools.strNote3 = reader["note3"].ToString();
-                    DeTools.strNote4 = reader["note4"].ToString();
+                   DeTools.strBranch = reader["branch_id"].ToString();
+                   DeTools.strPhone = "Phone: " + reader["phone"].ToString();
+                   DeTools.strNote1 = reader["note1"].ToString();
+                   DeTools.strNote2 = reader["note2"].ToString();
+                   DeTools.strNote3 = reader["note3"].ToString();
+                   DeTools.strNote4 = reader["note4"].ToString();
                 }
             }
 
