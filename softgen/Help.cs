@@ -14,11 +14,11 @@ namespace softgen
 {
     public static class Help
     {
-        public static string s_Mode="";
+        public static string s_Mode = "";
         public static int i_Help_id;
         public static int i_NoOfRecords;
         public static Form o_form;
-        public static Control o_control;  
+        public static Control o_control;
         public static DataGridViewCell o_cell;
         public static Dictionary<Control, string> controlToHelpTopicMapping = new Dictionary<Control, string>();
         public static Dictionary<Tuple<DataGridView, int, int>, string> dgvCellToHelpTopicMapping = new Dictionary<Tuple<DataGridView, int, int>, string>();
@@ -26,13 +26,13 @@ namespace softgen
         private static HashSet<string> fieldNamesWithAliases = new HashSet<string>();
         public static ComboBox combo;
         public static decimal qtysp;
-        public static frmHelp frmHelp= new frmHelp();
+        public static frmHelp frmHelp = new frmHelp();
         public static DbConnector dbConnector;
         public static int selectedIndex = frmHelp.cboDataType.SelectedIndex;
         public static ComboBox data_type_index_copy = new ComboBox();
         public static string send_combo_box_value;
         public static General general = new General();
-        public static string getcbogrpval="";
+        public static string getcbogrpval = "";
 
 
         /////////////////////////////////---start-----///////////////////////////////////
@@ -89,156 +89,166 @@ namespace softgen
             FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
             frmHelp.Show();
         }
-        
-      
+
+
 
         public static void DisplayHelp(Form form, int keyCode, Control control)
         {
-            var helpTopic="";
-            if (keyCode == (int)Keys.F1)
+            try
             {
-                o_form = form;
-                o_control = control;
-            
-                i_NoOfRecords = 0;
 
-                s_Mode = DeTools.GetMode(form);
-                //i_Help_id = control.HelpContextID;
-
-                if (controlToHelpTopicMapping.TryGetValue(control, out helpTopic) && !string.IsNullOrEmpty(helpTopic))
+                var helpTopic = "";
+                if (keyCode == (int)Keys.F1)
                 {
-                   i_Help_id = Int32.Parse(helpTopic);
+                    o_form = form;
+                    o_control = control;
 
+                    i_NoOfRecords = 0;
+
+                    s_Mode = DeTools.GetMode(form);
+                    //i_Help_id = control.HelpContextID;
+
+                    if (controlToHelpTopicMapping.TryGetValue(control, out helpTopic) && !string.IsNullOrEmpty(helpTopic))
+                    {
+                        i_Help_id = Int32.Parse(helpTopic);
+
+
+                        switch (i_Help_id)
+                        {
+                            case 0:
+                                // Currently Help is not available
+                                frmHelp.pnlText.Text = "Currently Help is not available.";
+                                frmHelp.pnlText.Visible = true;
+                                break;
+
+                            case var _ when i_Help_id < 3000:
+                                // In add mode, don't display the grid help.
+                                if (s_Mode == DeTools.ADDMODE)
+                                {
+                                    PrepareGridHelp();
+                                }
+                                else
+                                {
+                                    PrepareGridHelp();
+                                }
+                                break;
+
+                            case var _ when i_Help_id > 9000:
+                                // These helps are for a substitute for combo help.
+                                PrepareGridHelp();
+                                break;
+
+                            case var _ when i_Help_id > 3000:
+                                PrepareTextHelp();
+                                break;
+                        }
+                    }
+
+                    else
+                    {
+                        Tuple<DataGridView, int, int> key = Tuple.Create(DeTools.dgv, DeTools.dgvCell.RowIndex, DeTools.dgvCell.ColumnIndex);
+                        dgvCellToHelpTopicMapping.TryGetValue(key, out helpTopic);
+                        i_Help_id = Int32.Parse(helpTopic);
+
+
+                        switch (i_Help_id)
+                        {
+                            case 0:
+                                // Currently Help is not available
+                                frmHelp.pnlText.Text = "Currently Help is not available.";
+                                frmHelp.pnlText.Visible = true;
+                                break;
+
+                            case var _ when i_Help_id < 3000:
+                                // In add mode, don't display the grid help.
+                                if (s_Mode == DeTools.ADDMODE)
+                                {
+                                    PrepareGridHelp();
+                                }
+                                else
+                                {
+                                    PrepareGridHelp();
+                                }
+                                break;
+
+                            case var _ when i_Help_id > 9000:
+                                // These helps are for a substitute for combo help.
+                                PrepareGridHelp();
+                                break;
+
+                            case var _ when i_Help_id > 3000:
+                                PrepareTextHelp();
+                                break;
+                        }
+                    }
+
+
+                    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                    FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                    FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                    frmHelp.Show();
 
                     switch (i_Help_id)
                     {
-                        case 0:
-                            // Currently Help is not available
-                            frmHelp.pnlText.Text = "Currently Help is not available.";
-                            frmHelp.pnlText.Visible = true;
+                        case 9001:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Item Description");
                             break;
-
-                        case var _ when i_Help_id < 3000:
-                            // In add mode, don't display the grid help.
-                            if (s_Mode == DeTools.ADDMODE)
-                            {
-                                PrepareGridHelp();
-                            }
-                            else
-                            {
-                                PrepareGridHelp();
-                            }
+                        case 9002:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Customer Name");
                             break;
-
-                        case var _ when i_Help_id > 9000:
-                            // These helps are for a substitute for combo help.
-                            PrepareGridHelp();
+                        case 9005:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Supplier Name");
                             break;
-
-                        case var _ when i_Help_id > 3000:
-                            PrepareTextHelp();
+                        case 9010:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Item Description");
                             break;
-                    }
-                }
-
-                else 
-                {
-                    Tuple<DataGridView, int, int> key = Tuple.Create(DeTools.dgv, DeTools.dgvCell.RowIndex, DeTools.dgvCell.ColumnIndex);
-                    dgvCellToHelpTopicMapping.TryGetValue(key, out helpTopic);
-                     i_Help_id = Int32.Parse(helpTopic);
-
-
-                    switch (i_Help_id)
-                    {
-                        case 0:
-                            // Currently Help is not available
-                            frmHelp.pnlText.Text = "Currently Help is not available.";
-                            frmHelp.pnlText.Visible = true;
+                        case 9011:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Item Description");
                             break;
-
-                        case var _ when i_Help_id < 3000:
-                            // In add mode, don't display the grid help.
-                            if (s_Mode == DeTools.ADDMODE)
-                            {
-                                PrepareGridHelp();
-                            }
-                            else
-                            {
-                                PrepareGridHelp();
-                            }
+                        case 1005:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Customer Name");
                             break;
-
-                        case var _ when i_Help_id > 9000:
-                            // These helps are for a substitute for combo help.
-                            PrepareGridHelp();
+                        case 1006:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Item Name");
                             break;
-
-                        case var _ when i_Help_id > 3000:
-                            PrepareTextHelp();
+                        case 1013:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Supplier Name");
+                            break;
+                        case 9014:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Description");
+                            break;
+                        case 9018:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Description");
+                            break;
+                        case 9006:
+                            frmHelp.cboDataType.Items.Add(1);
+                            frmHelp.cboFields.Items.Add("Description");
                             break;
                     }
-                }
-                
-
-                frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
-                frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
-                FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
-                FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
-                frmHelp.Show();
-
-                switch (i_Help_id)
-                {
-                    case 9001:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Item Description");
-                        break;
-                    case 9002:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Customer Name");
-                        break;
-                    case 9005:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Supplier Name");
-                        break;
-                    case 9010:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Item Description");
-                        break;
-                    case 9011:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Item Description");
-                        break;
-                    case 1005:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Customer Name");
-                        break;
-                    case 1006:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Item Name");
-                        break;
-                    case 1013:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Supplier Name");
-                        break;
-                    case 9014:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Description");
-                        break;
-                    case 9018:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Description");
-                        break;
-                    case 9006:
-                        frmHelp.cboDataType.Items.Add(1);
-                        frmHelp.cboFields.Items.Add("Description");
-                        break;
                 }
             }
+            catch (Exception)
+            {
+
+                
+            }
+
         }
 
         public static void FieldHelp(string strReqdFor, Button objControl)
         {
- //--todo-           Messages.HelpMsg(objControl.Tooltiptext);
+            //--todo-           Messages.HelpMsg(objControl.Tooltiptext);
 
             if (strReqdFor == "S" || strReqdFor == "A")
             {
@@ -252,8 +262,8 @@ namespace softgen
 
         public static void FillFields(ComboBox cboField, ComboBox cboFieldId)
         {
-            int i_Cols=0;
-            string strFieldName, strQuery = null ;
+            int i_Cols = 0;
+            string strFieldName, strQuery = null;
             string[] strField;
 
             string strFormType = o_form.Name.Trim().Substring(3, 1).ToUpper();
@@ -292,7 +302,7 @@ namespace softgen
             frmHelp.cboDataType.Items.Clear();
             frmHelp.cboDataType.SelectedIndex = -1;
 
-            using (OdbcDataReader rs_Query = dbConnector.CreateResultset(strQuery+" limit 200"))
+            using (OdbcDataReader rs_Query = dbConnector.CreateResultset(strQuery + " limit 200"))
             {
                 for (int J = 0; J < i_Cols; J++)
                 {
@@ -326,7 +336,7 @@ namespace softgen
                     // If the split results in two parts, consider the second part as the actual field name
                     if (parts.Length == 2)
                     {
-                        strFieldName = parts[0]+"."+parts[1].Trim();
+                        strFieldName = parts[0] + "." + parts[1].Trim();
                     }
                 }
                 fieldNamesWithAliases.Add(strFieldName);
@@ -352,15 +362,15 @@ namespace softgen
 
         public static void PrepareGridHelp()
         {
-            int i, j, i_Rows=0, Count;
+            int i, j, i_Rows = 0, Count;
             string strFieldName, strFormType, strOrderBy;
             string strFields;
             string strCondition;
             object strValue = null;
-            string strheading="";
+            string strheading = "";
             string strMode = new string(' ', 1);
-            ComboBox cmb_for_query_cols= new ComboBox();
-            
+            ComboBox cmb_for_query_cols = new ComboBox();
+
 
 
             strFormType = o_form.Name.Trim().Substring(3, 1).ToUpper();
@@ -374,7 +384,7 @@ namespace softgen
                 "P_Mode_Cond, Order_by, No_of_columns, Caption1, Caption2, " +
                 "Caption3, Caption4, Caption5, Caption6, Caption7, " +
                 "Caption8, Caption9, Caption10 " +
-                "from Help where Help_id = " + "'"+i_Help_id+"';";
+                "from Help where Help_id = " + "'" + i_Help_id + "';";
             //rs_Query = CreateResultset(gstrSQL);
             using (OdbcDataReader rs_Query = dbConnector.CreateResultset(DeTools.gstrSQL))
             {
@@ -397,19 +407,19 @@ namespace softgen
                 switch (s_Mode)
                 {
                     case DeTools.ADDMODE:
-                          //-------this is for getting data of the particular group id for sub group . I have modified in the database added additon ?
-                            if (getcbogrpval != string.Empty)
-                            {
-                                string originalQuery = rs_Query["A_Mode_Cond"].ToString();
-                                string modifiedQuery = originalQuery.Replace("?", "'"+getcbogrpval+ "'");
-                                DeTools.gstrSQL += (modifiedQuery + " ").Trim();
+                        //-------this is for getting data of the particular group id for sub group . I have modified in the database added additon ?
+                        if (getcbogrpval != string.Empty)
+                        {
+                            string originalQuery = rs_Query["A_Mode_Cond"].ToString();
+                            string modifiedQuery = originalQuery.Replace("?", "'" + getcbogrpval + "'");
+                            DeTools.gstrSQL += (modifiedQuery + " ").Trim();
 
-                            }
-                        
-                            else
-                            {
-                                DeTools.gstrSQL += (rs_Query["A_Mode_Cond"] + " ").Trim();
-                            }
+                        }
+
+                        else
+                        {
+                            DeTools.gstrSQL += (rs_Query["A_Mode_Cond"] + " ").Trim();
+                        }
                         break;
 
                     case DeTools.MODIFYMODE:
@@ -442,7 +452,7 @@ namespace softgen
                     default:
                         DeTools.gstrSQL += string.Empty;
                         break;
-                       
+
                 }
 
 
@@ -502,8 +512,8 @@ namespace softgen
                     {
                         string selectedItemValue = frmHelp.cboDataType.SelectedItem.ToString().Trim();
                         string copyComboBoxItemValue = data_type_index_copy.Items[selectedIndex].ToString().Trim();
-                        send_combo_box_value= copyComboBoxItemValue.ToString();
-                        
+                        send_combo_box_value = copyComboBoxItemValue.ToString();
+
 
                         if (frmHelp.cboDataType.SelectedItem.ToString().Trim() == copyComboBoxItemValue)
                         {
@@ -633,7 +643,7 @@ namespace softgen
                 }
 
                 // Adjust the SQL query to limit the number of records
-                DeTools.gstrSQL = DeTools.gstrSQL+" Limit 200";
+                DeTools.gstrSQL = DeTools.gstrSQL + " Limit 200";
 
                 // Execute the query and retrieve results
                 using (OdbcDataReader rs_Result = dbConnector.CreateResultset(DeTools.gstrSQL))
@@ -724,7 +734,7 @@ namespace softgen
                         {
                             frmHelp.grdHelp.Columns[columnIndex].Width = newWidth;
                         }
-                        
+
                         //for 1st column width
                         int columnIndex1 = 0; // Set to 1 for the 2nd column
                         int newWidth1 = 250; // Set the desired width
@@ -740,7 +750,7 @@ namespace softgen
                         {
                             column.ReadOnly = true;
                         }
-                        
+
 
 
                         frmHelp.pgbStatus.Minimum = 0;
@@ -775,7 +785,7 @@ namespace softgen
                                 {
                                     object cellValue = data[i][j]; // Retrieve data from the List<List<object>>
                                     frmHelp.grdHelp.Rows[i].Cells[j].Value = cellValue;
-                                    
+
                                 }
                             }
                         }
@@ -803,7 +813,7 @@ namespace softgen
                         }
                         else if (frmHelp.grdHelp.RowCount > 16)
                         {
-                          //  frmHelp.mnuLast_15.Enabled = true;
+                            //  frmHelp.mnuLast_15.Enabled = true;
                         }
 
                         frmHelp.pnlInstructiontxt.Text = "Double click or press Enter to select.";
@@ -1125,7 +1135,7 @@ namespace softgen
         //                    }
         //                }
 
-                        
+
 
         //                frmHelp.grdHelp.Rows.Clear(); // Clear any existing rows
         //                for (int r = 0; r < i_Rows; r++)
@@ -1133,7 +1143,7 @@ namespace softgen
         //                    frmHelp.grdHelp.Rows.Add(); // Add a new row
         //                }
 
-                        
+
 
         //                //// Prepare the header row
         //                //frmHelp.grdHelp.Row = 0;
@@ -1221,14 +1231,14 @@ namespace softgen
 
         public static void PrepareTextHelp()
         {
-            dbConnector= new DbConnector();
+            dbConnector = new DbConnector();
 
             dbConnector.OpenConnection();
 
             ///Select the help string from the Help table
             DeTools.gstrSQL = "Select Text_help, Text_help_caption from Help ";
-            DeTools.gstrSQL = DeTools.gstrSQL + "where Help_id = " + "'"+i_Help_id+"';";
-            using(OdbcDataReader reader= dbConnector.CreateResultset(DeTools.gstrSQL))
+            DeTools.gstrSQL = DeTools.gstrSQL + "where Help_id = " + "'" + i_Help_id + "';";
+            using (OdbcDataReader reader = dbConnector.CreateResultset(DeTools.gstrSQL))
             {
                 if (!reader.HasRows)
                 {
@@ -1247,7 +1257,7 @@ namespace softgen
 
         public static void TransferData()
         {
-            string comboval="";
+            string comboval = "";
             frmM_Item frmM_Item = new frmM_Item();
             frmM_Sub_Group frmM_Subgrp = new frmM_Sub_Group();
 
@@ -1280,18 +1290,18 @@ namespace softgen
             }
 
             //=======for group combobox------------------//
-            else if(i_Help_id == 9007)
+            else if (i_Help_id == 9007)
             {
                 // Multiple key fields
                 //TransferMultipleKeyData();
 
-                
+
                 DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
                 if (selectedRow.Cells.Count > 0)
                 {
                     if (o_form.Name == "frmM_Sub_Group")
                     {
-                        
+
                         // Assuming that cmbExample is your target ComboBox in frmT_Invoice
                         ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboGrpId", true).FirstOrDefault();
 
@@ -1306,10 +1316,10 @@ namespace softgen
                         }
 
                     }
-                    
+
                     else if (o_form.Name == "frmM_Sub_Subgroup")
                     {
-                        
+
                         // Assuming that cmbExample is your target ComboBox in frmT_Invoice
                         ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboGrpId", true).FirstOrDefault();
 
@@ -1327,7 +1337,7 @@ namespace softgen
 
                     else if (o_form.Name == "frmM_Item")
                     {
-                        
+
                         // Assuming that cmbExample is your target ComboBox in frmT_Invoice
                         ComboBox targetComboBox = (ComboBox)o_form.Controls.Find("cboGrpId", true).FirstOrDefault();
 
@@ -1345,7 +1355,7 @@ namespace softgen
 
                 }
 
-             
+
             }
 
             //=======for Sub group combobox------------------//
@@ -1422,14 +1432,14 @@ namespace softgen
 
                     // Get the current row index
                     int rowIndex = targetGrid.Rows.Add();
-
+                    
                     // Assuming that grdHelp is your source DataGridView in frmHelp
                     DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
 
                     if (selectedRow != null)
                     {
                         // Assuming you have a list of column indexes to transfer data
-                        List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7}; // Add the column indexes you want to transfer
+                        List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }; // Add the column indexes you want to transfer
 
                         foreach (int columnIndex in columnIndexesToTransfer)
                         {

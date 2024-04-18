@@ -95,6 +95,34 @@ namespace softgen
 
                     }
                 }
+
+                //----------------for day closing r_closing entry of today's date for validation back date billing
+                DateTime closedt;
+                string check_clsdt = "Select cls_dt from r_closing where doc_type_id='INV' order by cls_dt desc limit 1";
+                OdbcDataReader check_clsdt_read = dbconnector.CreateResultset(check_clsdt);
+                if (check_clsdt_read != null)
+                {
+                    if (check_clsdt_read.HasRows && !check_clsdt_read.IsDBNull(0))
+                    {
+                        closedt = check_clsdt_read.GetDateTime(0);
+                        DateTime curdt = DateTime.Now.Date;
+
+                        if (closedt < curdt)
+                        {
+                            string entry_clsdt = "Insert into r_closing (doc_type_id,cls_dt) values (?,?);";
+
+                            OdbcCommand entry_clsdt_cmd = new OdbcCommand(entry_clsdt, dbconnector.connection);
+
+                            entry_clsdt_cmd.Parameters.Add("doc_type_id", "INV");
+                            entry_clsdt_cmd.Parameters.Add("cls_dt", DateTime.Now.Date);
+
+                            entry_clsdt_cmd.ExecuteNonQuery();
+                        }
+
+                    }
+
+                }
+                check_clsdt_read.Close();
             }
             catch (Exception ex)
             {

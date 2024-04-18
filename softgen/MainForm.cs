@@ -7,6 +7,8 @@ using softgen;
 using System.Drawing.Text;
 using System.DirectoryServices.ActiveDirectory;
 using MySql.Data.MySqlClient;
+using System.Data.Odbc;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace softgen
 {
@@ -15,6 +17,7 @@ namespace softgen
         private bool blnMDI_Loaded = false;
         //frmStart frmStart = new frmStart();
         DbConnector dbConnector = new DbConnector();
+        public DbConnector dbConnector1;
         General general = new General();
         Messages messages = new Messages();
 
@@ -267,6 +270,7 @@ namespace softgen
                 //frmStart.Close();
                 //frmWelscr frmWelscr = new frmWelscr();
 
+                
 
                 Cursor.Current = Cursors.Default;
             }

@@ -6,6 +6,7 @@ using System.Data.Common;
 using System.Data.Odbc;
 using System.Drawing;
 using System.Drawing.Printing;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace softgen
 #pragma warning restore CS0169 // The field 'frmT_Invoice.chkItemid' is never used
         public bool mblnSearch, mblnDataEntered;
         public string strMode;
-        public int roundoffval = 2;
+        public int roundoffval = 1;
         private int chkItemsn;
         private bool cellValueChangedInProgress = false;
         private int flaggotonextcell = 0;
@@ -38,6 +39,8 @@ namespace softgen
         public string custEmail;
         public string custAdd1;
         public string custAdd2;
+        // Count in multiple item table pop up rows manually
+        int rowCount = 0;
         public string CustIDFromDatabase;
         decimal totalAmount;
         public string refund_amt;
@@ -113,167 +116,262 @@ namespace softgen
 
 
         // Add this method to your class
+        //public void UpdateRotGAmt()
+        //{
+        //    // Calculate the sum of values in column 5 (assuming column index is 5)
+        //    decimal sumColumn5 = 0; //SP
+        //    foreach (DataGridViewRow row in dbgItemDet.Rows)
+        //    {
+        //        if (row.Cells[5].Value != null)
+        //        {
+        //            sumColumn5 += Convert.ToDecimal(row.Cells[5].Value);
+        //        }
+        //    }
+
+        //    decimal sumColumn4 = 0; //mrp
+        //    foreach (DataGridViewRow row in dbgItemDet.Rows)
+        //    {
+        //        if (row.Cells[4].Value != null)
+        //        {
+        //            sumColumn4 += Convert.ToDecimal(row.Cells[4].Value);
+        //        }
+        //    }
+
+        //    decimal sumColumn7 = 0; //disc amt
+        //    foreach (DataGridViewRow row in dbgItemDet.Rows)
+        //    {
+        //        if (row.Cells[7].Value != null)
+        //        {
+        //            sumColumn7 += Convert.ToDecimal(row.Cells[7].Value);
+        //        }
+        //    }
+
+
+        //    // Calculate the sum of values in column 3 (assuming column index is 3)
+        //    decimal sumColumn3 = 0; //qty
+        //    foreach (DataGridViewRow row in dbgItemDet.Rows)
+        //    {
+        //        if (row.Cells[3].Value != null)
+        //        {
+        //            sumColumn3 += Convert.ToDecimal(row.Cells[3].Value);
+        //        }
+        //    }
+
+        //    // Calculate the product of the sums
+        //    decimal product = sumColumn3 * sumColumn5;
+
+        //    // Round the product to 2 decimal places
+        //    decimal roundedProduct = Math.Round(product, roundoffval);
+
+        //    // Assuming that rotGAmt is your label
+        //    rotGAmt.Text = product.ToString("0.00");
+
+        //    decimal rounddiff = 0;
+
+
+
+        //    rotTotQty.Text = sumColumn3.ToString();
+        //    rotTotmrp.Text = (sumColumn4 * sumColumn3).ToString();
+        //    rotNOI.Text = (dbgItemDet.RowCount - 1).ToString();
+        //    txtDiscAmt.Text = "0.00";
+        //    rotTotdisc.Text = (Math.Round(sumColumn7 + decimal.Parse(txtDiscAmt.Text), roundoffval)).ToString();
+
+
+        //    // decimal discamttot = decimal.Parse(rotTotdisc.Text);
+        //    if (decimal.TryParse(rotTotdisc.Text, out decimal discamttot))
+        //    {
+        //        // Use discamttot here
+        //        // Round up to the nearest integer
+        //        rotNetAmt.Text = (decimal.Parse(rotGAmt.Text) - discamttot).ToString("0.00");
+        //    }
+
+        //    rotPayAmt.Text = Math.Round(decimal.Parse(rotNetAmt.Text), 0).ToString("0.0");
+        //    rounddiff = Math.Abs(decimal.Parse(rotNetAmt.Text) - decimal.Parse(rotPayAmt.Text));
+
+        //    if (decimal.Parse(rotNetAmt.Text) > decimal.Parse(rotPayAmt.Text))
+        //    {
+
+        //        if (rounddiff > 0.50m)
+        //        {
+        //            rotRO.Text = "(+)" + (rounddiff).ToString();
+        //        }
+        //        else if (rounddiff <= 0.50m)
+        //        {
+        //            rotRO.Text = "(-)" + (rounddiff).ToString();
+        //        }
+        //    }
+        //    else if (decimal.Parse(rotNetAmt.Text) < decimal.Parse(rotPayAmt.Text))
+        //    {
+        //        if (rounddiff > 0.50m)
+        //        {
+        //            rotRO.Text = "(-)" + (rounddiff).ToString();
+        //        }
+        //        else if (rounddiff <= 0.50m)
+        //        {
+        //            rotRO.Text = "(+)" + (rounddiff).ToString();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        rotRO.Text = "(+/-)" + "0.00";
+        //    }
+
+        //    for (int i = 0; i < dbgItemDet.Rows.Count; i++)
+        //    {
+        //        // Assuming column indexes are 4, 6, and 8
+        //        decimal column3Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[3].Value ?? 0); // qty
+        //        decimal column5Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[5].Value ?? 0); // SP
+        //        decimal column7Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[7].Value ?? 0); // DISC AMT
+
+        //        // Calculate the value for the 10th column
+        //        decimal calculatedValue = Math.Round((column3Value * column5Value) - column7Value, roundoffval);
+
+        //        // Update the 10th column value
+        //        dbgItemDet.Rows[i].Cells[10].Value = calculatedValue.ToString();
+
+        //    }
+        //}
+
         public void UpdateRotGAmt()
         {
-            // Calculate the sum of values in column 5 (assuming column index is 5)
-            decimal sumColumn5 = 0; //SP
+            decimal totalAmount = 0;
+            decimal totalQty = 0;
+            decimal totalMrp = 0;            
+            decimal totalDiscountAmt = 0;
+            decimal amount = 0;
+
             foreach (DataGridViewRow row in dbgItemDet.Rows)
             {
-                if (row.Cells[5].Value != null)
-                {
-                    sumColumn5 += Convert.ToDecimal(row.Cells[5].Value);
-                }
+                // Get the values from the current row
+                decimal qty = Convert.ToDecimal(row.Cells[3].Value ?? 0); // Qty
+                decimal mrp = Convert.ToDecimal(row.Cells[4].Value ?? 0); // MRP
+                decimal salePrice = Convert.ToDecimal(row.Cells[5].Value ?? 0); // Sale Price
+                decimal discountAmt = Convert.ToDecimal(row.Cells[7].Value ?? 0); // Discount Amount
+
+                // Calculate the amount for the current row
+                decimal rowAmount = qty * salePrice;
+                decimal rowMRPAmount = qty * mrp;
+
+                // Update the total amount
+                totalAmount += rowAmount;
+
+                // Update other totals
+                totalQty += qty;
+                totalMrp += rowMRPAmount;
+                totalDiscountAmt += discountAmt;
             }
 
-            decimal sumColumn4 = 0; //mrp
-            foreach (DataGridViewRow row in dbgItemDet.Rows)
+            // Update the UI elements with the totals
+            rotGAmt.Text = totalAmount.ToString("0.00");
+            rotTotQty.Text = totalQty.ToString();
+            rotTotmrp.Text = totalMrp.ToString("0.00");
+            rotNOI.Text = (dbgItemDet.Rows.Count-1).ToString();
+            txtDiscAmt.Text = totalDiscountAmt.ToString();
+
+            // Calculate the net amount
+            decimal netAmount = totalAmount - totalDiscountAmt;
+            rotNetAmt.Text = netAmount.ToString("0.00");
+
+            // Calculate the rounded-off amount
+            decimal roundedAmount = Math.Round(netAmount, roundoffval);
+            rotPayAmt.Text = roundedAmount.ToString();
+
+            // Calculate the round-off difference
+            decimal roundOffDifference = roundedAmount - netAmount;
+            rotRO.Text = roundOffDifference.ToString("0.00");
+
+            // Handle the case where the round-off difference is negative
+            if (roundOffDifference < 0)
             {
-                if (row.Cells[4].Value != null)
-                {
-                    sumColumn4 += Convert.ToDecimal(row.Cells[4].Value);
-                }
+                rotRO.Text = "(-)" + Math.Abs(roundOffDifference).ToString("0.00");
             }
-
-            decimal sumColumn7 = 0; //disc amt
-            foreach (DataGridViewRow row in dbgItemDet.Rows)
+            else if (roundOffDifference > 0)
             {
-                if (row.Cells[7].Value != null)
-                {
-                    sumColumn7 += Convert.ToDecimal(row.Cells[7].Value);
-                }
-            }
-
-
-            // Calculate the sum of values in column 3 (assuming column index is 3)
-            decimal sumColumn3 = 0; //qty
-            foreach (DataGridViewRow row in dbgItemDet.Rows)
-            {
-                if (row.Cells[3].Value != null)
-                {
-                    sumColumn3 += Convert.ToDecimal(row.Cells[3].Value);
-                }
-            }
-
-            // Calculate the product of the sums
-            decimal product = sumColumn3 * sumColumn5;
-
-            // Round the product to 2 decimal places
-            decimal roundedProduct = Math.Round(product, roundoffval);
-
-            // Assuming that rotGAmt is your label
-            rotGAmt.Text = product.ToString("0.00");
-
-            decimal rounddiff = 0;
-
-
-
-            rotTotQty.Text = sumColumn3.ToString();
-            rotTotmrp.Text = (sumColumn4 * sumColumn3).ToString();
-            rotNOI.Text = (dbgItemDet.RowCount - 1).ToString();
-            txtDiscAmt.Text = "0.00";
-            rotTotdisc.Text = (Math.Round(sumColumn7 + decimal.Parse(txtDiscAmt.Text), roundoffval)).ToString();
-
-
-            // decimal discamttot = decimal.Parse(rotTotdisc.Text);
-            if (decimal.TryParse(rotTotdisc.Text, out decimal discamttot))
-            {
-                // Use discamttot here
-                // Round up to the nearest integer
-                rotNetAmt.Text = (decimal.Parse(rotGAmt.Text) - discamttot).ToString("0.00");
-            }
-
-            rotPayAmt.Text = Math.Round(decimal.Parse(rotNetAmt.Text), 0).ToString("0.0");
-            rounddiff = Math.Abs(decimal.Parse(rotNetAmt.Text) - decimal.Parse(rotPayAmt.Text));
-
-            if (decimal.Parse(rotNetAmt.Text) > decimal.Parse(rotPayAmt.Text))
-            {
-
-                if (rounddiff > 0.50m)
-                {
-                    rotRO.Text = "(+)" + (rounddiff).ToString();
-                }
-                else if (rounddiff <= 0.50m)
-                {
-                    rotRO.Text = "(-)" + (rounddiff).ToString();
-                }
-            }
-            else if (decimal.Parse(rotNetAmt.Text) < decimal.Parse(rotPayAmt.Text))
-            {
-                if (rounddiff > 0.50m)
-                {
-                    rotRO.Text = "(-)" + (rounddiff).ToString();
-                }
-                else if (rounddiff <= 0.50m)
-                {
-                    rotRO.Text = "(+)" + (rounddiff).ToString();
-                }
+                rotRO.Text = "(+)" + Math.Abs(roundOffDifference).ToString("0.00");
             }
             else
             {
-                rotRO.Text = "(+/-)" + "0.00";
-            }
-
-            for (int i = 0; i < dbgItemDet.Rows.Count; i++)
-            {
-                // Assuming column indexes are 4, 6, and 8
-                decimal column3Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[3].Value ?? 0); // qty
-                decimal column5Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[5].Value ?? 0); // SP
-                decimal column7Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[7].Value ?? 0); // DISC AMT
-
-                // Calculate the value for the 10th column
-                decimal calculatedValue = Math.Round((column3Value * column5Value) - column7Value, roundoffval);
-
-                // Update the 10th column value
-                dbgItemDet.Rows[i].Cells[10].Value = calculatedValue.ToString();
-
+                rotRO.Text = "(+/-)" + Math.Abs(roundOffDifference).ToString("0.00");
             }
         }
+
+
+        //public void disccal()
+        //{
+        //    for (int i = 0; i < dbgItemDet.Rows.Count; i++)
+        //    {
+        //        // Assuming column indexes are 4, 6, and 8
+        //        decimal column3Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[3].Value ?? 0); // qty
+        //        decimal column5Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[5].Value ?? 0); // SP
+        //        decimal column7Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[7].Value ?? 0); // DISC AMT
+        //        decimal column6Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[6].Value ?? 0); // DISC %
+        //        //decimal column6Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[6].Value ?? 0); // DISC %
+        //        // Check if the value in the 10th column is not null or empty
+        //        if (!string.IsNullOrEmpty(dbgItemDet.Rows[i].Cells[10].Value?.ToString()) && column7Value > 0)
+        //        {
+        //            decimal calcdiscper = Math.Round((column7Value / column5Value) * 100, roundoffval);
+        //            dbgItemDet.Rows[i].Cells[6].Value = calcdiscper;
+        //        }
+        //        // Check if the value in the 10th column is null or empty
+        //        if (column5Value > 0 && column6Value > 0)
+        //        {
+        //            // Check if the denominator (column5Value * column3Value * column6Value) is not zero
+        //            if (column5Value * column3Value != 0)
+        //            {
+        //                decimal rawCalcdiscamt = (column5Value * column3Value * column6Value) / 100;
+
+        //                if (rawCalcdiscamt >= Decimal.MinValue && rawCalcdiscamt <= Decimal.MaxValue)
+        //                {
+        //                    decimal calcdiscamt = Math.Round(rawCalcdiscamt, 2);
+        //                    dbgItemDet.Rows[i].Cells[7].Value = calcdiscamt; // Assuming you want to assign the result to the 7th column
+        //                }
+        //                else
+        //                {
+        //                    // Handle the case where the raw calculated value is too large or too small for a decimal
+        //                    // For example, you might set a default value or show an error message
+        //                    dbgItemDet.Rows[i].Cells[7].Value = 0.0M; // Default value or appropriate handling
+        //                }
+        //            }
+        //            else
+        //            {
+        //                // Handle the case where the denominator is zero (to avoid division by zero)
+        //                dbgItemDet.Rows[i].Cells[6].Value = 0.0M; // Default value or appropriate handling
+        //            }
+        //        }
+
+        //    }
+        //}
 
         public void disccal()
         {
             for (int i = 0; i < dbgItemDet.Rows.Count; i++)
             {
-                // Assuming column indexes are 4, 6, and 8
-                decimal column3Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[3].Value ?? 0); // qty
-                decimal column5Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[5].Value ?? 0); // SP
-                decimal column7Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[7].Value ?? 0); // DISC AMT
-                decimal column6Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[6].Value ?? 0); // DISC %
-                //decimal column6Value = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[6].Value ?? 0); // DISC %
-                // Check if the value in the 10th column is not null or empty
-                if (!string.IsNullOrEmpty(dbgItemDet.Rows[i].Cells[10].Value?.ToString()) && column7Value > 0)
-                {
-                    decimal calcdiscper = Math.Round((column7Value / column5Value) * 100, roundoffval);
-                    dbgItemDet.Rows[i].Cells[6].Value = calcdiscper;
-                }
-                // Check if the value in the 10th column is null or empty
-                if (column5Value > 0 && column6Value > 0)
-                {
-                    // Check if the denominator (column5Value * column3Value * column6Value) is not zero
-                    if (column5Value * column3Value != 0)
-                    {
-                        decimal rawCalcdiscamt = (column5Value * column3Value * column6Value) / 100;
+                // Assuming column indexes are 4 (Qty), 5 (SP), 6 (Disc %), and 7 (Disc Amt)
+                decimal qty = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[3].Value ?? 0); // Qty
+                decimal sp = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[5].Value ?? 0); // Selling Price
+                decimal discAmt = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[7].Value ?? 0); // Discount Amount
+                decimal discPer = Convert.ToDecimal(dbgItemDet.Rows[i].Cells[6].Value ?? 0); // Discount Percentage
+                decimal amount = 0;
+                decimal calculatedDiscAmt = 0;
 
-                        if (rawCalcdiscamt >= Decimal.MinValue && rawCalcdiscamt <= Decimal.MaxValue)
-                        {
-                            decimal calcdiscamt = Math.Round(rawCalcdiscamt, 2);
-                            dbgItemDet.Rows[i].Cells[7].Value = calcdiscamt; // Assuming you want to assign the result to the 7th column
-                        }
-                        else
-                        {
-                            // Handle the case where the raw calculated value is too large or too small for a decimal
-                            // For example, you might set a default value or show an error message
-                            dbgItemDet.Rows[i].Cells[7].Value = 0.0M; // Default value or appropriate handling
-                        }
-                    }
-                    else
-                    {
-                        // Handle the case where the denominator is zero (to avoid division by zero)
-                        dbgItemDet.Rows[i].Cells[6].Value = 0.0M; // Default value or appropriate handling
-                    }
+                // Calculate Discount Percentage if Discount Amount and Selling Price are not zero
+                if (!string.IsNullOrEmpty(dbgItemDet.Rows[i].Cells[10].Value?.ToString()) && discAmt > 0)
+                {
+                    decimal calculatedDiscPer = Math.Round((discAmt / sp) * 100, roundoffval);
+                    dbgItemDet.Rows[i].Cells[6].Value = calculatedDiscPer;
                 }
 
+                // Calculate Discount Amount if Selling Price and Discount Percentage are not zero
+                if (sp > 0 && discPer > 0)
+                {
+                    calculatedDiscAmt = Math.Round((qty * sp * discPer) / 100, 2);
+                    dbgItemDet.Rows[i].Cells[7].Value = calculatedDiscAmt;
+                }
+                dbgItemDet.Rows[i].Cells[10].Value = (qty*sp) - calculatedDiscAmt;
             }
+
         }
+
 
         public void ResetControls(Control.ControlCollection controls)
         {
@@ -319,9 +417,12 @@ namespace softgen
                 dbgItemDet.Update();
                 //transaction = dbConnector.connection.BeginTransaction();
 
-                DeTools.gstrSQL = "SELECT a.*, b.*, c.* FROM t_invoice_det a JOIN t_invoice_hdr b " +
-                    "ON a.invoice_no = b.invoice_no JOIN t_invoice_pay_det c ON a.invoice_no = c.invoice_no " +
-                    "WHERE a.invoice_no = '" + txtInvNo.Text.Trim() + "' AND b.invoice_no = '" + txtInvNo.Text.Trim() + "' + AND c.invoice_no = '" + txtInvNo.Text.Trim() + "'LIMIT 1; ";
+                DeTools.gstrSQL = "SELECT a.*, b.*, c.* FROM t_invoice_det a " +
+                  "JOIN t_invoice_hdr b ON a.invoice_no = b.invoice_no " +
+                  "JOIN t_invoice_pay_det c ON a.invoice_no = c.invoice_no " +
+                  "WHERE a.invoice_no = '" + txtInvNo.Text.Trim() + "' " +
+                  "AND b.invoice_no = '" + txtInvNo.Text.Trim() + "' " +
+                  "AND c.invoice_no = '" + txtInvNo.Text.Trim() + "' LIMIT 1;";
                 OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
                 dbConnector.connection.Open();
 
@@ -957,7 +1058,7 @@ namespace softgen
                                 cmddhdr.CommandText = inserthdr;
 
                                 string chk_cls_day = "select cls_dt from r_closing where doc_type_id='INV' order by cls_dt desc limit 1;";
-                                using (OdbcDataReader chk_cls_day_read = dbConnector.CreateResultset(chk_cls_day))
+                                using (OdbcDataReader chk_cls_day_read = dbConnector?.CreateResultset(chk_cls_day))
                                 {
                                     string closedt;
 
@@ -968,7 +1069,7 @@ namespace softgen
                                             closedt = chk_cls_day_read["cls_dt"].ToString().Trim();
 
                                         }
-                                       
+
                                     }
                                 }
 
@@ -979,7 +1080,7 @@ namespace softgen
                                 //-------------------------Cust combo----------------------------//
                                 //general.FillCombo(cboCust, "cust_id", "m_customer", false);
 
-                                
+
 
                                 if (!string.IsNullOrEmpty(cboCust.SelectedItem.ToString().Trim()))
                                 {
@@ -987,20 +1088,20 @@ namespace softgen
 
                                     if (CustIDFromDatabase != "")
                                     {
-                                        
-                                            DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
 
-                                            if (customerData != null)
-                                            {
-                                                custName = customerData["cust_name"].ToString().Trim();
-                                                custPhoneNo = customerData["phone_1"].ToString().Trim();
-                                                custAdd1 = customerData["address1"].ToString().Trim();
-                                                custAdd2 = customerData["address2"].ToString().Trim();
-                                                custEmail = customerData["email"].ToString().Trim();
-                                            }                                            
+                                        DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
+
+                                        if (customerData != null)
+                                        {
+                                            custName = customerData["cust_name"].ToString().Trim();
+                                            custPhoneNo = customerData["phone_1"].ToString().Trim();
+                                            custAdd1 = customerData["address1"].ToString().Trim();
+                                            custAdd2 = customerData["address2"].ToString().Trim();
+                                            custEmail = customerData["email"].ToString().Trim();
+                                        }
 
                                     }
-                                
+
 
                                 }
 
@@ -1025,7 +1126,7 @@ namespace softgen
                                 cmddhdr.Parameters.Add(new OdbcParameter("sale_type", ""));
                                 cmddhdr.Parameters.Add(new OdbcParameter("machine_id", machine_name));
                                 cmddhdr.Parameters.Add(new OdbcParameter("o_amt", rotPayAmt.Text.Trim()));
-                                cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", rotBillTime.Text.Trim()));                                
+                                cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", rotBillTime.Text.Trim()));
                                 cmddhdr.Parameters.Add(new OdbcParameter("veh_no", ""));
                                 cmddhdr.Parameters.Add(new OdbcParameter("po_no", ""));
                                 cmddhdr.Parameters.Add(new OdbcParameter("open_yn", "Y"));
@@ -1642,25 +1743,188 @@ namespace softgen
 
         private void dbgItemDet_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            // Check if the edited cell is in a column where formatting is desired
-            if (e.ColumnIndex >= 3)
+            try
             {
-                // Get the entered value
-                object rawValue = dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
 
-                mrpValue = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[4].Value);
-                // Format the value as a decimal with two decimal places
-                if (rawValue != null && decimal.TryParse(rawValue.ToString(), out decimal enteredValue))
+                // Check if the edited cell is in a column where formatting is desired
+                if (e.ColumnIndex >= 3)
                 {
-                    // Ensure Column 5 (SP) is not greater than Column 4 (MRP)
-                    if (e.ColumnIndex == 5 && flaggotonextcell == 1)
+                    // Get the entered value
+                    object rawValue = dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                    decimal spValue = 0;
+                    mrpValue = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[4].Value);
+                    spValue = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value);
+                    // Format the value as a decimal with two decimal places
+                    if (rawValue != null && decimal.TryParse(rawValue.ToString(), out decimal enteredValue))
                     {
-                        // Reset the value to MRP
-                        dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = mrpValue;
-                    }
+                        // Ensure Column 5 (SP) is not greater than Column 4 (MRP)
+                        if (e.ColumnIndex == 5 && flaggotonextcell == 1)
+                        {
+                            // Reset the value to MRP
+                            dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = mrpValue;
+                        }
 
-                    dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = enteredValue.ToString("0.00");
+                        dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = enteredValue.ToString("0.00");
+                        dbgItemDet.Rows[e.RowIndex].Cells[10].Value = (enteredValue*spValue).ToString("0.00");
+
+                    }
                 }
+
+                // Check if the edited cell is in the second column (index 1)
+                if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+                {
+                    if (dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() != null && dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() != "")
+                    {
+
+
+                        string userInput = dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+
+                        bool itemFound;
+                        bool barFound;
+                        DataTable dataTable;
+                        string bar_code = null;
+                        string bar = null;
+                        string itemnm = null;
+                        string itemid = null;
+                        string plu;
+                        bool itempluFound;
+                        string mrp = null;
+                        string sale_price = null;
+                        string disc_per = null;
+                        string sale_tax_paid = null;
+                        string cess_perc = null;
+                        SearchItemByID(userInput, out itemFound, out itemnm, out itemid, out mrp, out sale_price, out disc_per, out sale_tax_paid, out cess_perc, out dataTable);
+
+                        // If item not found by ID, search by barcode
+                        if (!itemFound)
+                        {
+                            SearchItemByBarcode(userInput, out barFound, out itemnm, out bar, out dataTable);
+
+                            
+                            if (!barFound)
+                            {
+                                SearchItemByBarcodeSingle(userInput, out barFound, out itemnm, out bar, out mrp, out sale_price, out itemid, out disc_per, out sale_tax_paid, out cess_perc);
+
+                                dbgItemDet.Rows[e.RowIndex].Cells[1].Value = bar; // Barcode
+                                dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                                dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+                                dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
+                                dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;                                
+                                dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
+                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
+                                decimal salePrice = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                                decimal discountPercent = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
+                                decimal discountAmount = salePrice * discountPercent / 100; // Calculate discount amount
+
+                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
+
+                                decimal salePrice1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                                decimal discPerValue;
+                                if (Decimal.TryParse(disc_per, out discPerValue) && discPerValue > 0.00M)
+                                {
+                                    decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
+                                    decimal discountPercent1 = (discountAmount1 / salePrice1) * 100; // Calculate discount percent
+                                    dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
+
+
+                                }
+
+
+                                dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
+                                dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
+                                dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
+                                                                                   //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
+                                dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
+                                dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
+
+
+
+                                if (!barFound)
+                                {
+                                    SearchItemByPLU(userInput, out itempluFound, out itemnm, out plu);
+                                    if (!itempluFound)
+                                    {
+                                        MessageBox.Show("This Item Does Not Exists!", "Item Not Exists", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                    }
+                                    else
+                                    {
+
+                                        dbgItemDet.Rows[e.RowIndex].Cells[1].Value = plu; // Barcode
+                                        dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                                        dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+
+                                    }
+                                }
+                                
+
+                            }
+                            else
+                            {
+                                // Populate columns with retrieved data
+                                if (rowCount > 1)
+                                {
+                                    DisplayDataTable(dataTable, "bar_code", "item_desc", "mrp", "sale_price");
+
+                                }
+                                else
+                                {
+                                    dbgItemDet.Rows[e.RowIndex].Cells[1].Value = bar; // Barcode
+                                    dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                                    dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+                                   
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            if (rowCount > 1)
+                            {
+                                DisplayDataTable(dataTable, "item_id", "item_desc", "mrp", "sale_price");
+                            }
+                            else
+                            {
+
+                                // Populate columns with retrieved data
+                                dbgItemDet.Rows[e.RowIndex].Cells[1].Value = itemid; // Itemid
+                                dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                                dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+                                dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
+                                dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;
+                                dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
+                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
+                                decimal salePrice = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                                decimal discountPercent = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
+                                decimal discountAmount = salePrice * discountPercent / 100; // Calculate discount amount
+
+                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
+
+                                decimal salePrice1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                                decimal discPerValue;
+                                if (Decimal.TryParse(disc_per, out discPerValue) && discPerValue > 0.00M)
+                                {
+                                    decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
+                                    decimal discountPercent1 = (discountAmount1 / salePrice1) * 100; // Calculate discount percent
+                                    dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
+                                }
+
+
+                                dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
+                                dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
+                                dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
+                                                                                   //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
+                                dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
+                                dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch (NullReferenceException)
+            {
+
+                
             }
         }
 
@@ -1689,26 +1953,36 @@ namespace softgen
 
         private void dbgItemDet_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (e.ColumnIndex == 5)
+            try
             {
-                // Check if SP is greater than MRP
-                decimal enteredValue = Convert.ToDecimal(e.FormattedValue);
-                mrpValue = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[4].Value);
-                // Store the previous value before making any changes
 
-                if (enteredValue > mrpValue)
+
+                if (e.ColumnIndex == 5)
                 {
+                    // Check if SP is greater than MRP
+                    decimal enteredValue = Convert.ToDecimal(e.FormattedValue);
+                    mrpValue = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[4].Value);
+                    // Store the previous value before making any changes
 
-                    // Display a message or take appropriate action
-                    MessageBox.Show("SP cannot be greater than MRP");
-                    flaggotonextcell = 1;
-                    // Cancel the cell validation to prevent leaving the current cell                    
+                    if (enteredValue > mrpValue)
+                    {
 
-                    e.Cancel = true;
-                    // Update other calculations as needed
-                    UpdateRotGAmt();
-                    disccal();
+                        // Display a message or take appropriate action
+                        MessageBox.Show("SP cannot be greater than MRP");
+                        flaggotonextcell = 1;
+                        // Cancel the cell validation to prevent leaving the current cell                    
+
+                        e.Cancel = true;
+                        // Update other calculations as needed
+                        UpdateRotGAmt();
+                        disccal();
+                    }
                 }
+            }
+            catch (Exception)
+            {
+
+             
             }
         }
 
@@ -2772,9 +3046,468 @@ namespace softgen
 
 
 
+        private void dbgItemDet_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            //if (e.ColumnIndex == 3) // Assuming qty is the 4th column (index 3)
+            //{
+            //    dbgItemDet.Rows[e.RowIndex].ErrorText = ""; // Clear the error message
+            //}
+        }
+
+        private void SearchItemByID(string itemID, out bool itemFound, out string itemnm, out string itemid, out string mrp, out string sale_price, out string disc_per, out string sale_tax_paid, out string cess_perc, out DataTable dataTable)
+        {
+            dbConnector = new DbConnector();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            itemFound = false;
+            itemid = null;
+            itemnm = null;
+            mrp = null;
+            sale_price = null;
+            disc_per = null;
+            sale_tax_paid = null;
+            cess_perc = null;
+            dataTable = new DataTable();
+
+            string countQuery = "SELECT COUNT(*) FROM m_item_hdr WHERE item_id = '" + itemID + "' AND active_yn='Y'";
+            string dataQuery = "SELECT * FROM m_item_hdr WHERE item_id = '" + itemID + "' AND active_yn='Y'";
+
+
+            using (OdbcCommand countCmd = new OdbcCommand(countQuery, dbConnector.connection))
+            {
+                try
+                {
+                    dbConnector.connection.Open();
+                    rowCount = Convert.ToInt32(countCmd.ExecuteScalar());
+                    if (rowCount > 1)
+                    {
+                        // If multiple rows found, load data into DataTable
+                        using (OdbcDataAdapter adapter = new OdbcDataAdapter(dataQuery, dbConnector.connection))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        itemFound = true;
+                    }
+                    else if (rowCount == 1)
+                    {
+                        // Single row found, retrieve data
+                        using (OdbcCommand dataCmd = new OdbcCommand(dataQuery, dbConnector.connection))
+                        using (OdbcDataReader reader = dataCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                itemid = reader.GetString(reader.GetOrdinal("item_id"));
+                                itemnm = reader.GetString(reader.GetOrdinal("item_desc"));
+                                mrp = reader.GetString(reader.GetOrdinal("mrp"));
+                                sale_price = reader.GetString(reader.GetOrdinal("sale_price"));
+                                disc_per = reader.GetString(reader.GetOrdinal("disc_per"));
+                                sale_tax_paid = reader.GetString(reader.GetOrdinal("sale_tax_paid"));
+                                cess_perc = reader.GetString(reader.GetOrdinal("cess_perc"));
+
+                                // You can retrieve other fields similarly
+                                Console.WriteLine($"ItemId: {itemid}");
+                                itemFound = true; // Set the flag to true
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // No items found
+                        Console.WriteLine("No items found.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                finally
+                {
+                    dbConnector.connection.Close();
+                }
+            }
+        }
+
+        private void SearchItemByPLU(string PLU, out bool itempluFound, out string itemnm, out string plu)
+        {
+            dbConnector = new DbConnector();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            itempluFound = false;
+            plu = null;
+            itemnm = null;
+            //    dataTable1 = new DataTable();
+
+            string countQuery1 = "SELECT COUNT(*) FROM m_item_det WHERE plu = '" + PLU + "' AND active_yn='Y'";
+            string dataQuery1 = "SELECT * FROM m_item_det WHERE plu = '" + PLU + "' AND active_yn='Y'";
+
+            using (OdbcCommand countCmd = new OdbcCommand(countQuery1, dbConnector.connection))
+            {
+                try
+                {
+                    rowCount = 0;
+                    dbConnector.connection.Open();
+                    rowCount = Convert.ToInt32(countCmd.ExecuteScalar());
+                    if (rowCount == 1)
+                    {
+                        // Single row found, retrieve data
+                        using (OdbcCommand dataCmd = new OdbcCommand(dataQuery1, dbConnector.connection))
+                        using (OdbcDataReader reader = dataCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                plu = reader.GetString(reader.GetOrdinal("plu"));
+                                itemnm = reader.GetString(reader.GetOrdinal("item_desc"));
+                                // You can retrieve other fields similarly
+                                Console.WriteLine($"ItemPLU: {plu}");
+                                itempluFound = true; // Set the flag to true
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // No items found
+                        Console.WriteLine("No items found.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                finally
+                {
+                    dbConnector.connection.Close();
+                }
+            }
+        }
 
 
 
+        private void SearchItemByBarcode(string barcode, out bool barFound, out string itemnm, out string bar, out DataTable dataTable)
+        {
+            dbConnector = new DbConnector();
+            // dbConnector.connectionString= new OdbcConnection();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            bar = null;
+            itemnm = null;
+            barFound = false;
+            dataTable = new DataTable();
+            string countQuery = "SELECT COUNT(*) FROM m_item_det WHERE bar_code = '" + barcode + "' AND active_yn='Y'";
+            string query = "SELECT * FROM m_item_det WHERE bar_code = '" + barcode + "' AND active_yn='Y'";
+
+            using (OdbcCommand countCmd = new OdbcCommand(countQuery, dbConnector.connection))
+            {
+
+
+                try
+                {
+                    rowCount = 0;
+                    dbConnector.connection.Open();
+                    rowCount = Convert.ToInt32(countCmd.ExecuteScalar());
+                    if (rowCount > 1)
+                    {
+                        // If multiple rows found, load data into DataTable
+                        using (OdbcDataAdapter adapter = new OdbcDataAdapter(query, dbConnector.connection))
+                        {
+                            adapter.Fill(dataTable);
+                        }
+                        barFound = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                finally
+                {
+                    dbConnector.connection.Close();
+                }
+            }
+        }
+
+        private void SearchItemByBarcodeSingle(string barcode, out bool barFound, out string itemnm, out string bar, out string mrp, out string sp, out string item_id, out string disc_per, out string gst_per, out string cess_per)
+        {
+            dbConnector = new DbConnector();
+            // dbConnector.connectionString= new OdbcConnection();
+            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+            bar = null;
+            itemnm = null;
+            barFound = false;
+            item_id = null;
+            mrp = null;
+            sp = null;
+            disc_per = null;
+            gst_per = null;
+            cess_per = null;
+            
+        
+            //string countQuery = "SELECT COUNT(*) FROM m_item_det WHERE bar_code = '" + barcode + "' AND active_yn='Y'";
+            string query = "SELECT * FROM m_item_det WHERE bar_code = '" + barcode + "' AND active_yn='Y'";            
+
+                try
+                {
+                    rowCount = 0;
+                    dbConnector.connection.Open();            
+                    
+                        // Single row found, retrieve data
+                        using (OdbcCommand dataCmd = new OdbcCommand(query, dbConnector.connection))
+                        using (OdbcDataReader reader = dataCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                bar = reader.GetString(reader.GetOrdinal("bar_code"));
+                                itemnm = reader.GetString(reader.GetOrdinal("item_desc"));
+                                item_id= reader.GetString(reader.GetOrdinal("item_id"));
+                                mrp= reader.GetString(reader.GetOrdinal("mrp"));
+                                sp= reader.GetString(reader.GetOrdinal("sale_price"));
+                                //disc_per= reader.GetString(reader.GetOrdinal("sale_price"));
+
+                            // Retrieve discount percentage, cess percentage, and sale tax paid from m_item_hdr
+                            string discperQuery = "SELECT disc_per, cess_perc, sale_tax_paid FROM m_item_hdr WHERE item_id = ? AND active_yn='Y'";
+                            using (OdbcCommand discperCmd = new OdbcCommand(discperQuery, dbConnector.connection))
+                            {
+                                discperCmd.Parameters.AddWithValue("?", item_id);
+
+                                using (OdbcDataReader discreader = discperCmd.ExecuteReader())
+                                {
+                                    if (discreader.Read())
+                                    {
+                                        disc_per = discreader["disc_per"].ToString();
+                                        
+    
+                                        // For the cess_perc, assuming it's also a decimal value
+                                        cess_per = discreader["cess_perc"].ToString();
+                                        
+
+                                        // Retrieve tax_per from m_tax_type
+                                        string gstperQuery = "SELECT tax_per FROM m_tax_type WHERE tax_type_id = ?";
+                                        using (OdbcCommand gstperCmd = new OdbcCommand(gstperQuery, dbConnector.connection))
+                                        {
+                                            gstperCmd.Parameters.AddWithValue("?", discreader["sale_tax_paid"]);
+
+                                            using (OdbcDataReader gstreader = gstperCmd.ExecuteReader())
+                                            {
+                                                if (gstreader.Read())
+                                                {
+                                                    gst_per = gstreader["tax_per"].ToString();                                                    
+                                                }
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                        }
+
+
+
+                        // You can retrieve other fields similarly
+                        Console.WriteLine($"ItemId: {bar}");
+                                barFound = true; // Set the flag to true
+                            }
+                        }
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                finally
+                {
+                    dbConnector.connection.Close();
+                }
+            
+        }
+
+
+        private void DisplayDataTable(DataTable originalTable, params string[] columnsToShow)
+        {
+            // Create a new DataTable with specified columns
+            DataTable displayTable = new DataTable();
+            foreach (string column in columnsToShow)
+            {
+                displayTable.Columns.Add(column, originalTable.Columns[column].DataType);
+            }
+
+            // Copy rows from original DataTable to display DataTable
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = displayTable.NewRow();
+                foreach (string column in columnsToShow)
+                {
+                    newRow[column] = row[column];
+                }
+                displayTable.Rows.Add(newRow);
+            }
+
+            // Create the popup window
+            Form dataTableForm = new Form();
+
+            // Create the DataGridView
+            DataGridView dataGridView = new DataGridView();
+            dataGridView.DataSource = displayTable;
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells; // Auto-size columns
+            dataGridView.CellDoubleClick += (sender, e) =>
+            {
+                if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
+                {
+                    // Transfer data from the double-clicked row to the main form's DataGridView
+                    TransferDataToMainForm(dataGridView.Rows[e.RowIndex]);
+                    dataTableForm.Close(); // Close the popup window after transferring data
+                }
+            };
+
+            // Allow the user to press Enter key to select a row
+            dataGridView.KeyDown += (sender, e) =>
+            {
+                if (e.KeyCode == Keys.Enter && dataGridView.CurrentRow != null)
+                {
+                    // Transfer data from the selected row to the main form's DataGridView
+                    TransferDataToMainForm(dataGridView.CurrentRow);
+                    dataTableForm.Close(); // Close the popup window after transferring data
+                }
+            };
+
+
+            // Set the size of the popup window to exactly fit the DataGridView
+            dataTableForm.ClientSize = new System.Drawing.Size(dataGridView.Width + 140, dataGridView.Height + 20);
+
+            // Set the DataGridView to fill the entire area of the form
+            dataGridView.Dock = DockStyle.Fill;
+
+            // Add the DataGridView to the popup window
+            dataTableForm.Controls.Add(dataGridView);
+
+            // Show the popup window
+            dataTableForm.ShowDialog();
+        }
+
+
+
+        //---for invoice---------------//
+        // Transfer data to the main form's DataGridView
+        private void TransferDataToMainForm(DataGridViewRow selectedRow)
+        {
+            // Assuming that targetGrid is your DataGridView in the main form
+            DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDet", true).FirstOrDefault();
+
+            // Get the current row index
+            //int rowIndex = targetGrid.Rows.Add();
+            int rowIndex = targetGrid.CurrentRow.Index;
+            // Assuming you have a list of column indexes to transfer data
+            List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }; // Add the column indexes you want to transfer
+
+            foreach (int columnIndex in columnIndexesToTransfer)
+            {
+                // Check if the column index is within the bounds
+                if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                {
+                    // Assuming that targetGrid has enough columns
+                    targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[1].Value;
+                    targetGrid.Rows[rowIndex].Cells[3].Value = "1"; // Quantity set to 1
+                    targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value;
+                    targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value;
+
+                    // Calculate spqty
+                    string mrpString = selectedRow.Cells[2].Value.ToString();
+                    string qtyString = "1";
+                    decimal spqtyDecimal = decimal.Parse(selectedRow.Cells[3].Value.ToString());
+                    string spqtyString = (spqtyDecimal * decimal.Parse(qtyString)).ToString();
+
+                    // Get barcode and mrp
+                    string barcode = selectedRow.Cells[0].Value.ToString();
+                    string mrp = mrpString;
+
+                    // Count rows in m_item_det for the given barcode and mrp
+                    string countQuery = "SELECT COUNT(*) FROM m_item_det WHERE bar_code = ? AND mrp = ? AND active_yn='Y'";
+                    int rowCountnew = 0;
+
+                    using (OdbcCommand countCmd1 = new OdbcCommand(countQuery, dbConnector.connection))
+                    {
+                        countCmd1.Parameters.AddWithValue("?", barcode);
+                        countCmd1.Parameters.AddWithValue("?", mrp);
+
+                        try
+                        {
+                            dbConnector.connection.Open();
+                            rowCountnew = Convert.ToInt32(countCmd1.ExecuteScalar());
+
+                            if (rowCountnew == 1)
+                            {
+                                // Retrieve data from m_item_det
+                                string query = "SELECT item_id FROM m_item_det WHERE bar_code = ? AND mrp = ? AND active_yn='Y'";
+                                using (OdbcCommand dataCmd = new OdbcCommand(query, dbConnector.connection))
+                                {
+                                    dataCmd.Parameters.AddWithValue("?", barcode);
+                                    dataCmd.Parameters.AddWithValue("?", mrp);
+
+                                    using (OdbcDataReader reader = dataCmd.ExecuteReader())
+                                    {
+                                        if (reader.Read())
+                                        {
+                                            string itemidval = reader["item_id"].ToString().Trim();
+
+                                            // Retrieve discount percentage, cess percentage, and sale tax paid from m_item_hdr
+                                            string discperQuery = "SELECT disc_per, cess_perc, sale_tax_paid FROM m_item_hdr WHERE item_id = ? AND active_yn='Y'";
+                                            using (OdbcCommand discperCmd = new OdbcCommand(discperQuery, dbConnector.connection))
+                                            {
+                                                discperCmd.Parameters.AddWithValue("?", itemidval);
+
+                                                using (OdbcDataReader discreader = discperCmd.ExecuteReader())
+                                                {
+                                                    if (discreader.Read())
+                                                    {
+                                                        string disc_perString = discreader["disc_per"].ToString();
+                                                        string discamtString = ((decimal.Parse(spqtyString) * decimal.Parse(disc_perString)) / 100).ToString();
+
+                                                        // Assign string values to the DataGridView cells
+                                                        targetGrid.Rows[rowIndex].Cells[6].Value = disc_perString;
+                                                        targetGrid.Rows[rowIndex].Cells[7].Value = discamtString;
+
+                                                        // For the cess_perc, assuming it's also a decimal value
+                                                        string cess_percString = discreader["cess_perc"].ToString();
+                                                        targetGrid.Rows[rowIndex].Cells[8].Value = cess_percString;
+
+                                                        // Retrieve tax_per from m_tax_type
+                                                        string gstperQuery = "SELECT tax_per FROM m_tax_type WHERE tax_type_id = ?";
+                                                        using (OdbcCommand gstperCmd = new OdbcCommand(gstperQuery, dbConnector.connection))
+                                                        {
+                                                            gstperCmd.Parameters.AddWithValue("?", discreader["sale_tax_paid"]);
+
+                                                            using (OdbcDataReader gstreader = gstperCmd.ExecuteReader())
+                                                            {
+                                                                if (gstreader.Read())
+                                                                {
+                                                                    string tax_perString = gstreader["tax_per"].ToString();
+                                                                    targetGrid.Rows[rowIndex].Cells[9].Value = tax_perString;
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Calculate the result and convert it to string
+                                                        string resultString = (decimal.Parse(spqtyString) - decimal.Parse(discamtString)).ToString();
+
+                                                        // Assign the string value to the cell
+                                                        targetGrid.Rows[rowIndex].Cells[10].Value = resultString;
+                                                        UpdateRotGAmt();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Error: " + ex.Message);
+                        }
+                    }
+                }
+
+                else
+                {
+                    // Handle the case where the column index is out of bounds
+                    // You can log a message or take appropriate action
+                }
+            }
+        }
 
 
     }  ///////end

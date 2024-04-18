@@ -803,7 +803,7 @@ namespace softgen
 
         public static double GenMDocno(string strDocTypeId)
         {
-            int curDocNo = 0;
+            long curDocNo = 0;
             int intFlag = 1;
 
 
@@ -819,7 +819,7 @@ namespace softgen
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        curDocNo = Convert.ToInt32(reader["next_no"]);
+                        curDocNo = Convert.ToInt64(reader["next_no"]);
 
                         Console.WriteLine("Next No is:" + curDocNo);
                         intFlag = 2;
