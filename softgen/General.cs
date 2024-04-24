@@ -811,8 +811,11 @@ namespace softgen
             {
                 DbConnector dbConnector = new DbConnector();
 
+                frmT_Invoice frmT_Invoice = new frmT_Invoice();
+                DateTime invdate = frmT_Invoice.dtpInvDate.Value;
+                string formattedDate = invdate.ToString("yyyy-MM-dd");
                 gstrSQl1 = "SELECT next_no FROM m_doc_series " +
-                     "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A'";
+                     "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A' And '"+formattedDate+"' between from_date and to_date";
 
                 using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl1))
                 {

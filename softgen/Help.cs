@@ -281,7 +281,6 @@ namespace softgen
                 {
                     cboField.Items.Clear();
                     cboFieldId.Items.Clear();
-                    cboField.SelectedIndex = -1;
 
                     i_Cols = (int)reader["No_of_columns"];
                     strQuery = reader["Query"].ToString();
@@ -291,16 +290,17 @@ namespace softgen
                         strFieldName = "Caption" + (J + 1).ToString().Trim();
                         cboField.Items.Add(reader[strFieldName].ToString().Trim());
                     }
+                    cboField.SelectedIndex = -1;
                 }
                 else
                 {
                     cboField.Items.Clear();
                     cboFieldId.Items.Clear();
-                    cboField.SelectedIndex = -1;
+                    cboField.SelectedIndex = 1;
                 }
             }
             frmHelp.cboDataType.Items.Clear();
-            frmHelp.cboDataType.SelectedIndex = -1;
+            frmHelp.cboDataType.SelectedIndex = 1;
 
             using (OdbcDataReader rs_Query = dbConnector.CreateResultset(strQuery + " limit 200"))
             {

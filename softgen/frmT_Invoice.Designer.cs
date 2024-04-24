@@ -42,19 +42,6 @@
             rotInvCust = new Label();
             pnlPayDet = new Panel();
             dbgPayDet = new DataGridView();
-            PaySrno = new DataGridViewTextBoxColumn();
-            Paymod = new DataGridViewComboBoxColumn();
-            PayAmt = new DataGridViewTextBoxColumn();
-            CashTend = new DataGridViewTextBoxColumn();
-            CCCode = new DataGridViewComboBoxColumn();
-            CCNo = new DataGridViewTextBoxColumn();
-            Coupon = new DataGridViewComboBoxColumn();
-            Custid = new DataGridViewComboBoxColumn();
-            Bank = new DataGridViewTextBoxColumn();
-            Chno = new DataGridViewTextBoxColumn();
-            Chdt = new DataGridViewTextBoxColumn();
-            VouchNo = new DataGridViewTextBoxColumn();
-            VouchAmt = new DataGridViewTextBoxColumn();
             lblPayDet = new Label();
             rotTotQty = new Label();
             lblTotQty = new Label();
@@ -113,6 +100,20 @@
             dtpInvDate = new DateTimePicker();
             txtInvNo = new TextBox();
             lblInvNo = new Label();
+            PaySrno = new DataGridViewTextBoxColumn();
+            Paymod = new DataGridViewComboBoxColumn();
+            PayAmt = new DataGridViewTextBoxColumn();
+            CashTend = new DataGridViewTextBoxColumn();
+            Refund = new DataGridViewTextBoxColumn();
+            CCCode = new DataGridViewComboBoxColumn();
+            CCNo = new DataGridViewTextBoxColumn();
+            Coupon = new DataGridViewComboBoxColumn();
+            Custid = new DataGridViewTextBoxColumn();
+            Bank = new DataGridViewTextBoxColumn();
+            Chno = new DataGridViewTextBoxColumn();
+            Chdt = new DataGridViewTextBoxColumn();
+            VouchNo = new DataGridViewTextBoxColumn();
+            VouchAmt = new DataGridViewTextBoxColumn();
             T_Invoice.SuspendLayout();
             pnlPayDet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dbgPayDet).BeginInit();
@@ -183,9 +184,9 @@
             rotTotmrp.BackColor = SystemColors.Info;
             rotTotmrp.BorderStyle = BorderStyle.Fixed3D;
             rotTotmrp.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            rotTotmrp.Location = new Point(839, 371);
+            rotTotmrp.Location = new Point(839, 370);
             rotTotmrp.Name = "rotTotmrp";
-            rotTotmrp.Size = new Size(83, 22);
+            rotTotmrp.Size = new Size(83, 25);
             rotTotmrp.TabIndex = 250;
             rotTotmrp.Click += label2_Click_1;
             // 
@@ -204,20 +205,20 @@
             rotTotdisc.BackColor = Color.Bisque;
             rotTotdisc.BorderStyle = BorderStyle.Fixed3D;
             rotTotdisc.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            rotTotdisc.Location = new Point(716, 372);
+            rotTotdisc.Location = new Point(713, 372);
             rotTotdisc.Name = "rotTotdisc";
-            rotTotdisc.Size = new Size(59, 22);
+            rotTotdisc.Size = new Size(62, 22);
             rotTotdisc.TabIndex = 248;
             rotTotdisc.Click += label1_Click;
             // 
             // lblTotDisc
             // 
             lblTotDisc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTotDisc.Location = new Point(655, 374);
+            lblTotDisc.Location = new Point(636, 369);
             lblTotDisc.Name = "lblTotDisc";
-            lblTotDisc.Size = new Size(60, 18);
+            lblTotDisc.Size = new Size(77, 30);
             lblTotDisc.TabIndex = 247;
-            lblTotDisc.Text = "Tot. Disc.";
+            lblTotDisc.Text = "Tot. Savings\r\nOn Mrp";
             lblTotDisc.Click += lblTotDisc_Click;
             // 
             // rotInvCust
@@ -252,7 +253,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dbgPayDet.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dbgPayDet.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dbgPayDet.Columns.AddRange(new DataGridViewColumn[] { PaySrno, Paymod, PayAmt, CashTend, CCCode, CCNo, Coupon, Custid, Bank, Chno, Chdt, VouchNo, VouchAmt });
+            dbgPayDet.Columns.AddRange(new DataGridViewColumn[] { PaySrno, Paymod, PayAmt, CashTend, Refund, CCCode, CCNo, Coupon, Custid, Bank, Chno, Chdt, VouchNo, VouchAmt });
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
@@ -274,99 +275,12 @@
             dbgPayDet.RowTemplate.Height = 25;
             dbgPayDet.Size = new Size(916, 116);
             dbgPayDet.TabIndex = 227;
+            dbgPayDet.CellContentClick += dbgPayDet_CellContentClick;
             dbgPayDet.CellEndEdit += dbgPayDet_CellEndEdit;
+            dbgPayDet.CellValueChanged += dbgPayDet_CellValueChanged_1;
             dbgPayDet.EditingControlShowing += dbgPayDet_EditingControlShowing;
             dbgPayDet.RowLeave += dbgPayDet_RowLeave;
             dbgPayDet.RowPostPaint += dbgPayDet_RowPostPaint;
-            // 
-            // PaySrno
-            // 
-            PaySrno.HeaderText = "Sr No.";
-            PaySrno.Name = "PaySrno";
-            PaySrno.ReadOnly = true;
-            PaySrno.Width = 40;
-            // 
-            // Paymod
-            // 
-            Paymod.HeaderText = "PAYMODE";
-            Paymod.Name = "Paymod";
-            Paymod.Width = 80;
-            // 
-            // PayAmt
-            // 
-            PayAmt.HeaderText = "AMOUNT";
-            PayAmt.Name = "PayAmt";
-            PayAmt.Width = 85;
-            // 
-            // CashTend
-            // 
-            CashTend.HeaderText = "CASH TEND";
-            CashTend.Name = "CashTend";
-            CashTend.Width = 85;
-            // 
-            // CCCode
-            // 
-            CCCode.HeaderText = "CC CODE";
-            CCCode.Name = "CCCode";
-            CCCode.ReadOnly = true;
-            CCCode.Resizable = DataGridViewTriState.True;
-            CCCode.SortMode = DataGridViewColumnSortMode.Automatic;
-            CCCode.Width = 50;
-            // 
-            // CCNo
-            // 
-            CCNo.HeaderText = "CC NO";
-            CCNo.Name = "CCNo";
-            CCNo.ReadOnly = true;
-            CCNo.Width = 60;
-            // 
-            // Coupon
-            // 
-            Coupon.HeaderText = "COUPON";
-            Coupon.Name = "Coupon";
-            Coupon.ReadOnly = true;
-            Coupon.Resizable = DataGridViewTriState.True;
-            Coupon.SortMode = DataGridViewColumnSortMode.Automatic;
-            Coupon.Width = 60;
-            // 
-            // Custid
-            // 
-            Custid.HeaderText = "CUST ID";
-            Custid.Name = "Custid";
-            Custid.ReadOnly = true;
-            Custid.Resizable = DataGridViewTriState.True;
-            Custid.SortMode = DataGridViewColumnSortMode.Automatic;
-            // 
-            // Bank
-            // 
-            Bank.HeaderText = "BANK";
-            Bank.Name = "Bank";
-            Bank.ReadOnly = true;
-            Bank.Width = 80;
-            // 
-            // Chno
-            // 
-            Chno.HeaderText = "CH. NO";
-            Chno.Name = "Chno";
-            Chno.ReadOnly = true;
-            Chno.Width = 70;
-            // 
-            // Chdt
-            // 
-            Chdt.HeaderText = "CH. DT";
-            Chdt.Name = "Chdt";
-            Chdt.ReadOnly = true;
-            Chdt.Width = 80;
-            // 
-            // VouchNo
-            // 
-            VouchNo.HeaderText = "Vouch. No.";
-            VouchNo.Name = "VouchNo";
-            // 
-            // VouchAmt
-            // 
-            VouchAmt.HeaderText = "Vouch. Amt";
-            VouchAmt.Name = "VouchAmt";
             // 
             // lblPayDet
             // 
@@ -385,7 +299,7 @@
             rotTotQty.BackColor = Color.Bisque;
             rotTotQty.BorderStyle = BorderStyle.Fixed3D;
             rotTotQty.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            rotTotQty.Location = new Point(436, 373);
+            rotTotQty.Location = new Point(400, 373);
             rotTotQty.Name = "rotTotQty";
             rotTotQty.Size = new Size(54, 22);
             rotTotQty.TabIndex = 242;
@@ -394,7 +308,7 @@
             // lblTotQty
             // 
             lblTotQty.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblTotQty.Location = new Point(376, 374);
+            lblTotQty.Location = new Point(340, 374);
             lblTotQty.Name = "lblTotQty";
             lblTotQty.Size = new Size(57, 18);
             lblTotQty.TabIndex = 241;
@@ -405,7 +319,7 @@
             rotNOI.BackColor = Color.Bisque;
             rotNOI.BorderStyle = BorderStyle.Fixed3D;
             rotNOI.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            rotNOI.Location = new Point(592, 371);
+            rotNOI.Location = new Point(556, 371);
             rotNOI.Name = "rotNOI";
             rotNOI.Size = new Size(62, 22);
             rotNOI.TabIndex = 240;
@@ -413,7 +327,7 @@
             // lblNOI
             // 
             lblNOI.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblNOI.Location = new Point(505, 374);
+            lblNOI.Location = new Point(469, 374);
             lblNOI.Name = "lblNOI";
             lblNOI.Size = new Size(80, 18);
             lblNOI.TabIndex = 239;
@@ -426,7 +340,7 @@
             rotItDesc.Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point);
             rotItDesc.Location = new Point(72, 371);
             rotItDesc.Name = "rotItDesc";
-            rotItDesc.Size = new Size(290, 22);
+            rotItDesc.Size = new Size(259, 22);
             rotItDesc.TabIndex = 238;
             // 
             // lblItDesc
@@ -506,6 +420,7 @@
             txtDiscAmt.Name = "txtDiscAmt";
             txtDiscAmt.Size = new Size(71, 21);
             txtDiscAmt.TabIndex = 230;
+            txtDiscAmt.TextChanged += txtDiscAmt_TextChanged;
             // 
             // lblDiscAmt
             // 
@@ -524,6 +439,7 @@
             txtDiscPer.Name = "txtDiscPer";
             txtDiscPer.Size = new Size(61, 21);
             txtDiscPer.TabIndex = 228;
+            txtDiscPer.TextChanged += txtDiscPer_TextChanged;
             // 
             // lblDiscPer
             // 
@@ -580,7 +496,6 @@
             // 
             // dbgItemDet
             // 
-            dbgItemDet.AllowUserToOrderColumns = true;
             dbgItemDet.BackgroundColor = SystemColors.Info;
             dbgItemDet.BorderStyle = BorderStyle.Fixed3D;
             dbgItemDet.CellBorderStyle = DataGridViewCellBorderStyle.Raised;
@@ -633,12 +548,14 @@
             srno.HeaderText = "Sr No.";
             srno.Name = "srno";
             srno.ReadOnly = true;
+            srno.SortMode = DataGridViewColumnSortMode.NotSortable;
             srno.Width = 30;
             // 
             // BarItemCode
             // 
             BarItemCode.HeaderText = "Bar/ItemCode";
             BarItemCode.Name = "BarItemCode";
+            BarItemCode.SortMode = DataGridViewColumnSortMode.NotSortable;
             BarItemCode.Width = 145;
             // 
             // Itemname
@@ -646,48 +563,59 @@
             Itemname.HeaderText = "Item Name";
             Itemname.Name = "Itemname";
             Itemname.ReadOnly = true;
+            Itemname.SortMode = DataGridViewColumnSortMode.NotSortable;
             Itemname.Width = 160;
             // 
             // Qty
             // 
             Qty.HeaderText = "Qty";
             Qty.Name = "Qty";
+            Qty.SortMode = DataGridViewColumnSortMode.NotSortable;
             Qty.Width = 75;
             // 
             // Mrp
             // 
             Mrp.HeaderText = "MRP";
             Mrp.Name = "Mrp";
+            Mrp.SortMode = DataGridViewColumnSortMode.NotSortable;
             Mrp.Width = 80;
             // 
             // UnitPrice
             // 
             UnitPrice.HeaderText = "Unit Price";
             UnitPrice.Name = "UnitPrice";
+            UnitPrice.SortMode = DataGridViewColumnSortMode.NotSortable;
             UnitPrice.Width = 70;
             // 
             // Disc
             // 
             Disc.HeaderText = "Disc%";
             Disc.Name = "Disc";
+            Disc.SortMode = DataGridViewColumnSortMode.NotSortable;
             Disc.Width = 45;
             // 
             // DiscAmt
             // 
             DiscAmt.HeaderText = "Disc. Amt";
             DiscAmt.Name = "DiscAmt";
+            DiscAmt.ReadOnly = true;
+            DiscAmt.SortMode = DataGridViewColumnSortMode.NotSortable;
             DiscAmt.Width = 60;
             // 
             // Gst
             // 
             Gst.HeaderText = "GST%";
             Gst.Name = "Gst";
+            Gst.ReadOnly = true;
+            Gst.SortMode = DataGridViewColumnSortMode.NotSortable;
             Gst.Width = 50;
             // 
             // Cess
             // 
             Cess.HeaderText = "CESS%";
             Cess.Name = "Cess";
+            Cess.ReadOnly = true;
+            Cess.SortMode = DataGridViewColumnSortMode.NotSortable;
             Cess.Width = 40;
             // 
             // Amount
@@ -696,12 +624,14 @@
             Amount.MinimumWidth = 4;
             Amount.Name = "Amount";
             Amount.ReadOnly = true;
+            Amount.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // GstAmt
             // 
             GstAmt.HeaderText = "GST Amt.";
             GstAmt.Name = "GstAmt";
             GstAmt.ReadOnly = true;
+            GstAmt.SortMode = DataGridViewColumnSortMode.NotSortable;
             GstAmt.Width = 70;
             // 
             // CessAmt
@@ -709,6 +639,7 @@
             CessAmt.HeaderText = "CESS Amt.";
             CessAmt.Name = "CessAmt";
             CessAmt.ReadOnly = true;
+            CessAmt.SortMode = DataGridViewColumnSortMode.NotSortable;
             CessAmt.Width = 60;
             // 
             // Itemid
@@ -716,6 +647,7 @@
             Itemid.HeaderText = "Item Id";
             Itemid.Name = "Itemid";
             Itemid.ReadOnly = true;
+            Itemid.SortMode = DataGridViewColumnSortMode.NotSortable;
             // 
             // label11
             // 
@@ -911,7 +843,8 @@
             dtpInvDate.Name = "dtpInvDate";
             dtpInvDate.Size = new Size(105, 23);
             dtpInvDate.TabIndex = 186;
-            dtpInvDate.Value = new DateTime(2023, 8, 25, 0, 0, 0, 0);
+            dtpInvDate.Value = new DateTime(2024, 4, 20, 0, 0, 0, 0);
+            dtpInvDate.ValueChanged += dtpInvDate_ValueChanged;
             // 
             // txtInvNo
             // 
@@ -932,6 +865,100 @@
             lblInvNo.Size = new Size(74, 14);
             lblInvNo.TabIndex = 82;
             lblInvNo.Text = "Invoice No";
+            // 
+            // PaySrno
+            // 
+            PaySrno.HeaderText = "Sr No.";
+            PaySrno.Name = "PaySrno";
+            PaySrno.ReadOnly = true;
+            PaySrno.Width = 40;
+            // 
+            // Paymod
+            // 
+            Paymod.HeaderText = "PAYMODE";
+            Paymod.Name = "Paymod";
+            Paymod.Width = 80;
+            // 
+            // PayAmt
+            // 
+            PayAmt.HeaderText = "AMOUNT";
+            PayAmt.Name = "PayAmt";
+            PayAmt.Width = 85;
+            // 
+            // CashTend
+            // 
+            CashTend.HeaderText = "CASH TEND";
+            CashTend.Name = "CashTend";
+            CashTend.Width = 85;
+            // 
+            // Refund
+            // 
+            Refund.HeaderText = "Refund";
+            Refund.Name = "Refund";
+            Refund.ReadOnly = true;
+            // 
+            // CCCode
+            // 
+            CCCode.HeaderText = "CC CODE";
+            CCCode.Name = "CCCode";
+            CCCode.ReadOnly = true;
+            CCCode.Resizable = DataGridViewTriState.True;
+            CCCode.SortMode = DataGridViewColumnSortMode.Automatic;
+            CCCode.Width = 50;
+            // 
+            // CCNo
+            // 
+            CCNo.HeaderText = "CC NO";
+            CCNo.Name = "CCNo";
+            CCNo.ReadOnly = true;
+            CCNo.Width = 60;
+            // 
+            // Coupon
+            // 
+            Coupon.HeaderText = "COUPON";
+            Coupon.Name = "Coupon";
+            Coupon.ReadOnly = true;
+            Coupon.Resizable = DataGridViewTriState.True;
+            Coupon.SortMode = DataGridViewColumnSortMode.Automatic;
+            Coupon.Width = 60;
+            // 
+            // Custid
+            // 
+            Custid.HeaderText = "CUST ID";
+            Custid.Name = "Custid";
+            Custid.ReadOnly = true;
+            Custid.Resizable = DataGridViewTriState.True;
+            // 
+            // Bank
+            // 
+            Bank.HeaderText = "BANK";
+            Bank.Name = "Bank";
+            Bank.ReadOnly = true;
+            Bank.Width = 80;
+            // 
+            // Chno
+            // 
+            Chno.HeaderText = "CH. NO";
+            Chno.Name = "Chno";
+            Chno.ReadOnly = true;
+            Chno.Width = 70;
+            // 
+            // Chdt
+            // 
+            Chdt.HeaderText = "CH. DT";
+            Chdt.Name = "Chdt";
+            Chdt.ReadOnly = true;
+            Chdt.Width = 80;
+            // 
+            // VouchNo
+            // 
+            VouchNo.HeaderText = "Vouch. No.";
+            VouchNo.Name = "VouchNo";
+            // 
+            // VouchAmt
+            // 
+            VouchAmt.HeaderText = "Vouch. Amt";
+            VouchAmt.Name = "VouchAmt";
             // 
             // frmT_Invoice
             // 
@@ -961,7 +988,6 @@
         private Panel T_Invoice;
         private Label lblInvNo;
         private Label lblInvDate;
-        private DateTimePicker dtpInvDate;
         private Label lblCust;
         private Button button1;
         private Label lblSalesMan;
@@ -991,38 +1017,11 @@
         private Label lblItDesc;
         private Panel pnlPayDet;
         private Label lblPayDet;
-        private DataGridViewTextBoxColumn PaySrno;
-        private DataGridViewComboBoxColumn Paymod;
-        private DataGridViewTextBoxColumn PayAmt;
-        private DataGridViewTextBoxColumn CashTend;
-        private DataGridViewComboBoxColumn CCCode;
-        private DataGridViewTextBoxColumn CCNo;
-        private DataGridViewComboBoxColumn Coupon;
-        private DataGridViewComboBoxColumn Custid;
-        private DataGridViewTextBoxColumn Bank;
-        private DataGridViewTextBoxColumn Chno;
-        private DataGridViewTextBoxColumn Chdt;
-        private DataGridViewTextBoxColumn VouchNo;
-        private DataGridViewTextBoxColumn VouchAmt;
         private Label rotSalesMan;
         private Label rotBonusAmt;
         private TextBox rotCust;
         private Label rotInvCust;
         public DataGridView dbgItemDet;
-        private DataGridViewTextBoxColumn srno;
-        private DataGridViewTextBoxColumn BarItemCode;
-        private DataGridViewTextBoxColumn Itemname;
-        private DataGridViewTextBoxColumn Qty;
-        private DataGridViewTextBoxColumn Mrp;
-        private DataGridViewTextBoxColumn UnitPrice;
-        private DataGridViewTextBoxColumn Disc;
-        private DataGridViewTextBoxColumn DiscAmt;
-        private DataGridViewTextBoxColumn Gst;
-        private DataGridViewTextBoxColumn Cess;
-        private DataGridViewTextBoxColumn Amount;
-        private DataGridViewTextBoxColumn GstAmt;
-        private DataGridViewTextBoxColumn CessAmt;
-        private DataGridViewTextBoxColumn Itemid;
         private Label label1;
         private Label lblTotDisc;
         private Label lblTotMrp;
@@ -1039,5 +1038,34 @@
         public Label rotTotmrp;
         public TextBox txtInvNo;
         public ComboBox cboCust;
+        private DataGridViewTextBoxColumn srno;
+        private DataGridViewTextBoxColumn BarItemCode;
+        private DataGridViewTextBoxColumn Itemname;
+        private DataGridViewTextBoxColumn Qty;
+        private DataGridViewTextBoxColumn Mrp;
+        private DataGridViewTextBoxColumn UnitPrice;
+        private DataGridViewTextBoxColumn Disc;
+        private DataGridViewTextBoxColumn DiscAmt;
+        private DataGridViewTextBoxColumn Gst;
+        private DataGridViewTextBoxColumn Cess;
+        private DataGridViewTextBoxColumn Amount;
+        private DataGridViewTextBoxColumn GstAmt;
+        private DataGridViewTextBoxColumn CessAmt;
+        private DataGridViewTextBoxColumn Itemid;
+        public DateTimePicker dtpInvDate;
+        private DataGridViewTextBoxColumn PaySrno;
+        private DataGridViewComboBoxColumn Paymod;
+        private DataGridViewTextBoxColumn PayAmt;
+        private DataGridViewTextBoxColumn CashTend;
+        private DataGridViewTextBoxColumn Refund;
+        private DataGridViewComboBoxColumn CCCode;
+        private DataGridViewTextBoxColumn CCNo;
+        private DataGridViewComboBoxColumn Coupon;
+        private DataGridViewTextBoxColumn Custid;
+        private DataGridViewTextBoxColumn Bank;
+        private DataGridViewTextBoxColumn Chno;
+        private DataGridViewTextBoxColumn Chdt;
+        private DataGridViewTextBoxColumn VouchNo;
+        private DataGridViewTextBoxColumn VouchAmt;
     }
 }
