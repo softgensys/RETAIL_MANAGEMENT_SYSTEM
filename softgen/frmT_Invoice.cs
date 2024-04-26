@@ -16,6 +16,7 @@ using TranslatorService.Models.Speech;
 using static Google.Protobuf.Reflection.FieldOptions.Types;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
+
 namespace softgen
 {
     public partial class frmT_Invoice : Form, Interface_for_Common_methods.ISearchableForm
