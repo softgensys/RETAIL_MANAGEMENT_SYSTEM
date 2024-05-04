@@ -800,12 +800,22 @@ namespace softgen
                 }
             
         }
+        public static class DocumentManager
+        {
+            private static long _documentNumber;
+
+            public static long DocumentNumber
+            {
+                get { return _documentNumber; }
+                set { _documentNumber = value; }
+            }
+        }
+
 
         public static double GenMDocno(string strDocTypeId)
         {
             long curDocNo = 0;
             int intFlag = 1;
-
 
             try
             {
@@ -823,6 +833,7 @@ namespace softgen
                     {
                         reader.Read();
                         curDocNo = Convert.ToInt64(reader["next_no"]);
+                        DocumentManager.DocumentNumber = curDocNo; // Store the document number
 
                         Console.WriteLine("Next No is:" + curDocNo);
                         intFlag = 2;

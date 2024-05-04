@@ -176,6 +176,11 @@ namespace softgen
 
         }
 
+        public void PrintForm()
+        {
+
+        }
+
         private void frmM_Group_FormClosed(object sender, FormClosedEventArgs e)
         {
             DeTools.DestroyToolbar(this);

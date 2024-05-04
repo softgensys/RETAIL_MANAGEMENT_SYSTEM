@@ -15,7 +15,7 @@ using MySql.Data.MySqlClient;
 using System.Security.Cryptography.X509Certificates;
 using System.Data.Odbc;
 using System.Data;
-using Windows.Devices.Spi;
+//using Windows.Devices.Spi;
 
 namespace softgen
 
@@ -1099,7 +1099,7 @@ namespace softgen
                             break;
 
                         case "Print":
-                            //    gobjActiveForm.PrintDoc();
+                           searchableForm.PrintForm();
                             break;
 
                         case "Authorise":
@@ -3131,6 +3131,7 @@ namespace softgen
                
 
             }
+            dbConnector.connection.Close();
         }
 
         public static void CreateTemporaryTable(string tableName)

@@ -13,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TranslatorService.Models.Speech;
+using Microsoft.Reporting.NETCore;
+using System.Drawing.Printing;
 using static Google.Protobuf.Reflection.FieldOptions.Types;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -1093,7 +1095,355 @@ namespace softgen
                     Cursor.Current = Cursors.Default;
                 }
             }
+            dbConnector.connection.Close();
         }
+
+        //public void SaveForm()
+        //{
+        //    try
+        //    {
+
+        //        dbConnector = new DbConnector();
+        //        // dbConnector.connectionString= new OdbcConnection();
+        //        dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+        //        saveflag = true;
+        //        //mblnSearch = true;
+
+
+        //        int J;
+
+        //        dbgItemDet.Update();
+        //        //transaction = dbConnector.connection.BeginTransaction();
+
+
+
+        //        if (mblnSearch == false)
+        //        {
+        //            //if (!CheckMandatoryFields())
+        //            //{
+        //            //    saveflag = false;
+        //            //}
+
+        //            //else
+
+        //            UpdateInSaveForm();
+
+
+
+        //        }  //-------End of If//===========******End of Update Now Add*******==============
+
+        //        else if (mblnSearch == true)
+        //        {
+        //            int tempinv = 1;
+        //            int upperlimit = 999999999;
+
+
+
+        //            dayclosing();
+        //            if (closingdayok == "Y")
+        //            {
+
+
+
+
+        //                if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") != null)
+        //                {
+        //                    if (DeTools.CheckTemporaryTableExists("t_invoice_det") != null)
+        //                    {
+        //                        if (DeTools.CheckTemporaryTableExists("t_invoice_pay_det") != null)
+        //                        {
+        //                            //dbConnector.CloseConnection();
+        //                            DbConnector dbConnector = new DbConnector();
+        //                            Cursor.Current = Cursors.WaitCursor;
+        //                            string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
+        //                            string machine_name = DeTools.fOSMachineName.GetMachineName();
+
+
+        //                            dbConnector.OpenConnection();
+
+        //                            if (dbConnector.connection != null)
+        //                            {
+        //                                string GetLastTempInv = "select invoice_no from temp_t_invoice_hdr order by invoice_dt";
+        //                                using (OdbcCommand cmdGetLastTempInv = new OdbcCommand(GetLastTempInv, dbConnector.connection))
+        //                                {
+        //                                    OdbcDataReader fetchGetLastTempInv = cmdGetLastTempInv.ExecuteReader();
+
+        //                                    // Check if there are any rows returned
+        //                                    if (fetchGetLastTempInv.HasRows)
+        //                                    {
+        //                                        tempinv = Convert.ToInt32(cmdGetLastTempInv.ExecuteScalar());
+        //                                        tempinv++;
+        //                                    }
+        //                                }
+
+
+
+        //                                string inserthdrnew = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+        //                                                         "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+        //                                                         "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+        //                                                         "veh_no, po_no, open_yn, comp_name) VALUES" +
+        //                                                         " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+
+        //                                using (OdbcCommand cmddhdr = new OdbcCommand(inserthdrnew, dbConnector.connection))
+        //                                {
+        //                                    string BillTime = DateTime.Now.ToString("HH:mm:ss");
+        //                                    // cmd.Transaction = transaction;
+
+        //                                    //cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", gen_invoice_no.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", tempinv));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_dt", dtpInvDate.Value));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("bill_time", BillTime));
+        //                                    //-------------------------Cust combo----------------------------//
+        //                                    //general.FillCombo(cboCust, "cust_id", "m_customer", false);
+
+
+
+        //                                    if (cboCust.SelectedItem != null && !string.IsNullOrEmpty(cboCust.SelectedItem.ToString().Trim()))
+        //                                    {
+        //                                        CustIDFromDatabase = cboCust.SelectedItem.ToString().Trim();
+
+        //                                        if (CustIDFromDatabase != "")
+        //                                        {
+
+        //                                            DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
+
+        //                                            if (customerData != null)
+        //                                            {
+        //                                                custName = customerData["cust_name"].ToString().Trim();
+        //                                                custPhoneNo = customerData["phone_1"].ToString().Trim();
+        //                                                custAdd1 = customerData["address1"].ToString().Trim();
+        //                                                custAdd2 = customerData["address2"].ToString().Trim();
+        //                                                custEmail = customerData["email"].ToString().Trim();
+        //                                            }
+
+        //                                        }
+
+
+        //                                    }
+
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase ?? ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("sm_id", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("custname", custName));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
+
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("xmode", "A"));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("oth_amt", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("notes", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("status", "V"));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("auth_on", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("auth_by", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("sale_type", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("machine_id", machine_name));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("o_amt", rotPayAmt.Text.Trim()));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", BillTime));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("veh_no", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("po_no", ""));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+        //                                    cmddhdr.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+
+        //                                    cmddhdr.ExecuteNonQuery();
+
+
+        //                                    Cursor.Current = Cursors.WaitCursor;
+        //                                }
+        //                            }
+
+        //                            if (strMode != string.Empty && saveflag == true)
+        //                            {
+        //                                gen_invoice_no = General.GenMDocno("INV").ToString().Trim();
+
+        //                                if (gen_invoice_no.Length == 0)
+        //                                {
+        //                                    gen_invoice_no = "";
+        //                                    string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
+        //                                    Messages.ErrorMsg(gstrMsg);
+        //                                    saveflag = false;
+        //                                }
+
+        //                            }
+
+        //                            string inserttohdrnew = "INSERT INTO t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+        //                                                         "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+        //                                                         "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+        //                                                         "veh_no, po_no) Select ?, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+        //                                                         "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+        //                                                         "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+        //                                                         "veh_no, po_no from temp_t_invoice_hdr where invoice_no= ? and open_yn='Y';";
+
+        //                            using (OdbcCommand cmdtohdr = new OdbcCommand(inserttohdrnew, dbConnector.connection))
+        //                            {                                       
+        //                                cmdtohdr.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
+        //                                cmdtohdr.Parameters.AddWithValue("@tempinv", tempinv.ToString());
+        //                                cmdtohdr.ExecuteNonQuery();
+        //                            }
+
+        //                            string CheckInvInHdr = "Select * from t_invoice_hdr where invoice_no = ?";
+        //                            using (OdbcCommand CheckInvInHdr1 = new OdbcCommand(CheckInvInHdr, dbConnector.connection))
+        //                            {
+        //                                // Assuming dbConnector.connection is a valid OdbcConnection object
+        //                                CheckInvInHdr1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
+
+        //                                // Open the connection before executing the command
+        //                                dbConnector.OpenConnection();
+
+        //                                // Execute the query
+        //                                OdbcDataReader fetchInvInHdr = CheckInvInHdr1.ExecuteReader();
+
+        //                                // Check if there are any rows returned
+        //                                if (fetchInvInHdr.HasRows)
+        //                                {
+        //                                    string UpdNIntempHdr = "update temp_t_invoice_hdr set open_yn='N' where invoice_no=?";
+        //                                    using (OdbcCommand cmdUpdNIntempHdr = new OdbcCommand(UpdNIntempHdr, dbConnector.connection))
+        //                                    {
+        //                                        cmdUpdNIntempHdr.Parameters.AddWithValue("@tempinv", tempinv);
+        //                                        cmdUpdNIntempHdr.ExecuteNonQuery();
+        //                                    }
+
+        //                                    string delIntempHdr = "delete from temp_t_invoice_hdr where invoice_no=? and open_yn='N'";
+        //                                    using (OdbcCommand cmddelIntempHdr = new OdbcCommand(delIntempHdr, dbConnector.connection))
+        //                                    {
+        //                                        cmddelIntempHdr.Parameters.AddWithValue("@tempinv", tempinv);
+        //                                        cmddelIntempHdr.ExecuteNonQuery();
+        //                                    }
+        //                                }
+
+        //                                // Close the reader and connection
+        //                                fetchInvInHdr.Close();
+
+        //                            }
+        //                        }
+        //                        //=============END FOR HDR=================//
+        //                        string insertdetnew = "INSERT INTO temp_t_invoice_det" +
+        //                                                "(invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, " +
+        //                                                "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, " +
+        //                                                " pur_rate, cess_perc, cess_amt, excis_amt," +
+        //                                                "open_yn, comp_name) " +
+        //                                                "VALUES " +
+        //                                                "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        //                        dbConnector.OpenConnection();
+        //                        for (int i = 0; i < dbgItemDet.Rows.Count - 1; i++) // Iterate up to the second last row
+        //                        {
+        //                            DataGridViewRow row = dbgItemDet.Rows[i];
+
+        //                            using (OdbcCommand cmdddet = new OdbcCommand(insertdetnew, dbConnector.connection))
+        //                            {
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@invoice_dt", dtpInvDate.Value));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@branch_id", DeTools.strBranch.Trim()));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@item_id", row.Cells[13].Value?.ToString()));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@bar_code", row.Cells[1].Value?.ToString()));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@item_sl_no", row.Cells[0].Value?.ToString()));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@qty", row.Cells[3].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@mrp", row.Cells[4].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@sale_price", row.Cells[5].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@disc_per", row.Cells[6].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@disc_amt", row.Cells[7].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@sale_tax_per", row.Cells[8].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@sale_tax_amt", row.Cells[11].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@net_amt", row.Cells[10].Value?.ToString() ?? "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@pur_rate", "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@cess_perc", "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@cess_amt", "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@excis_amt", "0.00"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@open_yn", "Y"));
+        //                                cmdddet.Parameters.Add(new OdbcParameter("@comp_name", DeTools.fOSMachineName.GetMachineName()));
+
+        //                                // Execute the command
+        //                                cmdddet.ExecuteNonQuery();
+        //                            }
+        //                        }
+
+        //                        string inserttodetnew = "INSERT INTO t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, " +
+        //                                                "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, " +
+        //                                                " pur_rate, cess_perc, cess_amt, excis_amt)" +
+        //                                                "Select ?, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price," +
+        //                                                "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt," +
+        //                                                "pur_rate, cess_perc, cess_amt, excis_amt  from temp_t_invoice_det where invoice_no= ? and open_yn='Y' and comp_name=?;";
+
+
+        //                        using (OdbcCommand cmdtodet = new OdbcCommand(inserttodetnew, dbConnector.connection))
+        //                        {
+        //                            cmdtodet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
+        //                            cmdtodet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
+        //                            cmdtodet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+        //                            cmdtodet.ExecuteNonQuery();
+        //                        }
+
+        //                        string CheckInvInDet = "Select * from t_invoice_det where invoice_no = ?";
+        //                        using (OdbcCommand CheckInvInDet1 = new OdbcCommand(CheckInvInDet, dbConnector.connection))
+        //                        {
+        //                            // Assuming dbConnector.connection is a valid OdbcConnection object
+        //                            CheckInvInDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
+
+        //                            // Open the connection before executing the command
+        //                            dbConnector.OpenConnection();
+
+        //                            // Execute the query
+        //                            OdbcDataReader fetchInvInDet = CheckInvInDet1.ExecuteReader();
+
+        //                            // Check if there are any rows returned
+        //                            if (fetchInvInDet.HasRows)
+        //                            {
+        //                                string UpdNIntempDet = "update temp_t_invoice_det set open_yn='N' where invoice_no=?";
+        //                                using (OdbcCommand cmdUpdNIntempDet = new OdbcCommand(UpdNIntempDet, dbConnector.connection))
+        //                                {
+        //                                    cmdUpdNIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
+        //                                    cmdUpdNIntempDet.ExecuteNonQuery();
+        //                                }
+
+        //                                string delIntempDet = "delete from temp_t_invoice_det where invoice_no=? and open_yn='N' and comp_name=?";
+        //                                using (OdbcCommand cmddelIntempDet = new OdbcCommand(delIntempDet, dbConnector.connection))
+        //                                {
+        //                                    cmddelIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
+        //                                    cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+        //                                    cmddelIntempDet.ExecuteNonQuery();
+        //                                }
+        //                            }
+
+        //                            // Close the reader and connection
+        //                            //fetchInvInDet.Close();
+
+        //                        }
+
+        //                    }
+        //                    //=============END FOR DET=================//
+
+        //                    addinpaydet(tempinv);
+
+
+        //                }
+        //            }
+        //            Cursor.Current = Cursors.Default;
+
+        //            MessageBox.Show("Invoice Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }//===========================End of ADD================================
+
+        //    }//-------try over---------------
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //    finally
+        //    {
+        //        dbConnector.CloseConnection();
+        //    }
+        //}
+
+        //---------------OLD CODE-----------------
 
         public void SaveForm()
         {
@@ -1437,6 +1787,49 @@ namespace softgen
             }
         }
 
+        //public void printform()
+        //{
+        //    dbconnector dbconnector = new dbconnector();
+        //    dbconnector.connection = new odbcconnection(dbconnector.connectionstring);
+
+        //    try
+        //    {
+        //        dbconnector.connection.open();
+
+        //        string gstrsql = "{ call sd_invoice(?) }";
+
+        //        using (odbccommand command = new odbccommand(gstrsql, dbconnector.connection))
+        //        {
+        //            command.commandtype = commandtype.storedprocedure;
+
+        //            command.parameters.addwithvalue("@invoiceno", gen_invoice_no.trim());                    
+
+        //            using (odbcdatareader reader = command.executereader())
+        //            {
+        //                if (reader.hasrows)
+        //                {
+        //                    while (reader.read())
+        //                    {
+
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (exception ex)
+        //    {
+        //        // handle the exception, log it, or throw it as needed.
+        //        console.writeline("error: " + ex.message);
+        //    }
+        //    finally
+        //    {
+        //        dbconnector.closeconnection();
+        //    }
+
+        //}
+
+
+
         public void addinpaydet(int tempinv)
         {
             try
@@ -1607,55 +2000,387 @@ namespace softgen
                 throw;
             }
         }
-
-        public string dayclosing()
+        public string GetBrand()
         {
-            DbConnector dbConnector = new DbConnector();
+            return DeTools.strBrand;
+        }
+        public void PrintForm()
+        {
+            SaveForm();
+            //string brandnm = DeTools.strBrand.Trim();
+            // Instantiate Form2 with ReportViewer
+            Form2 form2 = new Form2();
+
+            // Show Form2
+            form2.ShowDialog();
+        }
+
+        public string GetInvoiceNoPrint()
+        {
+            Form2 form2 = new Form2();
+                        
+
             try
             {
-                dbConnector.OpenConnection();
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
 
-                string chk_cls_day = "select IFNULL(max(invoice_dt),0) as max_invoice_dt from t_invoice_hdr;";
-                using (OdbcDataReader chk_cls_day_read = dbConnector.CreateResultset(chk_cls_day))
+                string gstrSQL = "{ CALL sd_invoice(?) }";
+
+                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
                 {
-                    if (chk_cls_day_read.HasRows && chk_cls_day_read.Read())
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.AddWithValue("@InvoiceNo", gen_invoice_no.Trim());
+                    int rowno = 1;
+                    using (OdbcDataReader reader = command.ExecuteReader())
                     {
-                        // Check if the max_invoice_dt column is DBNull
-                        if (!chk_cls_day_read.IsDBNull(chk_cls_day_read.GetOrdinal("max_invoice_dt")))
+                        if (reader.HasRows)
                         {
-                            // Retrieve the max_invoice_dt value
-                            string maxInvoiceDateStr = chk_cls_day_read.GetString(chk_cls_day_read.GetOrdinal("max_invoice_dt"));
-                            string closedt;
-                            // Check if max_invoice_dt is empty or equal to the current date
-                            if (!string.IsNullOrEmpty(maxInvoiceDateStr) || DateTime.TryParse(maxInvoiceDateStr, out DateTime maxInvoiceDate) && maxInvoiceDate.Date == DateTime.Today)
+                            while (reader.Read())
                             {
-                                closedt = chk_cls_day_read["max_invoice_dt"].ToString().Trim();
-                                closingdayok = "Y";
-
+                                form2.form2inv_no = reader["invoice_no"].ToString().Trim();
                             }
-                            else
-                            {
-                                MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                closingdayok = "N";
-                            }
-
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                        closingdayok = "N";
-                    }
-
                 }
-                return closingdayok;
             }
             catch (Exception)
             {
-
                 throw;
             }
+            
+            return form2.form2inv_no;
+            dbConnector.connection.Close();
         }
+
+                                //try print coding
+                                //public void PrintForm()
+                                //{
+                                //    SaveForm();
+                                //    // Create a PrintDocument instance
+                                //    PrintDocument pd = new PrintDocument();
+
+                                //    // Handle the PrintPage event directly
+                                //    pd.PrintPage += (sender, e) =>
+                                //    {
+                                //        // Set the page width to 6.5 cm (624 pixels)
+                                //        e.PageSettings.PaperSize = new PaperSize("Custom", 624, e.PageSettings.PaperSize.Height);
+
+                                //        // Example data for the invoice
+                                //        string brandName = DeTools.strBrand.Trim();
+                                //        string gstNo = DeTools.strTin.Trim();
+                                //        string address = DeTools.strAddress1.Trim();
+                                //        string phoneNo = DeTools.strPhone.Trim();
+                                //        string paymentMode = "Payment Mode: Cash";
+
+                                //        string invoiceNo = gen_invoice_no.Trim();
+                                //        string invoiceDate = "Invoice Date: " + DateTime.Now.ToString("dd/MM/yyyy");
+                                //        string time = "Time: " + DateTime.Now.ToString("HH:mm:ss");
+                                //        string cashier = "Cashier: John Doe";
+
+                                //        // Drawing the header section...
+                                //        e.Graphics.DrawString(brandName, new Font("Arial", 12, FontStyle.Bold), Brushes.Black, new PointF(50, 50));
+                                //        e.Graphics.DrawString(gstNo, new Font("Arial", 10), Brushes.Black, new PointF(50, 70));
+                                //        e.Graphics.DrawString(address, new Font("Arial", 10), Brushes.Black, new PointF(50, 90));
+                                //        e.Graphics.DrawString(phoneNo, new Font("Arial", 10), Brushes.Black, new PointF(50, 110));
+                                //        e.Graphics.DrawString(paymentMode, new Font("Arial", 10), Brushes.Black, new PointF(50, 130));
+
+                                //        // Drawing the first horizontal line...
+                                //        e.Graphics.DrawLine(Pens.Black, new Point(50, 150), new Point(800, 150));
+
+                                //        // Drawing the invoice details section...
+                                //        e.Graphics.DrawString(gen_invoice_no.Trim(), new Font("Arial", 10), Brushes.Black, new PointF(50, 160));
+                                //        e.Graphics.DrawString(invoiceDate, new Font("Arial", 10), Brushes.Black, new PointF(200, 160));
+                                //        e.Graphics.DrawString(time, new Font("Arial", 10), Brushes.Black, new PointF(400, 160));
+                                //        e.Graphics.DrawString(cashier, new Font("Arial", 10), Brushes.Black, new PointF(600, 160));
+
+                                //        // Drawing the second horizontal line...
+                                //        e.Graphics.DrawLine(Pens.Black, new Point(50, 180), new Point(800, 180));
+
+                                //        // Drawing the table headers...
+                                //        e.Graphics.DrawString("Sr. No.", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, new PointF(50, 190));
+                                //        e.Graphics.DrawString("Item Name", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, new PointF(150, 190));
+                                //        e.Graphics.DrawString("Qty", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, new PointF(350, 190));
+                                //        e.Graphics.DrawString("Mrp", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, new PointF(450, 190));
+                                //        e.Graphics.DrawString("Our Price", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, new PointF(550, 190));
+                                //        e.Graphics.DrawString("Total Amt", new Font("Arial", 10, FontStyle.Bold), Brushes.Black, new PointF(650, 190));
+
+                                //        // Drawing the third horizontal line...
+                                //        e.Graphics.DrawLine(Pens.Black, new Point(50, 210), new Point(800, 210));
+
+                                //        // Fetching items from the database...
+                                //        List<string[]> itemList = GetItemDataForPrint();
+
+                                //        // Drawing the items dynamically...
+                                //        int yPos = 220; // Initial y position for items
+                                //        foreach (string[] item in itemList)
+                                //        {
+                                //            for (int i = 0; i < item.Length; i++)
+                                //            {
+                                //                e.Graphics.DrawString(item[i], new Font("Arial", 10), Brushes.Black, new PointF(50 + i * 100, yPos));
+                                //            }
+                                //            yPos += 20; // Increment y position for the next item
+                                //        }
+                                //    };
+
+                                //    try
+                                //    {
+                                //        // Start the printing process...
+                                //        pd.Print();
+                                //    }
+                                //    catch (Exception ex)
+                                //    {
+                                //        // Handle any exceptions that occur during printing...
+                                //        MessageBox.Show("An error occurred while printing: " + ex.Message);
+                                //    }
+                                //}
+
+                                //public void PrintForm()
+                                //{
+                                //    SaveForm();
+
+                                //    // Create a PrintDocument object
+                                //    PrintDocument pd = new PrintDocument();
+
+                                //    // Handle the PrintPage event
+                                //    pd.PrintPage += (sender, e) =>
+                                //    {
+                                //        // Calculate the appropriate width in pixels for 80mm
+                                //        float dpiX = e.Graphics.DpiX;
+                                //        int widthInPixels = (int)(65 * dpiX / 25.4);
+                                //        e.PageSettings.PaperSize = new PaperSize("Custom", widthInPixels, e.PageSettings.PaperSize.Height);
+
+                                //        // Example data for the invoice
+                                //        string brandName = DeTools.strBrand.Trim();
+                                //        string gstNo = DeTools.strTin.Trim();
+                                //        string address = DeTools.strAddress1.Trim();
+                                //        string phoneNo = DeTools.strPhone.Trim();
+                                //        string paymentMode = "Payment Mode: Cash";
+                                //        string invoiceNo = gen_invoice_no.Trim();
+                                //        string invoiceDate = "Invoice Date: " + DateTime.Now.ToString("dd/MM/yyyy");
+                                //        string time = "Time: " + DateTime.Now.ToString("HH:mm:ss");
+                                //        string cashier = "Cashier: John Doe";
+
+                                //        // Calculate the width of the print area
+                                //        float printAreaWidth = e.PageBounds.Width;
+
+                                //        // Calculate the starting X position to center the text horizontally
+
+                                //        // Drawing the header section...
+                                //        float textWidth = e.Graphics.MeasureString(brandName, new Font("Arial", 12, FontStyle.Bold)).Width;
+                                //        float startX = (printAreaWidth - textWidth) / 2;
+                                //        e.Graphics.DrawString(brandName, new Font("Arial", 12, FontStyle.Bold), Brushes.Black, new PointF(startX, 50));
+                                //        e.Graphics.DrawString(gstNo, new Font("Arial", 10), Brushes.Black, new PointF(50, 70));
+                                //        e.Graphics.DrawString(address, new Font("Arial", 10), Brushes.Black, new PointF(50, 90));
+                                //        e.Graphics.DrawString(phoneNo, new Font("Arial", 10), Brushes.Black, new PointF(50, 110));
+                                //        e.Graphics.DrawString(paymentMode, new Font("Arial", 10), Brushes.Black, new PointF(50, 130));
+
+                                //        // Drawing the first horizontal line...
+                                //        e.Graphics.DrawLine(Pens.Black, new Point(50, 150), new Point(widthInPixels, 150));
+
+                                //        // Drawing the invoice details section...
+                                //        e.Graphics.DrawString(gen_invoice_no.Trim(), new Font("Arial", 10), Brushes.Black, new PointF(50, 160));
+                                //        e.Graphics.DrawString(invoiceDate, new Font("Arial", 10), Brushes.Black, new PointF(200, 160));
+                                //        e.Graphics.DrawString(time, new Font("Arial", 10), Brushes.Black, new PointF(400, 160));
+                                //        e.Graphics.DrawString(cashier, new Font("Arial", 10), Brushes.Black, new PointF(600, 160));
+
+                                //        // Drawing the second horizontal line...
+                                //        e.Graphics.DrawLine(Pens.Black, new Point(50, 180), new Point(widthInPixels, 180));
+
+                                //        // Drawing the table headers...
+                                //        e.Graphics.DrawString("S.No.", new Font("Arial", 9.2f, FontStyle.Regular), Brushes.Black, new RectangleF(50, 190, 130, 20));
+                                //        e.Graphics.DrawString("Item Description", new Font("Arial", 9.2f, FontStyle.Regular), Brushes.Black, new RectangleF(180, 190, 190, 20));
+                                //        e.Graphics.DrawString("Qty", new Font("Arial", 9.2f, FontStyle.Regular), Brushes.Black, new RectangleF(370, 190, 70, 20));
+                                //        e.Graphics.DrawString("Mrp", new Font("Arial", 9.2f, FontStyle.Regular), Brushes.Black, new RectangleF(440, 190, 70, 20));
+                                //        e.Graphics.DrawString("Our Price", new Font("Arial", 9.2f, FontStyle.Regular), Brushes.Black, new RectangleF(510, 190, 70, 20));
+                                //        e.Graphics.DrawString("Total Amt", new Font("Arial", 9.2f, FontStyle.Regular), Brushes.Black, new RectangleF(580, 190, 70, 20));
+
+                                //        // Drawing the third horizontal line...
+                                //        e.Graphics.DrawLine(Pens.Black, new Point(50, 210), new Point(widthInPixels, 210));
+
+                                //        // Fetching items from the database...
+                                //        List<string[]> itemList = GetItemDataForPrint();
+
+                                //        // Drawing the items dynamically...
+                                //        int yPos = 220; // Initial y position for items
+                                //        foreach (string[] item in itemList)
+                                //        {
+                                //            // Draw Sr. No.
+                                //            e.Graphics.DrawString(item[0], new Font("Times New Roman", 8.8f), Brushes.Black, new PointF(50, yPos));
+                                //            // Draw Item Name with line breaks if necessary
+                                //            int maxWidth = 150;
+                                //            int xPos = 70;
+                                //            string[] itemNameLines = SplitTextIntoLines(item[1]+"\t\t"+item[2], maxWidth, new Font("Arial", 10), e.Graphics);
+                                //            foreach (string line in itemNameLines)
+                                //            {
+                                //                e.Graphics.DrawString(line, new Font("Times New Roman", 8.8f), Brushes.Black, new PointF(xPos, yPos));                        
+                                //                yPos += 10; // Move to the next line
+                                //            }
+
+                                //                //e.Graphics.DrawString(item[2], new Font("Times New Roman", 9), Brushes.Black, new PointF(200, yPos));                    
+                                //            // Draw HSN and disc(%)
+                                //            // Draw Qty
+                                //            e.Graphics.DrawString(item[3], new Font("Times New Roman", 8.2f), Brushes.Black, new PointF(60, yPos));
+                                //            // Draw Mrp
+                                //            e.Graphics.DrawString(item[4], new Font("Times New Roman", 8.2f), Brushes.Black, new PointF(150, yPos));
+                                //            // Draw Our Price
+                                //            e.Graphics.DrawString(item[5], new Font("Times New Roman", 8.2f), Brushes.Black, new PointF(190, yPos));
+                                //            // Draw Total Amt
+                                //            e.Graphics.DrawString(item[6], new Font("Times New Roman", 8.2f), Brushes.Black, new PointF(220, yPos));
+
+                                //            e.Graphics.DrawString(item[7], new Font("Times New Roman", 8.2f), Brushes.Black, new PointF(250, yPos));
+
+                                //            yPos += 40; // Increment y position for the next item
+                                //        }
+                                //    };
+
+                                //    PrintController printController = new StandardPrintController();
+                                //    pd.PrintController = printController;
+
+                                //    try
+                                //    {
+                                //        pd.Print();
+                                //    }
+                                //    catch (Exception ex)
+                                //    {
+                                //        MessageBox.Show("An error occurred while printing: " + ex.Message);
+                                //    }
+                                //}
+
+                                //public List<string[]> GetItemDataForPrint()
+                                //{
+                                //    List<string[]> itemList = new List<string[]>();
+
+                                //    try
+                                //    {
+                                //        DbConnector dbConnector = new DbConnector();
+                                //        dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                                //        dbConnector.connection.Open();
+
+                                //        string gstrSQL = "{ CALL sd_invoice(?) }";
+
+                                //        using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
+                                //        {
+                                //            command.CommandType = CommandType.StoredProcedure;
+
+                                //            command.Parameters.AddWithValue("@InvoiceNo", gen_invoice_no.Trim());
+                                //            int rowno = 1;
+                                //            using (OdbcDataReader reader = command.ExecuteReader())
+                                //            {
+                                //                if (reader.HasRows)
+                                //                {
+                                //                    while (reader.Read())
+                                //                    {
+                                //                        string[] item = new string[8]; // Assuming there are 6 columns in your result set
+                                //                        item[0] = rowno.ToString(); // Assuming the first column is Sr. No.
+                                //                        item[1] = reader["item_desc"].ToString(); // Assuming the second column is Item Name
+                                //                        item[2] = "HSN:" + reader["hsn_code"].ToString();
+                                //                        item[3] = "\n"+"disc(%):" + reader["disc_per"].ToString();
+                                //                        item[4] = "\n" + reader["qty"].ToString(); // Assuming the third column is Qty
+                                //                        item[5] = "\n" + reader["mrp"].ToString(); // Assuming the fourth column is Mrp
+                                //                        item[6] = "\n" + reader["sale_price"].ToString(); // Assuming the fifth column is Our Price
+                                //                        item[7] = "\n" + reader["net_amt"].ToString() ; // Assuming the sixth column is Total Amt
+                                //                        itemList.Add(item);
+
+                                //                        rowno++;                                
+                                //                    }
+
+                                //                }
+                                //            }
+                                //        }
+                                //    }
+                                //    catch (Exception ex)
+                                //    {
+                                //        // Handle the exception, log it, or throw it as needed.
+                                //        Console.WriteLine("Error: " + ex.Message);
+                                //    }
+                                //    finally
+                                //    {
+                                //        dbConnector.CloseConnection();
+                                //    }
+
+                                //    return itemList;
+                                //}
+
+                                //private string[] SplitTextIntoLines(string text, int maxWidth, Font font, Graphics graphics)
+                                //{
+                                //    List<string> lines = new List<string>();
+                                //    string currentLine = "";
+                                //    string[] words = text.Split(' ');
+                                //    foreach (string word in words)
+                                //    {
+                                //        if (graphics.MeasureString(currentLine + word, font).Width <= maxWidth)
+                                //        {
+                                //            // Word fits within the current line
+                                //            currentLine += word + " ";
+                                //        }
+                                //        else
+                                //        {
+                                //            // Word exceeds the current line width, start a new line
+                                //            lines.Add(currentLine);
+                                //            currentLine = word + " ";
+                                //        }
+                                //    }
+                                //    // Add the remaining text as the last line
+                                //    if (!string.IsNullOrEmpty(currentLine))
+                                //    {
+                                //        lines.Add(currentLine);
+                                //    }
+                                //    return lines.ToArray();
+                                //}
+                                //try print
+
+                                public string dayclosing()
+                                {
+                                    DbConnector dbConnector = new DbConnector();
+                                    try
+                                    {
+                                        dbConnector.OpenConnection();
+
+                                        string chk_cls_day = "select IFNULL(max(invoice_dt),0) as max_invoice_dt from t_invoice_hdr;";
+                                        using (OdbcDataReader chk_cls_day_read = dbConnector.CreateResultset(chk_cls_day))
+                                        {
+                                            if (chk_cls_day_read.HasRows && chk_cls_day_read.Read())
+                                            {
+                                                // Check if the max_invoice_dt column is DBNull
+                                                if (!chk_cls_day_read.IsDBNull(chk_cls_day_read.GetOrdinal("max_invoice_dt")))
+                                                {
+                                                    // Retrieve the max_invoice_dt value
+                                                    string maxInvoiceDateStr = chk_cls_day_read.GetString(chk_cls_day_read.GetOrdinal("max_invoice_dt"));
+                                                    string closedt;
+                                                    // Check if max_invoice_dt is empty or equal to the current date
+                                                    if (!string.IsNullOrEmpty(maxInvoiceDateStr) || DateTime.TryParse(maxInvoiceDateStr, out DateTime maxInvoiceDate) && maxInvoiceDate.Date == DateTime.Today)
+                                                    {
+                                                        closedt = chk_cls_day_read["max_invoice_dt"].ToString().Trim();
+                                                        closingdayok = "Y";
+
+                                                    }
+                                                    else
+                                                    {
+                                                        MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                        closingdayok = "N";
+                                                    }
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                closingdayok = "N";
+                                            }
+
+                                        }
+                                        dbConnector.connection.Close();
+                                        return closingdayok;
+                                    }
+                                    catch (Exception)
+                                    {
+
+                                        throw;
+                                    }
+                                }
 
         public void SearchForm()
         {

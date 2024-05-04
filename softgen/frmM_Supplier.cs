@@ -82,6 +82,11 @@ namespace softgen
             txtSuppId.Focus();
         }
 
+        public void PrintForm()
+        {
+
+        }
+
 
         private void frmM_Supplier_Load(object sender, EventArgs e)
         {

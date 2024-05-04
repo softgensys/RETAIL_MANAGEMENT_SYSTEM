@@ -57,6 +57,11 @@ namespace softgen
             cboGrpId.Focus();
         }
 
+        public void PrintForm()
+        {
+
+        }
+
         public void ResetControls(Control.ControlCollection controls)
         {
             foreach (Control control in controls)
