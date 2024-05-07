@@ -319,6 +319,26 @@
               <xs:element name="sale_price" msprop:Generator_ColumnPropNameInTable="sale_priceColumn" msprop:Generator_ColumnPropNameInRow="sale_price" msprop:Generator_UserColumnName="sale_price" msprop:Generator_ColumnVarNameInTable="columnsale_price" type="xs:string" minOccurs="0" />
               <xs:element name="disc_per" msprop:Generator_ColumnPropNameInTable="disc_perColumn" msprop:Generator_ColumnPropNameInRow="disc_per" msprop:Generator_UserColumnName="disc_per" msprop:Generator_ColumnVarNameInTable="columndisc_per" type="xs:string" minOccurs="0" />
               <xs:element name="net_amt" msprop:Generator_ColumnPropNameInTable="net_amtColumn" msprop:Generator_ColumnPropNameInRow="net_amt" msprop:Generator_UserColumnName="net_amt" msprop:Generator_ColumnVarNameInTable="columnnet_amt" type="xs:string" minOccurs="0" />
+              <xs:element name="isave" msprop:Generator_ColumnPropNameInTable="isaveColumn" msprop:Generator_ColumnPropNameInRow="isave" msprop:Generator_UserColumnName="isave" msprop:Generator_ColumnVarNameInTable="columnisave" type="xs:string" minOccurs="0" />
+              <xs:element name="net_amt_after_disc" msprop:Generator_ColumnPropNameInTable="net_amt_after_discColumn" msprop:Generator_ColumnPropNameInRow="net_amt_after_disc" msprop:Generator_UserColumnName="net_amt_after_disc" msprop:Generator_ColumnVarNameInTable="columnnet_amt_after_disc" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="TaxDataTable" msprop:Generator_RowClassName="TaxDataTableRow" msprop:Generator_RowEvHandlerName="TaxDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="TaxDataTableRowDeleted" msprop:Generator_RowDeletingName="TaxDataTableRowDeleting" msprop:Generator_RowEvArgName="TaxDataTableRowChangeEvent" msprop:Generator_TablePropName="TaxDataTable" msprop:Generator_RowChangedName="TaxDataTableRowChanged" msprop:Generator_UserTableName="TaxDataTable" msprop:Generator_RowChangingName="TaxDataTableRowChanging" msprop:Generator_TableClassName="TaxDataTableDataTable" msprop:Generator_TableVarName="tableTaxDataTable">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="sale_tax_per" msprop:Generator_UserColumnName="sale_tax_per" msprop:Generator_ColumnPropNameInTable="sale_tax_perColumn" msprop:Generator_ColumnPropNameInRow="sale_tax_per" msprop:Generator_ColumnVarNameInTable="columnsale_tax_per" type="xs:string" minOccurs="0" />
+              <xs:element name="it_vat_amt" msprop:Generator_UserColumnName="it_vat_amt" msprop:Generator_ColumnPropNameInTable="it_vat_amtColumn" msprop:Generator_ColumnPropNameInRow="it_vat_amt" msprop:Generator_ColumnVarNameInTable="columnit_vat_amt" type="xs:string" minOccurs="0" />
+              <xs:element name="item_amt" msprop:Generator_UserColumnName="item_amt" msprop:Generator_ColumnPropNameInTable="item_amtColumn" msprop:Generator_ColumnPropNameInRow="item_amt" msprop:Generator_ColumnVarNameInTable="columnitem_amt" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="CessDataTable" msprop:Generator_RowEvHandlerName="CessDataTableRowChangeEventHandler" msprop:Generator_RowDeletedName="CessDataTableRowDeleted" msprop:Generator_RowDeletingName="CessDataTableRowDeleting" msprop:Generator_RowEvArgName="CessDataTableRowChangeEvent" msprop:Generator_TablePropName="CessDataTable" msprop:Generator_RowChangedName="CessDataTableRowChanged" msprop:Generator_RowChangingName="CessDataTableRowChanging" msprop:Generator_TableClassName="CessDataTableDataTable" msprop:Generator_RowClassName="CessDataTableRow" msprop:Generator_TableVarName="tableCessDataTable" msprop:Generator_UserTableName="CessDataTable">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="cess_perc" msprop:Generator_ColumnPropNameInRow="cess_perc" msprop:Generator_ColumnPropNameInTable="cess_percColumn" msprop:Generator_ColumnVarNameInTable="columncess_perc" msprop:Generator_UserColumnName="cess_perc" type="xs:string" minOccurs="0" />
+              <xs:element name="it_cess_amt" msprop:Generator_ColumnPropNameInRow="it_cess_amt" msprop:Generator_ColumnPropNameInTable="it_cess_amtColumn" msprop:Generator_ColumnVarNameInTable="columnit_cess_amt" msprop:Generator_UserColumnName="it_cess_amt" type="xs:string" minOccurs="0" />
+              <xs:element name="item_amt" msprop:Generator_ColumnPropNameInRow="item_amt" msprop:Generator_ColumnPropNameInTable="item_amtColumn" msprop:Generator_ColumnVarNameInTable="columnitem_amt" msprop:Generator_UserColumnName="item_amt" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
