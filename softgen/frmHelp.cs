@@ -101,7 +101,14 @@ namespace softgen
                 // Transfer data to another form
                 if (DeTools.gobjActiveForm.Name == "frmT_Invoice")
                 {
-                    Help.TransferDataInv();
+                    Form form1 = DeTools.gobjActiveForm;
+                    Help.TransferDataInv(form1);
+                }
+
+                else if (DeTools.gobjActiveForm.Name == "frmT_Sale_Return")
+                {
+                    Form form1 = DeTools.gobjActiveForm;
+                    Help.TransferDataSr(form1);
                 }
 
                 else

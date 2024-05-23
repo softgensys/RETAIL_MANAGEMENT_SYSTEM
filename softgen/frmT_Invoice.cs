@@ -17,7 +17,7 @@ using Microsoft.Reporting.NETCore;
 using System.Drawing.Printing;
 using static Google.Protobuf.Reflection.FieldOptions.Types;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-
+using ComboBox = System.Windows.Forms.ComboBox;
 
 namespace softgen
 {
@@ -63,6 +63,9 @@ namespace softgen
         public string ccodetxt = "";
         public string paymodtxt = "";
         public string couptxt = "";
+        public string selectedCustomer = "";
+        //*** for getting invoice no from help for Modify 
+        public static string GetInvNoFromHelp = "";
 
         public frmT_Invoice()
         {
@@ -518,8 +521,8 @@ namespace softgen
                                                 {
                                                     custName = customerData["cust_name"].ToString().Trim();
                                                     custPhoneNo = customerData["phone_1"].ToString().Trim();
-                                                    custAdd1 = customerData["address1"].ToString().Trim();
-                                                    custAdd2 = customerData["address2"].ToString().Trim();
+                                                    custAdd1 = customerData["address_1"].ToString().Trim();
+                                                    custAdd2 = customerData["address_2"].ToString().Trim();
                                                     custEmail = customerData["email"].ToString().Trim();
                                                 }
 
@@ -1559,8 +1562,8 @@ namespace softgen
                                                     {
                                                         custName = customerData["cust_name"].ToString().Trim();
                                                         custPhoneNo = customerData["phone_1"].ToString().Trim();
-                                                        custAdd1 = customerData["address1"].ToString().Trim();
-                                                        custAdd2 = customerData["address2"].ToString().Trim();
+                                                        custAdd1 = customerData["address_1"].ToString().Trim();
+                                                        custAdd2 = customerData["address_2"].ToString().Trim();
                                                         custEmail = customerData["email"].ToString().Trim();
                                                     }
 
@@ -2382,227 +2385,535 @@ namespace softgen
                                     }
                                 }
 
+        //**FOR THE PURPOSE OF SEARCHING THE INVOICE WHICH IS NOT SAVED AND ALSO WHICH IS SAVED
         public void SearchForm()
         {
 
-        }
-
-        public void UnsavedData()
-        {
             DbConnector dbConnector = new DbConnector();
 
 
             try
             {
+
                 dbConnector.OpenConnection();
                 string compname = DeTools.fOSMachineName.GetMachineName();
                 string user = MainForm.Instance.pnlUserName.Text.Trim();
-                string matchbranchinv = "SELECT b.invoice_no FROM temp_t_invoice_hdr b WHERE b.open_yn='Y' and b.ent_by='" + user.Trim() + "' and b.comp_name='" + compname.Trim() + "' and b.branch_id='" + DeTools.strBranch.Trim() + "' order by ent_on desc;";
-                OdbcParameter[] parameters_match_branchinv = new OdbcParameter[0];
-                using (OdbcDataReader readerinv = dbConnector.ExecuteReader(matchbranchinv, parameters_match_branchinv))
+                string inv_no = "";
+
+                if (mblnSearch == true)
                 {
-                    if (readerinv.Read())
+                    string matchbranchinv = "SELECT b.invoice_no FROM temp_t_invoice_hdr b WHERE b.open_yn='Y' and b.ent_by='" + user.Trim() + "' and b.comp_name='" + compname.Trim() + "' and b.branch_id='" + DeTools.strBranch.Trim() + "' order by ent_on desc limit 1;";
+                    OdbcParameter[] parameters_match_branchinv = new OdbcParameter[0];
+                    using (OdbcDataReader readerinv = dbConnector.ExecuteReader(matchbranchinv, parameters_match_branchinv))
                     {
-
-
-                        if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") != null)
+                        if (readerinv.Read())
                         {
-                            if (DeTools.CheckTemporaryTableExists("t_invoice_det") != null)
+                            inv_no = readerinv["invoice_no"].ToString().Trim();
+                            DialogResult result = MessageBox.Show("Unsaved Invoice Is Pending! Save First\n Do, You Want To Save?", "Unsaved Invoice", MessageBoxButtons.YesNo, MessageBoxIcon.Stop);
+
+                            // Check if the user clicked "Yes" or "No"
+                            if (result == DialogResult.Yes)
                             {
-                                if (DeTools.CheckTemporaryTableExists("t_invoice_pay_det") != null)
+
+                                DialogResult AreyouSure = MessageBox.Show("Are You Sure!\n You Want To Save", "Clear Unsaved Invoice!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                                if (AreyouSure == DialogResult.Yes)
                                 {
 
 
-                                    saveflag = true;
-                                    string querypaydet = "SELECT a.* FROM temp_t_invoice_pay_det a, temp_t_invoice_hdr b WHERE a.open_yn='Y' AND b.ent_by=? AND a.comp_name=? AND a.invoice_no=? ORDER BY ent_on DESC;";
 
-                                    OdbcParameter[] parameterspaydet = new OdbcParameter[3];
-                                    parameterspaydet[0] = new OdbcParameter("ent_by", user.Trim());
-                                    parameterspaydet[1] = new OdbcParameter("comp_name", compname.Trim());
-                                    parameterspaydet[2] = new OdbcParameter("invoice_no", readerinv["invoice_no"]);
+                                    if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") != null)
+                                    {
+                                        if (DeTools.CheckTemporaryTableExists("t_invoice_det") != null)
+                                        {
+                                            if (DeTools.CheckTemporaryTableExists("t_invoice_pay_det") != null)
+                                            {
+
+
+                                                saveflag = true;
+                                                string querypaydet = "SELECT a.* FROM temp_t_invoice_pay_det a, temp_t_invoice_hdr b WHERE a.open_yn='Y' AND b.ent_by=? AND a.comp_name=? AND a.invoice_no=? ORDER BY ent_on DESC;";
+
+                                                OdbcParameter[] parameterspaydet = new OdbcParameter[3];
+                                                parameterspaydet[0] = new OdbcParameter("ent_by", user.Trim());
+                                                parameterspaydet[1] = new OdbcParameter("comp_name", compname.Trim());
+                                                parameterspaydet[2] = new OdbcParameter("invoice_no", readerinv["invoice_no"]);
 
 
 
-                                    using (OdbcDataReader reader = dbConnector.ExecuteReader(querypaydet, parameterspaydet))
+                                                using (OdbcDataReader reader = dbConnector.ExecuteReader(querypaydet, parameterspaydet))
+                                                {
+                                                    if (reader.HasRows)
+                                                    {
+                                                        Messages.UnsavedMsg(null);
+                                                        //txtInvNo.Text = reader["invoice_no"].ToString().Trim();
+                                                        while (reader.Read())
+                                                        {
+                                                            // Check if the row already exists based on a condition (e.g., invoice_no)
+                                                            DataGridViewRow existingRow = null;
+
+                                                            foreach (DataGridViewRow row in dbgPayDet.Rows)
+                                                            {
+                                                                // Update values in the existing row
+                                                                string payModeValue = reader["pay_mode_id"].ToString().Trim();
+                                                                // Assuming the column index is 1
+                                                                DataGridViewComboBoxCell comboBoxCell = existingRow.Cells[1] as DataGridViewComboBoxCell;
+
+                                                                if (comboBoxCell != null && comboBoxCell.Items.Contains(payModeValue))
+                                                                {
+                                                                    comboBoxCell.Value = payModeValue;
+                                                                }
+                                                                existingRow.Cells[1].Value = reader["pay_mode_id"].ToString().Trim();
+                                                                existingRow.Cells[2].Value = reader["pay_amt"].ToString().Trim();
+                                                                existingRow.Cells[3].Value = reader["cash_t_amt"].ToString().Trim();
+                                                                existingRow.Cells[4].Value = reader["ref_amt"].ToString().Trim();
+
+                                                                string ccodeval = reader["cc_code"].ToString().Trim();
+                                                                DataGridViewComboBoxCell comboBoxCell4 = existingRow.Cells[5] as DataGridViewComboBoxCell;
+
+                                                                if (comboBoxCell4 != null && comboBoxCell4.Items.Contains(ccodeval))
+                                                                {
+                                                                    comboBoxCell4.Value = ccodeval;
+                                                                }
+                                                                existingRow.Cells[6].Value = reader["cc_no"].ToString().Trim();
+
+                                                                string coupval = reader["coup_id"].ToString().Trim();
+                                                                DataGridViewComboBoxCell comboBoxCell6 = existingRow.Cells[7] as DataGridViewComboBoxCell;
+
+                                                                if (comboBoxCell6 != null && comboBoxCell6.Items.Contains(coupval))
+                                                                {
+                                                                    comboBoxCell6.Value = coupval;
+                                                                }
+
+                                                                //existingRow.Cells[7].Value = reader["cust_id"].ToString().Trim();
+                                                                existingRow.Cells[9].Value = reader["bank_name"].ToString().Trim();
+                                                                existingRow.Cells[10].Value = reader["cheque_no"].ToString().Trim();
+                                                                existingRow.Cells[11].Value = reader["cheque_dt"].ToString().Trim();
+                                                                existingRow.Cells[12].Value = reader["gv_no"].ToString().Trim();
+                                                            }
+
+                                                        }
+                                                        // Populate other text fields similarly
+                                                        //txtItemDesc.Text = reader["item_desc"].ToString().Trim();
+                                                        reader.Close();
+
+                                                    }
+
+                                                }
+                                            }
+
+
+                                            string querydet = "SELECT a.* FROM temp_t_invoice_det a, temp_t_invoice_hdr b WHERE a.open_yn='Y' AND b.ent_by=? AND a.comp_name=? AND a.invoice_no=? ORDER BY ent_on DESC;";
+
+                                            OdbcParameter[] parametersdet = new OdbcParameter[3];
+                                            parametersdet[0] = new OdbcParameter("ent_by", user.Trim());
+                                            parametersdet[1] = new OdbcParameter("comp_name", compname.Trim());
+                                            parametersdet[2] = new OdbcParameter("invoice_no", readerinv["invoice_no"]);
+
+
+                                            using (OdbcDataReader reader = dbConnector.ExecuteReader(querydet, parametersdet))
+                                            {
+                                                if (reader.HasRows)
+                                                {
+                                                    while (reader.Read())
+                                                    {
+                                                        // Check if the row already exists based on a condition (e.g., invoice_no)
+                                                        DataGridViewRow existingRow = null;
+
+                                                        foreach (DataGridViewRow row in dbgItemDet.Rows)
+                                                        {
+
+                                                            existingRow.Cells[1].Value = reader["bar_code"].ToString().Trim();
+                                                            existingRow.Cells[3].Value = reader["qty"].ToString().Trim();
+                                                            existingRow.Cells[4].Value = reader["mrp"].ToString().Trim();
+                                                            existingRow.Cells[5].Value = reader["sale_price"].ToString().Trim();
+                                                            existingRow.Cells[6].Value = reader["disc_per"].ToString().Trim();
+                                                            existingRow.Cells[7].Value = reader["disc_amt"].ToString().Trim();
+                                                            existingRow.Cells[8].Value = reader["sale_tax_per"].ToString().Trim();
+                                                            existingRow.Cells[9].Value = reader["cess_perc"].ToString().Trim();
+                                                            existingRow.Cells[10].Value = reader["net_amt"].ToString().Trim();
+                                                            existingRow.Cells[11].Value = reader["sale_tax_amt"].ToString().Trim();
+                                                            existingRow.Cells[12].Value = reader["cess_amt"].ToString().Trim();
+                                                            existingRow.Cells[13].Value = reader["item_id"].ToString().Trim();
+                                                        }
+
+                                                        reader.Close();
+
+                                                    }
+
+                                                }
+                                            }
+
+                                            string queryinvhdr = "SELECT a.* FROM temp_t_invoice_hdr a WHERE a.open_yn='Y' AND a.ent_by=? AND a.comp_name=? AND a.invoice_no=? ORDER BY a.ent_on DESC limit 1;";
+
+                                            OdbcParameter[] parametershdr = new OdbcParameter[3];
+                                            parametershdr[0] = new OdbcParameter("ent_by", user.Trim());
+                                            parametershdr[1] = new OdbcParameter("comp_name", compname.Trim());
+                                            parametershdr[2] = new OdbcParameter("invoice_no", readerinv["invoice_no"]);
+
+
+
+
+                                            using (OdbcDataReader reader = dbConnector.ExecuteReader(queryinvhdr, parametershdr))
+                                            {
+                                                if (reader.Read())
+                                                {
+                                                    if (reader["invoice_dt"] != DBNull.Value)
+                                                    {
+                                                        DateTime invDate = Convert.ToDateTime(reader["invoice_dt"]);
+
+                                                        // Set the format you desire (dd/MM/yyyy)
+                                                        dtpInvDate.Format = DateTimePickerFormat.Custom;
+                                                        dtpInvDate.CustomFormat = "dd/MM/yyyy";
+
+                                                        // Set the DateTimePicker value
+                                                        dtpInvDate.Value = invDate;
+                                                    }
+                                                    General general = new General();
+                                                    //-------------------------Cust combo----------------------------//
+                                                    //general.FillCombo(cboCust, "cust_id", "m_customer", false);
+                                                    if (reader["cust_id"] != DBNull.Value)
+                                                    {
+                                                        string typIDFromDatabase = reader["cust_id"].ToString().Trim();
+
+                                                        if (typIDFromDatabase != "")
+                                                        {
+                                                            // Find the item in the ComboBox's items collection
+                                                            object selectedItem = cboCust.Items.Cast<object>().FirstOrDefault(item => item.ToString() == typIDFromDatabase);
+
+                                                            // Set the selected item if found
+                                                            if (selectedItem != null)
+                                                            {
+                                                                cboCust.SelectedItem = selectedItem;
+                                                                DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", cboCust.SelectedItem.ToString().Trim());
+
+                                                                if (customerData != null)
+                                                                {
+                                                                    custName = customerData["cust_name"].ToString().Trim();
+                                                                    custPhoneNo = customerData["phone_1"].ToString().Trim();
+                                                                    custAdd1 = customerData["address1"].ToString().Trim();
+                                                                    custAdd2 = customerData["address2"].ToString().Trim();
+                                                                    custEmail = customerData["email"].ToString().Trim();
+                                                                }
+
+
+                                                                rotInvCust.Text = custName;
+                                                                txtCustName.Text = custName;
+                                                                txtAddress.Text = custAdd1 + custAdd2;
+                                                            }
+
+
+
+                                                        }
+                                                    }
+                                                    rotBillTime.Text = reader["bill_time"].ToString().Trim();
+                                                    rotGAmt.Text = reader["gross_amt"].ToString().Trim();
+                                                    txtDiscPer.Text = reader["disc_per"].ToString().Trim();
+                                                    txtDiscAmt.Text = reader["disc_amt"].ToString().Trim();
+                                                    rotPayAmt.Text = reader["net_amt_after_disc"].ToString().Trim();
+                                                    rotNetAmt.Text = reader["net_amt"].ToString().Trim();
+                                                    rotRO.Text = reader["round_off"].ToString().Trim();
+
+                                                    reader.Close();
+
+                                                }
+                                                dbConnector.connection.Close();
+                                            }
+
+
+                                        }
+
+                                    }
+                                }
+
+                                else if (AreyouSure == DialogResult.No)
+                                {
+                                    // NOTHING TO BE DONE HERE
+                                }
+
+                            }
+                            else if (result == DialogResult.No)
+                            {
+                                DialogResult AreyouSureDel = MessageBox.Show("Are You Sure!\n You Want To Delete", "Clear Unsaved Invoice!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                                if (AreyouSureDel == DialogResult.Yes)
+                                {
+
+                                    dbConnector.OpenConnection();
+                                    string CheckInvIntempHdr = "Select * from temp_t_invoice_hdr where invoice_no=?";
+                                    OdbcParameter[] parametershdr = new OdbcParameter[1];
+
+                                    parametershdr[1] = new OdbcParameter("invoice_no", inv_no);
+
+                                    using (OdbcDataReader reader = dbConnector.ExecuteReader(CheckInvIntempHdr, parametershdr))
                                     {
                                         if (reader.HasRows)
                                         {
-                                            Messages.UnsavedMsg(null);
-                                            //txtInvNo.Text = reader["invoice_no"].ToString().Trim();
-                                            while (reader.Read())
+
+                                            string DelIfNotToSaveInvHdr = "Delete from temp_i_invoice_hdr where invoice_no=?";
+                                            using (OdbcCommand cmdDelIfNotToSaveInvHdr = new OdbcCommand(DelIfNotToSaveInvHdr, dbConnector.connection))
                                             {
-                                                // Check if the row already exists based on a condition (e.g., invoice_no)
-                                                DataGridViewRow existingRow = null;
-
-                                                foreach (DataGridViewRow row in dbgPayDet.Rows)
-                                                {
-                                                    // Update values in the existing row
-                                                    string payModeValue = reader["pay_mode_id"].ToString().Trim();
-                                                    // Assuming the column index is 1
-                                                    DataGridViewComboBoxCell comboBoxCell = existingRow.Cells[1] as DataGridViewComboBoxCell;
-
-                                                    if (comboBoxCell != null && comboBoxCell.Items.Contains(payModeValue))
-                                                    {
-                                                        comboBoxCell.Value = payModeValue;
-                                                    }
-                                                    existingRow.Cells[1].Value = reader["pay_mode_id"].ToString().Trim();
-                                                    existingRow.Cells[2].Value = reader["pay_amt"].ToString().Trim();
-                                                    existingRow.Cells[3].Value = reader["cash_t_amt"].ToString().Trim();
-                                                    existingRow.Cells[4].Value = reader["ref_amt"].ToString().Trim();
-
-                                                    string ccodeval = reader["cc_code"].ToString().Trim();
-                                                    DataGridViewComboBoxCell comboBoxCell4 = existingRow.Cells[5] as DataGridViewComboBoxCell;
-
-                                                    if (comboBoxCell4 != null && comboBoxCell4.Items.Contains(ccodeval))
-                                                    {
-                                                        comboBoxCell4.Value = ccodeval;
-                                                    }
-                                                    existingRow.Cells[6].Value = reader["cc_no"].ToString().Trim();
-
-                                                    string coupval = reader["coup_id"].ToString().Trim();
-                                                    DataGridViewComboBoxCell comboBoxCell6 = existingRow.Cells[7] as DataGridViewComboBoxCell;
-
-                                                    if (comboBoxCell6 != null && comboBoxCell6.Items.Contains(coupval))
-                                                    {
-                                                        comboBoxCell6.Value = coupval;
-                                                    }
-
-                                                    //existingRow.Cells[7].Value = reader["cust_id"].ToString().Trim();
-                                                    existingRow.Cells[9].Value = reader["bank_name"].ToString().Trim();
-                                                    existingRow.Cells[10].Value = reader["cheque_no"].ToString().Trim();
-                                                    existingRow.Cells[11].Value = reader["cheque_dt"].ToString().Trim();
-                                                    existingRow.Cells[12].Value = reader["gv_no"].ToString().Trim();
-                                                }
-
+                                                cmdDelIfNotToSaveInvHdr.Parameters.AddWithValue("@invoice_no", inv_no);
+                                                //cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                                cmdDelIfNotToSaveInvHdr.ExecuteNonQuery();
                                             }
-                                            // Populate other text fields similarly
-                                            //txtItemDesc.Text = reader["item_desc"].ToString().Trim();
-                                            reader.Close();
-
                                         }
-
                                     }
-                                }
 
+                                    string CheckInvIntempDet = "Select * from temp_t_invoice_det where invoice_no=?";
+                                    OdbcParameter[] parametersDet = new OdbcParameter[1];
 
-                                string querydet = "SELECT a.* FROM temp_t_invoice_det a, temp_t_invoice_hdr b WHERE a.open_yn='Y' AND b.ent_by=? AND a.comp_name=? AND a.invoice_no=? ORDER BY ent_on DESC;";
+                                    parametersDet[1] = new OdbcParameter("invoice_no", inv_no);
 
-                                OdbcParameter[] parametersdet = new OdbcParameter[3];
-                                parametersdet[0] = new OdbcParameter("ent_by", user.Trim());
-                                parametersdet[1] = new OdbcParameter("comp_name", compname.Trim());
-                                parametersdet[2] = new OdbcParameter("invoice_no", readerinv["invoice_no"]);
-
-
-                                using (OdbcDataReader reader = dbConnector.ExecuteReader(querydet, parametersdet))
-                                {
-                                    if (reader.HasRows)
+                                    using (OdbcDataReader reader1 = dbConnector.ExecuteReader(CheckInvIntempDet, parametersDet))
                                     {
-                                        while (reader.Read())
+                                        if (reader1.HasRows)
                                         {
-                                            // Check if the row already exists based on a condition (e.g., invoice_no)
-                                            DataGridViewRow existingRow = null;
 
-                                            foreach (DataGridViewRow row in dbgItemDet.Rows)
+                                            string DelIfNotToSaveInvDet = "Delete from temp_t_invoice_det where invoice_no=?";
+                                            using (OdbcCommand cmdDelIfNotToSaveInvDet = new OdbcCommand(DelIfNotToSaveInvDet, dbConnector.connection))
                                             {
-
-                                                existingRow.Cells[1].Value = reader["bar_code"].ToString().Trim();
-                                                existingRow.Cells[3].Value = reader["qty"].ToString().Trim();
-                                                existingRow.Cells[4].Value = reader["mrp"].ToString().Trim();
-                                                existingRow.Cells[5].Value = reader["sale_price"].ToString().Trim();
-                                                existingRow.Cells[6].Value = reader["disc_per"].ToString().Trim();
-                                                existingRow.Cells[7].Value = reader["disc_amt"].ToString().Trim();
-                                                existingRow.Cells[8].Value = reader["sale_tax_per"].ToString().Trim();
-                                                existingRow.Cells[9].Value = reader["cess_perc"].ToString().Trim();
-                                                existingRow.Cells[10].Value = reader["net_amt"].ToString().Trim();
-                                                existingRow.Cells[11].Value = reader["sale_tax_amt"].ToString().Trim();
-                                                existingRow.Cells[12].Value = reader["cess_amt"].ToString().Trim();
-                                                existingRow.Cells[13].Value = reader["item_id"].ToString().Trim();
+                                                cmdDelIfNotToSaveInvDet.Parameters.AddWithValue("@invoice_no", inv_no);
+                                                //cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                                cmdDelIfNotToSaveInvDet.ExecuteNonQuery();
                                             }
-
-                                            reader.Close();
-
                                         }
+                                    }
+                                    string CheckInvIntempPayDet = "Select * from temp_t_invoice_pay_det where invoice_no=?";
+                                    OdbcParameter[] parameterspaydet = new OdbcParameter[1];
 
+                                    parameterspaydet[1] = new OdbcParameter("invoice_no", inv_no);
+
+                                    using (OdbcDataReader reader2 = dbConnector.ExecuteReader(CheckInvIntempPayDet, parameterspaydet))
+                                    {
+                                        if (reader2.HasRows)
+                                        {
+
+                                            string DelIfNotToSaveInvPayDet = "Delete from temp_t_invoice_pay_det where invoice_no=?";
+                                            using (OdbcCommand cmdDelIfNotToSaveInvPayDet = new OdbcCommand(DelIfNotToSaveInvPayDet, dbConnector.connection))
+                                            {
+                                                cmdDelIfNotToSaveInvPayDet.Parameters.AddWithValue("@invoice_no", inv_no);
+                                                //cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                                cmdDelIfNotToSaveInvPayDet.ExecuteNonQuery();
+                                            }
+                                        }
                                     }
                                 }
-
-                                string queryinvhdr = "SELECT a.* FROM temp_t_invoice_hdr a WHERE a.open_yn='Y' AND a.ent_by=? AND a.comp_name=? AND a.invoice_no=? ORDER BY a.ent_on DESC limit 1;";
-
-                                OdbcParameter[] parametershdr = new OdbcParameter[3];
-                                parametershdr[0] = new OdbcParameter("ent_by", user.Trim());
-                                parametershdr[1] = new OdbcParameter("comp_name", compname.Trim());
-                                parametershdr[2] = new OdbcParameter("invoice_no", readerinv["invoice_no"]);
-
-
-
-
-                                using (OdbcDataReader reader = dbConnector.ExecuteReader(queryinvhdr, parametershdr))
+                                else if (AreyouSureDel == DialogResult.No)
                                 {
-                                    if (reader.Read())
+                                    //Nothing To BE Happened HEre!
+                                }
+                            }
+
+                        }
+                    }
+                }  ////-----------WHEN ADD BUTTON IS CLICKED-> END HERE NOW FOR MODIFY-------
+
+                if (mblnSearch == false)
+                {
+                    //if (!String.IsNullOrEmpty(GetInvNoFromHelp))
+                    //{                        
+                    //    string fetchdatainvHdr = "Select * from t_invoice_hdr where invoice_no=?";
+
+                    //    OdbcCommand cmd = new OdbcCommand(fetchdatainvHdr, dbConnector.connection);
+
+                    //    cmd.CommandText = fetchdatainvHdr;
+                    //    cmd.Parameters.Add(new OdbcParameter("invoice_no", GetInvNoFromHelp));
+                    //    using (OdbcDataReader readerinv = cmd.ExecuteReader())
+                    //    {
+                    //        if (readerinv.HasRows)
+                    //        {
+                    //            txtInvNo.Text = readerinv["invoice_no"].ToString().Trim();
+                    //            if (readerinv["invoice_dt"] != DBNull.Value)
+                    //            {
+                    //                DateTime invoiceDate = Convert.ToDateTime(readerinv["invoice_dt"]);
+
+                    //                // Set the format you desire (dd/MM/yyyy)
+                    //                dtpInvDate.Format = DateTimePickerFormat.Custom;
+                    //                dtpInvDate.CustomFormat = "dd/MM/yyyy";
+
+                    //                // Set the DateTimePicker value
+                    //                dtpInvDate.Value = invoiceDate;
+                    //            }
+                    //            if (readerinv["cust_id"] != DBNull.Value)
+                    //            {
+                    //                string customerIdFromDatabase = readerinv["cust_id"].ToString().Trim();
+
+                    //                if (customerIdFromDatabase != "")
+                    //                {
+                    //                    // Find the item in the ComboBox's items collection
+                    //                    object selectedItem = cboCust.Items.Cast<object>().FirstOrDefault(item => item.ToString() == customerIdFromDatabase);
+
+                    //                    // Set the selected item if found
+                    //                    if (selectedItem != null)
+                    //                    {
+                    //                        cboCust.SelectedItem = selectedItem;
+                    //                    }
+                    //                }
+
+                    //                txtCustName.Text = readerinv["custname"].ToString().Trim();
+                    //                txtAddress.Text = readerinv["custaddress"].ToString().Trim();
+
+                    //                readerinv.Close();
+                    //                cmd.ExecuteNonQuery();
+                    //                //cmd.Connection.Close();
+                    //            }
+
+                    //            //rotGAmt.Text = readerinv["gross_amt"].ToString().Trim();
+                    //            //txtDiscPer.Text = readerinv["disc_per"].ToString().Trim();
+                    //            //txtDiscAmt.Text = readerinv["disc_amt"].ToString().Trim();
+                    //            //rotNetAmt.Text = readerinv["net_amt_after_disc"].ToString().Trim();
+                    //            //rotRO.Text = readerinv["round_off"].ToString().Trim();
+
+
+
+                    //            string fetchdatainvDet = "Select * from t_invoice_det where invoice_no=?";                               
+                    //            string item_bar = "";                                
+
+                    //            cmd.CommandText = fetchdatainvDet;
+                    //            cmd.Parameters.Add(new OdbcParameter("invoice_no", GetInvNoFromHelp));
+                    //            using (OdbcDataReader readerinvdet = cmd.ExecuteReader())
+                    //            {
+                    //                if (readerinvdet.HasRows)
+                    //                {
+                    //                    while (readerinvdet.Read())
+                    //                    {
+                    //                        // Create a new row for the DataGridView
+                    //                        DataGridViewRow newRow = new DataGridViewRow();
+
+                    //                        // Add cells to the new row
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["bar_code"].ToString().Trim() }); // Replace "column1" with the actual column name
+
+                    //                        item_bar = readerinvdet["bar_code"].ToString().Trim();
+
+                    //                        string fetchdataitem_det = "Select item_id,item_desc from m_item_det where plu=? or item_id=? or bar_code=?";
+                    //                        using (OdbcCommand itemdescCmd = new OdbcCommand(fetchdataitem_det, dbConnector.connection))
+                    //                        {
+                    //                            itemdescCmd.CommandText = fetchdataitem_det;
+                    //                            itemdescCmd.Parameters.Add(new OdbcParameter("plu", item_bar));
+                    //                            itemdescCmd.Parameters.Add(new OdbcParameter("item_id", item_bar));
+                    //                            itemdescCmd.Parameters.Add(new OdbcParameter("bar_code", item_bar));
+
+                    //                            using (OdbcDataReader readeritem_det = itemdescCmd.ExecuteReader())
+                    //                            {
+                    //                                if (readeritem_det.HasRows)
+                    //                                {
+                    //                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readeritem_det["item_desc"].ToString() }); // Replace "column2" with the actual column name                                                    
+
+                    //                                }
+                    //                                readeritem_det.Close();
+                    //                                itemdescCmd.ExecuteNonQuery();
+                    //                            }
+                    //                        }
+
+                    //                        // Add more cells as needed for other columns
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["qty"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["mrp"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["sale_price"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["disc_per"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["disc_amt"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["sale_tax_per"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["cess_perc"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["net_amt"].ToString().Trim() }); // Replace "column1" with the actual column name
+                    //                        newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["qty"].ToString().Trim() }); // Replace "column1" with the actual column name
+
+
+                    //                        // Add the new row to the DataGridView
+                    //                        dbgItemDet.Rows.Add(newRow);
+                    //                    }
+                    //                }
+                    //                readerinvdet.Close();
+                    //                 cmd.ExecuteNonQuery();
+
+                    //            }
+                    //        }
+                    //    }
+                    //}
+
+                    if (!mblnSearch && !String.IsNullOrEmpty(GetInvNoFromHelp))
+                    {
+                        string fetchdatainvHdr = "SELECT * FROM t_invoice_hdr WHERE invoice_no=?";
+                        using (OdbcCommand cmd = new OdbcCommand(fetchdatainvHdr, dbConnector.connection))
+                        {
+                            cmd.Parameters.Add(new OdbcParameter("invoice_no", GetInvNoFromHelp));
+
+                            using (OdbcDataReader readerinv = cmd.ExecuteReader())
+                            {
+                                if (readerinv.HasRows && readerinv.Read())
+                                {
+                                    txtInvNo.Text = readerinv["invoice_no"].ToString().Trim();
+                                    if (readerinv["invoice_dt"] != DBNull.Value)
                                     {
-                                        if (reader["invoice_dt"] != DBNull.Value)
+                                        DateTime invoiceDate = Convert.ToDateTime(readerinv["invoice_dt"]);
+                                        dtpInvDate.Value = invoiceDate;
+                                    }
+                                    if (readerinv["cust_id"] != DBNull.Value)
+                                    {
+                                        string customerIdFromDatabase = readerinv["cust_id"].ToString().Trim();
+
+                                        if (!String.IsNullOrEmpty(customerIdFromDatabase))
                                         {
-                                            DateTime invDate = Convert.ToDateTime(reader["invoice_dt"]);
-
-                                            // Set the format you desire (dd/MM/yyyy)
-                                            dtpInvDate.Format = DateTimePickerFormat.Custom;
-                                            dtpInvDate.CustomFormat = "dd/MM/yyyy";
-
-                                            // Set the DateTimePicker value
-                                            dtpInvDate.Value = invDate;
-                                        }
-                                        General general = new General();
-                                        //-------------------------Cust combo----------------------------//
-                                        //general.FillCombo(cboCust, "cust_id", "m_customer", false);
-                                        if (reader["cust_id"] != DBNull.Value)
-                                        {
-                                            string typIDFromDatabase = reader["cust_id"].ToString().Trim();
-
-                                            if (typIDFromDatabase != "")
+                                            object selectedItem = cboCust.Items.Cast<object>().FirstOrDefault(item => item.ToString() == customerIdFromDatabase);
+                                            if (selectedItem != null)
                                             {
-                                                // Find the item in the ComboBox's items collection
-                                                object selectedItem = cboCust.Items.Cast<object>().FirstOrDefault(item => item.ToString() == typIDFromDatabase);
+                                                cboCust.SelectedItem = selectedItem;
+                                            }
+                                        }
 
-                                                // Set the selected item if found
-                                                if (selectedItem != null)
+                                        txtCustName.Text = readerinv["custname"].ToString().Trim();
+                                        txtAddress.Text = readerinv["custaddress"].ToString().Trim();
+                                    }
+
+
+                                    string fetchdatainvDet = "SELECT * FROM t_invoice_det WHERE invoice_no=?";
+                                    using (OdbcCommand Detcmd = new OdbcCommand(fetchdatainvDet, dbConnector.connection))
+                                    {
+                                        Detcmd.Parameters.Clear();
+                                        Detcmd.Parameters.Add(new OdbcParameter("invoice_no", GetInvNoFromHelp));
+
+                                        using (OdbcDataReader readerinvdet = Detcmd.ExecuteReader())
+                                        {
+                                            if (readerinvdet.HasRows)
+                                            {
+                                                while (readerinvdet.Read())
                                                 {
-                                                    cboCust.SelectedItem = selectedItem;
-                                                    DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", cboCust.SelectedItem.ToString().Trim());
+                                                    DataGridViewRow newRow = new DataGridViewRow();
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["bar_code"].ToString().Trim() });
 
-                                                    if (customerData != null)
+                                                    string item_bar = readerinvdet["bar_code"].ToString().Trim();
+
+                                                    string fetchdataitem_det = "SELECT item_desc FROM m_item_det WHERE plu=? OR item_id=? OR bar_code=?";
+                                                    using (OdbcCommand itemdescCmd = new OdbcCommand(fetchdataitem_det, dbConnector.connection))
                                                     {
-                                                        custName = customerData["cust_name"].ToString().Trim();
-                                                        custPhoneNo = customerData["phone_1"].ToString().Trim();
-                                                        custAdd1 = customerData["address1"].ToString().Trim();
-                                                        custAdd2 = customerData["address2"].ToString().Trim();
-                                                        custEmail = customerData["email"].ToString().Trim();
+                                                        itemdescCmd.Parameters.Add(new OdbcParameter("plu", item_bar));
+                                                        itemdescCmd.Parameters.Add(new OdbcParameter("item_id", item_bar));
+                                                        itemdescCmd.Parameters.Add(new OdbcParameter("bar_code", item_bar));
+
+                                                        using (OdbcDataReader readeritem_det = itemdescCmd.ExecuteReader())
+                                                        {
+                                                            if (readeritem_det.HasRows && readeritem_det.Read())
+                                                            {
+                                                                newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readeritem_det["item_desc"].ToString().Trim() });
+                                                            }
+                                                        }
                                                     }
 
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["qty"].ToString().Trim() });
+                                                    // Add other cells...
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["mrp"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["sale_price"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["disc_per"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["disc_amt"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["sale_tax_per"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["cess_perc"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["net_amt"].ToString().Trim() }); // Replace "column1" with the actual column name
+                                                    newRow.Cells.Add(new DataGridViewTextBoxCell { Value = readerinvdet["qty"].ToString().Trim() }); // Replace "column1" with the actual column name
 
-                                                    rotInvCust.Text = custName;
-                                                    txtCustName.Text = custName;
-                                                    txtAddress.Text = custAdd1 + custAdd2;
+                                                    dbgItemDet.Rows.Add(newRow);
                                                 }
-
-
-
                                             }
                                         }
-                                        rotBillTime.Text = reader["bill_time"].ToString().Trim();
-                                        rotGAmt.Text = reader["gross_amt"].ToString().Trim();
-                                        txtDiscPer.Text = reader["disc_per"].ToString().Trim();
-                                        txtDiscAmt.Text = reader["disc_amt"].ToString().Trim();
-                                        rotPayAmt.Text = reader["net_amt_after_disc"].ToString().Trim();
-                                        rotNetAmt.Text = reader["net_amt"].ToString().Trim();
-                                        rotRO.Text = reader["round_off"].ToString().Trim();
-
-                                        reader.Close();
-
                                     }
-
                                 }
-
-
                             }
                         }
                     }
@@ -2619,6 +2930,11 @@ namespace softgen
                 dbConnector.CloseConnection();
             }
 
+        }
+
+        public void UnsavedData()
+        {
+            
         }
 
         public void check_temp_login_sytemname()
@@ -3503,6 +3819,29 @@ namespace softgen
 
             // Set the value in 'PayAmt' column to rotPayAmt.Text
             dbgPayDet.Rows[0].Cells[payamtColumnIndex].Value = rotPayAmt.Text;
+
+            if (cboCust.SelectedItem != null)
+            {
+                selectedCustomer = cboCust.SelectedItem as string;
+
+                if (!String.IsNullOrEmpty(selectedCustomer))
+                {
+                    if (dbgPayDet.Enabled == true)
+                    {
+                        for (int i = 0; i < dbgPayDet.Rows.Count - 1; i++)
+                        {
+
+                            foreach (DataGridViewRow row in dbgPayDet.Rows)
+                            {
+                                                                
+                                    row.Cells["Custid"].Value = selectedCustomer;
+                                
+                            }
+                        }
+                    }
+
+                }
+            }
         }
 
         private void dbgPayDet_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -3558,6 +3897,8 @@ namespace softgen
                 //    }
 
                 //}
+
+
 
             }
 
@@ -3620,6 +3961,42 @@ namespace softgen
                 {
                     // Set the remaining amount in the 'PayAmt' column of the next row
                     dbgPayDet.Rows[e.RowIndex].Cells["PayAmt"].Value = remainingAmount;
+
+                    if (cboCust.SelectedItem != null)
+                    {
+                        selectedCustomer = cboCust.SelectedItem as string;
+
+                        if (!String.IsNullOrEmpty(selectedCustomer))
+                        {
+                            if (dbgPayDet.Enabled == true)
+                            {
+                                for (int i = 0; i < dbgPayDet.Rows.Count - 1; i++)
+                                {
+
+                                    foreach (DataGridViewRow row in dbgPayDet.Rows)
+                                    {
+
+                                        row.Cells["Custid"].Value = selectedCustomer;
+
+
+                                    }
+                                }
+                            }
+
+
+                        }
+                    }
+
+                }
+
+                selectedCustomer = cboCust.SelectedItem as string;
+
+                if (paymodValue != null && paymodValue != DBNull.Value && !String.IsNullOrEmpty(selectedCustomer))
+                {
+                    foreach (DataGridViewRow row in dbgPayDet.Rows)
+                    {
+                        row.Cells["Custid"].Value = selectedCustomer;
+                    }
                 }
 
             }
@@ -3785,34 +4162,25 @@ namespace softgen
 
                 using (OdbcDataReader reader = dbConnector.CreateResultset(sql))
                 {
-                    if (reader != null)
+                    if (reader != null && reader.HasRows)
                     {
-                        if (reader.Read())
+                        reader.Read(); // Read the first row
+                        result = new DataTable().NewRow();
+
+                        // Create DataTable columns based on database schema
+                        DataTable schemaTable = reader.GetSchemaTable();
+                        foreach (DataRow schemaRow in schemaTable.Rows)
                         {
-                            DataTable schemaTable = reader.GetSchemaTable();
-
-                            // Check if 'cust_id' column is present in the result set
-                            if (schemaTable.Columns.Contains("cust_id"))
-                            {
-                                result = new DataTable().NewRow();
-                                foreach (DataRow schemaRow in schemaTable.Rows)
-                                {
-                                    string columnName = schemaRow["ColumnName"].ToString();
-
-                                    // Check if the result DataRow has the column before assigning the value
-                                    if (result.Table.Columns.Contains(columnName))
-                                    {
-                                        result[columnName] = reader[columnName];
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                // Handle the case when 'cust_id' column is not present
-                                // For example, log a message or throw an exception
-                            }
+                            string columnName = schemaRow["ColumnName"].ToString();
+                            Type columnType = (Type)schemaRow["DataType"];
+                            result.Table.Columns.Add(columnName, columnType);
                         }
-                        reader.Close();
+
+                        // Populate DataRow with values from database
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            result[i] = reader[i];
+                        }
                     }
                 }
             }
@@ -3957,16 +4325,36 @@ namespace softgen
 
             if (cboCust.SelectedItem != null)
             {
+                selectedCustomer = cboCust.SelectedItem as string;
+
+                if (!String.IsNullOrEmpty(selectedCustomer))
+                {
+                    if (dbgPayDet.Enabled)
+                    {
+                        foreach (DataGridViewRow row in dbgPayDet.Rows)
+                        {
+                            if (row.IsNewRow) continue; // Skip the new row placeholder
+
+                            string getpaymm = row.Cells[1].Value?.ToString(); // Use ?.ToString() to handle potential null values
+                            if (!String.IsNullOrEmpty(getpaymm))
+                            {
+                                row.Cells["Custid"].Value = selectedCustomer;
+                            }
+                        }
+                    }
+
+
+                }
                 General general = new General();
                 //string desc = GetDescCust("m_customer", "cust_id", "cust_name", "C", cboCust.SelectedItem.ToString().Trim());
-                DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", cboCust.SelectedItem.ToString().Trim());
+                DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", selectedCustomer);
 
                 if (customerData != null)
                 {
                     custName = customerData["cust_name"].ToString().Trim();
                     custPhoneNo = customerData["phone_1"].ToString().Trim();
-                    custAdd1 = customerData["address1"].ToString().Trim();
-                    custAdd2 = customerData["address2"].ToString().Trim();
+                    custAdd1 = customerData["address_1"].ToString().Trim();
+                    custAdd2 = customerData["address_2"].ToString().Trim();
                     custEmail = customerData["email"].ToString().Trim();
                 }
 
@@ -3974,34 +4362,46 @@ namespace softgen
                 rotInvCust.Text = custName;
                 txtCustName.Text = custName;
                 txtAddress.Text = custAdd1 + custAdd2;
+
+                
             }
 
             // Get the selected item from cboCust
             string selectedItem = cboCust.SelectedItem?.ToString();
-
-            // Check if there is any selected item in the Paymod column ComboBox in dbgPayDet
-            foreach (DataGridViewRow row in dbgPayDet.Rows)
+            for (int i = 0; i < dbgPayDet.Rows.Count - 1; i++)
             {
-                DataGridViewComboBoxCell paymodCell = (DataGridViewComboBoxCell)row.Cells["Paymod"];
-                if (paymodCell.Value != null)
+                // Check if there is any selected item in the Paymod column ComboBox in dbgPayDet
+                foreach (DataGridViewRow row in dbgPayDet.Rows)
                 {
-                    // Update the corresponding 7th column ComboBox in the same row
-                    DataGridViewComboBoxCell custIDCell = (DataGridViewComboBoxCell)row.Cells["CustId"];
-
-                    // Clear the DataSource property
-                    custIDCell.DataSource = null;
-
-                    // Clear any existing item in the 7th column ComboBox
-                    custIDCell.Items.Clear();
-
-                    if (!string.IsNullOrEmpty(selectedItem) && selectedItem != null)
+                    DataGridViewComboBoxCell paymodCell = (DataGridViewComboBoxCell)row.Cells["Paymod"];
+                    if (paymodCell.Value != null)
                     {
-                        // Add the selected item from cboCust to the 7th column ComboBox
-                        custIDCell.Items.Add(selectedItem);
-                    }
+                        // Update the corresponding 7th column ComboBox in the same row
+                        // DataGridViewComboBoxCell custIDCell = (DataGridViewComboBoxCell)row.Cells["CustId"];
 
-                    // Automatically select the added item in the 7th column ComboBox
-                    custIDCell.Value = selectedItem;
+                        selectedCustomer = cboCust.SelectedItem as string;
+
+                        if (!String.IsNullOrEmpty(selectedCustomer))
+                        {
+
+                            row.Cells["Custid"].Value = selectedCustomer;
+
+                        }
+                        // Clear the DataSource property
+                        //custIDCell.DataSource = null;
+
+                        // Clear any existing item in the 7th column ComboBox
+                        //custIDCell.Items.Clear();
+
+                        //if (!string.IsNullOrEmpty(selectedItem) && selectedItem != null)
+                        //{
+                        //    // Add the selected item from cboCust to the 7th column ComboBox
+                        //    custIDCell.Items.Add(selectedItem);
+                        //}
+
+                        //// Automatically select the added item in the 7th column ComboBox
+                        //custIDCell.Value = selectedItem;
+                    }
                 }
             }
         }
@@ -4297,11 +4697,25 @@ namespace softgen
         {
             FillCustCombo();
 
-            // Assuming "CustId" is the name of the 7th column ComboBox
-            DataGridViewComboBoxColumn comboColumn = (DataGridViewComboBoxColumn)dbgPayDet.Columns["CustId"];
+            selectedCustomer = cboCust.Text;
+
+            if (!String.IsNullOrEmpty(selectedCustomer))
+            {
+                if (dbgPayDet.Enabled == true)
+                {
+                    for (int i = 0; i < dbgPayDet.Rows.Count - 1; i++)
+                    {
+                        foreach (DataGridViewRow row in dbgPayDet.Rows)
+                        {                            
+                                row.Cells["Custid"].Value = selectedCustomer;                         
+                        }
+
+                    } 
+                }
+            }
 
             // Update the items in the DataGridViewComboBoxColumn based on cboCust's text
-            UpdateComboBoxItems(comboColumn, cboCust.Text.Trim());
+            //UpdateComboBoxItems(comboColumn, cboCust.Text.Trim());
 
         }
 
@@ -5052,5 +5466,6 @@ namespace softgen
 
 
         }
+
     }  ///////end
 }

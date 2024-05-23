@@ -30,6 +30,66 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Quit1.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Quit.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Print.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Post.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Modify.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Inquire.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Help.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Fresh.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\DeleteMode.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Save.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Retrieve.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Delete.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Continue.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Authorization.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\net7.0-windows\Icons\Add.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="bin\Debug\net6.0-windows\Icons\Save.png" />
   </ItemGroup>
 
@@ -94,6 +154,7 @@
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.3.0" />
     <PackageReference Include="MySqlConnector" Version="2.3.7" />
+    <PackageReference Include="NLog" Version="5.3.2" />
     <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.19" />
     <PackageReference Include="ReportViewerCore.WinForms" Version="15.1.19" />
     <PackageReference Include="System.Data.Odbc" Version="8.0.0" />
@@ -185,6 +246,10 @@
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>InvoiceDataSet.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

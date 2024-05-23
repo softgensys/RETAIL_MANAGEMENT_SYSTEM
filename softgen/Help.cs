@@ -1419,8 +1419,9 @@ namespace softgen
         }
 
         //---for invoice---------------//
-        public static void TransferDataInv()
+        public static void TransferDataInv(Form form)
         {
+            s_Mode = DeTools.GetMode(form);
             // Transfer data from help form to main form.
             if (i_Help_id == 9001 && DeTools.gobjActiveForm.Name == "frmT_Invoice")
             {
@@ -1479,7 +1480,120 @@ namespace softgen
                     }
                 }
             }
+
+
+            else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode== DeTools.MODIFYMODE)
+            {
+                // Assuming that grdHelp is your source DataGridView in frmHelp
+                DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+
+                if (selectedRow != null)
+                {
+                    // Assuming you have a list of column indexes to transfer data
+                    List<int> columnIndexesToTransfer = new List<int> { 0}; // Add the column indexes you want to transfer
+
+                    foreach (int columnIndex in columnIndexesToTransfer)
+                    {
+                        // Check if the column index is within the bounds
+                        if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                        {
+                            frmT_Invoice.GetInvNoFromHelp = selectedRow.Cells[0].Value.ToString().Trim();
+                            frmT_Invoice frminv = new frmT_Invoice();
+                            frminv.txtInvNo.Text= selectedRow.Cells[0].Value.ToString().Trim();
+                            frminv.SearchForm();
+                        }
+                    }
+                }
+            }
         }
+
+         public static void TransferDataSr(Form form)
+         {
+            s_Mode = DeTools.GetMode(form);
+            // Transfer data from help form to main form.
+            if (i_Help_id == 9001 && DeTools.gobjActiveForm.Name == "frmT_Sale_Return")
+            {
+                // Single key fields
+                if (frmHelp.grdHelp.CurrentRow != null)
+                {
+                    // Assuming that targetGrid is your DataGridView
+                    DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDetRet", true).FirstOrDefault();
+
+                    // Get the current row index
+                    int rowIndex = targetGrid.Rows.Add();
+                    
+                    // Assuming that grdHelp is your source DataGridView in frmHelp
+                    DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+
+                    if (selectedRow != null)
+                    {
+                        // Assuming you have a list of column indexes to transfer data
+                        List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }; // Add the column indexes you want to transfer
+
+                        foreach (int columnIndex in columnIndexesToTransfer)
+                        {
+                            // Check if the column index is within the bounds
+                            if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                            {
+                                // Assuming that targetGrid has enough columns
+                                targetGrid.Rows[rowIndex].Cells[1].Value = selectedRow.Cells[1].Value; //barcode
+                                targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[0].Value; //itemnm
+                                targetGrid.Rows[rowIndex].Cells[3].Value = "1";
+                                targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value; //mrp
+                                targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value; //unitprice
+                                targetGrid.Rows[rowIndex].Cells[6].Value = selectedRow.Cells[6].Value; //disc%
+                                targetGrid.Rows[rowIndex].Cells[7].Value = "0.00"; //discamt
+                                targetGrid.Rows[rowIndex].Cells[8].Value = selectedRow.Cells[5].Value; //gst%
+                                targetGrid.Rows[rowIndex].Cells[9].Value = selectedRow.Cells[7].Value; //cess%
+                                targetGrid.Rows[rowIndex].Cells[10].Value = ((decimal.Parse(selectedRow.Cells[3].Value.ToString()) * 1) - decimal.Parse(targetGrid.Rows[rowIndex].Cells[7].Value.ToString())).ToString();
+
+                                //targetGrid.Rows[rowIndex].Cells[10].Value = selectedRow.Cells[5].Value;
+                                targetGrid.Rows[rowIndex].Cells[13].Value = selectedRow.Cells[4].Value;
+
+
+
+                            }
+                            else
+                            {
+                                // Handle the case where the column index is out of bounds
+                                // You can log a message or take appropriate action
+                            }
+                        }
+
+                        //targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1];
+
+                        //// Begin the edit to activate the cell for editing
+                        //targetGrid.BeginEdit(true);
+
+                    }
+                }
+            }
+
+
+            else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode== DeTools.MODIFYMODE)
+            {
+                // Assuming that grdHelp is your source DataGridView in frmHelp
+                DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+
+                if (selectedRow != null)
+                {
+                    // Assuming you have a list of column indexes to transfer data
+                    List<int> columnIndexesToTransfer = new List<int> { 0}; // Add the column indexes you want to transfer
+
+                    foreach (int columnIndex in columnIndexesToTransfer)
+                    {
+                        // Check if the column index is within the bounds
+                        if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                        {
+                            frmT_Invoice.GetInvNoFromHelp = selectedRow.Cells[0].Value.ToString().Trim();
+                            frmT_Invoice frminv = new frmT_Invoice();
+                            frminv.txtInvNo.Text= selectedRow.Cells[0].Value.ToString().Trim();
+                            frminv.SearchForm();
+                        }
+                    }
+                }
+            }
+         }
 
 
 

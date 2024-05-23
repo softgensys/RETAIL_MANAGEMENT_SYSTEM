@@ -8,6 +8,7 @@ using System.Drawing.Text;
 using System.DirectoryServices.ActiveDirectory;
 using MySql.Data.MySqlClient;
 using System.Data.Odbc;
+using NLog;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace softgen
@@ -20,6 +21,8 @@ namespace softgen
         public DbConnector dbConnector1;
         General general = new General();
         Messages messages = new Messages();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
 
         // Static property to hold the instance of MainForm
         public static MainForm Instance { get; private set; }
@@ -270,7 +273,7 @@ namespace softgen
                 //frmStart.Close();
                 //frmWelscr frmWelscr = new frmWelscr();
 
-                
+
 
                 Cursor.Current = Cursors.Default;
             }
@@ -382,6 +385,14 @@ namespace softgen
         private void OpenChildForm10()
         {
             frmM_Manuf childForm = new frmM_Manuf();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
+        }
+        //for Sale Return
+        private void OpenChildFormSR()
+        {
+            frmT_Sale_Return childForm = new frmT_Sale_Return();
             childForm.MdiParent = this; // Set the MDI parent form
             childForm.Show();
             childForm.Activate();
@@ -724,41 +735,45 @@ namespace softgen
             try
             {
                 DateTime d_Date, p_Date;
-                string connectionString = "Server=localhost;Database=softgen_db;Uid=root;"; // Add a semicolon at the end
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
 
-                using (MySqlConnection connection = new MySqlConnection(connectionString))
+                string gstrSQL = "{ CALL GetServerDate(?, ?) }";
+
+                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
                 {
-                    connection.Open();
-                    MySqlCommand cmd = new MySqlCommand("GetServerDate", connection); // Assuming "GetServerDate" is the name of your stored procedure
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    cmd.CommandType = CommandType.StoredProcedure; // Set the command type to stored procedure
+                    command.Parameters.Add(new OdbcParameter("@Date", OdbcType.DateTime));
+                    command.Parameters["@Date"].Direction = ParameterDirection.Output;
 
-                    cmd.Parameters.Add(new MySqlParameter("@Date", MySqlDbType.DateTime));
-                    cmd.Parameters["@Date"].Direction = ParameterDirection.Output;
+                    command.Parameters.Add(new OdbcParameter("@PreDate", OdbcType.DateTime));
+                    command.Parameters["@PreDate"].Direction = ParameterDirection.Output;
 
-                    cmd.Parameters.Add(new MySqlParameter("@PreDate", MySqlDbType.DateTime));
-                    cmd.Parameters["@PreDate"].Direction = ParameterDirection.Output;
+                    command.ExecuteNonQuery();
 
-                    cmd.ExecuteNonQuery();
-
-                    d_Date = (DateTime)cmd.Parameters["@Date"].Value;
-                    p_Date = (DateTime)cmd.Parameters["@PreDate"].Value;
+                    d_Date = (DateTime)command.Parameters["@Date"].Value;
+                    p_Date = (DateTime)command.Parameters["@PreDate"].Value;
                 }
+
+                dbConnector.connection.Close();
 
                 DeTools.gstrsetup[3] = d_Date.ToString("dd MMMM yyyy, dddd");
                 DeTools.gstrsetup[4] = p_Date.ToString("dd-MM-yyyy");
 
                 // frmStart.lblDate.Text = DeTools.gstrsetup[3];
-                //frmStart.lblDate.Refresh();
+                // frmStart.lblDate.Refresh();
 
-                //frmStart.lblMsg.Text = "Starting...";
-                //frmStart.lblMsg.Refresh();
+                // frmStart.lblMsg.Text = "Starting...";
+                // frmStart.lblMsg.Refresh();
 
                 general.DayClose(DeTools.gstrsetup[4]);
                 return true;
             }
-            catch (MySqlException ex)
+            catch (OdbcException ex)
             {
+                Logger.Error(ex, "Failed to execute DayBegin.");
                 Console.WriteLine(ex.Message);
                 return false;
             }
@@ -924,6 +939,14 @@ namespace softgen
         {
             LayoutMdi(MdiLayout.TileVertical);
         }
+
+        private void saleReturnCancellationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenChildFormSR();
+            TSRGenmenu.Enabled = false;
+        }
+
+
 
 
         //-----newest old

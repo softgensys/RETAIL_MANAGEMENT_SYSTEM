@@ -67,6 +67,7 @@ namespace softgen
             transactionToolStripMenuItem = new ToolStripMenuItem();
             Tbillmodule = new ToolStripMenuItem();
             TInvGenmenu = new ToolStripMenuItem();
+            TSRGenmenu = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
             utilitiesToolStripMenuItem = new ToolStripMenuItem();
             windowsToolStripMenuItem = new ToolStripMenuItem();
@@ -287,61 +288,61 @@ namespace softgen
             // MItemmenu
             // 
             MItemmenu.Name = "MItemmenu";
-            MItemmenu.Size = new Size(180, 22);
+            MItemmenu.Size = new Size(165, 22);
             MItemmenu.Text = "Item";
             MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
-            documentSeriesToolStripMenuItem.Size = new Size(180, 22);
+            documentSeriesToolStripMenuItem.Size = new Size(165, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
-            documentTypeToolStripMenuItem.Size = new Size(180, 22);
+            documentTypeToolStripMenuItem.Size = new Size(165, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
             // 
             // Mgroupmenu
             // 
             Mgroupmenu.Name = "Mgroupmenu";
-            Mgroupmenu.Size = new Size(180, 22);
+            Mgroupmenu.Size = new Size(165, 22);
             Mgroupmenu.Text = "Group";
             Mgroupmenu.Click += groupToolStripMenuItem_Click;
             // 
             // mnuMSGroup
             // 
             mnuMSGroup.Name = "mnuMSGroup";
-            mnuMSGroup.Size = new Size(180, 22);
+            mnuMSGroup.Size = new Size(165, 22);
             mnuMSGroup.Text = "Sub Group";
             mnuMSGroup.Click += mnuMSGroup_Click;
             // 
             // mnuMSSGroup
             // 
             mnuMSSGroup.Name = "mnuMSSGroup";
-            mnuMSSGroup.Size = new Size(180, 22);
+            mnuMSSGroup.Size = new Size(165, 22);
             mnuMSSGroup.Text = "Sub Sub Group";
             mnuMSSGroup.Click += mnuMSSGroup_Click;
             // 
             // mnuMCust
             // 
             mnuMCust.Name = "mnuMCust";
-            mnuMCust.Size = new Size(180, 22);
+            mnuMCust.Size = new Size(165, 22);
             mnuMCust.Text = "Customer Master";
             mnuMCust.Click += mnuMCust_Click;
             // 
             // mnuMSupplier
             // 
             mnuMSupplier.Name = "mnuMSupplier";
-            mnuMSupplier.Size = new Size(180, 22);
+            mnuMSupplier.Size = new Size(165, 22);
             mnuMSupplier.Text = "Supplier Master";
             mnuMSupplier.Click += mnuMSupplier_Click;
             // 
             // mnuMManuf
             // 
             mnuMManuf.Name = "mnuMManuf";
-            mnuMManuf.Size = new Size(180, 22);
+            mnuMManuf.Size = new Size(165, 22);
             mnuMManuf.Text = "Manufacturer";
             mnuMManuf.Click += mnuMManuf_Click;
             // 
@@ -354,7 +355,7 @@ namespace softgen
             // 
             // Tbillmodule
             // 
-            Tbillmodule.DropDownItems.AddRange(new ToolStripItem[] { TInvGenmenu });
+            Tbillmodule.DropDownItems.AddRange(new ToolStripItem[] { TInvGenmenu, TSRGenmenu });
             Tbillmodule.Name = "Tbillmodule";
             Tbillmodule.Size = new Size(180, 22);
             Tbillmodule.Text = "Billing Module";
@@ -362,9 +363,16 @@ namespace softgen
             // TInvGenmenu
             // 
             TInvGenmenu.Name = "TInvGenmenu";
-            TInvGenmenu.Size = new Size(180, 22);
+            TInvGenmenu.Size = new Size(204, 22);
             TInvGenmenu.Text = "Invoice Generation";
             TInvGenmenu.Click += invoiceGenerationToolStripMenuItem_Click;
+            // 
+            // TSRGenmenu
+            // 
+            TSRGenmenu.Name = "TSRGenmenu";
+            TSRGenmenu.Size = new Size(204, 22);
+            TSRGenmenu.Text = "Sale Return/Cancellation";
+            TSRGenmenu.Click += saleReturnCancellationToolStripMenuItem_Click;
             // 
             // reportToolStripMenuItem
             // 
@@ -662,5 +670,6 @@ namespace softgen
         private ToolStripMenuItem mnuWCascade;
         private ToolStripMenuItem muWTIleV;
         public ToolStripMenuItem TInvGenmenu;
+        public ToolStripMenuItem TSRGenmenu;
     }
 }
