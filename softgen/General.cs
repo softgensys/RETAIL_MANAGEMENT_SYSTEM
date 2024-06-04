@@ -1,36 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
-using MySql.Data.MySqlClient;
+﻿using System.Data;
 using System.Data.Odbc;
-using System.Reflection.Metadata.Ecma335;
-using System.Transactions;
-using Org.BouncyCastle.Crypto;
-using Google.Protobuf.WellKnownTypes;
-using Google.Protobuf;
 using System.Globalization;
-using Org.BouncyCastle.Utilities.Collections;
 
 namespace softgen
 {
- 
+
     public class General
     {
         private string gstrSQl;
         private static string gstrSQl1;
         private DbConnector dbConnector;
         public string result;
-       
 
-        public bool IsValidCode(string strTable, string strField,string vntValue)
+
+        public bool IsValidCode(string strTable, string strField, string vntValue)
         {
-            bool isValid=false;
+            bool isValid = false;
             dbConnector = new DbConnector();
-            
-             dbConnector.OpenConnection();
+
+            dbConnector.OpenConnection();
 
             string sql = $"SELECT {strField} FROM {strTable} WHERE {strField} = @value AND status = 'A'";
             using (OdbcDataReader reader = dbConnector.CreateResultset(sql))
@@ -52,12 +40,12 @@ namespace softgen
         {
             if (!string.IsNullOrWhiteSpace(ctlText.Text))
             {
-                if (DateTime.TryParse(ctlText.Text,out DateTime date))
+                if (DateTime.TryParse(ctlText.Text, out DateTime date))
                 {
-                    if (date.Year<2000)
+                    if (date.Year < 2000)
                     {
                         Messages.ErrorMsg("Year Cannot Be Less than 2000.");
-                        ctlText.Text=date.ToString("dd/MM/yyyy");
+                        ctlText.Text = date.ToString("dd/MM/yyyy");
                         return false;
                     }
                     else
@@ -69,7 +57,7 @@ namespace softgen
                 }
                 else
                 {
-                Messages.ErrorMsg("Invalid date!");                    
+                    Messages.ErrorMsg("Invalid date!");
                 }
 
             }
@@ -77,7 +65,7 @@ namespace softgen
 
         }
 
-        public string GetDesc(string strTable,string strId_Field,string strDesc_Field,string strType,Object vntId_Value)
+        public string GetDesc(string strTable, string strId_Field, string strDesc_Field, string strType, Object vntId_Value)
         {
             DbConnector dbConnector = new DbConnector();
             string result = string.Empty;
@@ -88,21 +76,21 @@ namespace softgen
             }
             else
             {
-                string sql = "SELECT "+strDesc_Field+" from "+strTable+" where "+strId_Field+"=";
-                if (strType=="N")
+                string sql = "SELECT " + strDesc_Field + " from " + strTable + " where " + strId_Field + "=";
+                if (strType == "N")
                 {
                     sql += vntId_Value;
                 }
-                else if(strType=="C")
+                else if (strType == "C")
                 {
                     sql += "'" + vntId_Value + "'";
                 }
-                else if( strType=="D") 
+                else if (strType == "D")
                 {
-                    sql+= "'"+((DateTime)vntId_Value).ToString("yyyy-MM-dd")+"'";
+                    sql += "'" + ((DateTime)vntId_Value).ToString("yyyy-MM-dd") + "'";
                 }
 
-                using(OdbcDataReader reader = dbConnector.CreateResultset(sql)) 
+                using (OdbcDataReader reader = dbConnector.CreateResultset(sql))
                 {
                     if (reader != null)
                     {
@@ -126,13 +114,13 @@ namespace softgen
 
         public void ValidateColumn(DataGridView dataGridView, int rowIndex, int columnIndex)
         {
-            decimal cpValue=0, mrpValue=0, spValue = 0, nrValue = 0;
+            decimal cpValue = 0, mrpValue = 0, spValue = 0, nrValue = 0;
             // Get the values of adjacent cells
             if (dataGridView.Rows[rowIndex].Cells[3].Value != null)
             {
-            cpValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].EditedFormattedValue);
-            mrpValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[3].EditedFormattedValue);
-                
+                cpValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].EditedFormattedValue);
+                mrpValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[3].EditedFormattedValue);
+
             }
             spValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[4].EditedFormattedValue);
             nrValue = Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[5].EditedFormattedValue);
@@ -142,7 +130,7 @@ namespace softgen
                 case 3: // MRP column
                     if (Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].Value) == cpValue && Convert.ToDecimal(dataGridView.Rows[rowIndex].Cells[2].Value) == mrpValue)
                     {
-                    ShowValidationError("mrp should be less than MRP, SP, and NR.", rowIndex, columnIndex);                        
+                        ShowValidationError("mrp should be less than MRP, SP, and NR.", rowIndex, columnIndex);
                     }
                     break;
 
@@ -191,18 +179,18 @@ namespace softgen
 
             dbConnector.OpenConnection();
             string result = string.Empty;
-            if (struserId.ToUpper().Trim()== "SA")
+            if (struserId.ToUpper().Trim() == "SA")
             {
                 return "Super User";
             }
             else if (struserId.ToUpper().Trim() == "")
             {
                 return "";
-                
+
             }
             else
             {
-                gstrSQl = "Select user_name from m_user where user_id ="+"'"+struserId+"'";
+                gstrSQl = "Select user_name from m_user where user_id =" + "'" + struserId + "'";
 
                 using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
                 {
@@ -225,7 +213,7 @@ namespace softgen
 
         }
 
-        public object IfNull(Control cntControl) 
+        public object IfNull(Control cntControl)
         {
             if (string.IsNullOrWhiteSpace(cntControl.Text))
             {
@@ -233,25 +221,25 @@ namespace softgen
             }
             else
             {
-                return cntControl.Text.Trim(); 
+                return cntControl.Text.Trim();
             }
         }
 
         //--To check item id in item master 
-        public bool CheckId(string strCaption,string strFieldName,string strTableName,string strValue)
+        public bool CheckId(string strCaption, string strFieldName, string strTableName, string strValue)
         {
-            result=string.Empty;
+            result = string.Empty;
 
             bool checkId = true;
 
 
-            gstrSQl = "Select "+strFieldName+" from "+strTableName+" where "+strFieldName+" = "+"'"+strValue.Trim()+"'";
+            gstrSQl = "Select " + strFieldName + " from " + strTableName + " where " + strFieldName + " = " + "'" + strValue.Trim() + "'";
 
-            using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl))
+            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
             {
                 if (!reader.HasRows)
                 {
-                    checkId= false;
+                    checkId = false;
                     // FKNotExistMsg(strCaption, strValue.Trim());
                 }
                 reader.Close();
@@ -263,38 +251,40 @@ namespace softgen
         //--To check item name in item master 
         public bool CheckFromMaster(string strCaption, string strFieldName, string strTableName, string strValue)
         {
-            result= string.Empty;
+            result = string.Empty;
             bool checkFromMaster = true;
 
-            gstrSQl = "Select "+strFieldName.Trim()+" from "+strTableName.Trim()+" where "+strFieldName.Trim()+
-                "= "+"'"+strValue.Trim()+"'";
+            gstrSQl = "Select " + strFieldName.Trim() + " from " + strTableName.Trim() + " where " + strFieldName.Trim() +
+                "= " + "'" + strValue.Trim() + "'";
 
-            using(OdbcDataReader reader=dbConnector.CreateResultset(gstrSQl)) 
-            { if (!reader.HasRows)
+            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
+            {
+                if (!reader.HasRows)
                 {
-                    checkFromMaster= false;
-                    Messages.FKNotExistMsg(strCaption,strValue);
+                    checkFromMaster = false;
+                    Messages.FKNotExistMsg(strCaption, strValue);
                 }
-            reader.Close();
+                reader.Close();
             }
             return checkFromMaster;
         }
-        
+
         public bool CheckFromMasterBln(string strCaption, string strFieldName, string strTableName, string strValue)
         {
-            result= string.Empty;
+            result = string.Empty;
             bool checkFromMasterbln = true;
 
-            gstrSQl = "Select "+strFieldName.Trim()+" from "+strTableName.Trim()+" where "+strFieldName.Trim()+
-                "= "+"'"+strValue.Trim()+"'";
+            gstrSQl = "Select " + strFieldName.Trim() + " from " + strTableName.Trim() + " where " + strFieldName.Trim() +
+                "= " + "'" + strValue.Trim() + "'";
 
-            using(OdbcDataReader reader=dbConnector.CreateResultset(gstrSQl)) 
-            { if (!reader.HasRows)
+            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
+            {
+                if (!reader.HasRows)
                 {
-                    checkFromMasterbln= false;
-                    Messages.FKNotExistMsg(strCaption,strValue);
+                    checkFromMasterbln = false;
+                    Messages.FKNotExistMsg(strCaption, strValue);
                 }
-            reader.Close();
+                reader.Close();
             }
             return checkFromMasterbln;
         }
@@ -310,13 +300,13 @@ namespace softgen
                 if (success)
                 {
                     Messages.InfoMsg("Value is not numeric. Enter only numeric value.");
-                    success= false;
+                    success = false;
                 }
             }
             return success;
         }
 
-        public bool CheckValidValue(ComboBox cmbCntl) 
+        public bool CheckValidValue(ComboBox cmbCntl)
         {
             bool validValue = false;
             if (!string.IsNullOrWhiteSpace(cmbCntl.Text))
@@ -340,9 +330,9 @@ namespace softgen
         public static string ConvertToWords(string strNumber)
         {
             string strRupees, strPaise, strDigit, strOutput, strValue;
-            int intPaise, intDigit,intCount,intLength;
+            int intPaise, intDigit, intCount, intLength;
 
-            intPaise = (int)(double.Parse(strNumber)- Math.Floor(double.Parse(strNumber)) * 100);
+            intPaise = (int)(double.Parse(strNumber) - Math.Floor(double.Parse(strNumber)) * 100);
 
             if (intPaise > 0)
             {
@@ -352,24 +342,24 @@ namespace softgen
 
             else
             {
-                strPaise= "";
+                strPaise = "";
             }
             strValue = "";
             strOutput = "";
 
-            strRupees= double.Parse(strNumber).ToString();
-            intLength= strRupees.Length;
+            strRupees = double.Parse(strNumber).ToString();
+            intLength = strRupees.Length;
             intCount = 2;
 
             while (strRupees != null)
             {
-                if (intCount==10||intCount==3)
+                if (intCount == 10 || intCount == 3)
                 {
                     strDigit = strRupees.Substring(strRupees.Length - 1);
                 }
                 else
                 {
-                    strDigit = strRupees.Substring(Math.Max(strRupees.Length-2,0));
+                    strDigit = strRupees.Substring(Math.Max(strRupees.Length - 2, 0));
                 }
 
                 intDigit = int.Parse(strDigit);
@@ -486,8 +476,9 @@ namespace softgen
                     case 7: tensWords = "Seventy"; break;
                     case 8: tensWords = "Eighty"; break;
                     case 9: tensWords = "Ninety"; break;
-                   
-                    default: tensWords = "";
+
+                    default:
+                        tensWords = "";
                         break;
                 }
 
@@ -500,43 +491,43 @@ namespace softgen
 
         public bool DayClose(string dmDate)
         {
-            gstrSQl = "Select * from r_closing where doc_type_id <= 'INV' and " +"'"+dmDate+"'" ;
+            gstrSQl = "Select * from r_closing where doc_type_id <= 'INV' and " + "'" + dmDate + "'";
             dbConnector = new DbConnector();
 
             dbConnector.OpenConnection();
 
             using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
             {
-                
-                    if (reader.HasRows)
-                    {
-                        return true;
-                    }
-                    reader.Close();
-                
+
+                if (reader.HasRows)
+                {
+                    return true;
+                }
+                reader.Close();
+
             }
 
             gstrSQl = "Insert into r_closing (doc_type_id,cls_dt) values ('INV', ?)";
-            int rowafftected= dbConnector.ExecuteNonQuery(gstrSQl);
+            int rowafftected = dbConnector.ExecuteNonQuery(gstrSQl);
 
             return rowafftected > 0;
         }
 
-        public void FillCombo(ComboBox combo, string fieldName, string tableName,  bool forReport, string criteria = "", string condition = "", string fieldwhereName="")
+        public void FillCombo(ComboBox combo, string fieldName, string tableName, bool forReport, string criteria = "", string condition = "", string fieldwhereName = "")
         {
             try
             {
                 string sql;
                 DbConnector dbConnector = new DbConnector();
 
-                if (criteria=="")
+                if (criteria == "")
                 {
-                sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName;
-                    
+                    sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName;
+
                 }
                 else if (fieldwhereName != "")
                 {
-                    sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldwhereName + " LIKE '" + criteria+"'";
+                    sql = "SELECT DISTINCT " + fieldName + " FROM " + tableName + " WHERE " + fieldwhereName + " LIKE '" + criteria + "'";
                 }
                 else
                 {
@@ -562,14 +553,14 @@ namespace softgen
                     while (reader.Read())
                     {
                         combo.Items.Add(Trim(reader[fieldName].ToString()));
-                     
+
                     }
 
                     if (!forReport)
                     {
                         combo.Text = oldValue;
                     }
-                        combo.MaxDropDownItems = 5;
+                    combo.MaxDropDownItems = 5;
                 }
             }
             catch (Exception ex)
@@ -589,18 +580,18 @@ namespace softgen
         {
             try
             {
-            dbConnector= new DbConnector();
+                dbConnector = new DbConnector();
 
-            gstrSQl = "SELECT start_date, end_date FROM m_fin_year WHERE @CurrentDate >= start_date AND @CurrentDate < end_date";
+                gstrSQl = "SELECT start_date, end_date FROM m_fin_year WHERE @CurrentDate >= start_date AND @CurrentDate < end_date";
 
-            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
-            {
-                if (reader.Read())
+                using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
                 {
-                    ctlFromDate.Value = (DateTime)reader["start_date"];
-                    ctlToDate.Value = (DateTime)reader["end_date"];
+                    if (reader.Read())
+                    {
+                        ctlFromDate.Value = (DateTime)reader["start_date"];
+                        ctlToDate.Value = (DateTime)reader["end_date"];
+                    }
                 }
-            }
 
             }
 
@@ -608,35 +599,35 @@ namespace softgen
             {
                 // Handle the exception or display an error message
                 Console.WriteLine(ex.Message);
-                
+
             }
         }
 
-        public void FillSSubGroup(ComboBox combo,string strGId)
+        public void FillSSubGroup(ComboBox combo, string strGId)
         {
             try
             {
 
-            dbConnector = new DbConnector();
-            gstrSQl = "Select sub_sub_group_id from m_sub_sub_group where sub_group_id= "+"'"+strGId+"'";
+                dbConnector = new DbConnector();
+                gstrSQl = "Select sub_sub_group_id from m_sub_sub_group where sub_group_id= " + "'" + strGId + "'";
 
-            using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl)) 
-            { 
-                combo.Items.Clear();
-                
-                if (reader.HasRows) 
+                using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
                 {
-                    while (reader.Read())
+                    combo.Items.Clear();
+
+                    if (reader.HasRows)
                     {
-                        combo.Items.Add(reader["sub_sub_group_id"].ToString());
+                        while (reader.Read())
+                        {
+                            combo.Items.Add(reader["sub_sub_group_id"].ToString());
+                        }
                     }
-                }
-                    
+
 
                     reader.Close();
+                }
             }
-            }
-            
+
             catch (Exception ex)
             {
 
@@ -646,30 +637,30 @@ namespace softgen
 
         }
 
-        public void FillSubGroup(ComboBox combo,string strGId)
+        public void FillSubGroup(ComboBox combo, string strGId)
         {
             try
             {
-            dbConnector = new DbConnector();
-            gstrSQl = "SELECT sub_group_id FROM m_sub_group WHERE group_id = "+"'"+strGId+"'";
+                dbConnector = new DbConnector();
+                gstrSQl = "SELECT sub_group_id FROM m_sub_group WHERE group_id = " + "'" + strGId + "'";
 
-            using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl)) 
-            { 
-                combo.Items.Clear();
-                
-                if (reader.HasRows) 
+                using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
                 {
-                    while (reader.Read())
+                    combo.Items.Clear();
+
+                    if (reader.HasRows)
                     {
-                        combo.Items.Add(reader["sub_group_id"].ToString());
+                        while (reader.Read())
+                        {
+                            combo.Items.Add(reader["sub_group_id"].ToString());
+                        }
                     }
+
+                    reader.Close();
                 }
-                
-                reader.Close();
-            }
 
             }
-            
+
             catch (Exception ex)
             {
 
@@ -679,18 +670,18 @@ namespace softgen
 
         }
 
-        public void FillValues(string strSQl,Control objControl)
+        public void FillValues(string strSQl, Control objControl)
         {
             dbConnector = new DbConnector();
 
-            using(OdbcDataReader reader= dbConnector.CreateResultset(strSQl))
+            using (OdbcDataReader reader = dbConnector.CreateResultset(strSQl))
             {
-                   ComboBox combo1= objControl as ComboBox;
-                if (combo1!= null)
+                ComboBox combo1 = objControl as ComboBox;
+                if (combo1 != null)
                 {
 
-                combo1.Items.Clear();
-                    
+                    combo1.Items.Clear();
+
                 }
                 while (reader.Read())
                 {
@@ -708,13 +699,13 @@ namespace softgen
 
             string Finyr = "";
 
-            gstrSQl = "SELECT fin_year_id FROM m_fin_year WHERE start_date <='"+dtmDate+"' AND end_date >= '"+dtmDate+"' AND yr_clos = 'O' AND status = 'A'";
-            
-            using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl))
+            gstrSQl = "SELECT fin_year_id FROM m_fin_year WHERE start_date <='" + dtmDate + "' AND end_date >= '" + dtmDate + "' AND yr_clos = 'O' AND status = 'A'";
+
+            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl))
             {
                 if (reader.Read())
                 {
-                    Finyr= reader[0].ToString();
+                    Finyr = reader[0].ToString();
                 }
             }
 
@@ -730,7 +721,7 @@ namespace softgen
             return string.Empty; // Return an empty string for invalid input
         }
 
-        public static double GenDocno(string strDocTypeId,DateTime dtmDate)
+        public static double GenDocno(string strDocTypeId, DateTime dtmDate)
         {
             int curDocNo = 0;
             int intFlag = 1;
@@ -776,29 +767,29 @@ namespace softgen
 
                 Console.WriteLine(ex.Message);
                 Messages.ErrorMsg("Error On GenDocNo.");
-                
+
             }
             intFlag = 0;
             return curDocNo;
         }
-        
-        
+
+
 
         public string FormatCurrency(string s_Currency)
         {
-            
-                decimal currencyValue;
-                if (decimal.TryParse(s_Currency, out currencyValue))
-                {
-                    // Format the decimal value with thousands separators and three decimal places
-                    return currencyValue.ToString("#,##0.000");
-                }
-                else
-                {
-                    // Handle the case where s_Currency is not a valid decimal
-                    return "Invalid currency format";
-                }
-            
+
+            decimal currencyValue;
+            if (decimal.TryParse(s_Currency, out currencyValue))
+            {
+                // Format the decimal value with thousands separators and three decimal places
+                return currencyValue.ToString("#,##0.000");
+            }
+            else
+            {
+                // Handle the case where s_Currency is not a valid decimal
+                return "Invalid currency format";
+            }
+
         }
         public static class DocumentManager
         {
@@ -825,7 +816,7 @@ namespace softgen
                 DateTime invdate = frmT_Invoice.dtpInvDate.Value;
                 string formattedDate = invdate.ToString("yyyy-MM-dd");
                 gstrSQl1 = "SELECT next_no FROM m_doc_series " +
-                     "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A' And '"+formattedDate+"' between from_date and to_date";
+                     "WHERE doc_type_id = '" + strDocTypeId.Trim() + "' AND status = 'A' And '" + formattedDate + "' between from_date and to_date";
 
                 using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl1))
                 {
@@ -839,7 +830,7 @@ namespace softgen
                         intFlag = 2;
 
                         gstrSQl1 = "UPDATE m_doc_series SET next_no = next_no + 1 " +
-                                   "WHERE doc_type_id = '"+strDocTypeId.Trim()+"' AND status = 'A'";
+                                   "WHERE doc_type_id = '" + strDocTypeId.Trim() + "' AND status = 'A'";
                         dbConnector.ExecuteNonQuery(gstrSQl1);
                     }
                 }
@@ -863,8 +854,8 @@ namespace softgen
 
         public string GetPassword()
         {
-            string decryptedPassword="";
-            DbConnector dbConnector= new DbConnector();
+            string decryptedPassword = "";
+            DbConnector dbConnector = new DbConnector();
 
             dbConnector.OpenConnection();
 
@@ -874,14 +865,14 @@ namespace softgen
 
             OdbcParameter loginIdParam = new OdbcParameter("@LoginId", login);
 
-            using (OdbcDataReader reader= dbConnector.ExecuteReader(gstrSQl,new OdbcParameter[] {loginIdParam})) 
+            using (OdbcDataReader reader = dbConnector.ExecuteReader(gstrSQl, new OdbcParameter[] { loginIdParam }))
             {
-                if(reader.Read())
+                if (reader.Read())
                 {
                     string encryptedPassword = reader["Password"].ToString();
                     decryptedPassword = DeTools.Decrypt(encryptedPassword);
                 }
-                
+
             }
             return decryptedPassword;
         }
@@ -892,7 +883,7 @@ namespace softgen
             dbConnector.OpenConnection();
 
             DeTools.gstrsetup[0] = LoginId;
-            DeTools.gstrsetup[1]= ServerName.Trim();
+            DeTools.gstrsetup[1] = ServerName.Trim();
 
             DeTools.strBrand = "RED APRON PVT.LTD.";
             DeTools.strCompany = "";
@@ -902,20 +893,20 @@ namespace softgen
 
             gstrSQl1 = "SELECT * FROM s_company";
 
-            using(OdbcDataReader reader= dbConnector.CreateResultset(gstrSQl1))
+            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl1))
             {
                 if (reader.Read())
                 {
-                   DeTools.strBranch = reader["branch_id"].ToString();
-                   DeTools.strTin = reader["tin_no"].ToString();
-                   DeTools.strLst = reader["lst"].ToString();
-                   DeTools.strCst = reader["cst"].ToString();
-                   DeTools.strBranch = reader["branch_id"].ToString();
-                   DeTools.strPhone = "Phone: " + reader["phone"].ToString();
-                   DeTools.strNote1 = reader["note1"].ToString();
-                   DeTools.strNote2 = reader["note2"].ToString();
-                   DeTools.strNote3 = reader["note3"].ToString();
-                   DeTools.strNote4 = reader["note4"].ToString();
+                    DeTools.strBranch = reader["branch_id"].ToString();
+                    DeTools.strTin = reader["tin_no"].ToString();
+                    DeTools.strLst = reader["lst"].ToString();
+                    DeTools.strCst = reader["cst"].ToString();
+                    DeTools.strBranch = reader["branch_id"].ToString();
+                    DeTools.strPhone = "Phone: " + reader["phone"].ToString();
+                    DeTools.strNote1 = reader["note1"].ToString();
+                    DeTools.strNote2 = reader["note2"].ToString();
+                    DeTools.strNote3 = reader["note3"].ToString();
+                    DeTools.strNote4 = reader["note4"].ToString();
                 }
             }
 
@@ -928,7 +919,7 @@ namespace softgen
             return " " + Index.ToString();
         }
 
-        public static void MasterParam(string strFieldName1,string strFieldName2,string strTableName,out string chkfld,out int chksn)
+        public static void MasterParam(string strFieldName1, string strFieldName2, string strTableName, out string chkfld, out int chksn)
         {
             chkfld = string.Empty;
             chksn = 0;
@@ -941,8 +932,9 @@ namespace softgen
             gstrSQl1 = "SELECT " + strFieldName1 + ", " + strFieldName2 + " FROM " + strTableName;
 
 
-            using (OdbcDataReader reader=dbConnector.CreateResultset(gstrSQl1))
-            { if (reader.HasRows) 
+            using (OdbcDataReader reader = dbConnector.CreateResultset(gstrSQl1))
+            {
+                if (reader.HasRows)
                 {
                     chkfld = reader[strFieldName1].ToString();
                     chksn = Convert.ToInt32(reader[strFieldName2]);
@@ -952,7 +944,7 @@ namespace softgen
         }
         public static string NormalDate(string date)
         {
-            
+
             DateTime datetime = DateTime.ParseExact(date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             return datetime.ToString();
         }
@@ -969,7 +961,7 @@ namespace softgen
             return datetime.ToString();
         }
 
-        public static int NumericChars(int KeyAscii) 
+        public static int NumericChars(int KeyAscii)
         {
             if ((KeyAscii < 48 || KeyAscii > 57) && KeyAscii != 46 && KeyAscii != 8)
             {

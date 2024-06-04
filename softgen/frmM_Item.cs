@@ -1,11 +1,8 @@
 ﻿//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-using Microsoft.VisualBasic.ApplicationServices;
 using System.Data;
 using System.Data.Odbc;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 
 
@@ -132,7 +129,7 @@ namespace softgen
                     // Clear existing rows
                     dataGridView.Rows.Clear();
 
-                
+
                     // Reset any other DataGridView-specific properties or settings as needed
                 }
 
@@ -694,7 +691,7 @@ namespace softgen
                                         selfrmtempdetcmd2.CommandText = DeTools.gstrSQL;
 
                                         selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
-                                        
+
                                         selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("Trans_status", "N"));
                                         selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
                                         selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
@@ -749,13 +746,13 @@ namespace softgen
 
                         }
                     }//--------------over code for updation now add//
-    
+
                     //ClearForm();
                     //}
 
                 }
 
-                else if(mblnSearch == true)
+                else if (mblnSearch == true)
                 {
                     // The record does not exist, so insert a new one
                     reader.Close();
@@ -1201,7 +1198,7 @@ namespace softgen
                         txtexisper.Text = hdrread["excis_perc"].ToString().Trim();
                         string item_idval = txtItemId.Text.Trim();
                         string currentDate = DateTime.Now.ToString("yyyy-MM-dd");
-                        
+
                         rotStock.Text = general.StocksPosition(item_idval, currentDate).ToString().Trim();
 
                         hdrread.Close();
@@ -2058,7 +2055,7 @@ namespace softgen
                         editedRow.Cells[columnIndex].Value = pluValue;
                     }
                 }
-                
+
 
                 // Update PLU value in the first column of the previous row
                 //if (e.RowIndex > 0)
@@ -2113,17 +2110,17 @@ namespace softgen
                     }
                 }
 
-                
-                    //}
+
+                //}
             }
 
             else if (e.ColumnIndex == activeColIndex)
-            {                
+            {
                 if (dbgBarDet.Rows[e.RowIndex].Cells[7].Value?.ToString() != "Y")
                 {
-                     MessageBox.Show("Pls Check for Active the Item!","Validation Message", MessageBoxButtons.OK);
+                    MessageBox.Show("Pls Check for Active the Item!", "Validation Message", MessageBoxButtons.OK);
                 }
-                
+
             }
 
 

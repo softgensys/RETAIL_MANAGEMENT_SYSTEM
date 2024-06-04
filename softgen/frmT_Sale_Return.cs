@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
+﻿using System.Data;
 using System.Data.Odbc;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace softgen
 {
@@ -268,7 +259,10 @@ namespace softgen
                             cmddhdr.Parameters.Add(new OdbcParameter("branch_id", string.IsNullOrEmpty(DeTools.strBranch) ? "" : DeTools.strBranch));
                             if (checkboxState == "Y")
                             {
-                                cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", string.IsNullOrEmpty(cboInvNo.SelectedItem.ToString().Trim())));
+                                if (cboInvNo.SelectedItem != null && !string.IsNullOrEmpty(cboInvNo.SelectedItem.ToString().Trim()))
+                                {
+                                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", string.IsNullOrEmpty(cboInvNo.SelectedItem.ToString().Trim())));
+                                }
                             }
                             else
                             {
@@ -436,7 +430,7 @@ namespace softgen
 
                             }
                         }
-                        
+
                         transaction.Commit();
                     }
                 }
@@ -495,7 +489,7 @@ namespace softgen
 
                 else if (mblnSearch == true)
                 {
-                    
+
                     int upperlimit = 999999999;
 
 
@@ -530,7 +524,13 @@ namespace softgen
 
         public void PrintForm()
         {
+            SaveForm();
+            //string brandnm = DeTools.strBrand.Trim();
+            // Instantiate Form2 with ReportViewer
+            Sale_Return_Inv_Form sale_Return_Inv_Form = new Sale_Return_Inv_Form();
 
+            // Show Form2
+            sale_Return_Inv_Form.ShowDialog();
         }
 
         public void ResetControls(Control.ControlCollection controls)

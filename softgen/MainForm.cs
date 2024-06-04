@@ -1,15 +1,6 @@
-using System.Data.Common;
 using System.Data;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using softgen;
-using System.Drawing.Text;
-using System.DirectoryServices.ActiveDirectory;
-using MySql.Data.MySqlClient;
 using System.Data.Odbc;
-using NLog;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using System.Diagnostics;
 
 namespace softgen
 {
@@ -396,6 +387,16 @@ namespace softgen
             childForm.MdiParent = this; // Set the MDI parent form
             childForm.Show();
             childForm.Activate();
+        }
+
+        //for item
+        private void OpenChildFormSale_Rpt_InvWiseSaleRpt()
+        {
+            frmR_invoice_wise_sale_rpt childForm = new frmR_invoice_wise_sale_rpt();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
+
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -944,6 +945,12 @@ namespace softgen
         {
             OpenChildFormSR();
             TSRGenmenu.Enabled = false;
+        }
+
+        private void TinvoiceWiseSaleReportMenu_Click(object sender, EventArgs e)
+        {
+            OpenChildFormSale_Rpt_InvWiseSaleRpt();
+            TinvoiceWiseSaleReportMenu.Enabled = false;
         }
 
 

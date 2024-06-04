@@ -1,41 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace softgen
+﻿namespace softgen
 {
     public class Messages
     {
-        public static string gstrMsg="";
+        public static string gstrMsg = "";
 
-            public static void ErrorMsg(string message)
-            {
-                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            public static void InfoMsg(string message)
-            {
-                MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            public static void WarningMsg(string message)
-            {
-                MessageBox.Show(message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
-            public static DialogResult ConfirmationMsg(string message)
-            {
-                return MessageBox.Show(message, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            }
-
-            public static void FKNotExistMsg(string FieldName,string FieldValue)
+        public static void ErrorMsg(string message)
         {
-            MessageBox.Show(FieldName.Trim()+" '"+FieldValue.Trim()+"' "+"Does not Exists in the Master", "Warning",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        public static void InfoMsg(string message)
+        {
+            MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public static void WarningMsg(string message)
+        {
+            MessageBox.Show(message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        public static DialogResult ConfirmationMsg(string message)
+        {
+            return MessageBox.Show(message, "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        }
+
+        public static void FKNotExistMsg(string FieldName, string FieldValue)
+        {
+            MessageBox.Show(FieldName.Trim() + " '" + FieldValue.Trim() + "' " + "Does not Exists in the Master", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         public void AuthorisedMsg()
@@ -59,7 +50,7 @@ namespace softgen
             }
 
             MessageBox.Show(gstrMsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }       
+        }
 
         public static void IncorrectLoginMsg()
         {
@@ -70,15 +61,15 @@ namespace softgen
 
         public void HelpMsg(string msg)
         {
-           MainForm.Instance.pnlHelp.Text = msg;
-            MainForm.Instance.pnlHelp.ForeColor= System.Drawing.Color.FromArgb(0,100,0,0);
+            MainForm.Instance.pnlHelp.Text = msg;
+            MainForm.Instance.pnlHelp.ForeColor = System.Drawing.Color.FromArgb(0, 100, 0, 0);
         }
-                              
+
 
         public static void PostedMsg()
         {
             MainForm.Instance.pnlHelp.Text = "Information Authorized!";
-            MainForm.Instance.pnlHelp.ForeColor= System.Drawing.Color.FromArgb(0,100,0,0);
+            MainForm.Instance.pnlHelp.ForeColor = System.Drawing.Color.FromArgb(0, 100, 0, 0);
 
             InfoMsg("Information Authorized!");
 
@@ -88,7 +79,7 @@ namespace softgen
         {
             MainForm.Instance.pnlHelp.Text = "Information saving. Please wait...";
         }
-        
+
         public static void SavedMsg()
         {
             if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
@@ -101,7 +92,7 @@ namespace softgen
 
         public static void UnsavedMsg(string id)
         {
-            InfoMsg("This Was Unsaved pls Save or Clear: '"+id+"'");
+            InfoMsg("This Was Unsaved pls Save or Clear: '" + id + "'");
         }
 
 

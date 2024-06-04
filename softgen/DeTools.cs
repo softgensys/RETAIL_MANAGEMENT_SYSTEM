@@ -1,28 +1,16 @@
-﻿using System;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.DirectoryServices.ActiveDirectory;
-using softgen.Properties;
-using System.Resources;
-using static System.Windows.Forms.Design.AxImporter;
-using System.Runtime.InteropServices;// for CLass SystemInformation mainly ComputerName
-using MySql.Data.MySqlClient;
-using System.Security.Cryptography.X509Certificates;
-using System.Data.Odbc;
+﻿using MySql.Data.MySqlClient;
 using System.Data;
+using System.Data.Odbc;
+using System.Runtime.InteropServices;// for CLass SystemInformation mainly ComputerName
+using System.Text;
 //using Windows.Devices.Spi;
 
 namespace softgen
 
 
 {
-    
-        public static class DeTools
+
+    public static class DeTools
     {
         // Define global constants
         public const string ADDMODE = "Add";
@@ -90,11 +78,11 @@ namespace softgen
         // Define a new data structure to manage multiple toolbars per form
         public static Dictionary<string, List<ToolStrip>> toolbarDictionary1 = new Dictionary<string, List<ToolStrip>>();
         public static Dictionary<string, List<ToolStrip>> newToolbarDictionary = new Dictionary<string, List<ToolStrip>>();
-        public static ImageList imageList= new ImageList();
+        public static ImageList imageList = new ImageList();
 
         public static string ConnectionString;
-        public static int startIndex=-1;
-        public static frmM_Group frmM_Group= new frmM_Group();
+        public static int startIndex = -1;
+        public static frmM_Group frmM_Group = new frmM_Group();
         ///////////-------------
         public static string currentKey;
         public static string newKey;
@@ -105,8 +93,8 @@ namespace softgen
         ///////
         /// //////////////////////////////////////////////////////////////////
 
-        
-        public static void ActivateForm(Form form,bool TF,string mode) 
+
+        public static void ActivateForm(Form form, bool TF, string mode)
         {
             try
             {
@@ -115,7 +103,7 @@ namespace softgen
                 foreach (Control control in form.Controls)
                 {
                     string controlName = control.Name.Trim().ToLower();
-                    bool endswithId= controlName.EndsWith("Id",StringComparison.OrdinalIgnoreCase);
+                    bool endswithId = controlName.EndsWith("Id", StringComparison.OrdinalIgnoreCase);
 
                     switch (controlName.Substring(0, 3))
                     {
@@ -126,7 +114,7 @@ namespace softgen
                             control.Enabled = TF;
                             if (endswithId)
                             {
-                            control.Focus();
+                                control.Focus();
                             }
                             break;
                         case "cbo":
@@ -189,17 +177,18 @@ namespace softgen
                     }
                 }
             }
-            catch(Exception ex)
-                {
+            catch (Exception ex)
+            {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         public static string GetMode(Form form)
         {
-            try {
+            try
+            {
                 string caption = form.Text; // Use form.Text instead of form.Caption to get the form's caption
-                
+
                 startIndex = caption.IndexOf("<");
 
                 if (startIndex >= 0)
@@ -214,11 +203,11 @@ namespace softgen
                     }
 
                 }
-               
-                 return string.Empty; // Return an empty string if the mode is not found
-               
+
+                return string.Empty; // Return an empty string if the mode is not found
+
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -230,7 +219,7 @@ namespace softgen
 
         public static void ClearTextNComboControls(Form form)
         {
-           // form.BackColor = System.Drawing.Color.FromArgb(15, 0, 0, 128); // Use the appropriate color format
+            // form.BackColor = System.Drawing.Color.FromArgb(15, 0, 0, 128); // Use the appropriate color format
 
             foreach (Control control in form.Controls)
             {
@@ -790,7 +779,7 @@ namespace softgen
         {
             try
             {
-                string strOptions, strAppMode = "",key="",mode="";
+                string strOptions, strAppMode = "", key = "", mode = "";
 
                 // Retrieve the current form's name
                 string formName = gobjActiveForm.Name;
@@ -863,14 +852,14 @@ namespace softgen
                 // Check if gobjActiveForm is not null and implements the ISearchableForm interface
                 if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
                 {
-                  
-                   
+
+
 
                     switch (BtnKey)
                     {
-                        
+
                         case ADDMODE:
-                            
+
                             strAppMode = ADDMODE;
                             ActivateForm(gobjActiveForm, true, ADDMODE);
                             searchableForm.SetSearchVar(true);
@@ -880,7 +869,7 @@ namespace softgen
                             {
                                 frmT_Invoice frminv = new frmT_Invoice();
                                 frminv.strMode = GetMode(gobjActiveForm);
-                                
+
 
                                 if (frminv.strMode == DeTools.ADDMODE)
                                 {
@@ -895,7 +884,7 @@ namespace softgen
                                     frminv.txtInvNo.Focus();
                                 }
                             }
-                            
+
 
                             break;
                         case MODIFYMODE:
@@ -903,6 +892,13 @@ namespace softgen
                             ActivateForm(gobjActiveForm, true, MODIFYMODE);
                             searchableForm.SetSearchVar(false);
                             MainForm.Instance.mnuModify.Checked = true;
+                            if (gobjActiveForm.Name == "frmT_Invoice")
+                            {
+                                frmT_Invoice frminv = new frmT_Invoice();                            
+
+                                    frminv.txtInvNo.Enabled = true;
+                                    frminv.txtInvNo.Focus();                                
+                            }
                             break;
                         case DELETEMODE:
                             strAppMode = DELETEMODE;
@@ -957,7 +953,7 @@ namespace softgen
                             mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                             mobjbutton.TextImageRelation = TextImageRelation.Overlay;
 
-                            
+
                             // Attach a click event handler for the button
                             mobjbutton.Click += (sender, e) =>
                             {
@@ -1049,7 +1045,7 @@ namespace softgen
                             break;
 
 
-                       
+
 
                         //switch (BtnKey)
                         //{
@@ -1099,7 +1095,7 @@ namespace softgen
                             break;
 
                         case "Print":
-                           searchableForm.PrintForm();
+                            searchableForm.PrintForm();
                             break;
 
                         case "Authorise":
@@ -1107,7 +1103,7 @@ namespace softgen
                             break;
 
                         case "Continue":
-                            //    gobjActiveForm.PrintReport();
+                            searchableForm.PrintForm();
                             break;
 
                         case "Help":
@@ -1166,7 +1162,7 @@ namespace softgen
 
                     gobjActiveForm.Refresh();
 
-                    
+
                     toolbarDictionary1[newKey].Add(mobjToolbar);
 
                     //if (toolbarDictionary1.ContainsKey(currentKey) && newToolbarDictionary.ContainsKey(newKey))
@@ -1581,7 +1577,7 @@ namespace softgen
                 // Call your Help function
                 CallHelp();
             }
-           
+
         }
 
         private static void CreateButton(ToolStrip ToolBar, string BtnKey, string ToolTip)
@@ -1633,8 +1629,8 @@ namespace softgen
                 dynamicImageList.Images.Add("Quit", Images.Quit);
                 dynamicImageList.Images.Add("Retrieve", Images.Retrieve);
                 dynamicImageList.Images.Add("Save", Images.Save);
-              
-                
+
+
                 // Add more images as needed
 
                 for (int i = 0; i < dynamicImageList.Images.Count; i++)
@@ -1692,14 +1688,14 @@ namespace softgen
                         mobjbutton.TextAlign = ContentAlignment.BottomCenter;
                         mobjbutton.TextImageRelation = TextImageRelation.Overlay;
                         mobjbutton.ToolTipText = ToolTip;
-                     
+
 
                         ////// Imp....                    // Attach a click event handler for the button
-                       
+
                         mobjbutton.Click += (sender, e) =>
                         {
                             // Call the ButtonClick method with the appropriate parameters
-                            
+
                             ButtonClick(mobjToolbar.Items.IndexOf(mobjbutton), BtnKey);
                         };
 
@@ -2268,7 +2264,7 @@ namespace softgen
                         DecrementIndex(index);
                     }
 
-                
+
                 }
             }
         }
@@ -2342,10 +2338,10 @@ namespace softgen
             MainForm.Instance.mnuHelp.Enabled = false;
             MainForm.Instance.mnuModify.Enabled = false;
             MainForm.Instance.mnuDeleteMode.Enabled = false;
-            MainForm.Instance.mnuInquire.Enabled= false;
-            MainForm.Instance.mnuPost.Enabled  = false;
-            
-            MainForm.Instance.mnuRetrieve.Enabled   = false;
+            MainForm.Instance.mnuInquire.Enabled = false;
+            MainForm.Instance.mnuPost.Enabled = false;
+
+            MainForm.Instance.mnuRetrieve.Enabled = false;
             MainForm.Instance.mnuRefresh.Enabled = false;
 
             MainForm.Instance.mnuSave.Enabled = false;
@@ -2563,7 +2559,7 @@ namespace softgen
             if (objcontrol is TextBoxBase textBoxBase)
             {
                 textBoxBase.SelectionStart = 0;
-                textBoxBase.SelectionLength= textBoxBase.Text.Length;
+                textBoxBase.SelectionLength = textBoxBase.Text.Length;
             }
         }
 
@@ -2872,7 +2868,7 @@ namespace softgen
             MainForm.Instance.mnuDeleteMode.Checked = false;
             MainForm.Instance.mnuInquire.Checked = false;
             MainForm.Instance.mnuPost.Checked = false;
-        
+
         }
         public static void DisplayForm(Form form, int intFormHeight = 0, int intFormWidth = 0)
         {
@@ -2895,7 +2891,7 @@ namespace softgen
                 form.Width = (intFormWidth > 0) ? intFormWidth : gintFormWidth;
 
                 General general = new General();
-                    general.CenterForm(form);
+                general.CenterForm(form);
                 form.Show();
                 //if (gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
                 //{
@@ -3062,19 +3058,19 @@ namespace softgen
         public static void CreatedBy(string created_by, string Created_date)
         {
             MainForm.Instance.pnlCreated_by.Text = created_by;
-            MainForm.Instance.pnlCreated_date.Text=Created_date;
+            MainForm.Instance.pnlCreated_date.Text = Created_date;
 
         }
-        public static void PostedBy(string Posted_by,string Posted_date)
+        public static void PostedBy(string Posted_by, string Posted_date)
         {
-            MainForm.Instance.pnlPosted_by.Text =Posted_by;
-            MainForm.Instance.pnlPosted_date.Text =Posted_date;
+            MainForm.Instance.pnlPosted_by.Text = Posted_by;
+            MainForm.Instance.pnlPosted_date.Text = Posted_date;
 
         }
 
         public static bool IsFieldUnique(string tableName, string fieldName, string value)
         {
-            DeTools.gstrSQL = "SELECT COUNT(*) FROM "+tableName+ " WHERE "+ fieldName +" = '"+value+"'";
+            DeTools.gstrSQL = "SELECT COUNT(*) FROM " + tableName + " WHERE " + fieldName + " = '" + value + "'";
 
             // Use your database connector and OdbcDataReader to execute the query
             DbConnector dbConnector = new DbConnector();
@@ -3117,7 +3113,7 @@ namespace softgen
             DbConnector dbConnector = new DbConnector();
             //dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
             dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
-            using (OdbcCommand cmd = new OdbcCommand("SHOW TABLES LIKE 'temp_"+tableName+"'", dbConnector.connection))
+            using (OdbcCommand cmd = new OdbcCommand("SHOW TABLES LIKE 'temp_" + tableName + "'", dbConnector.connection))
             {
                 dbConnector.connection.Open();
                 object result = cmd.ExecuteScalar();
@@ -3127,8 +3123,8 @@ namespace softgen
                 {
                     CreateTemporaryTable(tableName);
                 }
-                    return result != null;
-               
+                return result != null;
+
 
             }
             dbConnector.connection.Close();
@@ -3143,7 +3139,7 @@ namespace softgen
             string columnType = "CHAR(1)";  // Modify the data type as needed
             string columnName1 = "comp_name";
             string columnType1 = "VARCHAR(100)";  // Modify the data type as needed
-            string createTableQuery = "CREATE TABLE temp_"+ tableName + " AS SELECT *, '" + columnType + "' 'N' AS " + columnName + ",'"+ columnType1+"' 'null' AS "+columnName1+" FROM " + tableName+" WHERE 1=0";
+            string createTableQuery = "CREATE TABLE temp_" + tableName + " AS SELECT *, '" + columnType + "' 'N' AS " + columnName + ",'" + columnType1 + "' 'null' AS " + columnName1 + " FROM " + tableName + " WHERE 1=0";
             using (OdbcCommand cmd = new OdbcCommand(createTableQuery, dbConnector.connection))
             {
                 dbConnector.connection.Open();
@@ -3152,13 +3148,13 @@ namespace softgen
             }
         }
 
-        public static DataTable SelectDataFromTemporaryTable(string tableName,string whereid,string wherecolumn)
+        public static DataTable SelectDataFromTemporaryTable(string tableName, string whereid, string wherecolumn)
         {
-         
+
             DbConnector dbConnector = new DbConnector();
             //dbConnector.connection.Open();
             dbConnector.OpenConnection();
-            string query = "SELECT * FROM temp_"+tableName+" where "+wherecolumn+" = '"+whereid+"' order by ent_on limit 1"; // Your ODBC query here
+            string query = "SELECT * FROM temp_" + tableName + " where " + wherecolumn + " = '" + whereid + "' order by ent_on limit 1"; // Your ODBC query here
 
             dbConnector.CloseConnection();
             return dbConnector.ExecuteQuery(query);
@@ -3255,7 +3251,7 @@ namespace softgen
                 Control cntrl;
                 bool isMainformAct = false;
                 DataGridViewCell focusedcell;
-               
+
                 foreach (Form OpenForm in Application.OpenForms)
                 {
                     if (OpenForm.Name == "MainForm")
@@ -3378,16 +3374,16 @@ namespace softgen
                     }
 
                     else if (toolbarDictionary1.Count <= 1)
-                         {
-                            Messages.ErrorMsg("Help Not Ready for Menu.");
+                    {
+                        Messages.ErrorMsg("Help Not Ready for Menu.");
 
-                         }
+                    }
                     else
                     {
-                      
-                       mobjActiveControl = gobjActiveForm.ActiveControl;
-                       Help.DisplayHelp(gobjActiveForm, (int)Keys.F1, mobjActiveControl);
-                    
+
+                        mobjActiveControl = gobjActiveForm.ActiveControl;
+                        Help.DisplayHelp(gobjActiveForm, (int)Keys.F1, mobjActiveControl);
+
                     }
                 }
 
@@ -3411,7 +3407,7 @@ namespace softgen
                     return;
                 }
                 else
-                    {
+                {
                     Messages msg = new Messages();
                     msg.VBError(ex, "DeTools", "CallHelp", null);
                 }
@@ -3527,7 +3523,7 @@ namespace softgen
                 }
 
                 toolbarDictionary1[newKey].Add(newToolbar);
-            
+
             }
 
         }

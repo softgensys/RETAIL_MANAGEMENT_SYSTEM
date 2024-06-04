@@ -96,11 +96,11 @@ namespace softgen
                     }
                 }
 
-                string amttopaytxt="(Rupees "+General.ConvertToWords(amttopay)+")";
+                string amttopaytxt = "(Rupees " + General.ConvertToWords(amttopay) + ")";
 
 
                 // Set the path of the RDLC report file to the ReportViewer
-                this.reportViewer1.LocalReport.ReportPath = "InvReport.rdlc";
+                this.reportViewer1.LocalReport.ReportPath = "Reports/InvReport.rdlc";
 
                 // Set report parameters
                 ReportParameter[] hdrParameters = new ReportParameter[]
@@ -150,7 +150,7 @@ namespace softgen
                 {
                     delfrminvtbl.ExecuteNonQuery();
                 }
-            dbConnector.connection.Close();
+                dbConnector.connection.Close();
             }
         }
 
@@ -242,7 +242,7 @@ namespace softgen
 
             // Close the database connection
             dbConnector.connection.Close();
-          
+
             // Set the report's DataSources property to a new list containing your DataTable
             //this.reportViewer1.LocalReport.DataSources.Clear();
             this.reportViewer1.LocalReport.DataSources.Add(new ReportDataSource("DataSet_Tax", dataTable1));
@@ -252,7 +252,7 @@ namespace softgen
             this.reportViewer1.RefreshReport();
         }
 
-         private void GenerateAndDisplayCessReport()
+        private void GenerateAndDisplayCessReport()
         {
             // Create a DataTable to hold the data from the database
             DataTable dataTable2 = new DataTable();
@@ -286,7 +286,7 @@ namespace softgen
 
             // Close the database connection
             dbConnector.connection.Close();
-          
+
             // Set the report's DataSources property to a new list containing your DataTable
             //this.reportViewer1.LocalReport.DataSources.Clear();
             this.reportViewer1.LocalReport.DataSources.Add(new ReportDataSource("DataSet_Cess", dataTable2));
@@ -297,13 +297,13 @@ namespace softgen
         }
 
 
-      
+
         //----------OLD CODE--------------------------//
 
-        
+
         private void Form2_Load(object sender, EventArgs e)
         { // Call ItemListToVar to load the report with item data
-           // ItemListToVar();
+          // ItemListToVar();
         }
 
     }

@@ -69,6 +69,8 @@ namespace softgen
             TInvGenmenu = new ToolStripMenuItem();
             TSRGenmenu = new ToolStripMenuItem();
             reportToolStripMenuItem = new ToolStripMenuItem();
+            TSaleReportMenu = new ToolStripMenuItem();
+            TinvoiceWiseSaleReportMenu = new ToolStripMenuItem();
             utilitiesToolStripMenuItem = new ToolStripMenuItem();
             windowsToolStripMenuItem = new ToolStripMenuItem();
             mnuWTileH = new ToolStripMenuItem();
@@ -357,7 +359,7 @@ namespace softgen
             // 
             Tbillmodule.DropDownItems.AddRange(new ToolStripItem[] { TInvGenmenu, TSRGenmenu });
             Tbillmodule.Name = "Tbillmodule";
-            Tbillmodule.Size = new Size(180, 22);
+            Tbillmodule.Size = new Size(151, 22);
             Tbillmodule.Text = "Billing Module";
             // 
             // TInvGenmenu
@@ -376,9 +378,24 @@ namespace softgen
             // 
             // reportToolStripMenuItem
             // 
+            reportToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { TSaleReportMenu });
             reportToolStripMenuItem.Name = "reportToolStripMenuItem";
             reportToolStripMenuItem.Size = new Size(54, 20);
             reportToolStripMenuItem.Text = "Report";
+            // 
+            // TSaleReportMenu
+            // 
+            TSaleReportMenu.DropDownItems.AddRange(new ToolStripItem[] { TinvoiceWiseSaleReportMenu });
+            TSaleReportMenu.Name = "TSaleReportMenu";
+            TSaleReportMenu.Size = new Size(180, 22);
+            TSaleReportMenu.Text = "Sale Report";
+            // 
+            // TinvoiceWiseSaleReportMenu
+            // 
+            TinvoiceWiseSaleReportMenu.Name = "TinvoiceWiseSaleReportMenu";
+            TinvoiceWiseSaleReportMenu.Size = new Size(202, 22);
+            TinvoiceWiseSaleReportMenu.Text = "Invoice Wise Sale Report";
+            TinvoiceWiseSaleReportMenu.Click += TinvoiceWiseSaleReportMenu_Click;
             // 
             // utilitiesToolStripMenuItem
             // 
@@ -671,5 +688,7 @@ namespace softgen
         private ToolStripMenuItem muWTIleV;
         public ToolStripMenuItem TInvGenmenu;
         public ToolStripMenuItem TSRGenmenu;
+        private ToolStripMenuItem TSaleReportMenu;
+        private ToolStripMenuItem TinvoiceWiseSaleReportMenu;
     }
 }

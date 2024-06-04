@@ -14,7 +14,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="InvReport.rdlc" />
     <None Remove="Report1.rdlc" />
+    <None Remove="Reports\Ledgers\r_invoicewise_sale.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Reports\InvReport.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\Ledgers\r_invoicewise_sale.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Release\Debug\net7.0-windows\InvReport.rdlc" />
     <None Include="bin\Release\net7.0-windows\Icons\Quit1.png" />
   </ItemGroup>
 
@@ -147,7 +159,6 @@
 
   <ItemGroup>
     <None Include="bin\Debug\net6.0-windows\Icons\Add.png" />
-    <None Include="bin\Debug\net7.0-windows\InvReport.rdlc" />
     <None Include="bin\Debug\net7.0-windows\Report2.rdlc" />
   </ItemGroup>
 
@@ -173,25 +184,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DataSet1.xsd</DependentUpon>
     </Compile>
-    <Compile Update="DataSet2.Designer.cs">
+    <Compile Update="Dataset__Sale_Return_Rep.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>DataSet2.xsd</DependentUpon>
-    </Compile>
-    <Compile Update="DataSet3.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataSet3.xsd</DependentUpon>
-    </Compile>
-    <Compile Update="DataSet4.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataSet4.xsd</DependentUpon>
-    </Compile>
-    <Compile Update="DataSet5.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DataSet5.xsd</DependentUpon>
+      <DependentUpon>Dataset__Sale_Return_Rep.xsd</DependentUpon>
     </Compile>
     <Compile Update="Images.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -202,6 +198,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>InvoiceDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="InvWise_Sale_Rpt_Dataset.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InvWise_Sale_Rpt_Dataset.xsd</DependentUpon>
     </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -226,25 +227,17 @@
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DataSet1.Designer.cs</LastGenOutput>
     </None>
-    <None Update="DataSet2.xsd">
+    <None Update="Dataset__Sale_Return_Rep.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSet2.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="DataSet3.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSet3.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="DataSet4.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSet4.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="DataSet5.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSet5.Designer.cs</LastGenOutput>
+      <LastGenOutput>Dataset__Sale_Return_Rep.Designer.cs</LastGenOutput>
     </None>
     <None Update="InvoiceDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>InvoiceDataSet.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="InvWise_Sale_Rpt_Dataset.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>InvWise_Sale_Rpt_Dataset.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

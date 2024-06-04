@@ -5,8 +5,6 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "softgen", "softgen\softgen.csproj", "{8167F6D3-F9A4-4271-B2C0-BF42C41DA1DC}"
 EndProject
-Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "softgen 64 bit", "..\..\softgen 64 bit\softgen 64 bit.aiproj", "{6782636D-EE8C-493A-B814-1F16687343FF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		All|Any CPU = All|Any CPU
@@ -26,16 +24,6 @@ Global
 		{8167F6D3-F9A4-4271-B2C0-BF42C41DA1DC}.DefaultBuild|Any CPU.Build.0 = Debug|Any CPU
 		{8167F6D3-F9A4-4271-B2C0-BF42C41DA1DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8167F6D3-F9A4-4271-B2C0-BF42C41DA1DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6782636D-EE8C-493A-B814-1F16687343FF}.All|Any CPU.ActiveCfg = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.All|Any CPU.Build.0 = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.Debug|Any CPU.ActiveCfg = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.Debug|Any CPU.Build.0 = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.DebugLocal|Any CPU.ActiveCfg = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.DebugLocal|Any CPU.Build.0 = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.DefaultBuild|Any CPU.ActiveCfg = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.DefaultBuild|Any CPU.Build.0 = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.Release|Any CPU.ActiveCfg = DefaultBuild
-		{6782636D-EE8C-493A-B814-1F16687343FF}.Release|Any CPU.Build.0 = DefaultBuild
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

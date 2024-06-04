@@ -42,6 +42,20 @@
             rotInvCust = new Label();
             pnlPayDet = new Panel();
             dbgPayDet = new DataGridView();
+            PaySrno = new DataGridViewTextBoxColumn();
+            Paymod = new DataGridViewComboBoxColumn();
+            PayAmt = new DataGridViewTextBoxColumn();
+            CashTend = new DataGridViewTextBoxColumn();
+            Refund = new DataGridViewTextBoxColumn();
+            CCCode = new DataGridViewComboBoxColumn();
+            CCNo = new DataGridViewTextBoxColumn();
+            Coupon = new DataGridViewComboBoxColumn();
+            Custid = new DataGridViewTextBoxColumn();
+            Bank = new DataGridViewTextBoxColumn();
+            Chno = new DataGridViewTextBoxColumn();
+            Chdt = new DataGridViewTextBoxColumn();
+            VouchNo = new DataGridViewTextBoxColumn();
+            VouchAmt = new DataGridViewTextBoxColumn();
             lblPayDet = new Label();
             rotTotQty = new Label();
             lblTotQty = new Label();
@@ -100,20 +114,6 @@
             dtpInvDate = new DateTimePicker();
             txtInvNo = new TextBox();
             lblInvNo = new Label();
-            PaySrno = new DataGridViewTextBoxColumn();
-            Paymod = new DataGridViewComboBoxColumn();
-            PayAmt = new DataGridViewTextBoxColumn();
-            CashTend = new DataGridViewTextBoxColumn();
-            Refund = new DataGridViewTextBoxColumn();
-            CCCode = new DataGridViewComboBoxColumn();
-            CCNo = new DataGridViewTextBoxColumn();
-            Coupon = new DataGridViewComboBoxColumn();
-            Custid = new DataGridViewTextBoxColumn();
-            Bank = new DataGridViewTextBoxColumn();
-            Chno = new DataGridViewTextBoxColumn();
-            Chdt = new DataGridViewTextBoxColumn();
-            VouchNo = new DataGridViewTextBoxColumn();
-            VouchAmt = new DataGridViewTextBoxColumn();
             T_Invoice.SuspendLayout();
             pnlPayDet.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dbgPayDet).BeginInit();
@@ -281,6 +281,100 @@
             dbgPayDet.EditingControlShowing += dbgPayDet_EditingControlShowing;
             dbgPayDet.RowLeave += dbgPayDet_RowLeave;
             dbgPayDet.RowPostPaint += dbgPayDet_RowPostPaint;
+            // 
+            // PaySrno
+            // 
+            PaySrno.HeaderText = "Sr No.";
+            PaySrno.Name = "PaySrno";
+            PaySrno.ReadOnly = true;
+            PaySrno.Width = 40;
+            // 
+            // Paymod
+            // 
+            Paymod.HeaderText = "PAYMODE";
+            Paymod.Name = "Paymod";
+            Paymod.Width = 80;
+            // 
+            // PayAmt
+            // 
+            PayAmt.HeaderText = "AMOUNT";
+            PayAmt.Name = "PayAmt";
+            PayAmt.Width = 85;
+            // 
+            // CashTend
+            // 
+            CashTend.HeaderText = "CASH TEND";
+            CashTend.Name = "CashTend";
+            CashTend.Width = 85;
+            // 
+            // Refund
+            // 
+            Refund.HeaderText = "Refund";
+            Refund.Name = "Refund";
+            Refund.ReadOnly = true;
+            // 
+            // CCCode
+            // 
+            CCCode.HeaderText = "CC CODE";
+            CCCode.Name = "CCCode";
+            CCCode.ReadOnly = true;
+            CCCode.Resizable = DataGridViewTriState.True;
+            CCCode.SortMode = DataGridViewColumnSortMode.Automatic;
+            CCCode.Width = 50;
+            // 
+            // CCNo
+            // 
+            CCNo.HeaderText = "CC NO";
+            CCNo.Name = "CCNo";
+            CCNo.ReadOnly = true;
+            CCNo.Width = 60;
+            // 
+            // Coupon
+            // 
+            Coupon.HeaderText = "COUPON";
+            Coupon.Name = "Coupon";
+            Coupon.ReadOnly = true;
+            Coupon.Resizable = DataGridViewTriState.True;
+            Coupon.SortMode = DataGridViewColumnSortMode.Automatic;
+            Coupon.Width = 60;
+            // 
+            // Custid
+            // 
+            Custid.HeaderText = "CUST ID";
+            Custid.Name = "Custid";
+            Custid.ReadOnly = true;
+            Custid.Resizable = DataGridViewTriState.True;
+            // 
+            // Bank
+            // 
+            Bank.HeaderText = "BANK";
+            Bank.Name = "Bank";
+            Bank.ReadOnly = true;
+            Bank.Width = 80;
+            // 
+            // Chno
+            // 
+            Chno.HeaderText = "CH. NO";
+            Chno.Name = "Chno";
+            Chno.ReadOnly = true;
+            Chno.Width = 70;
+            // 
+            // Chdt
+            // 
+            Chdt.HeaderText = "CH. DT";
+            Chdt.Name = "Chdt";
+            Chdt.ReadOnly = true;
+            Chdt.Width = 80;
+            // 
+            // VouchNo
+            // 
+            VouchNo.HeaderText = "Vouch. No.";
+            VouchNo.Name = "VouchNo";
+            // 
+            // VouchAmt
+            // 
+            VouchAmt.HeaderText = "Vouch. Amt";
+            VouchAmt.Name = "VouchAmt";
             // 
             // lblPayDet
             // 
@@ -815,6 +909,7 @@
             // cboCust
             // 
             cboCust.BackColor = SystemColors.Window;
+            cboCust.Enabled = false;
             cboCust.FlatStyle = FlatStyle.Flat;
             cboCust.FormattingEnabled = true;
             cboCust.Location = new Point(449, 7);
@@ -865,100 +960,6 @@
             lblInvNo.Size = new Size(74, 14);
             lblInvNo.TabIndex = 82;
             lblInvNo.Text = "Invoice No";
-            // 
-            // PaySrno
-            // 
-            PaySrno.HeaderText = "Sr No.";
-            PaySrno.Name = "PaySrno";
-            PaySrno.ReadOnly = true;
-            PaySrno.Width = 40;
-            // 
-            // Paymod
-            // 
-            Paymod.HeaderText = "PAYMODE";
-            Paymod.Name = "Paymod";
-            Paymod.Width = 80;
-            // 
-            // PayAmt
-            // 
-            PayAmt.HeaderText = "AMOUNT";
-            PayAmt.Name = "PayAmt";
-            PayAmt.Width = 85;
-            // 
-            // CashTend
-            // 
-            CashTend.HeaderText = "CASH TEND";
-            CashTend.Name = "CashTend";
-            CashTend.Width = 85;
-            // 
-            // Refund
-            // 
-            Refund.HeaderText = "Refund";
-            Refund.Name = "Refund";
-            Refund.ReadOnly = true;
-            // 
-            // CCCode
-            // 
-            CCCode.HeaderText = "CC CODE";
-            CCCode.Name = "CCCode";
-            CCCode.ReadOnly = true;
-            CCCode.Resizable = DataGridViewTriState.True;
-            CCCode.SortMode = DataGridViewColumnSortMode.Automatic;
-            CCCode.Width = 50;
-            // 
-            // CCNo
-            // 
-            CCNo.HeaderText = "CC NO";
-            CCNo.Name = "CCNo";
-            CCNo.ReadOnly = true;
-            CCNo.Width = 60;
-            // 
-            // Coupon
-            // 
-            Coupon.HeaderText = "COUPON";
-            Coupon.Name = "Coupon";
-            Coupon.ReadOnly = true;
-            Coupon.Resizable = DataGridViewTriState.True;
-            Coupon.SortMode = DataGridViewColumnSortMode.Automatic;
-            Coupon.Width = 60;
-            // 
-            // Custid
-            // 
-            Custid.HeaderText = "CUST ID";
-            Custid.Name = "Custid";
-            Custid.ReadOnly = true;
-            Custid.Resizable = DataGridViewTriState.True;
-            // 
-            // Bank
-            // 
-            Bank.HeaderText = "BANK";
-            Bank.Name = "Bank";
-            Bank.ReadOnly = true;
-            Bank.Width = 80;
-            // 
-            // Chno
-            // 
-            Chno.HeaderText = "CH. NO";
-            Chno.Name = "Chno";
-            Chno.ReadOnly = true;
-            Chno.Width = 70;
-            // 
-            // Chdt
-            // 
-            Chdt.HeaderText = "CH. DT";
-            Chdt.Name = "Chdt";
-            Chdt.ReadOnly = true;
-            Chdt.Width = 80;
-            // 
-            // VouchNo
-            // 
-            VouchNo.HeaderText = "Vouch. No.";
-            VouchNo.Name = "VouchNo";
-            // 
-            // VouchAmt
-            // 
-            VouchAmt.HeaderText = "Vouch. Amt";
-            VouchAmt.Name = "VouchAmt";
             // 
             // frmT_Invoice
             // 

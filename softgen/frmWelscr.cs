@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
-using System.Data.Odbc;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data.Odbc;
 
 namespace softgen
 {
@@ -17,12 +6,12 @@ namespace softgen
     {
         public string gstrSQl1;
         frmStart frmStart1 = new frmStart();
-        public bool openyn= true;
+        public bool openyn = true;
 
         public frmWelscr()
         {
             InitializeComponent();
-           
+
 
         }
 
@@ -203,7 +192,7 @@ namespace softgen
         {
             if (e.KeyCode == Keys.Escape)
             {
-               // frmStart1.Close();
+                // frmStart1.Close();
             }
         }
 

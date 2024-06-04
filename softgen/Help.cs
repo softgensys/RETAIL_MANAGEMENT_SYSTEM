@@ -1,14 +1,4 @@
-﻿using Org.BouncyCastle.Crmf;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Odbc;
-using System.DirectoryServices.ActiveDirectory;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Data.Odbc;
 
 namespace softgen
 {
@@ -241,7 +231,7 @@ namespace softgen
             catch (Exception)
             {
 
-                
+
             }
 
         }
@@ -1433,7 +1423,7 @@ namespace softgen
 
                     // Get the current row index
                     int rowIndex = targetGrid.Rows.Add();
-                    
+
                     // Assuming that grdHelp is your source DataGridView in frmHelp
                     DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
 
@@ -1481,34 +1471,53 @@ namespace softgen
                 }
             }
 
-
-            else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode== DeTools.MODIFYMODE)
+            // Transfer data from help form to main form.
+            if (i_Help_id == 1012)
             {
-                // Assuming that grdHelp is your source DataGridView in frmHelp
-                DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
-
-                if (selectedRow != null)
+                // Single key fields
+                if (frmHelp.grdHelp.CurrentRow != null)
                 {
-                    // Assuming you have a list of column indexes to transfer data
-                    List<int> columnIndexesToTransfer = new List<int> { 0}; // Add the column indexes you want to transfer
-
-                    foreach (int columnIndex in columnIndexesToTransfer)
+                    DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+                    if (selectedRow.Cells.Count > 0)
                     {
-                        // Check if the column index is within the bounds
-                        if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                        o_control.Text = selectedRow.Cells[0].Value.ToString();
+                        if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
                         {
-                            frmT_Invoice.GetInvNoFromHelp = selectedRow.Cells[0].Value.ToString().Trim();
-                            frmT_Invoice frminv = new frmT_Invoice();
-                            frminv.txtInvNo.Text= selectedRow.Cells[0].Value.ToString().Trim();
-                            frminv.SearchForm();
+                            searchableForm.SearchForm();
                         }
+
                     }
                 }
             }
+
+
+            //else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode == DeTools.MODIFYMODE)
+            //{
+            //    // Assuming that grdHelp is your source DataGridView in frmHelp
+            //    DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+
+            //    if (selectedRow != null)
+            //    {
+            //        // Assuming you have a list of column indexes to transfer data
+            //        List<int> columnIndexesToTransfer = new List<int> { 0 }; // Add the column indexes you want to transfer
+
+            //        foreach (int columnIndex in columnIndexesToTransfer)
+            //        {
+            //            // Check if the column index is within the bounds
+            //            if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+            //            {
+            //                frmT_Invoice.GetInvNoFromHelp = selectedRow.Cells[0].Value.ToString().Trim();
+            //                frmT_Invoice frminv = new frmT_Invoice();
+            //                frminv.txtInvNo.Text = selectedRow.Cells[0].Value.ToString().Trim();
+            //                frminv.SearchForm();
+            //            }
+            //        }
+            //    }
+            //}
         }
 
-         public static void TransferDataSr(Form form)
-         {
+        public static void TransferDataSr(Form form)
+        {
             s_Mode = DeTools.GetMode(form);
             // Transfer data from help form to main form.
             if (i_Help_id == 9001 && DeTools.gobjActiveForm.Name == "frmT_Sale_Return")
@@ -1521,7 +1530,7 @@ namespace softgen
 
                     // Get the current row index
                     int rowIndex = targetGrid.Rows.Add();
-                    
+
                     // Assuming that grdHelp is your source DataGridView in frmHelp
                     DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
 
@@ -1570,7 +1579,7 @@ namespace softgen
             }
 
 
-            else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode== DeTools.MODIFYMODE)
+            else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode == DeTools.MODIFYMODE)
             {
                 // Assuming that grdHelp is your source DataGridView in frmHelp
                 DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
@@ -1578,7 +1587,7 @@ namespace softgen
                 if (selectedRow != null)
                 {
                     // Assuming you have a list of column indexes to transfer data
-                    List<int> columnIndexesToTransfer = new List<int> { 0}; // Add the column indexes you want to transfer
+                    List<int> columnIndexesToTransfer = new List<int> { 0 }; // Add the column indexes you want to transfer
 
                     foreach (int columnIndex in columnIndexesToTransfer)
                     {
@@ -1587,13 +1596,13 @@ namespace softgen
                         {
                             frmT_Invoice.GetInvNoFromHelp = selectedRow.Cells[0].Value.ToString().Trim();
                             frmT_Invoice frminv = new frmT_Invoice();
-                            frminv.txtInvNo.Text= selectedRow.Cells[0].Value.ToString().Trim();
+                            frminv.txtInvNo.Text = selectedRow.Cells[0].Value.ToString().Trim();
                             frminv.SearchForm();
                         }
                     }
                 }
             }
-         }
+        }
 
 
 

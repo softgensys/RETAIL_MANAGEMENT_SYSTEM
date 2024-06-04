@@ -1,15 +1,5 @@
-﻿using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
+﻿using System.Data;
 using System.Data.Odbc;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace softgen
 {
@@ -306,10 +296,10 @@ namespace softgen
                     }
 
                 }
-                
-                  Messages.SavedMsg();
-                  dbConnector.connection.Close();
-                  ClearForm();
+
+                Messages.SavedMsg();
+                dbConnector.connection.Close();
+                ClearForm();
 
             }
             catch (Exception)
@@ -323,96 +313,96 @@ namespace softgen
         {
             try
             {
-               
-                    //for getting unsaved data
-                    dbConnector = new DbConnector();
-                    // dbConnector.connectionString= new OdbcConnection();
-                    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
 
-                    General general = new General();
-                    if (!string.IsNullOrWhiteSpace(txtSubGrpId.Text) && !mblnSearch)
+                //for getting unsaved data
+                dbConnector = new DbConnector();
+                // dbConnector.connectionString= new OdbcConnection();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+                General general = new General();
+                if (!string.IsNullOrWhiteSpace(txtSubGrpId.Text) && !mblnSearch)
+                {
+                    msg.HelpMsg("Information retrieving. Please wait...");
+
+                    DeTools.gstrSQL = "SELECT * FROM m_sub_Group WHERE sub_group_id = '" + txtSubGrpId.Text.Trim() + "'";
+
+                    OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                    dbConnector.connection.Open();
+                    OdbcDataReader reader = cmd.ExecuteReader();
+
+                    if (!reader.HasRows)
                     {
-                        msg.HelpMsg("Information retrieving. Please wait...");
-
-                        DeTools.gstrSQL = "SELECT * FROM m_sub_Group WHERE sub_group_id = '" + txtSubGrpId.Text.Trim() + "'";
-
-                        OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-                        dbConnector.connection.Open();
-                        OdbcDataReader reader = cmd.ExecuteReader();
-
-                        if (!reader.HasRows)
-                        {
-                            msg.HelpMsg("Information Not Found");
-                            Messages.InfoMsg("No information available for this criteria.!");
-                            mblnSearch = false;
-                            reader.Close();
-                            return;
-                        }
-                        else
-                        {
-                            while (reader.Read())
-                            {
-                                if (reader["status"].ToString() == "A") // Posted
-                                {
-                                    switch (DeTools.GetMode(this))
-                                    {
-                                        case DeTools.DELETEMODE:
-                                        case DeTools.POSTMODE:
-                                            //AuthorisedMsg();
-                                            mblnSearch = false;
-                                            reader.Close();
-                                            return;
-                                    }
-                                }
-
-                                txtSubGrpId.Enabled = false;
-                                txtSubGrpDesc.Text = reader["sub_group_desc"].ToString();
-                                if (reader["active_yn"].ToString() == "Y")
-                                    ChkAct.Checked = true;
-                                else
-                                    ChkAct.Checked = false;
-                                
-                                if (reader["sp_change_yn"].ToString() == "Y")
-                                    chkSPChange.Checked = true;
-                                else
-                                    ChkAct.Checked = false;
-                                    
-                                if (reader["disc_yn"].ToString() == "Y")
-                                    chkSPChange.Checked = true;
-                                else
-                                    ChkAct.Checked = false;
-                                txtDisc.Text = reader["disc_per"].ToString().Trim();
-                                
-                                txtSTaxPer.Text = reader["sales_tax"].ToString();
-                                mstrEntBy = general.GetuserName(reader["ent_by"].ToString());
-                                DateTime entOn = Convert.ToDateTime(reader["ent_on"]);
-                                mstrEntOn = entOn.ToString("dd/MM/yyyy");
-                                DeTools.CreatedBy(mstrEntBy, mstrEntOn);
-                                cboGrpId.SelectedItem = reader["group_id"].ToString().Trim();
-                                
-
-                                if (reader["status"].ToString() == "A")
-                                {
-                                    mstrAuthBy = general.GetuserName(reader["auth_by"].ToString());
-                                    DateTime AuthOn = Convert.ToDateTime(reader["auth_on"].ToString());
-                                    mstrAuthOn = AuthOn.ToString("dd/MM/yyyy");
-                                    DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
-                                }
-                            }
-
-                            reader.Close();
-                            //msg.FoundMsg("Information Found!");
-                            msg.HelpMsg("Information Found!");
-                            mblnSearch = true;
-                        }
+                        msg.HelpMsg("Information Not Found");
+                        Messages.InfoMsg("No information available for this criteria.!");
+                        mblnSearch = false;
+                        reader.Close();
+                        return;
                     }
                     else
                     {
-                        return;
-                    }
+                        while (reader.Read())
+                        {
+                            if (reader["status"].ToString() == "A") // Posted
+                            {
+                                switch (DeTools.GetMode(this))
+                                {
+                                    case DeTools.DELETEMODE:
+                                    case DeTools.POSTMODE:
+                                        //AuthorisedMsg();
+                                        mblnSearch = false;
+                                        reader.Close();
+                                        return;
+                                }
+                            }
 
-                    ClearForm();
+                            txtSubGrpId.Enabled = false;
+                            txtSubGrpDesc.Text = reader["sub_group_desc"].ToString();
+                            if (reader["active_yn"].ToString() == "Y")
+                                ChkAct.Checked = true;
+                            else
+                                ChkAct.Checked = false;
+
+                            if (reader["sp_change_yn"].ToString() == "Y")
+                                chkSPChange.Checked = true;
+                            else
+                                ChkAct.Checked = false;
+
+                            if (reader["disc_yn"].ToString() == "Y")
+                                chkSPChange.Checked = true;
+                            else
+                                ChkAct.Checked = false;
+                            txtDisc.Text = reader["disc_per"].ToString().Trim();
+
+                            txtSTaxPer.Text = reader["sales_tax"].ToString();
+                            mstrEntBy = general.GetuserName(reader["ent_by"].ToString());
+                            DateTime entOn = Convert.ToDateTime(reader["ent_on"]);
+                            mstrEntOn = entOn.ToString("dd/MM/yyyy");
+                            DeTools.CreatedBy(mstrEntBy, mstrEntOn);
+                            cboGrpId.SelectedItem = reader["group_id"].ToString().Trim();
+
+
+                            if (reader["status"].ToString() == "A")
+                            {
+                                mstrAuthBy = general.GetuserName(reader["auth_by"].ToString());
+                                DateTime AuthOn = Convert.ToDateTime(reader["auth_on"].ToString());
+                                mstrAuthOn = AuthOn.ToString("dd/MM/yyyy");
+                                DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
+                            }
+                        }
+
+                        reader.Close();
+                        //msg.FoundMsg("Information Found!");
+                        msg.HelpMsg("Information Found!");
+                        mblnSearch = true;
+                    }
                 }
+                else
+                {
+                    return;
+                }
+
+                ClearForm();
+            }
             catch (Exception)
             {
 
