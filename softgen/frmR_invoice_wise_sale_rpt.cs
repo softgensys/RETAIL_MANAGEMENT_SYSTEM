@@ -18,10 +18,10 @@ namespace softgen
         private string mstrEntBy, mstrEntOn, mstrAuthBy, mstrAuthOn, chkItemid;
         public bool mblnSearch, mblnDataEntered;
         public static string Paymchecked_yn = "N";
-        public static string FromDt="",Todt="";
+        public static string FromDt = "", Todt = "";
         public static string FromDt_mysql = "", Todt_mysql = "";
         // Get the selected item from the ComboBox
-        public string selectedPaymItem = "";
+        public static string selectedPaymItem = "";
         DbConnector dbConnector;
 
         public frmR_invoice_wise_sale_rpt()
@@ -204,6 +204,17 @@ namespace softgen
             Todt = dtpToDate.Value.ToString("dd/MM/yyyy").Trim();
             Todt_mysql = dtpToDate.Value.ToString("yyyy-MM-dd").Trim();
 
+        }
+
+        private void frmR_invoice_wise_sale_rpt_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DeTools.DestroyToolbar(this);
+            MainForm.Instance.TinvoiceWiseSaleReportMenu.Enabled = true;
+        }
+
+        private void cboPaymod_SelectedValueChanged(object sender, EventArgs e)
+        {
+            selectedPaymItem = cboPaymod.SelectedItem.ToString().Trim();
         }
     }
 }

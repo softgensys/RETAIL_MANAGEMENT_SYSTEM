@@ -209,6 +209,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="r_vat_sale_dataset.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>r_vat_sale_dataset.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -238,6 +243,10 @@
     <None Update="InvWise_Sale_Rpt_Dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>InvWise_Sale_Rpt_Dataset.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="r_vat_sale_dataset.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>r_vat_sale_dataset.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

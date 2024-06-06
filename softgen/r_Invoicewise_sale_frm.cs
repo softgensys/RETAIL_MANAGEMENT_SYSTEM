@@ -306,12 +306,12 @@ namespace softgen
 
                     if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "Y")
                     {
-                        command.Parameters.AddWithValue("@PayMode", invoice_Wise_Sale_Rpt.selectedPaymItem);
+                        command.Parameters.AddWithValue("@PayMode", "");
                     }
                    
                     else if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "N")
                     {
-                        command.Parameters.AddWithValue("@PayMode", "");
+                        command.Parameters.AddWithValue("@PayMode", frmR_invoice_wise_sale_rpt.selectedPaymItem);
                     }
                    
                     // Execute the command and read the data into the DataTable

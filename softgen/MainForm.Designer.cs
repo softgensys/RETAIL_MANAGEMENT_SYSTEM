@@ -688,7 +688,7 @@ namespace softgen
         private ToolStripMenuItem muWTIleV;
         public ToolStripMenuItem TInvGenmenu;
         public ToolStripMenuItem TSRGenmenu;
-        private ToolStripMenuItem TSaleReportMenu;
-        private ToolStripMenuItem TinvoiceWiseSaleReportMenu;
+        public ToolStripMenuItem TinvoiceWiseSaleReportMenu;
+        public ToolStripMenuItem TSaleReportMenu;
     }
 }

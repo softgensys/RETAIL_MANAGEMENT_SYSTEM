@@ -199,6 +199,7 @@
             cboPaymod.TabIndex = 1;
             cboPaymod.DropDown += cboPaymod_DropDown;
             cboPaymod.SelectedIndexChanged += cboPaymod_SelectedIndexChanged;
+            cboPaymod.SelectedValueChanged += cboPaymod_SelectedValueChanged;
             // 
             // chkPaymAll
             // 
@@ -222,6 +223,7 @@
             Name = "frmR_invoice_wise_sale_rpt";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Invoicewise Sale Report";
+            FormClosed += frmR_invoice_wise_sale_rpt_FormClosed;
             Load += frmR_invoice_wise_sale_rpt_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
