@@ -33,7 +33,6 @@
             chkInvGstDet = new CheckBox();
             chkItemGstDet = new CheckBox();
             chkInvtIME = new CheckBox();
-            chkInvCessDet = new CheckBox();
             lblToDt = new Label();
             dtpToDate = new DateTimePicker();
             lblFromdt = new Label();
@@ -52,7 +51,6 @@
             panel1.Controls.Add(chkInvGstDet);
             panel1.Controls.Add(chkItemGstDet);
             panel1.Controls.Add(chkInvtIME);
-            panel1.Controls.Add(chkInvCessDet);
             panel1.Controls.Add(lblToDt);
             panel1.Controls.Add(dtpToDate);
             panel1.Controls.Add(lblFromdt);
@@ -80,54 +78,44 @@
             chkInvGstDet.AutoSize = true;
             chkInvGstDet.CheckAlign = ContentAlignment.MiddleRight;
             chkInvGstDet.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            chkInvGstDet.Location = new Point(325, 56);
+            chkInvGstDet.Location = new Point(173, 56);
             chkInvGstDet.Name = "chkInvGstDet";
             chkInvGstDet.Size = new Size(147, 19);
             chkInvGstDet.TabIndex = 257;
             chkInvGstDet.Text = "InvoiceWise/Gst Detail";
             chkInvGstDet.UseVisualStyleBackColor = true;
+            chkInvGstDet.CheckedChanged += chkInvGstDet_CheckedChanged;
             // 
             // chkItemGstDet
             // 
             chkItemGstDet.AutoSize = true;
             chkItemGstDet.CheckAlign = ContentAlignment.MiddleRight;
             chkItemGstDet.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            chkItemGstDet.Location = new Point(182, 56);
+            chkItemGstDet.Location = new Point(16, 56);
             chkItemGstDet.Name = "chkItemGstDet";
             chkItemGstDet.Size = new Size(136, 19);
             chkItemGstDet.TabIndex = 256;
             chkItemGstDet.Text = "With Item/Gst Detail";
             chkItemGstDet.UseVisualStyleBackColor = true;
+            chkItemGstDet.CheckedChanged += chkItemGstDet_CheckedChanged;
             // 
             // chkInvtIME
             // 
             chkInvtIME.AutoSize = true;
             chkInvtIME.CheckAlign = ContentAlignment.MiddleRight;
             chkInvtIME.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            chkInvtIME.Location = new Point(193, 94);
+            chkInvtIME.Location = new Point(354, 56);
             chkInvtIME.Name = "chkInvtIME";
             chkInvtIME.Size = new Size(97, 19);
             chkInvtIME.TabIndex = 255;
             chkInvtIME.Text = "Invoice/Time";
             chkInvtIME.UseVisualStyleBackColor = true;
             // 
-            // chkInvCessDet
-            // 
-            chkInvCessDet.AutoSize = true;
-            chkInvCessDet.CheckAlign = ContentAlignment.MiddleRight;
-            chkInvCessDet.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            chkInvCessDet.Location = new Point(18, 56);
-            chkInvCessDet.Name = "chkInvCessDet";
-            chkInvCessDet.Size = new Size(153, 19);
-            chkInvCessDet.TabIndex = 254;
-            chkInvCessDet.Text = "InvoiceWise/Cess Detail";
-            chkInvCessDet.UseVisualStyleBackColor = true;
-            // 
             // lblToDt
             // 
             lblToDt.AutoSize = true;
             lblToDt.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblToDt.Location = new Point(250, 144);
+            lblToDt.Location = new Point(250, 114);
             lblToDt.Name = "lblToDt";
             lblToDt.Size = new Size(48, 15);
             lblToDt.TabIndex = 253;
@@ -138,7 +126,7 @@
             dtpToDate.CustomFormat = "dd/MM/yyyy";
             dtpToDate.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             dtpToDate.Format = DateTimePickerFormat.Custom;
-            dtpToDate.Location = new Point(305, 142);
+            dtpToDate.Location = new Point(305, 112);
             dtpToDate.Name = "dtpToDate";
             dtpToDate.Size = new Size(101, 23);
             dtpToDate.TabIndex = 252;
@@ -149,7 +137,7 @@
             // 
             lblFromdt.AutoSize = true;
             lblFromdt.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblFromdt.Location = new Point(47, 144);
+            lblFromdt.Location = new Point(47, 114);
             lblFromdt.Name = "lblFromdt";
             lblFromdt.Size = new Size(63, 15);
             lblFromdt.TabIndex = 251;
@@ -160,7 +148,7 @@
             dtpFromDate.CustomFormat = "dd/MM/yyyy";
             dtpFromDate.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             dtpFromDate.Format = DateTimePickerFormat.Custom;
-            dtpFromDate.Location = new Point(115, 142);
+            dtpFromDate.Location = new Point(115, 112);
             dtpFromDate.Name = "dtpFromDate";
             dtpFromDate.Size = new Size(105, 23);
             dtpFromDate.TabIndex = 250;
@@ -178,6 +166,7 @@
             chkGstdet.TabIndex = 3;
             chkGstdet.Text = "With Gst Detail";
             chkGstdet.UseVisualStyleBackColor = true;
+            chkGstdet.CheckedChanged += chkGstdet_CheckedChanged;
             // 
             // lblPaym
             // 
@@ -218,7 +207,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(471, 178);
+            ClientSize = new Size(464, 152);
             Controls.Add(panel1);
             Name = "frmR_invoice_wise_sale_rpt";
             StartPosition = FormStartPosition.CenterScreen;
@@ -245,6 +234,5 @@
         public CheckBox chkInvGstDet;
         public CheckBox chkItemGstDet;
         public CheckBox chkInvtIME;
-        public CheckBox chkInvCessDet;
     }
 }

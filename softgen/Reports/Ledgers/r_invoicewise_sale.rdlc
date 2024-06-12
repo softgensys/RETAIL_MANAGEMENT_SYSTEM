@@ -1043,7 +1043,7 @@
         <Height>16.80103cm</Height>
         <Style />
       </Body>
-      <Width>25.10896cm</Width>
+      <Width>25.10897cm</Width>
       <Page>
         <PageHeader>
           <Height>7.35223cm</Height>
@@ -1346,7 +1346,7 @@
               </Paragraphs>
               <rd:DefaultName>Textbox9</rd:DefaultName>
               <Top>2.55083in</Top>
-              <Left>0.125in</Left>
+              <Left>0.13888in</Left>
               <Height>0.18056in</Height>
               <Width>0.5in</Width>
               <ZIndex>8</ZIndex>

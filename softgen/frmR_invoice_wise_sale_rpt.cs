@@ -18,6 +18,9 @@ namespace softgen
         private string mstrEntBy, mstrEntOn, mstrAuthBy, mstrAuthOn, chkItemid;
         public bool mblnSearch, mblnDataEntered;
         public static string Paymchecked_yn = "N";
+        public static string Gstdetchecked_yn = "N";
+        public static string ItemGstdetchecked_yn = "N";
+        public static string InvGstdetchecked_yn = "N";
         public static string FromDt = "", Todt = "";
         public static string FromDt_mysql = "", Todt_mysql = "";
         // Get the selected item from the ComboBox
@@ -215,6 +218,42 @@ namespace softgen
         private void cboPaymod_SelectedValueChanged(object sender, EventArgs e)
         {
             selectedPaymItem = cboPaymod.SelectedItem.ToString().Trim();
+        }
+
+        private void chkGstdet_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkGstdet.Checked)
+            {
+                Gstdetchecked_yn = "Y";
+            }
+            else
+            {
+                Gstdetchecked_yn = "N";
+            }
+        }
+
+        private void chkItemGstDet_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkItemGstDet.Checked)
+            {
+                ItemGstdetchecked_yn = "Y";
+            }
+            else
+            {
+                ItemGstdetchecked_yn = "N";
+            }
+        }
+
+        private void chkInvGstDet_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkInvGstDet.Checked)
+            {
+                InvGstdetchecked_yn = "Y";
+            }
+            else
+            {
+                InvGstdetchecked_yn = "N";
+            }
         }
     }
 }

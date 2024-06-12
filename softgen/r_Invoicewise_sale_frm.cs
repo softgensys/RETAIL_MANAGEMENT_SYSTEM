@@ -47,6 +47,7 @@ namespace softgen
             InitializeComponent();
             // LoadReport();
             GenerateAndDisplayReport();
+            
             this.invwisesalerpt.RefreshReport();
         }
 
@@ -132,7 +133,7 @@ namespace softgen
                 //    if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "Y")
                 //    {
                 //        command.Parameters.Add(new OdbcParameter("PayMode", OdbcType.VarChar)).Value = invoice_Wise_Sale_Rpt.selectedPaymItem.Trim();
-                        
+
                 //    }
                 //    else if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "N")
                 //    {
@@ -150,36 +151,41 @@ namespace softgen
                 //invwisesalerpt.ProcessingMode = ProcessingMode.Local;
 
                 // Construct the path of the rdlc file dynamically
-                this.invwisesalerpt.LocalReport.ReportPath = "Reports/Ledgers/r_invoicewise_sale.rdlc";
-
-              
-
-                string Brand = DeTools.strBrand;
-                string strCompany = DeTools.strCompany;
-                string strAddress1 = DeTools.strAddress1;
-                string strAddress2 = DeTools.strAddress2;
-                string strAddress3 = DeTools.strCompany;
-                string phoneno = DeTools.strPhone;
-                string note1 = DeTools.strNote1;
-                string note2 = DeTools.strNote2;
-                string note3 = DeTools.strNote3;
-                string note4 = DeTools.strNote4;
-                string lst = DeTools.strLst;
-                string cst = DeTools.strCst;
-                string tin = DeTools.strTin;
-                string branch = DeTools.strBranch;
-                string fromdate = frmR_invoice_wise_sale_rpt.FromDt;
-                string todate = frmR_invoice_wise_sale_rpt.Todt;
-                string rundate = DateTime.Now.ToString("dd/MM/yyyy");
-                // Add the report parameters
-                ReportParameter[] reportParameters = new ReportParameter[]
+                if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "Y" || !string.IsNullOrEmpty(frmR_invoice_wise_sale_rpt.selectedPaymItem.ToString().Trim()))
                 {
+
+
+
+                    this.invwisesalerpt.LocalReport.ReportPath = "Reports/Ledgers/r_invoicewise_sale.rdlc";
+
+
+
+                    string Brand = DeTools.strBrand;
+                    string strCompany = DeTools.strCompany;
+                    string strAddress1 = DeTools.strAddress1;
+                    string strAddress2 = DeTools.strAddress2;
+                    string strAddress3 = DeTools.strCompany;
+                    string phoneno = DeTools.strPhone;
+                    string note1 = DeTools.strNote1;
+                    string note2 = DeTools.strNote2;
+                    string note3 = DeTools.strNote3;
+                    string note4 = DeTools.strNote4;
+                    string lst = DeTools.strLst;
+                    string cst = DeTools.strCst;
+                    string tin = DeTools.strTin;
+                    string branch = DeTools.strBranch;
+                    string fromdate = frmR_invoice_wise_sale_rpt.FromDt;
+                    string todate = frmR_invoice_wise_sale_rpt.Todt;
+                    string rundate = DateTime.Now.ToString("dd/MM/yyyy");
+                    // Add the report parameters
+                    ReportParameter[] reportParameters = new ReportParameter[]
+                    {
                     new ReportParameter("Brand", Brand),
                     new ReportParameter("strCompany", strCompany),
                     new ReportParameter("address1", strAddress1),
                     new ReportParameter("address2", strAddress2),
                     new ReportParameter("address3", strAddress3),
-                    new ReportParameter("phoneno", phoneno),                 
+                    new ReportParameter("phoneno", phoneno),
                     new ReportParameter("lst", lst),
                     new ReportParameter("cst", cst),
                     new ReportParameter("tin", tin),
@@ -189,26 +195,228 @@ namespace softgen
                     new ReportParameter("rundate", rundate)
 
 
-                };
-                invwisesalerpt.LocalReport.SetParameters(reportParameters);
-                GenerateAndDisplayReportr_invoice_sale();
+                    };
+                    invwisesalerpt.LocalReport.SetParameters(reportParameters);
+                    GenerateAndDisplayReportr_invoice_sale();
 
-                // Refresh the ReportViewer to display the report
-                invwisesalerpt.RefreshReport();
+                    // Refresh the ReportViewer to display the report
+                    invwisesalerpt.RefreshReport();
 
-                DbConnector dbConnector = new DbConnector();
-                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
-                dbConnector.OpenConnection();
-                if (dbConnector != null)
-                {
-                    string delSQL = "Delete FROM Sale";
-
-                    using (OdbcCommand delfrminvtbl = new OdbcCommand(delSQL, dbConnector.connection))
+                    DbConnector dbConnector = new DbConnector();
+                    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                    dbConnector.OpenConnection();
+                    if (dbConnector != null)
                     {
-                        delfrminvtbl.ExecuteNonQuery();
+                        string delSQL = "Delete FROM Sale";
+
+                        using (OdbcCommand delfrminvtbl = new OdbcCommand(delSQL, dbConnector.connection))
+                        {
+                            delfrminvtbl.ExecuteNonQuery();
+                        }
+                        dbConnector.connection.Close();
                     }
-                    dbConnector.connection.Close();
                 }
+
+                else if (frmR_invoice_wise_sale_rpt.Gstdetchecked_yn=="Y")
+                {
+
+
+                    this.invwisesalerpt.LocalReport.ReportPath = "Reports/Ledgers/r_vat_sale.rdlc";
+
+
+
+                    string Brand = DeTools.strBrand;
+                    string strCompany = DeTools.strCompany;
+                    string strAddress1 = DeTools.strAddress1;
+                    string strAddress2 = DeTools.strAddress2;
+                    string strAddress3 = DeTools.strCompany;
+                    string phoneno = DeTools.strPhone;
+                    string note1 = DeTools.strNote1;
+                    string note2 = DeTools.strNote2;
+                    string note3 = DeTools.strNote3;
+                    string note4 = DeTools.strNote4;
+                    string lst = DeTools.strLst;
+                    string cst = DeTools.strCst;
+                    string tin = DeTools.strTin;
+                    string branch = DeTools.strBranch;
+                    string fromdate = frmR_invoice_wise_sale_rpt.FromDt;
+                    string todate = frmR_invoice_wise_sale_rpt.Todt;
+                    string rundate = DateTime.Now.ToString("dd/MM/yyyy");
+                    // Add the report parameters
+                    ReportParameter[] reportParameters1 = new ReportParameter[]
+                    {
+                    new ReportParameter("Brand", Brand),
+                    new ReportParameter("strCompany", strCompany),
+                    new ReportParameter("address1", strAddress1),
+                    new ReportParameter("address2", strAddress2),
+                    new ReportParameter("address3", strAddress3),
+                    new ReportParameter("phoneno", phoneno),
+                    new ReportParameter("lst", lst),
+                    new ReportParameter("cst", cst),
+                    new ReportParameter("tin", tin),
+                    new ReportParameter("branch", branch),
+                    new ReportParameter("fromdate", fromdate),
+                    new ReportParameter("todate", todate),
+                    new ReportParameter("rundate", rundate)
+
+
+                    };
+
+                    invwisesalerpt.LocalReport.SetParameters(reportParameters1);
+                    GenerateAndDisplayReportr_vat_sale();
+
+                    // Refresh the ReportViewer to display the report
+                    invwisesalerpt.RefreshReport();
+
+                    DbConnector dbConnector = new DbConnector();
+                    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                    dbConnector.OpenConnection();
+                    if (dbConnector != null)
+                    {
+                        string delSQL = "Delete FROM vatsale";
+
+                        using (OdbcCommand delfrminvtbl = new OdbcCommand(delSQL, dbConnector.connection))
+                        {
+                            delfrminvtbl.ExecuteNonQuery();
+                        }
+                        dbConnector.connection.Close();
+                    }
+                }
+
+
+                else if (frmR_invoice_wise_sale_rpt.ItemGstdetchecked_yn=="Y")
+                {
+
+
+                    this.invwisesalerpt.LocalReport.ReportPath = "Reports/Ledgers/r_vat_item_sale.rdlc";
+
+
+
+                    string Brand = DeTools.strBrand;
+                    string strCompany = DeTools.strCompany;
+                    string strAddress1 = DeTools.strAddress1;
+                    string strAddress2 = DeTools.strAddress2;
+                    string strAddress3 = DeTools.strCompany;
+                    string phoneno = DeTools.strPhone;
+                    string note1 = DeTools.strNote1;
+                    string note2 = DeTools.strNote2;
+                    string note3 = DeTools.strNote3;
+                    string note4 = DeTools.strNote4;
+                    string lst = DeTools.strLst;
+                    string cst = DeTools.strCst;
+                    string tin = DeTools.strTin;
+                    string branch = DeTools.strBranch;
+                    string fromdate = frmR_invoice_wise_sale_rpt.FromDt;
+                    string todate = frmR_invoice_wise_sale_rpt.Todt;
+                    string rundate = DateTime.Now.ToString("dd/MM/yyyy");
+                    // Add the report parameters
+                    ReportParameter[] reportParameters2 = new ReportParameter[]
+                    {
+                    new ReportParameter("Brand", Brand),
+                    new ReportParameter("strCompany", strCompany),
+                    new ReportParameter("address1", strAddress1),
+                    new ReportParameter("address2", strAddress2),
+                    new ReportParameter("address3", strAddress3),
+                    new ReportParameter("phoneno", phoneno),
+                    new ReportParameter("lst", lst),
+                    new ReportParameter("cst", cst),
+                    new ReportParameter("tin", tin),
+                    new ReportParameter("branch", branch),
+                    new ReportParameter("fromdate", fromdate),
+                    new ReportParameter("todate", todate),
+                    new ReportParameter("rundate", rundate)
+
+
+                    };
+
+                    invwisesalerpt.LocalReport.SetParameters(reportParameters2);
+                    GenerateAndDisplayReportr_vat_item_sale();
+
+                    // Refresh the ReportViewer to display the report
+                    invwisesalerpt.RefreshReport();
+
+                    DbConnector dbConnector = new DbConnector();
+                    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                    dbConnector.OpenConnection();
+                    if (dbConnector != null)
+                    {
+                        string delSQL = "Delete FROM vat_itemsale";
+
+                        using (OdbcCommand delfrminvtbl = new OdbcCommand(delSQL, dbConnector.connection))
+                        {
+                            delfrminvtbl.ExecuteNonQuery();
+                        }
+                        dbConnector.connection.Close();
+                    }
+                }
+                
+                else if (frmR_invoice_wise_sale_rpt.InvGstdetchecked_yn=="Y")
+                {
+
+
+                    this.invwisesalerpt.LocalReport.ReportPath = "Reports/Ledgers/r_inv_gst_sale.rdlc";
+
+
+
+                    string Brand = DeTools.strBrand;
+                    string strCompany = DeTools.strCompany;
+                    string strAddress1 = DeTools.strAddress1;
+                    string strAddress2 = DeTools.strAddress2;
+                    string strAddress3 = DeTools.strCompany;
+                    string phoneno = DeTools.strPhone;
+                    string note1 = DeTools.strNote1;
+                    string note2 = DeTools.strNote2;
+                    string note3 = DeTools.strNote3;
+                    string note4 = DeTools.strNote4;
+                    string lst = DeTools.strLst;
+                    string cst = DeTools.strCst;
+                    string tin = DeTools.strTin;
+                    string branch = DeTools.strBranch;
+                    string fromdate = frmR_invoice_wise_sale_rpt.FromDt;
+                    string todate = frmR_invoice_wise_sale_rpt.Todt;
+                    string rundate = DateTime.Now.ToString("dd/MM/yyyy");
+                    // Add the report parameters
+                    ReportParameter[] reportParameters3 = new ReportParameter[]
+                    {
+                    new ReportParameter("Brand", Brand),
+                    new ReportParameter("strCompany", strCompany),
+                    new ReportParameter("address1", strAddress1),
+                    new ReportParameter("address2", strAddress2),
+                    new ReportParameter("address3", strAddress3),
+                    new ReportParameter("phoneno", phoneno),
+                    new ReportParameter("lst", lst),
+                    new ReportParameter("cst", cst),
+                    new ReportParameter("tin", tin),
+                    new ReportParameter("branch", branch),
+                    new ReportParameter("fromdate", fromdate),
+                    new ReportParameter("todate", todate),
+                    new ReportParameter("rundate", rundate)
+
+
+                    };
+
+                    invwisesalerpt.LocalReport.SetParameters(reportParameters3);
+                    GenerateAndDisplayReportr_inv_gst_sale();
+
+                    // Refresh the ReportViewer to display the report
+                    invwisesalerpt.RefreshReport();
+
+                    DbConnector dbConnector = new DbConnector();
+                    dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                    dbConnector.OpenConnection();
+                    if (dbConnector != null)
+                    {
+                        string delSQL = "Delete FROM r_inv_gst_sale";
+
+                        using (OdbcCommand delfrminvtbl = new OdbcCommand(delSQL, dbConnector.connection))
+                        {
+                            delfrminvtbl.ExecuteNonQuery();
+                        }
+                        dbConnector.connection.Close();
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -309,7 +517,7 @@ namespace softgen
                         command.Parameters.AddWithValue("@PayMode", "");
                     }
                    
-                    else if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "N")
+                    else if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "N" && !string.IsNullOrEmpty(frmR_invoice_wise_sale_rpt.selectedPaymItem.ToString().Trim()))
                     {
                         command.Parameters.AddWithValue("@PayMode", frmR_invoice_wise_sale_rpt.selectedPaymItem);
                     }
@@ -329,7 +537,199 @@ namespace softgen
                 {
                     // Set the report's DataSources property to a new list containing your DataTable
                     //this.invwisesalerpt.LocalReport.DataSources.Clear();
+                    invwisesalerpt.LocalReport.DataSources.Clear();
                     this.invwisesalerpt.LocalReport.DataSources.Add(new ReportDataSource("invoiceSalePaym", dataTable));
+
+                    // Refresh the report
+                    this.invwisesalerpt.RefreshReport();
+                }
+                //else
+                //{
+                //    MessageBox.Show("No data found for the given criteria.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+         private void GenerateAndDisplayReportr_vat_sale()
+         {
+            try
+            {
+                // Create a DataTable to hold the data from the database
+                DataTable dataTable1 = new DataTable();
+
+                // Create an instance of your database connector
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+                // Open the database connection
+                dbConnector.connection.Open();
+
+                frmR_invoice_wise_sale_rpt invoice_Wise_Sale_Rpt = new frmR_invoice_wise_sale_rpt();
+
+                // Define your SQL query
+                string gstrSQL = "{ CALL r_vat_sale(?,?) }";
+
+                // Create a command to execute the stored procedure
+                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Add parameters to the command
+                    command.Parameters.AddWithValue("@F_Date", frmR_invoice_wise_sale_rpt.FromDt_mysql);
+                    command.Parameters.AddWithValue("@T_Date", frmR_invoice_wise_sale_rpt.Todt_mysql);                    
+                   
+                    // Execute the command and read the data into the DataTable
+                    using (OdbcDataAdapter adapter = new OdbcDataAdapter(command))
+                    {
+                        adapter.Fill(dataTable1);
+                    }
+                }
+
+                // Close the database connection
+                dbConnector.connection.Close();
+
+                // Check if the DataTable contains data
+                if (dataTable1.Rows.Count > 0)
+                {
+                    // Set the report's DataSources property to a new list containing your DataTable
+                    //this.invwisesalerpt.LocalReport.DataSources.Clear();
+                    invwisesalerpt.LocalReport.DataSources.Clear();
+                    this.invwisesalerpt.LocalReport.DataSources.Add(new ReportDataSource("vatsaleDataset", dataTable1));
+
+                    // Refresh the report
+                    this.invwisesalerpt.RefreshReport();
+                }
+                //else
+                //{
+                //    MessageBox.Show("No data found for the given criteria.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+         }
+
+         private void GenerateAndDisplayReportr_vat_item_sale()
+         {
+            try
+            {
+                // Create a DataTable to hold the data from the database
+                DataTable dataTable2 = new DataTable();
+
+                // Create an instance of your database connector
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+                // Open the database connection
+                dbConnector.connection.Open();
+
+                frmR_invoice_wise_sale_rpt invoice_Wise_Sale_Rpt = new frmR_invoice_wise_sale_rpt();
+
+                // Define your SQL query
+                string gstrSQL = "{ CALL r_vat_item_sale(?,?) }";
+
+                // Create a command to execute the stored procedure
+                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Add parameters to the command
+                    command.Parameters.AddWithValue("@F_Date", frmR_invoice_wise_sale_rpt.FromDt_mysql);
+                    command.Parameters.AddWithValue("@T_Date", frmR_invoice_wise_sale_rpt.Todt_mysql);                    
+                   
+                    // Execute the command and read the data into the DataTable
+                    using (OdbcDataAdapter adapter = new OdbcDataAdapter(command))
+                    {
+                        adapter.Fill(dataTable2);
+                    }
+                }
+
+                // Close the database connection
+                dbConnector.connection.Close();
+
+                // Check if the DataTable contains data
+                if (dataTable2.Rows.Count > 0)
+                {
+                    // Set the report's DataSources property to a new list containing your DataTable
+                    //this.invwisesalerpt.LocalReport.DataSources.Clear();
+                    invwisesalerpt.LocalReport.DataSources.Clear();
+                    this.invwisesalerpt.LocalReport.DataSources.Add(new ReportDataSource("vatitemsaleDataset", dataTable2));
+
+                    // Refresh the report
+                    this.invwisesalerpt.RefreshReport();
+                }
+                //else
+                //{
+                //    MessageBox.Show("No data found for the given criteria.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+         }
+
+         private void GenerateAndDisplayReportr_inv_gst_sale()
+         {
+            try
+            {
+                // Create a DataTable to hold the data from the database
+                DataTable dataTable3 = new DataTable();
+
+                // Create an instance of your database connector
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+
+                // Open the database connection
+                dbConnector.connection.Open();
+
+                frmR_invoice_wise_sale_rpt invoice_Wise_Sale_Rpt = new frmR_invoice_wise_sale_rpt();
+
+                // Define your SQL query
+                string gstrSQL = "{ CALL r_inv_gst_sale(?,?) }";
+
+                // Create a command to execute the stored procedure
+                using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Add parameters to the command
+                    command.Parameters.AddWithValue("@F_Date", frmR_invoice_wise_sale_rpt.FromDt_mysql);
+                    command.Parameters.AddWithValue("@T_Date", frmR_invoice_wise_sale_rpt.Todt_mysql);                    
+                   
+                    // Execute the command and read the data into the DataTable
+                    using (OdbcDataAdapter adapter = new OdbcDataAdapter(command))
+                    {
+                        adapter.Fill(dataTable3);
+                    }
+                }
+
+                // Close the database connection
+                dbConnector.connection.Close();
+
+                // Add a new column for serial numbers
+                DataColumn serialColumn = new DataColumn("srno", typeof(int));
+                dataTable3.Columns.Add(serialColumn);
+
+                // Populate the serial number column
+                for (int i = 0; i < dataTable3.Rows.Count; i++)
+                {
+                    dataTable3.Rows[i]["srno"] = i + 1;
+                }
+
+                // Check if the DataTable contains data
+                if (dataTable3.Rows.Count > 0)
+                {
+                    // Set the report's DataSources property to a new list containing your DataTable
+                    //this.invwisesalerpt.LocalReport.DataSources.Clear();
+                    invwisesalerpt.LocalReport.DataSources.Clear();
+                    this.invwisesalerpt.LocalReport.DataSources.Add(new ReportDataSource("rinvgstsaleDataset", dataTable3));
 
                     // Refresh the report
                     this.invwisesalerpt.RefreshReport();

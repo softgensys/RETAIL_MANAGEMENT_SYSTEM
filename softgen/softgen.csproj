@@ -17,6 +17,9 @@
     <None Remove="InvReport.rdlc" />
     <None Remove="Report1.rdlc" />
     <None Remove="Reports\Ledgers\r_invoicewise_sale.rdlc" />
+    <None Remove="Reports\Ledgers\r_inv_gst_sale.rdlc" />
+    <None Remove="Reports\Ledgers\r_vat_item_sale.rdlc" />
+    <None Remove="Reports\Ledgers\r_vat_sale.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +39,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\Ledgers\r_invoicewise_sale.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\Ledgers\r_inv_gst_sale.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\Ledgers\r_vat_item_sale.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\Ledgers\r_vat_sale.rdlc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -204,6 +216,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>InvWise_Sale_Rpt_Dataset.xsd</DependentUpon>
     </Compile>
+    <Compile Update="MenuForPermissionDataset.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MenuForPermissionDataset.xsd</DependentUpon>
+    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -243,6 +260,10 @@
     <None Update="InvWise_Sale_Rpt_Dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>InvWise_Sale_Rpt_Dataset.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="MenuForPermissionDataset.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MenuForPermissionDataset.Designer.cs</LastGenOutput>
     </None>
     <None Update="r_vat_sale_dataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
