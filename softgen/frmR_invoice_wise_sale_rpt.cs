@@ -212,7 +212,7 @@ namespace softgen
         private void frmR_invoice_wise_sale_rpt_FormClosed(object sender, FormClosedEventArgs e)
         {
             DeTools.DestroyToolbar(this);
-            MainForm.Instance.TinvoiceWiseSaleReportMenu.Enabled = true;
+            MainForm.Instance.mnuSinvoiceWiseSaleReportMenu.Enabled = true;
         }
 
         private void cboPaymod_SelectedValueChanged(object sender, EventArgs e)

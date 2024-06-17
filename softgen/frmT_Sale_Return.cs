@@ -850,7 +850,7 @@ namespace softgen
         private void frmT_Sale_Return_FormClosed(object sender, FormClosedEventArgs e)
         {
             DeTools.DestroyToolbar(this);
-            MainForm.Instance.TSRGenmenu.Enabled = true;
+            MainForm.Instance.mnuTBSRGenmenu.Enabled = true;
         }
 
         private void dtpInvDate_ValueChanged(object sender, EventArgs e)

@@ -65,13 +65,14 @@ namespace softgen
             mnuMSupplier = new ToolStripMenuItem();
             mnuMManuf = new ToolStripMenuItem();
             mnuTransactions = new ToolStripMenuItem();
-            Tbillmodule = new ToolStripMenuItem();
-            TInvGenmenu = new ToolStripMenuItem();
-            TSRGenmenu = new ToolStripMenuItem();
+            mnuTbillmodule = new ToolStripMenuItem();
+            mnuTBInvGenmenu = new ToolStripMenuItem();
+            mnuTBSRGenmenu = new ToolStripMenuItem();
             mnuReport = new ToolStripMenuItem();
-            TSaleReportMenu = new ToolStripMenuItem();
-            TinvoiceWiseSaleReportMenu = new ToolStripMenuItem();
+            mnuRSaleReportMenu = new ToolStripMenuItem();
+            mnuSinvoiceWiseSaleReportMenu = new ToolStripMenuItem();
             mnuUtilities = new ToolStripMenuItem();
+            UPermissions = new ToolStripMenuItem();
             mnuWindows = new ToolStripMenuItem();
             mnuWTileH = new ToolStripMenuItem();
             muWTIleV = new ToolStripMenuItem();
@@ -290,118 +291,126 @@ namespace softgen
             // MItemmenu
             // 
             MItemmenu.Name = "MItemmenu";
-            MItemmenu.Size = new Size(180, 22);
+            MItemmenu.Size = new Size(165, 22);
             MItemmenu.Text = "Item";
             MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
-            documentSeriesToolStripMenuItem.Size = new Size(180, 22);
+            documentSeriesToolStripMenuItem.Size = new Size(165, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
-            documentTypeToolStripMenuItem.Size = new Size(180, 22);
+            documentTypeToolStripMenuItem.Size = new Size(165, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
             // 
             // Mgroupmenu
             // 
             Mgroupmenu.Name = "Mgroupmenu";
-            Mgroupmenu.Size = new Size(180, 22);
+            Mgroupmenu.Size = new Size(165, 22);
             Mgroupmenu.Text = "Group";
             Mgroupmenu.Click += groupToolStripMenuItem_Click;
             // 
             // mnuMSGroup
             // 
             mnuMSGroup.Name = "mnuMSGroup";
-            mnuMSGroup.Size = new Size(180, 22);
+            mnuMSGroup.Size = new Size(165, 22);
             mnuMSGroup.Text = "Sub Group";
             mnuMSGroup.Click += mnuMSGroup_Click;
             // 
             // mnuMSSGroup
             // 
             mnuMSSGroup.Name = "mnuMSSGroup";
-            mnuMSSGroup.Size = new Size(180, 22);
+            mnuMSSGroup.Size = new Size(165, 22);
             mnuMSSGroup.Text = "Sub Sub Group";
             mnuMSSGroup.Click += mnuMSSGroup_Click;
             // 
             // mnuMCust
             // 
             mnuMCust.Name = "mnuMCust";
-            mnuMCust.Size = new Size(180, 22);
+            mnuMCust.Size = new Size(165, 22);
             mnuMCust.Text = "Customer Master";
             mnuMCust.Click += mnuMCust_Click;
             // 
             // mnuMSupplier
             // 
             mnuMSupplier.Name = "mnuMSupplier";
-            mnuMSupplier.Size = new Size(180, 22);
+            mnuMSupplier.Size = new Size(165, 22);
             mnuMSupplier.Text = "Supplier Master";
             mnuMSupplier.Click += mnuMSupplier_Click;
             // 
             // mnuMManuf
             // 
             mnuMManuf.Name = "mnuMManuf";
-            mnuMManuf.Size = new Size(180, 22);
+            mnuMManuf.Size = new Size(165, 22);
             mnuMManuf.Text = "Manufacturer";
             mnuMManuf.Click += mnuMManuf_Click;
             // 
             // mnuTransactions
             // 
-            mnuTransactions.DropDownItems.AddRange(new ToolStripItem[] { Tbillmodule });
+            mnuTransactions.DropDownItems.AddRange(new ToolStripItem[] { mnuTbillmodule });
             mnuTransactions.Name = "mnuTransactions";
             mnuTransactions.Size = new Size(79, 20);
             mnuTransactions.Text = "Transaction";
             // 
-            // Tbillmodule
+            // mnuTbillmodule
             // 
-            Tbillmodule.DropDownItems.AddRange(new ToolStripItem[] { TInvGenmenu, TSRGenmenu });
-            Tbillmodule.Name = "Tbillmodule";
-            Tbillmodule.Size = new Size(180, 22);
-            Tbillmodule.Text = "Billing Module";
+            mnuTbillmodule.DropDownItems.AddRange(new ToolStripItem[] { mnuTBInvGenmenu, mnuTBSRGenmenu });
+            mnuTbillmodule.Name = "mnuTbillmodule";
+            mnuTbillmodule.Size = new Size(180, 22);
+            mnuTbillmodule.Text = "Billing Module";
             // 
-            // TInvGenmenu
+            // mnuTBInvGenmenu
             // 
-            TInvGenmenu.Name = "TInvGenmenu";
-            TInvGenmenu.Size = new Size(204, 22);
-            TInvGenmenu.Text = "Invoice Generation";
-            TInvGenmenu.Click += invoiceGenerationToolStripMenuItem_Click;
+            mnuTBInvGenmenu.Name = "mnuTBInvGenmenu";
+            mnuTBInvGenmenu.Size = new Size(204, 22);
+            mnuTBInvGenmenu.Text = "Invoice Generation";
+            mnuTBInvGenmenu.Click += invoiceGenerationToolStripMenuItem_Click;
             // 
-            // TSRGenmenu
+            // mnuTBSRGenmenu
             // 
-            TSRGenmenu.Name = "TSRGenmenu";
-            TSRGenmenu.Size = new Size(204, 22);
-            TSRGenmenu.Text = "Sale Return/Cancellation";
-            TSRGenmenu.Click += saleReturnCancellationToolStripMenuItem_Click;
+            mnuTBSRGenmenu.Name = "mnuTBSRGenmenu";
+            mnuTBSRGenmenu.Size = new Size(204, 22);
+            mnuTBSRGenmenu.Text = "Sale Return/Cancellation";
+            mnuTBSRGenmenu.Click += saleReturnCancellationToolStripMenuItem_Click;
             // 
             // mnuReport
             // 
-            mnuReport.DropDownItems.AddRange(new ToolStripItem[] { TSaleReportMenu });
+            mnuReport.DropDownItems.AddRange(new ToolStripItem[] { mnuRSaleReportMenu });
             mnuReport.Name = "mnuReport";
             mnuReport.Size = new Size(54, 20);
             mnuReport.Text = "Report";
             // 
-            // TSaleReportMenu
+            // mnuRSaleReportMenu
             // 
-            TSaleReportMenu.DropDownItems.AddRange(new ToolStripItem[] { TinvoiceWiseSaleReportMenu });
-            TSaleReportMenu.Name = "TSaleReportMenu";
-            TSaleReportMenu.Size = new Size(180, 22);
-            TSaleReportMenu.Text = "Sale Report";
+            mnuRSaleReportMenu.DropDownItems.AddRange(new ToolStripItem[] { mnuSinvoiceWiseSaleReportMenu });
+            mnuRSaleReportMenu.Name = "mnuRSaleReportMenu";
+            mnuRSaleReportMenu.Size = new Size(180, 22);
+            mnuRSaleReportMenu.Text = "Sale Report";
             // 
-            // TinvoiceWiseSaleReportMenu
+            // mnuSinvoiceWiseSaleReportMenu
             // 
-            TinvoiceWiseSaleReportMenu.Name = "TinvoiceWiseSaleReportMenu";
-            TinvoiceWiseSaleReportMenu.Size = new Size(202, 22);
-            TinvoiceWiseSaleReportMenu.Text = "Invoice Wise Sale Report";
-            TinvoiceWiseSaleReportMenu.Click += TinvoiceWiseSaleReportMenu_Click;
+            mnuSinvoiceWiseSaleReportMenu.Name = "mnuSinvoiceWiseSaleReportMenu";
+            mnuSinvoiceWiseSaleReportMenu.Size = new Size(202, 22);
+            mnuSinvoiceWiseSaleReportMenu.Text = "Invoice Wise Sale Report";
+            mnuSinvoiceWiseSaleReportMenu.Click += TinvoiceWiseSaleReportMenu_Click;
             // 
             // mnuUtilities
             // 
+            mnuUtilities.DropDownItems.AddRange(new ToolStripItem[] { UPermissions });
             mnuUtilities.Name = "mnuUtilities";
             mnuUtilities.Size = new Size(58, 20);
             mnuUtilities.Text = "Utilities";
+            // 
+            // UPermissions
+            // 
+            UPermissions.Name = "UPermissions";
+            UPermissions.Size = new Size(202, 22);
+            UPermissions.Text = "Grant Screen Permission";
+            UPermissions.Click += frmU_Permissions_Click;
             // 
             // mnuWindows
             // 
@@ -413,21 +422,21 @@ namespace softgen
             // mnuWTileH
             // 
             mnuWTileH.Name = "mnuWTileH";
-            mnuWTileH.Size = new Size(180, 22);
+            mnuWTileH.Size = new Size(155, 22);
             mnuWTileH.Text = "Tile- Horizontal";
             mnuWTileH.Click += mnuWTile_Click;
             // 
             // muWTIleV
             // 
             muWTIleV.Name = "muWTIleV";
-            muWTIleV.Size = new Size(180, 22);
+            muWTIleV.Size = new Size(155, 22);
             muWTIleV.Text = "Tile-Vertical";
             muWTIleV.Click += muWTIleV_Click;
             // 
             // mnuWCascade
             // 
             mnuWCascade.Name = "mnuWCascade";
-            mnuWCascade.Size = new Size(180, 22);
+            mnuWCascade.Size = new Size(155, 22);
             mnuWCascade.Text = "Cascade";
             mnuWCascade.Click += mnuWCascade_Click;
             // 
@@ -443,7 +452,7 @@ namespace softgen
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, mnuMaster, mnuTransactions, mnuReport, mnuUtilities, mnuWindows, mnuHelpMain });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1199, 24);
+            menuStrip1.Size = new Size(1202, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "Main_menu";
             menuStrip1.ItemClicked += menuStrip1_ItemClicked;
@@ -453,7 +462,7 @@ namespace softgen
             statusStrip1.AutoSize = false;
             statusStrip1.Location = new Point(0, 610);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(1199, 97);
+            statusStrip1.Size = new Size(1202, 97);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -573,7 +582,7 @@ namespace softgen
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = Color.MediumTurquoise;
             BackgroundImageLayout = ImageLayout.Center;
-            ClientSize = new Size(1199, 707);
+            ClientSize = new Size(1202, 707);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(panel);
             Controls.Add(statusStrip1);
@@ -677,7 +686,7 @@ namespace softgen
         public Label pnlPosted_by;
         public Label pnlUserName;
         public ToolStripMenuItem MItemmenu;
-        private ToolStripMenuItem Tbillmodule;
+        private ToolStripMenuItem mnuTbillmodule;
         public ToolStripMenuItem mnuMSGroup;
         public ToolStripMenuItem mnuMSSGroup;
         public ToolStripMenuItem mnuMCust;
@@ -686,9 +695,10 @@ namespace softgen
         private ToolStripMenuItem mnuWTileH;
         private ToolStripMenuItem mnuWCascade;
         private ToolStripMenuItem muWTIleV;
-        public ToolStripMenuItem TInvGenmenu;
-        public ToolStripMenuItem TSRGenmenu;
-        public ToolStripMenuItem TinvoiceWiseSaleReportMenu;
-        public ToolStripMenuItem TSaleReportMenu;
+        public ToolStripMenuItem mnuTBInvGenmenu;
+        public ToolStripMenuItem mnuTBSRGenmenu;
+        public ToolStripMenuItem mnuSinvoiceWiseSaleReportMenu;
+        public ToolStripMenuItem mnuRSaleReportMenu;
+        public ToolStripMenuItem UPermissions;
     }
 }

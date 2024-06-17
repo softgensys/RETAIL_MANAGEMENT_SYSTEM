@@ -13,6 +13,8 @@ namespace softgen
         General general = new General();
         Messages messages = new Messages();
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+        public static bool Menu_Visible_yn = true;
+        public static bool Main_Menu_Visible_yn = true;
 
 
         // Static property to hold the instance of MainForm
@@ -34,17 +36,7 @@ namespace softgen
                 IsMdiContainer = true; // Set the form as an MDI container
                                        //MainMenuStrip.BackColor = Color.LightPink;
                 this.Load += MainForm_Load;
-                //btnAdd.Visible = false;
-                //btnModify.Visible = false;
-                //btnInquire.Visible = false;
-                //btnMDelete.Visible = false;
-                //btnDelete.Visible = false;
-                //btnFresh.Visible = false;
-                //btnAuth.Visible = false;
-                //btnPost.Visible = false;
-                //btnPrint.Visible = false;
-                //btnSave.Visible = false;
-                //btnRetrieve.Visible = false;
+
 
                 this.Activated += MyForm_Activated;
             }
@@ -56,106 +48,7 @@ namespace softgen
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // foreach (Control ctrl in this.Controls)
-            // {
-            //     if (ctrl is MdiClient)
-            //     {
-            //         ctrl.BackColor = Color.PowderBlue;
 
-            //     }
-            // }
-
-            // this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            //// this.mainpanel.Visible = true;
-            // //this.formpanel.Visible = false;
-
-            //bool blnDBOpen = false;
-            //try
-            //{
-
-
-            //    foreach (Control ctrl in this.Controls)
-            //    {
-            //        if (ctrl is MdiClient)
-            //        {
-            //            ctrl.BackColor = Color.PowderBlue;
-
-            //        }
-            //    }
-
-            //    if (!string.IsNullOrWhiteSpace(DeTools.strBrand))
-            //    {
-            //        this.Text = DeTools.strBrand.Trim();
-            //    }
-            //    else
-            //    {
-            //        this.Text = DeTools.strCompany.Trim();
-            //    }
-
-            //    Cursor.Current = Cursors.WaitCursor;
-
-            //    frmStart.lblMsg.Text = "Checking permissions...";
-            //    frmStart.lblMsg.Refresh();
-            //    DeTools.CreateToolbar(this, "1");
-
-            //    frmStart.lblMsg.Text = "Connecting...";
-            //    frmStart.lblMsg.Refresh();
-
-            //    if (!dbConnector.ConnectSGS_db())
-            //    {
-            //        Cursor.Current = Cursors.Default;
-            //        Application.Exit();
-            //    }
-
-            //    blnDBOpen = true;
-
-            //    frmStart.lblMsg.Text = "Initializing...";
-            //    frmStart.lblMsg.Refresh();
-
-            //    if (!DayBegin())
-            //    {
-            //        frmStart.Close();
-            //        // dbConnector.CloseConnection();
-            //        Application.Exit();
-            //    }
-
-            //    if (DeTools.strBrand.ToUpper().Trim() == "SA")
-            //    {
-            //        pnlUserName.Text = "Super user";
-            //        Messages.InfoMsg("user: Super user");
-            //    }
-            //    else
-            //    {
-            //        string pnlUserName = general.GetuserName(DeTools.gstrloginId.Trim());
-            //        Messages.InfoMsg("user: " + pnlUserName.Trim());
-            //    }
-
-            //    messages.gstrMsg = messages.gstrMsg + "                                    ";
-            //    pnlDate.Text = DateTime.Parse(DeTools.gstrsetup[3]).ToString("d MMMM yyyy");
-            //    messages.gstrMsg = messages.gstrMsg + "Date: " + pnlDate;
-
-            //    messages.gstrMsg = messages.gstrMsg + "                                    ";
-            //    pnlLoginTime.Text = DateTime.Now.ToString("h:mm tt");
-            //    messages.gstrMsg = messages.gstrMsg + "Login Time: " + pnlLoginTime;
-            //    //pnlUser = gstrMsg;
-
-            //    Show();
-
-            //    DeTools.BringToolStripToFront(this.Name); // Use the new method for bringing ToolStrip to front
-
-            //    frmStart.Close();
-            //    Cursor.Current = Cursors.Default;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Cursor.Current = Cursors.Default;
-            //    messages.VBError(ex, this.Name, "MainForm_Load_1");
-            //    //frmHelp.Close();
-            //    frmStart.Close();
-            //    if (blnDBOpen)
-            //        dbConnector.CloseConnection();
-            //    Application.Exit();
-            //}
             bool blnDBOpen = false;
 
             try
@@ -264,6 +157,14 @@ namespace softgen
                 //frmStart.Close();
                 //frmWelscr frmWelscr = new frmWelscr();
 
+                //----*******for child menu*****************-------//               
+               
+                FetchMenuPermissions();
+
+                //--------*********FOR SUB MENU*************-------------//
+                SubMenu_Permission();
+                //--------*********FOR MAIN MENU*************-------------//
+                MainMenu_Permission();
 
 
                 Cursor.Current = Cursors.Default;
@@ -398,6 +299,18 @@ namespace softgen
             childForm.Activate();
 
         }
+
+        //for Grant Screen Perm
+        private void OpenChildFormfrmU_Grantscreen_perm()
+        {
+            frmU_GrantScreenPermission childForm = new frmU_GrantScreenPermission();
+            childForm.MdiParent = this; // Set the MDI parent form
+            childForm.Show();
+            childForm.Activate();
+
+        }
+
+
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
@@ -890,7 +803,7 @@ namespace softgen
         private void invoiceGenerationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenChildForm5();
-            TInvGenmenu.Enabled = false;
+            mnuTBInvGenmenu.Enabled = false;
 
         }
 
@@ -944,16 +857,214 @@ namespace softgen
         private void saleReturnCancellationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenChildFormSR();
-            TSRGenmenu.Enabled = false;
+            mnuTBSRGenmenu.Enabled = false;
         }
 
         private void TinvoiceWiseSaleReportMenu_Click(object sender, EventArgs e)
         {
             OpenChildFormSale_Rpt_InvWiseSaleRpt();
-            TinvoiceWiseSaleReportMenu.Enabled = false;
+            mnuSinvoiceWiseSaleReportMenu.Enabled = false;
+        }
+
+        private void frmU_Permissions_Click(object sender, EventArgs e)
+        {
+            OpenChildFormfrmU_Grantscreen_perm();
+            UPermissions.Enabled = false;
         }
 
 
+        public void FetchMenuPermissions()
+        {
+            try
+            {
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
+
+                string query = @"SELECT a.Menu_name as menu FROM s_logopt a
+                         WHERE a.Login_id = ? AND a.Can_add = 0 AND
+                               a.Can_modify = 0 AND a.Can_delete = 0 AND
+                               a.Can_inquire = 0 AND a.Can_post = 0 AND
+                               a.Can_print = 0;";
+
+                using (var cmd = new OdbcCommand(query, dbConnector.connection))
+                {
+                    cmd.Parameters.AddWithValue("@Login_id", DeTools.gstrloginId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string menuName = reader["menu"].ToString();
+
+                            // Find the ToolStripMenuItem by its name recursively
+                            ToolStripMenuItem mnuName = FindMenuItem(menuStrip1.Items, menuName);
+
+                            // Now you can use mnuName
+                            if (mnuName != null)
+                            {
+                                // Set the visibility based on your condition
+                                mnuName.Visible = false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            ToolStripMenuItem FindMenuItem(ToolStripItemCollection items, string menuName)
+            {
+                foreach (ToolStripItem item in items)
+                {
+                    if (item is ToolStripMenuItem menuItem)
+                    {
+                        if (menuItem.Name == menuName)
+                        {
+                            return menuItem;
+                        }
+
+                        // Recursively search for the menu item in the drop-down items
+                        ToolStripMenuItem foundItem = FindMenuItem(menuItem.DropDownItems, menuName);
+                        if (foundItem != null)
+                        {
+                            return foundItem;
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+
+        public void SubMenu_Permission()
+        {
+            try
+            {
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
+
+                string query1 = @"SELECT m.Parent_id as SubMenu
+                          FROM s_menu m
+                          JOIN s_logopt l ON m.Prog_id = l.Prog_id
+                          WHERE l.Login_id = ?
+                          GROUP BY m.Parent_id
+                          HAVING SUM(l.Can_Add) = 0 
+                             AND SUM(l.Can_Modify) = 0 
+                             AND SUM(l.Can_Delete) = 0 
+                             AND SUM(l.Can_Inquire) = 0 
+                             AND SUM(l.Can_Post) = 0 
+                             AND SUM(l.Can_Print) = 0;";
+
+                using (var cmd1 = new OdbcCommand(query1, dbConnector.connection))
+                {
+                    cmd1.Parameters.AddWithValue("@Login_id", DeTools.gstrloginId);
+
+                    using (var reader1 = cmd1.ExecuteReader())
+                    {
+                        while (reader1.Read())
+                        {
+                            string subMenu = reader1["SubMenu"].ToString();
+
+                            // Find the ToolStripMenuItem by its name
+                            ToolStripMenuItem mnuSubMenu = null;
+                            foreach (ToolStripMenuItem item in menuStrip1.Items)
+                            {
+                                if (item.Name == subMenu)
+                                {
+                                    mnuSubMenu = item;
+                                    break;
+                                }
+                            }
+
+                            // Now you can use mnuSubMenu
+                            if (mnuSubMenu != null)
+                            {
+                                // Set the visibility based on your condition
+                                mnuSubMenu.Visible = false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, show message, etc.)
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void MainMenu_Permission()
+        {
+            try
+            {
+                DbConnector dbConnector = new DbConnector();
+                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                dbConnector.connection.Open();
+
+                string mainMenuQuery = @"SELECT DISTINCT
+                                       m1.Parent_id as SubMenu,
+                                       CASE
+                                           WHEN SUBSTRING(m1.Parent_id, 4, 1) = 'M' THEN 'mnuMaster'
+                                           WHEN SUBSTRING(m1.Parent_id, 4, 1) = 'T' THEN 'mnuTransaction'
+                                           WHEN SUBSTRING(m1.Parent_id, 4, 1) = 'R' THEN 'mnuReport'
+                                           WHEN SUBSTRING(m1.Parent_id, 4, 1) = 'U' THEN 'mnuUtilities'
+                                           ELSE 'Other'
+                                       END AS mainMenu
+                                FROM s_menu m1
+                                WHERE m1.Parent_id IN (
+                                    SELECT m2.Parent_id
+                                    FROM s_menu m2
+                                    JOIN s_logopt l ON m2.Prog_id = l.Prog_id
+                                    WHERE l.Login_id = ?
+                                    GROUP BY m2.Parent_id
+                                    HAVING SUM(l.Can_Add) = 0 
+                                       AND SUM(l.Can_Modify) = 0 
+                                       AND SUM(l.Can_Delete) = 0 
+                                       AND SUM(l.Can_Inquire) = 0 
+                                       AND SUM(l.Can_Post) = 0 
+                                       AND SUM(l.Can_Print) = 0);";
+
+                using (var cmdMainMenu = new OdbcCommand(mainMenuQuery, dbConnector.connection))
+                {
+                    cmdMainMenu.Parameters.AddWithValue("@Login_id", DeTools.gstrloginId);
+
+                    using (var reader1 = cmdMainMenu.ExecuteReader())
+                    {
+                        while (reader1.Read())
+                        {
+                            string mainMenu = reader1["mainMenu"].ToString();
+
+                            // Find the ToolStripMenuItem by its name
+                            ToolStripMenuItem mnuMainMenu = null;
+                            foreach (ToolStripMenuItem item in menuStrip1.Items)
+                            {
+                                if (item.Name == mainMenu)
+                                {
+                                    mnuMainMenu = item;
+                                    break;
+                                }
+                            }
+
+                            // Now you can use mnuMainMenu
+                            if (mnuMainMenu != null)
+                            {
+                                // Set the visibility based on your condition
+                                mnuMainMenu.Visible = false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (log it, show message, etc.)
+                MessageBox.Show(ex.Message);
+            }
+        }
 
 
         //-----newest old

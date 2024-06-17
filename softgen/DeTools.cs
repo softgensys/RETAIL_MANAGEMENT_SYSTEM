@@ -1713,6 +1713,54 @@ namespace softgen
             }
         }
 
+        private static void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            Form form = sender as Form;
+            if (form == null) return;
+
+            // Check for shortcut keys and trigger the corresponding button click
+            switch (e.KeyCode)
+            {
+                case Keys.F1:
+                    TriggerButtonClick(form, "Help");
+                    break;
+                case Keys.A when e.Control:
+                    TriggerButtonClick(form, ADDMODE);
+                    break;
+                case Keys.M when e.Control:
+                    TriggerButtonClick(form, MODIFYMODE);
+                    break;
+                case Keys.D when e.Control:
+                    TriggerButtonClick(form, DELETEMODE);
+                    break;
+                case Keys.I when e.Control:
+                    TriggerButtonClick(form, INQUIREMODE);
+                    break;
+                case Keys.P when e.Control:
+                    TriggerButtonClick(form, POSTMODE);
+                    break;
+            }
+        }
+
+        private static void TriggerButtonClick(Form form, string BtnKey)
+        {
+            string key = GetMode(form) == "" ? form.Name : $"{form.Name}-{GetMode(form)}";
+            if (!toolbarDictionary1.ContainsKey(key)) return;
+
+            ToolStrip mobjToolbar = toolbarDictionary1[key].LastOrDefault();
+            if (mobjToolbar == null) return;
+
+            foreach (ToolStripItem item in mobjToolbar.Items)
+            {
+                if (item is ToolStripButton button && button.Name == BtnKey)
+                {
+                    button.PerformClick();
+                    break;
+                }
+            }
+        }
+
+
 
         //---------newest old
         //private static void CreateButton(ToolStrip ToolBar, string BtnKey, string ToolTip)
@@ -1899,6 +1947,11 @@ namespace softgen
         {
             try
             {
+                // Set KeyPreview to true to capture key presses at the form level
+                form.KeyPreview = true;
+                // Hook up the KeyDown event handler
+                form.KeyDown += Form_KeyDown;
+
                 string mode = GetMode(form);
                 string key = string.IsNullOrEmpty(mode) ? form.Name : $"{form.Name}-{mode}";
 

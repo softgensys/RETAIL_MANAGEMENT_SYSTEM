@@ -829,9 +829,9 @@ namespace softgen
                             string sltax = cboSaleTax.SelectedItem != null ? cboSaleTax.SelectedItem.ToString().Trim() : string.Empty;
                             cmdd.Parameters.Add(new OdbcParameter("sale_tax_paid", sltax));
 
-                            cmdd.Parameters.Add(new OdbcParameter("cost_price", dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("mrp", dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("sale_price", dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("cost_price", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim())?"": dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("mrp", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim())?"": dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("sale_price", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim())?"": dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
                             cmdd.Parameters.Add(new OdbcParameter("bar_yn", chkBarYN.Checked ? "Y" : "N"));
                             cmdd.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
                             cmdd.Parameters.Add(new OdbcParameter("status", "V"));
@@ -853,7 +853,8 @@ namespace softgen
                             cmdd.Parameters.Add(new OdbcParameter("cess_perc", cessValue));
                             cmdd.Parameters.Add(new OdbcParameter("excis_perc", excisperc));
                             cmdd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                            cmdd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
+                            string barCodeValue = dbgBarDet.Rows[0].Cells[1].Value?.ToString().Trim();
+                            cmdd.Parameters.Add(new OdbcParameter("bar_code", string.IsNullOrEmpty(barCodeValue) ? "" : barCodeValue));
                             cmdd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
                             cmdd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
                             cmdd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));

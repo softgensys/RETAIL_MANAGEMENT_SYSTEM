@@ -3429,7 +3429,7 @@ namespace softgen
         public void frmT_Invoice_FormClosed(object sender, FormClosedEventArgs e)
         {
             DeTools.DestroyToolbar(this);
-            MainForm.Instance.TInvGenmenu.Enabled = true;
+            MainForm.Instance.mnuTBInvGenmenu.Enabled = true;
         }
 
         private void dbgItemDet_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
