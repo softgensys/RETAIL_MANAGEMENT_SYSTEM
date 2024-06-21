@@ -158,7 +158,7 @@ namespace softgen
                 //frmWelscr frmWelscr = new frmWelscr();
 
                 //----*******for child menu*****************-------//               
-               
+
                 FetchMenuPermissions();
 
                 //--------*********FOR SUB MENU*************-------------//
@@ -1064,6 +1064,11 @@ namespace softgen
                 // Handle exception (log it, show message, etc.)
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
 
 

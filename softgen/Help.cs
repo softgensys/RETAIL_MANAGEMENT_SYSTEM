@@ -132,6 +132,8 @@ namespace softgen
                                 PrepareTextHelp();
                                 break;
                         }
+
+                      
                     }
 
                     else
@@ -170,6 +172,7 @@ namespace softgen
                                 PrepareTextHelp();
                                 break;
                         }
+                 
                     }
 
 
@@ -290,7 +293,9 @@ namespace softgen
                 }
             }
             frmHelp.cboDataType.Items.Clear();
-            frmHelp.cboDataType.SelectedIndex = 1;
+
+            //frmHelp.cboDataType.SelectedIndex = 1;
+
 
             using (OdbcDataReader rs_Query = dbConnector.CreateResultset(strQuery + " limit 200"))
             {
@@ -358,6 +363,9 @@ namespace softgen
             string strCondition;
             object strValue = null;
             string strheading = "";
+            int selectedIndex=-2;
+            string selectedItemValue = "";
+            string copyComboBoxItemValue = "";
             string strMode = new string(' ', 1);
             ComboBox cmb_for_query_cols = new ComboBox();
 
@@ -473,12 +481,29 @@ namespace softgen
                 if (frmHelp.cboFields.SelectedItem == null)
                 {
                     strFields = string.Empty;  // Assign the selected item to strFields
-                }
+                }   
                 else
                 {
-                    string selectedField = frmHelp.cboFields.SelectedItem.ToString().Trim();
-                    string col_name = cmb_for_query_cols.Items[selectedIndex].ToString().Trim();
-                    strFields = col_name;  // Assign the selected item to strField
+                    //string selectedField = frmHelp.cboFields.SelectedItem.ToString().Trim();
+                    string selectedField = frmHelp.selectedCaption;
+                    // Get the selected index from cboFields
+                    //int selectedIndex = frmHelp.cboFields.SelectedIndex;
+                    selectedIndex = frmHelp.selectedFieldIndex;
+
+                    // Check if the selectedIndex is within the bounds of cmb_for_query_cols.Items
+                    if (selectedIndex >= 0)
+                    {
+                        string col_name = cmb_for_query_cols.Items[selectedIndex].ToString().Trim();
+                        strFields = col_name;  // Assign the selected item to strFields
+                    }
+                    else
+                    {
+                        // Handle the case when selectedIndex is out of bounds
+                        frmHelp.pnlText.Text = "Selected index is out of bounds.";
+                        frmHelp.pnlInstructiontxt.Text = "Press Escape to exit from help.";
+                        frmHelp.pnlText.Visible = true;
+                        return;
+                    }
                 }
 
                 if (frmHelp.cboRel.SelectedItem == null)
@@ -500,12 +525,12 @@ namespace softgen
                 {
                     if (selectedIndex >= 0)
                     {
-                        string selectedItemValue = frmHelp.cboDataType.SelectedItem.ToString().Trim();
-                        string copyComboBoxItemValue = data_type_index_copy.Items[selectedIndex].ToString().Trim();
+                        selectedItemValue = frmHelp.selectedDataType;
+                        copyComboBoxItemValue = data_type_index_copy.Items[selectedIndex].ToString().Trim();
                         send_combo_box_value = copyComboBoxItemValue.ToString();
 
 
-                        if (frmHelp.cboDataType.SelectedItem.ToString().Trim() == copyComboBoxItemValue)
+                        if (selectedItemValue == copyComboBoxItemValue)
                         {
                             if (frmHelp.cboRel.SelectedItem.ToString().Trim() == "LIKE")
                             {
@@ -516,11 +541,11 @@ namespace softgen
                                 strValue = $"'{frmHelp.txtValue.Text.Trim()}'";
                             }
                         }
-                        else if (frmHelp.cboDataType.SelectedItem.ToString().Trim() == copyComboBoxItemValue)
+                        else if (selectedItemValue == copyComboBoxItemValue)
                         {
                             strValue = double.Parse(frmHelp.txtValue.Text.Trim());
                         }
-                        else if (frmHelp.cboDataType.SelectedItem.ToString().Trim() == copyComboBoxItemValue)
+                        else if (selectedItemValue == copyComboBoxItemValue)
                         {
                             if (!DateTime.TryParse(frmHelp.txtValue.Text.Trim(), out DateTime dateValue))
                             {

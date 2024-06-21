@@ -102,10 +102,6 @@
             panel2 = new Panel();
             panel3 = new Panel();
             dbgBarDet = new DataGridView();
-            label25 = new Label();
-            chkNodisc = new CheckBox();
-            label1 = new Label();
-            rotNetRate = new Label();
             PLU = new DataGridViewTextBoxColumn();
             BARCODE = new DataGridViewTextBoxColumn();
             cp = new DataGridViewTextBoxColumn();
@@ -114,6 +110,10 @@
             netrate = new DataGridViewTextBoxColumn();
             margin_per = new DataGridViewTextBoxColumn();
             ACTIVE = new DataGridViewCheckBoxColumn();
+            label25 = new Label();
+            chkNodisc = new CheckBox();
+            label1 = new Label();
+            rotNetRate = new Label();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dbgBarDet).BeginInit();
             SuspendLayout();
@@ -802,6 +802,7 @@
             // 
             // rotLoc
             // 
+            rotLoc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             rotLoc.BackColor = Color.Bisque;
             rotLoc.BorderStyle = BorderStyle.Fixed3D;
             rotLoc.Location = new Point(335, 254);
@@ -846,6 +847,7 @@
             // 
             // panel2
             // 
+            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             panel2.Controls.Add(lblDisc);
             panel2.Controls.Add(rotType);
             panel2.Controls.Add(rotSGroup);
@@ -891,51 +893,12 @@
             dbgBarDet.CellLeave += dbgBarDet_CellLeave;
             dbgBarDet.CellValidating += dbgBarDet_CellValidating;
             dbgBarDet.CellValueChanged += dbgBarDet_CellValueChanged;
+            dbgBarDet.CurrentCellChanged += dbgBarDet_CurrentCellChanged;
+            dbgBarDet.CurrentCellDirtyStateChanged += dbgBarDet_CurrentCellDirtyStateChanged;
             dbgBarDet.EditingControlShowing += dataGridView1_EditingControlShowing;
             dbgBarDet.RowsAdded += dbgBarDet_RowsAdded;
             dbgBarDet.KeyDown += dataGridView1_KeyDown;
             dbgBarDet.KeyPress += dbgBarDet_KeyPress;
-            // 
-            // label25
-            // 
-            label25.BackColor = Color.CadetBlue;
-            label25.Font = new Font("Comic Sans MS", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label25.ImeMode = ImeMode.NoControl;
-            label25.Location = new Point(1, 291);
-            label25.Name = "label25";
-            label25.Size = new Size(758, 17);
-            label25.TabIndex = 186;
-            label25.Text = "Barcode Linking";
-            label25.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // chkNodisc
-            // 
-            chkNodisc.AutoSize = true;
-            chkNodisc.Location = new Point(370, 162);
-            chkNodisc.Name = "chkNodisc";
-            chkNodisc.Size = new Size(15, 14);
-            chkNodisc.TabIndex = 188;
-            chkNodisc.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.ImeMode = ImeMode.NoControl;
-            label1.Location = new Point(312, 161);
-            label1.Name = "label1";
-            label1.Size = new Size(52, 15);
-            label1.TabIndex = 187;
-            label1.Text = "No Disc.";
-            // 
-            // rotNetRate
-            // 
-            rotNetRate.BackColor = Color.Bisque;
-            rotNetRate.BorderStyle = BorderStyle.Fixed3D;
-            rotNetRate.Location = new Point(681, 256);
-            rotNetRate.Name = "rotNetRate";
-            rotNetRate.Size = new Size(57, 23);
-            rotNetRate.TabIndex = 179;
             // 
             // PLU
             // 
@@ -996,6 +959,48 @@
             ACTIVE.SortMode = DataGridViewColumnSortMode.Automatic;
             ACTIVE.TrueValue = "Y";
             ACTIVE.Width = 50;
+            // 
+            // label25
+            // 
+            label25.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            label25.BackColor = Color.CadetBlue;
+            label25.Font = new Font("Comic Sans MS", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label25.ImeMode = ImeMode.NoControl;
+            label25.Location = new Point(1, 291);
+            label25.Name = "label25";
+            label25.Size = new Size(758, 17);
+            label25.TabIndex = 186;
+            label25.Text = "Barcode Linking";
+            label25.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // chkNodisc
+            // 
+            chkNodisc.AutoSize = true;
+            chkNodisc.Location = new Point(370, 162);
+            chkNodisc.Name = "chkNodisc";
+            chkNodisc.Size = new Size(15, 14);
+            chkNodisc.TabIndex = 188;
+            chkNodisc.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.ImeMode = ImeMode.NoControl;
+            label1.Location = new Point(312, 161);
+            label1.Name = "label1";
+            label1.Size = new Size(52, 15);
+            label1.TabIndex = 187;
+            label1.Text = "No Disc.";
+            // 
+            // rotNetRate
+            // 
+            rotNetRate.BackColor = Color.Bisque;
+            rotNetRate.BorderStyle = BorderStyle.Fixed3D;
+            rotNetRate.Location = new Point(681, 256);
+            rotNetRate.Name = "rotNetRate";
+            rotNetRate.Size = new Size(57, 23);
+            rotNetRate.TabIndex = 179;
             // 
             // frmM_Item
             // 

@@ -24,6 +24,7 @@ namespace softgen
         bool saveflag = true;
         // Assuming existingData is a DataTable declared at the class level
         public DataTable existingData;
+        public string activeyn_val;
         public frmM_Item()
         {
             InitializeComponent();
@@ -152,6 +153,8 @@ namespace softgen
                 {
                     ResetControls(control.Controls);
                 }
+
+                txtItemDesc.Focus();
             }
         }
 
@@ -199,6 +202,7 @@ namespace softgen
 
         public void SaveForm()
         {
+            OdbcTransaction transaction = null;
             try
             {
 
@@ -215,745 +219,651 @@ namespace softgen
 
                 dbgBarDet.Update();
                 //transaction = dbConnector.connection.BeginTransaction();
-
-                DeTools.gstrSQL = "select a.*,b.* from m_item_det a join m_item_hdr b on a.item_id=b.item_id and  a.item_id = '" + txtItemId.Text.Trim() + "' and b.item_id ='" + txtItemId.Text.Trim() + "'  limit 1;  ";
-                OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
                 dbConnector.connection.Open();
 
-                OdbcDataReader reader = cmd.ExecuteReader();
+                transaction = dbConnector.connection.BeginTransaction();
 
-                if (mblnSearch == false)
+                DeTools.gstrSQL = "select a.*,b.* from m_item_det a join m_item_hdr b on a.item_id=b.item_id and  a.item_id = '" + txtItemId.Text.Trim() + "' and b.item_id ='" + txtItemId.Text.Trim() + "'  limit 1;  ";
+                using (OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection))
                 {
-                    //if (!CheckMandatoryFields())
-                    //{
-                    //    saveflag = false;
-                    //}
 
-                    //else
-                    //{
+                    cmd.Transaction = transaction;
+                    OdbcDataReader reader = cmd.ExecuteReader();
 
-                    blnItem_H = true;
-
-                    // Check if the record with the specified Group_id exists
-                    if (DeTools.GetMode(this) != DeTools.ADDMODE)
+                    if (mblnSearch == false)
                     {
-                        if (reader.HasRows)
+                        //if (!CheckMandatoryFields())
+                        //{
+                        //    saveflag = false;
+                        //}
+
+                        //else
+                        //{
+
+                        blnItem_H = true;
+
+                        // Check if the record with the specified Group_id exists
+                        if (DeTools.GetMode(this) != DeTools.ADDMODE)
                         {
-
-                            if (DeTools.CheckTemporaryTableExists("m_item_hdr") != null)
+                            if (reader.HasRows)
                             {
-                                if (DeTools.CheckTemporaryTableExists("m_item_det") != null)
+
+                                if (DeTools.CheckTemporaryTableExists("m_item_hdr") != null)
                                 {
-
-                                    // The record exists, so update it
-                                    reader.Close();
-                                    Cursor.Current = Cursors.WaitCursor;
-
-                                    string gstrSQL1 = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                             "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by,open_yn,comp_name) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp, sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                             "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by, 'Y' AS open_yn,  '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
-
-                                    using (OdbcCommand insertintemp1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
+                                    if (DeTools.CheckTemporaryTableExists("m_item_det") != null)
                                     {
-                                        insertintemp1.ExecuteNonQuery();
-                                    }
 
-                                    string gstrSQL2 = "Select * from temp_m_item_hdr where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
-                                    OdbcCommand selectintemp1 = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-
-                                    OdbcDataReader selectread = selectintemp1.ExecuteReader();
-
-                                    if (selectread.HasRows)
-                                    {
-                                        string delSQL = "Delete FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
-
-                                        using (OdbcCommand delfrmhdr1 = new OdbcCommand(delSQL, dbConnector.connection))
-                                        {
-                                            delfrmhdr1.ExecuteNonQuery();
-                                        }
-
-
-                                        DeTools.gstrSQL = "UPDATE temp_m_item_hdr SET item_desc = ?, short_desc = ?, item_type_id = ?, group_id = ?, sub_group_id = ?, sub_sub_group_id = ?, size_id = ?, color_id = ?, style = ?, manuf_id = ?, manuf_name = ?," +
-                                            " pur_unit_id = ?, sale_unit_id = ?, conv_pur_sale = ?, op_bal_unit = ?, min_level = ?, re_order_level = ?, max_level = ?, qty_decimal_yn = ?, decimal_upto = ?, sale_tax_paid = ?, cost_price = ?, mrp = ?," +
-                                            " sale_price = ?, bar_yn = ?, active_yn = ?, status = ?, Trans_status = ?, loc_id = ?, lt = ?, net_rate = ?, disc_per = ?, HSN_CODE = ?, cess_perc = ?, excis_perc = ?, local_rate_yn = ?," +
-                                            " bar_code = ?, disc_yn = ?, mod_date = ?, mod_by = ?  WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
-
-                                        cmd.CommandText = DeTools.gstrSQL;
-
-                                        cmd.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("short_desc", txtShDesc.Text.Trim()));
-                                        string type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("item_type_id", type));
-
-                                        string grp = cboGroup.SelectedItem != null ? cboGroup.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("group_id", grp));
-
-                                        string sgrp = cboSGroup.SelectedItem != null ? cboSGroup.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("sub_group_id", sgrp));
-
-                                        string ssgrp = cboSSGroupDesc.SelectedItem != null ? cboSSGroupDesc.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("sub_sub_group_id", ssgrp));
-
-                                        string size = cboSizeDesc.SelectedItem != null ? cboSizeDesc.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("size_id", size));
-
-                                        string color = cboColorDesc.SelectedItem != null ? cboColorDesc.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("color_id", color));
-
-                                        cmd.Parameters.Add(new OdbcParameter("style", txtStyle.Text.ToString().Trim()));
-
-                                        string manuf = cboManuf.SelectedItem != null ? cboManuf.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("manuf_id", manuf));
-                                        cmd.Parameters.Add(new OdbcParameter("manuf_name", rotManuf.Text.ToString().Trim()));
-
-                                        string purunit = cboPurUnit.SelectedItem != null ? cboPurUnit.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("pur_unit_id", purunit));
-
-                                        string salunit = cboSaleUnit.SelectedItem != null ? cboSaleUnit.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("sale_unit_id", salunit));
-
-                                        cmd.Parameters.Add(new OdbcParameter("conv_pur_sale", txtConv.Text.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("op_bal_unit", txtOpBal.Text.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("min_level", txtMinLevel.Text.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("re_order_level", txtReOLevel.Text.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("max_level", txtMaxLevel.Text.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("qty_decimal_yn", chkDecimal.Checked ? "Y" : "N"));
-                                        cmd.Parameters.Add(new OdbcParameter("decimal_upto", txtDecimalupto.Text.ToString().Trim()));
-
-                                        string sltax = cboSaleTax.SelectedItem != null ? cboSaleTax.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("sale_tax_paid", sltax));
-
-                                        cmd.Parameters.Add(new OdbcParameter("cost_price", dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("mrp", dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("sale_price", dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("bar_yn", chkBarYN.Checked ? "Y" : "N"));
-                                        cmd.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
-                                        cmd.Parameters.Add(new OdbcParameter("status", "V"));
-                                        cmd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
-
-                                        string loc = cboLoc.SelectedItem != null ? cboLoc.SelectedItem.ToString().Trim() : string.Empty;
-                                        cmd.Parameters.Add(new OdbcParameter("loc_id", loc));
-
-                                        cmd.Parameters.Add(new OdbcParameter("lt", txtLT.ToString().Trim()));// Required frequency
-                                        cmd.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("disc_per", txtDisc.Text.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("HSN_CODE", txtHSN.Text.ToString().Trim()));
-
-                                        string cessValue = string.IsNullOrEmpty(txtCess.Text) ? "0.00" : txtCess.Text.ToString().Trim();
-                                        string excisperc = string.IsNullOrEmpty(txtexisper.Text) ? "0.00" : txtexisper.Text.ToString().Trim();
-
-                                        cmd.Parameters.Add(new OdbcParameter("cess_perc", cessValue));
-                                        cmd.Parameters.Add(new OdbcParameter("excis_perc", excisperc));
-                                        cmd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                                        cmd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
-                                        cmd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
-
-                                        cmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
-                                        cmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
-
-
-                                        cmd.ExecuteNonQuery();
-
-                                        Cursor.Current = Cursors.Default;
-
-                                        Messages.SavingMsg();
-
-
-                                        //DeTools.SelectDataFromTemporaryTable("m_group");
+                                        // The record exists, so update it
                                         reader.Close();
+                                        Cursor.Current = Cursors.WaitCursor;
 
+                                        string gstrSQL1 = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                                 "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by,open_yn,comp_name) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp, sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                                 "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by, 'Y' AS open_yn,  '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
 
-                                        string insertQuery = "INSERT INTO m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                            "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                            "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by FROM temp_m_item_hdr WHERE item_id = ?";
-
-
-                                        using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
+                                        using (OdbcCommand insertintemp1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
                                         {
-                                            insertCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                            insertCmd.ExecuteNonQuery();
-
-
-                                        }
-                                        string querupdN1 = "update temp_m_item_hdr set open_yn='N' where item_id=? order by ent_on desc ";
-
-                                        using (OdbcCommand querupdNCmd = new OdbcCommand(querupdN1, dbConnector.connection))
-                                        {
-                                            querupdNCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                            querupdNCmd.ExecuteNonQuery();
-
-
+                                            insertintemp1.Transaction = transaction;
+                                            insertintemp1.ExecuteNonQuery();
                                         }
 
-                                        string querdel1 = "delete from temp_m_item_hdr where item_id=? order by ent_on desc ";
+                                        string gstrSQL2 = "Select * from temp_m_item_hdr where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
+                                        OdbcCommand selectintemp1 = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
 
-                                        using (OdbcCommand querdelCmd = new OdbcCommand(querdel1, dbConnector.connection))
+                                        selectintemp1.Transaction = transaction;
+                                        OdbcDataReader selectread = selectintemp1.ExecuteReader();
+
+                                        if (selectread.HasRows)
                                         {
-                                            querdelCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                            querdelCmd.ExecuteNonQuery();
+                                            string delSQL = "Delete FROM m_item_hdr WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
 
-
-                                        }
-
-
-
-                                    }
-                                    Cursor.Current = Cursors.WaitCursor;
-
-                                    //-----------------------updation for det starts----------------//
-
-                                    //// Step 1: Select specific columns for the given item_id
-                                    //string selectQuery = "SELECT plu, bar_code, cost_price, mrp, sale_price, net_rate FROM m_item_det WHERE item_id = ?";
-                                    //using (OdbcCommand selectCmd = new OdbcCommand(selectQuery, dbConnector.connection))
-                                    //{
-                                    //    selectCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
-
-                                    //    using (OdbcDataReader readerdbg = selectCmd.ExecuteReader())
-                                    //    {
-                                    //        existingData = new DataTable();
-                                    //        existingData.Columns.Add("plu", typeof(string));
-                                    //        existingData.Columns.Add("bar_code", typeof(string));
-                                    //        existingData.Columns.Add("cost_price", typeof(decimal));
-                                    //        existingData.Columns.Add("mrp", typeof(decimal));
-                                    //        existingData.Columns.Add("sale_price", typeof(decimal));
-                                    //        existingData.Columns.Add("net_rate", typeof(decimal));
-
-                                    //        while (readerdbg.Read())
-                                    //        {
-                                    //            DataRow row = existingData.NewRow();
-                                    //            row["plu"] = readerdbg["plu"].ToString();
-                                    //            row["bar_code"] = readerdbg["bar_code"].ToString();
-                                    //            row["cost_price"] = readerdbg["cost_price"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["cost_price"]);
-                                    //            row["mrp"] = readerdbg["mrp"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["mrp"]);
-                                    //            row["sale_price"] = readerdbg["sale_price"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["sale_price"]);
-                                    //            row["net_rate"] = readerdbg["net_rate"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["net_rate"]);
-                                    //            existingData.Rows.Add(row);
-                                    //        }
-                                    //    }
-                                    //}
-
-                                    //// Step 2: Compare existing data with the DataGridView (dbgBarDet)
-                                    //foreach (DataGridViewRow row in dbgBarDet.Rows)
-                                    //{
-                                    //    if (row.Cells[0].Value != null && row.Cells[2].Value != null)
-                                    //    {
-
-
-                                    //        string plu = row.Cells[0].Value.ToString();
-                                    //        string barCode = row.Cells[1].Value.ToString();
-                                    //        decimal costPrice = Convert.ToDecimal(row.Cells[2].Value);
-                                    //        decimal mrp = Convert.ToDecimal(row.Cells[3].Value);
-                                    //        decimal saleprice = Convert.ToDecimal(row.Cells[4].Value);
-                                    //        decimal netRate = Convert.ToDecimal(row.Cells[5].Value);
-
-                                    //    DataRow[] existingRows = existingData.Select($"plu = '{plu}'");
-
-                                    //        if (existingRows.Length > 0)
-                                    //        {
-                                    //            DataRow existingRow = existingRows[0];
-
-                                    //            if (existingRow["bar_code"].ToString() != barCode ||
-                                    //                (decimal)existingRow["cost_price"] != costPrice ||
-                                    //                (decimal)existingRow["mrp"] != mrp || (decimal)existingRow["sale_price"] != saleprice ||
-                                    //                (decimal)existingRow["net_rate"] != netRate)
-                                    //            {
-                                    //                existingRow["bar_code"] = barCode;
-                                    //                existingRow["cost_price"] = costPrice;
-                                    //                existingRow["mrp"] = mrp;
-                                    //                existingRow["sale_price"] = saleprice;
-                                    //                existingRow["net_rate"] = netRate;
-
-                                    //                // Perform the update in the database using your UPDATE query
-                                    //                // Perform the update in the database using your UPDATE query
-
-                                    //                //--------------------- then insert into temp det table----------//
-
-                                    //                string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, open_yn, comp_name) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, local_rate_yn, 'Y' AS open_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name FROM m_item_det WHERE item_id = ?";
-
-                                    //                using (OdbcCommand insertQuerytempdetCmd1 = new OdbcCommand(insertQuerytempdet, dbConnector.connection))
-                                    //                {
-                                    //                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                    //                    insertQuerytempdetCmd1.ExecuteNonQuery();
-                                    //                }
-
-                                    //                //--------for a check that 
-                                    //                string selfrmtempdet = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
-                                    //                OdbcCommand selfrmtempdetcmd = new OdbcCommand(selfrmtempdet, dbConnector.connection);
-
-                                    //                OdbcDataReader selfrmtempdetread = selfrmtempdetcmd.ExecuteReader();
-
-                                    //                if (selfrmtempdetread.HasRows)
-                                    //                {
-
-
-                                    //                    string updateQuery = "UPDATE temp_m_item_det " +
-                                    //                                         "SET bar_code = ?, cost_price = ?, mrp = ?,sale_price = ?, net_rate = ? " +
-                                    //                                         "WHERE item_id = '" + txtItemId.Text.Trim() + "'";
-
-                                    //                    using (OdbcCommand updateCmd = new OdbcCommand(updateQuery, dbConnector.connection))
-                                    //                    {
-                                    //                        updateCmd.Parameters.Add(new OdbcParameter("bar_code", barCode));
-                                    //                        updateCmd.Parameters.Add(new OdbcParameter("cost_price", costPrice));
-                                    //                        updateCmd.Parameters.Add(new OdbcParameter("mrp", mrp));
-                                    //                        updateCmd.Parameters.Add(new OdbcParameter("sale_price", saleprice));
-                                    //                        updateCmd.Parameters.Add(new OdbcParameter("net_rate", netRate));
-                                    //                        updateCmd.Parameters.Add(new OdbcParameter("plu", plu));
-
-                                    //                        updateCmd.ExecuteNonQuery();
-                                    //                    }
-
-                                    //                    selfrmtempdetread.Close();
-                                    //                }
-                                    //            }
-                                    //            else
-                                    //            {
-                                    //                // Step 3: Add new rows
-                                    //                DataRow newRow = existingData.NewRow();
-                                    //                newRow["plu"] = plu;
-                                    //                newRow["bar_code"] = barCode;
-                                    //                newRow["cost_price"] = costPrice;
-                                    //                newRow["mrp"] = mrp;
-                                    //                newRow["sale_price"] = saleprice;
-                                    //                newRow["net_rate"] = netRate;
-
-                                    //                existingData.Rows.Add(newRow);
-
-                                    //                // Execute your INSERT query for new rows
-                                    //                foreach (DataRow row1 in existingData.Rows)
-                                    //                {
-
-                                    //                    string insert = "Insert into temp_m_item_det (plu,bar_code,cost_price,mrp,sale_price,net_rate) values (?,?,?,?,?,?)";
-                                    //                    using (OdbcCommand insertCmd = new OdbcCommand(insert, dbConnector.connection))
-                                    //                    {
-                                    //                        // Add parameters for your INSERT query
-                                    //                        insertCmd.Parameters.Add(new OdbcParameter("plu", row1["plu"].ToString()));
-                                    //                        insertCmd.Parameters.Add(new OdbcParameter("bar_code", row1["bar_code"].ToString()));
-                                    //                        insertCmd.Parameters.Add(new OdbcParameter("cost_price", row1["cost_price"]));
-                                    //                        insertCmd.Parameters.Add(new OdbcParameter("mrp", row1["mrp"]));
-                                    //                        insertCmd.Parameters.Add(new OdbcParameter("sale_price", row1["sale_price"]));
-                                    //                        insertCmd.Parameters.Add(new OdbcParameter("net_rate", row1["net_rate"]));
-
-                                    //                        // Execute the INSERT query
-                                    //                        insertCmd.ExecuteNonQuery();
-
-
-
-                                    //                    }
-
-                                    //                }
-
-                                    //            }
-                                    //        }
-
-                                    //    }
-
-                                    //}
-                                    string selectQuery = "SELECT plu, bar_code, cost_price, mrp, sale_price, net_rate, margin_per, active_yn FROM m_item_det WHERE item_id = ?";
-                                    using (OdbcCommand selectCmd = new OdbcCommand(selectQuery, dbConnector.connection))
-                                    {
-                                        selectCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
-
-                                        using (OdbcDataReader readerdbg = selectCmd.ExecuteReader())
-                                        {
-                                            existingData = new DataTable();
-                                            existingData.Columns.Add("plu", typeof(string));
-                                            existingData.Columns.Add("bar_code", typeof(string));
-                                            existingData.Columns.Add("cost_price", typeof(decimal));
-                                            existingData.Columns.Add("mrp", typeof(decimal));
-                                            existingData.Columns.Add("sale_price", typeof(decimal));
-                                            existingData.Columns.Add("net_rate", typeof(decimal));
-                                            existingData.Columns.Add("margin_per", typeof(decimal));
-                                            existingData.Columns.Add("active_yn", typeof(string));
-
-                                            while (readerdbg.Read())
+                                            using (OdbcCommand delfrmhdr1 = new OdbcCommand(delSQL, dbConnector.connection))
                                             {
-                                                DataRow row = existingData.NewRow();
-                                                row["plu"] = readerdbg["plu"].ToString();
-                                                row["bar_code"] = readerdbg["bar_code"].ToString();
-                                                row["cost_price"] = readerdbg["cost_price"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["cost_price"]);
-                                                row["mrp"] = readerdbg["mrp"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["mrp"]);
-                                                row["sale_price"] = readerdbg["sale_price"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["sale_price"]);
-                                                row["net_rate"] = readerdbg["net_rate"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["net_rate"]);
-                                                row["margin_per"] = readerdbg["margin_per"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["margin_per"]);
-                                                row["active_yn"] = readerdbg["active_yn"].ToString();
-                                                existingData.Rows.Add(row);
+                                                delfrmhdr1.Transaction = transaction;
+                                                delfrmhdr1.ExecuteNonQuery();
+                                            }
+
+
+                                            DeTools.gstrSQL = "UPDATE temp_m_item_hdr SET item_desc = ?, short_desc = ?, item_type_id = ?, group_id = ?, sub_group_id = ?, sub_sub_group_id = ?, size_id = ?, color_id = ?, style = ?, manuf_id = ?, manuf_name = ?," +
+                                                " pur_unit_id = ?, sale_unit_id = ?, conv_pur_sale = ?, op_bal_unit = ?, min_level = ?, re_order_level = ?, max_level = ?, qty_decimal_yn = ?, decimal_upto = ?, sale_tax_paid = ?, cost_price = ?, mrp = ?," +
+                                                " sale_price = ?, bar_yn = ?, active_yn = ?, status = ?, Trans_status = ?, loc_id = ?, lt = ?, net_rate = ?, disc_per = ?, HSN_CODE = ?, cess_perc = ?, excis_perc = ?, local_rate_yn = ?," +
+                                                " bar_code = ?, disc_yn = ?, mod_date = ?, mod_by = ?  WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
+
+                                            cmd.CommandText = DeTools.gstrSQL;
+
+                                            cmd.Transaction = transaction;
+                                            cmd.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("short_desc", txtShDesc.Text.Trim()));
+                                            string type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("item_type_id", type));
+
+                                            string grp = cboGroup.SelectedItem != null ? cboGroup.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("group_id", grp));
+
+                                            string sgrp = cboSGroup.SelectedItem != null ? cboSGroup.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("sub_group_id", sgrp));
+
+                                            string ssgrp = cboSSGroupDesc.SelectedItem != null ? cboSSGroupDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("sub_sub_group_id", ssgrp));
+
+                                            string size = cboSizeDesc.SelectedItem != null ? cboSizeDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("size_id", size));
+
+                                            string color = cboColorDesc.SelectedItem != null ? cboColorDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("color_id", color));
+
+                                            cmd.Parameters.Add(new OdbcParameter("style", txtStyle.Text.ToString().Trim()));
+
+                                            string manuf = cboManuf.SelectedItem != null ? cboManuf.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("manuf_id", manuf));
+                                            cmd.Parameters.Add(new OdbcParameter("manuf_name", rotManuf.Text.ToString().Trim()));
+
+                                            string purunit = cboPurUnit.SelectedItem != null ? cboPurUnit.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("pur_unit_id", purunit));
+
+                                            string salunit = cboSaleUnit.SelectedItem != null ? cboSaleUnit.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("sale_unit_id", salunit));
+
+                                            cmd.Parameters.Add(new OdbcParameter("conv_pur_sale", txtConv.Text.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("op_bal_unit", txtOpBal.Text.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("min_level", txtMinLevel.Text.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("re_order_level", txtReOLevel.Text.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("max_level", txtMaxLevel.Text.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("qty_decimal_yn", chkDecimal.Checked ? "Y" : "N"));
+                                            cmd.Parameters.Add(new OdbcParameter("decimal_upto", txtDecimalupto.Text.ToString().Trim()));
+
+                                            string sltax = cboSaleTax.SelectedItem != null ? cboSaleTax.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("sale_tax_paid", sltax));
+
+                                            cmd.Parameters.Add(new OdbcParameter("cost_price", dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("mrp", dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("sale_price", dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("bar_yn", chkBarYN.Checked ? "Y" : "N"));
+                                            cmd.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
+                                            cmd.Parameters.Add(new OdbcParameter("status", "V"));
+                                            cmd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
+
+                                            string loc = cboLoc.SelectedItem != null ? cboLoc.SelectedItem.ToString().Trim() : string.Empty;
+                                            cmd.Parameters.Add(new OdbcParameter("loc_id", loc));
+
+                                            cmd.Parameters.Add(new OdbcParameter("lt", txtLT.ToString().Trim()));// Required frequency
+                                            cmd.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("disc_per", txtDisc.Text.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("HSN_CODE", txtHSN.Text.ToString().Trim()));
+
+                                            string cessValue = string.IsNullOrEmpty(txtCess.Text) ? "0.00" : txtCess.Text.ToString().Trim();
+                                            string excisperc = string.IsNullOrEmpty(txtexisper.Text) ? "0.00" : txtexisper.Text.ToString().Trim();
+
+                                            cmd.Parameters.Add(new OdbcParameter("cess_perc", cessValue));
+                                            cmd.Parameters.Add(new OdbcParameter("excis_perc", excisperc));
+                                            cmd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
+                                            cmd.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
+                                            cmd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
+
+                                            cmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
+                                            cmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+
+                                            cmd.ExecuteNonQuery();
+
+                                            Cursor.Current = Cursors.Default;
+
+                                            Messages.SavingMsg();
+
+
+                                            //DeTools.SelectDataFromTemporaryTable("m_group");
+                                            reader.Close();
+
+
+                                            string insertQuery = "INSERT INTO m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                                "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                                "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, mod_date, mod_by FROM temp_m_item_hdr WHERE item_id = ?";
+
+
+                                            using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
+                                            {
+                                                insertCmd.Transaction = transaction;
+                                                insertCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                insertCmd.ExecuteNonQuery();
+
+
+                                            }
+                                            string querupdN1 = "update temp_m_item_hdr set open_yn='N' where item_id=? order by ent_on desc ";
+
+                                            using (OdbcCommand querupdNCmd = new OdbcCommand(querupdN1, dbConnector.connection))
+                                            {
+                                                querupdNCmd.Transaction = transaction;
+                                                querupdNCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                querupdNCmd.ExecuteNonQuery();
+
+
+                                            }
+
+                                            string querdel1 = "delete from temp_m_item_hdr where item_id=? order by ent_on desc ";
+
+                                            using (OdbcCommand querdelCmd = new OdbcCommand(querdel1, dbConnector.connection))
+                                            {
+                                                querdelCmd.Transaction = transaction;
+                                                querdelCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                querdelCmd.ExecuteNonQuery();
+
+
+                                            }
+
+
+
+                                        }
+                                        Cursor.Current = Cursors.WaitCursor;
+
+
+                                        string selectQuery = "SELECT plu, bar_code, cost_price, mrp, sale_price, net_rate, margin_per, active_yn FROM m_item_det WHERE item_id = ?";
+                                        using (OdbcCommand selectCmd = new OdbcCommand(selectQuery, dbConnector.connection))
+                                        {
+                                            selectCmd.Transaction = transaction;
+                                            selectCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
+
+                                            using (OdbcDataReader readerdbg = selectCmd.ExecuteReader())
+                                            {
+                                                existingData = new DataTable();
+                                                existingData.Columns.Add("plu", typeof(string));
+                                                existingData.Columns.Add("bar_code", typeof(string));
+                                                existingData.Columns.Add("cost_price", typeof(decimal));
+                                                existingData.Columns.Add("mrp", typeof(decimal));
+                                                existingData.Columns.Add("sale_price", typeof(decimal));
+                                                existingData.Columns.Add("net_rate", typeof(decimal));
+                                                existingData.Columns.Add("margin_per", typeof(decimal));
+                                                existingData.Columns.Add("active_yn", typeof(string));
+
+                                                while (readerdbg.Read())
+                                                {
+                                                    DataRow row = existingData.NewRow();
+                                                    row["plu"] = readerdbg["plu"].ToString();
+                                                    row["bar_code"] = readerdbg["bar_code"].ToString();
+                                                    row["cost_price"] = readerdbg["cost_price"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["cost_price"]);
+                                                    row["mrp"] = readerdbg["mrp"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["mrp"]);
+                                                    row["sale_price"] = readerdbg["sale_price"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["sale_price"]);
+                                                    row["net_rate"] = readerdbg["net_rate"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["net_rate"]);
+                                                    row["margin_per"] = readerdbg["margin_per"] is DBNull ? 0 : Convert.ToDecimal(readerdbg["margin_per"]);
+                                                    row["active_yn"] = readerdbg["active_yn"].ToString();
+                                                    existingData.Rows.Add(row);
+                                                }
                                             }
                                         }
-                                    }
 
-                                    // Step 2: Compare existing data with the DataGridView (dbgBarDet)
-                                    foreach (DataGridViewRow row in dbgBarDet.Rows)
-                                    {
-                                        if (row.Cells[0].Value != null && row.Cells[2].Value != null)
+                                        // Step 2: Compare existing data with the DataGridView (dbgBarDet)
+                                        foreach (DataGridViewRow row in dbgBarDet.Rows)
                                         {
-                                            string plu = row.Cells[0].Value.ToString();
-                                            string barCode = row.Cells[1].Value.ToString();
-                                            decimal costPrice = Convert.ToDecimal(row.Cells[2].Value);
-                                            decimal mrp = Convert.ToDecimal(row.Cells[3].Value);
-                                            decimal saleprice = Convert.ToDecimal(row.Cells[4].Value);
-                                            decimal netRate = Convert.ToDecimal(row.Cells[5].Value);
-                                            decimal margin = Convert.ToDecimal(row.Cells[6].Value);
-                                            string chactive = row.Cells[7].Value.ToString();
-
-                                            DataRow[] existingRows = existingData.Select($"plu = '{plu}'");
-
-                                            if (existingRows.Length > 0)
+                                            if (row.Cells[0].Value != null && row.Cells[2].Value != null)
                                             {
-                                                DataRow existingRow = existingRows[0];
+                                                string plu = row.Cells[0].Value.ToString();
+                                                string barCode = row.Cells[1].Value.ToString();
+                                                decimal costPrice = Convert.ToDecimal(row.Cells[2].Value);
+                                                decimal mrp = Convert.ToDecimal(row.Cells[3].Value);
+                                                decimal saleprice = Convert.ToDecimal(row.Cells[4].Value);
+                                                decimal netRate = Convert.ToDecimal(row.Cells[5].Value);
+                                                decimal margin = Convert.ToDecimal(row.Cells[6].Value);
+                                                string chactive = row.Cells[7].Value.ToString();
 
-                                                if (existingRow["bar_code"].ToString() != barCode ||
-                                                    (decimal)existingRow["cost_price"] != costPrice ||
-                                                    (decimal)existingRow["mrp"] != mrp ||
-                                                    (decimal)existingRow["sale_price"] != saleprice || (decimal)existingRow["margin_per"] != margin ||
-                                                    existingRow["active_yn"].ToString() != chactive || (decimal)existingRow["net_rate"] != netRate)
+                                                DataRow[] existingRows = existingData.Select($"plu = '{plu}'");
+
+                                                if (existingRows.Length > 0)
                                                 {
-                                                    // Perform the update in the database using your UPDATE query
-                                                    string updateQuery = "UPDATE m_item_det " +
-                                                                         "SET bar_code = ?, cost_price = ?, mrp = ?, sale_price = ?, net_rate = ? ,margin_per = ? ,active_yn = ? , mod_date = ? , mod_by = ?" +
-                                                                         " WHERE item_id = ? AND plu = ?";
+                                                    DataRow existingRow = existingRows[0];
 
-                                                    using (OdbcCommand updateCmd = new OdbcCommand(updateQuery, dbConnector.connection))
+                                                    if (existingRow["bar_code"].ToString() != barCode ||
+                                                        (decimal)existingRow["cost_price"] != costPrice ||
+                                                        (decimal)existingRow["mrp"] != mrp ||
+                                                        (decimal)existingRow["sale_price"] != saleprice || (decimal)existingRow["margin_per"] != margin ||
+                                                        existingRow["active_yn"].ToString() != chactive || (decimal)existingRow["net_rate"] != netRate)
                                                     {
-                                                        updateCmd.Parameters.Add(new OdbcParameter("bar_code", barCode));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("cost_price", costPrice));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("mrp", mrp));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("sale_price", saleprice));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("net_rate", netRate));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("margin_per", margin));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("active_yn", chactive));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
-                                                        updateCmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
-                                                        updateCmd.Parameters.Add(new OdbcParameter("plu", plu));
+                                                        // Perform the update in the database using your UPDATE query
+                                                        string updateQuery = "UPDATE m_item_det " +
+                                                                             "SET bar_code = ?, cost_price = ?, mrp = ?, sale_price = ?, net_rate = ? ,margin_per = ? ,active_yn = ? , mod_date = ? , mod_by = ?" +
+                                                                             " WHERE item_id = ? AND plu = ?";
 
-                                                        updateCmd.ExecuteNonQuery();
+                                                        using (OdbcCommand updateCmd = new OdbcCommand(updateQuery, dbConnector.connection))
+                                                        {
+                                                            updateCmd.Transaction = transaction;
+                                                            updateCmd.Parameters.Add(new OdbcParameter("bar_code", barCode));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("cost_price", costPrice));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("mrp", mrp));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("sale_price", saleprice));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("net_rate", netRate));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("margin_per", margin));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("active_yn", chactive));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
+                                                            updateCmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
+                                                            updateCmd.Parameters.Add(new OdbcParameter("plu", plu));
+
+                                                            updateCmd.ExecuteNonQuery();
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    // Step 3: Add new rows
+                                                    DataRow newRow = existingData.NewRow();
+                                                    newRow["plu"] = plu;
+                                                    newRow["bar_code"] = barCode;
+                                                    newRow["cost_price"] = costPrice;
+                                                    newRow["mrp"] = mrp;
+                                                    newRow["sale_price"] = saleprice;
+                                                    newRow["net_rate"] = netRate;
+                                                    newRow["margin_per"] = margin;
+                                                    newRow["active_yn"] = chactive;
+
+                                                    existingData.Rows.Add(newRow);
+
+                                                    // Execute your INSERT query for new rows
+                                                    string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn, open_yn, comp_name) " +
+                                                                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                                                    using (OdbcCommand insertQuerytempdetCmd1 = new OdbcCommand(insertQuerytempdet, dbConnector.connection))
+                                                    {
+                                                        insertQuerytempdetCmd1.Transaction = transaction;
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.ToString().Trim())); // Provide an appropriate value
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("bar_code", barCode));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("plu", txtItemId.Text.ToString().Trim() + plu));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("cost_price", costPrice));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("mrp", mrp));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("sale_price", saleprice));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("active_yn", chactive)); // Provide an appropriate value
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("Trans_status", "N")); // Provide an appropriate value
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("net_rate", netRate));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("margin_per", margin));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("local_rate_yn", "Y")); // Provide an appropriate value
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                                                        insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+
+                                                        insertQuerytempdetCmd1.ExecuteNonQuery();
                                                     }
                                                 }
                                             }
-                                            else
+                                        }
+
+
+
+                                        string selfrmtempdet2 = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
+                                        OdbcCommand selfrmtempdetcmd2 = new OdbcCommand(selfrmtempdet2, dbConnector.connection);
+                                        selfrmtempdetcmd2.Transaction = transaction;
+                                        OdbcDataReader selfrmtempdetread2 = selfrmtempdetcmd2.ExecuteReader();
+
+                                        //-------------updating rest columns other than dbgbardet--//
+
+
+                                        if (selfrmtempdetread2.HasRows)
+                                        {
+                                            selfrmtempdetread2.Close();
+
+                                            DeTools.gstrSQL = "UPDATE temp_m_item_det SET item_desc = ?, Trans_status = ?, local_rate_yn = ?, mod_date = ?, mod_by = ? WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
+
+                                            selfrmtempdetcmd2.CommandText = DeTools.gstrSQL;
+
+                                            selfrmtempdetcmd2.Transaction = transaction;
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
+
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("Trans_status", "N"));
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
+                                            selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+
+                                            selfrmtempdetcmd2.ExecuteNonQuery();
+
+                                            //string delSQLdet = "Delete FROM m_item_det WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
+
+                                            //using (OdbcCommand delfrmdet1 = new OdbcCommand(delSQLdet, dbConnector.connection))
+                                            //{
+                                            //    delfrmdet1.ExecuteNonQuery();
+                                            //}
+
+                                            //-------------After updation complete insert into Main det tbl-------------//
+
+
+                                            string insertQuerydet1 = "INSERT INTO m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, mod_date, mod_by) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn, mod_date, mod_by FROM temp_m_item_det WHERE item_id = ?";
+
+                                            using (OdbcCommand insertCmd2 = new OdbcCommand(insertQuerydet1, dbConnector.connection))
                                             {
-                                                // Step 3: Add new rows
-                                                DataRow newRow = existingData.NewRow();
-                                                newRow["plu"] = plu;
-                                                newRow["bar_code"] = barCode;
-                                                newRow["cost_price"] = costPrice;
-                                                newRow["mrp"] = mrp;
-                                                newRow["sale_price"] = saleprice;
-                                                newRow["net_rate"] = netRate;
-                                                newRow["margin_per"] = margin;
-                                                newRow["active_yn"] = chactive;
-
-                                                existingData.Rows.Add(newRow);
-
-                                                // Execute your INSERT query for new rows
-                                                string insertQuerytempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn, open_yn, comp_name) " +
-                                                                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                                                using (OdbcCommand insertQuerytempdetCmd1 = new OdbcCommand(insertQuerytempdet, dbConnector.connection))
-                                                {
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.ToString().Trim())); // Provide an appropriate value
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("bar_code", barCode));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("plu", txtItemId.Text.ToString().Trim() + plu));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("cost_price", costPrice));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("mrp", mrp));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("sale_price", saleprice));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("active_yn", chactive)); // Provide an appropriate value
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("Trans_status", "N")); // Provide an appropriate value
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("net_rate", netRate));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("margin_per", margin));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("local_rate_yn", "Y")); // Provide an appropriate value
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                                                    insertQuerytempdetCmd1.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-
-                                                    insertQuerytempdetCmd1.ExecuteNonQuery();
-                                                }
+                                                insertCmd2.Transaction = transaction;
+                                                insertCmd2.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                insertCmd2.ExecuteNonQuery();
                                             }
-                                        }
-                                    }
 
 
+                                            //---------for update N in temp det-----------------------------//
 
-                                    string selfrmtempdet2 = "Select * from temp_m_item_det where item_id='" + txtItemId.Text.Trim() + "' and open_yn='Y'";
-                                    OdbcCommand selfrmtempdetcmd2 = new OdbcCommand(selfrmtempdet2, dbConnector.connection);
+                                            string UPDATEQuerydet1 = "Update temp_m_item_det set open_yn='N' WHERE item_id = ?";
 
-                                    OdbcDataReader selfrmtempdetread2 = selfrmtempdetcmd2.ExecuteReader();
+                                            using (OdbcCommand UPDATEQuerydetcmd1 = new OdbcCommand(UPDATEQuerydet1, dbConnector.connection))
+                                            {
+                                                UPDATEQuerydetcmd1.Transaction = transaction;
+                                                UPDATEQuerydetcmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                UPDATEQuerydetcmd1.ExecuteNonQuery();
+                                            }
 
-                                    //-------------updating rest columns other than dbgbardet--//
+                                            //-------- for delete data from the temp tbl after insert in det----------------//
+                                            string DelQuerydet1 = "delete from temp_m_item_det WHERE item_id = ? and open_yn='N'";
 
+                                            using (OdbcCommand DelQuerydetcmd1 = new OdbcCommand(DelQuerydet1, dbConnector.connection))
+                                            {
+                                                DelQuerydetcmd1.Transaction = transaction;
+                                                DelQuerydetcmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                                DelQuerydetcmd1.ExecuteNonQuery();
+                                            }
 
-                                    if (selfrmtempdetread2.HasRows)
-                                    {
-                                        selfrmtempdetread2.Close();
-
-                                        DeTools.gstrSQL = "UPDATE temp_m_item_det SET item_desc = ?, Trans_status = ?, local_rate_yn = ?, mod_date = ?, mod_by = ? WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
-
-                                        selfrmtempdetcmd2.CommandText = DeTools.gstrSQL;
-
-                                        selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
-
-                                        selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("Trans_status", "N"));
-                                        selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                                        selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
-                                        selfrmtempdetcmd2.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
-
-
-                                        selfrmtempdetcmd2.ExecuteNonQuery();
-
-                                        //string delSQLdet = "Delete FROM m_item_det WHERE item_id = '" + txtItemId.Text.Trim() + "'; ";
-
-                                        //using (OdbcCommand delfrmdet1 = new OdbcCommand(delSQLdet, dbConnector.connection))
-                                        //{
-                                        //    delfrmdet1.ExecuteNonQuery();
-                                        //}
-
-                                        //-------------After updation complete insert into Main det tbl-------------//
-
-
-                                        string insertQuerydet1 = "INSERT INTO m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn, mod_date, mod_by) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn, mod_date, mod_by FROM temp_m_item_det WHERE item_id = ?";
-
-                                        using (OdbcCommand insertCmd2 = new OdbcCommand(insertQuerydet1, dbConnector.connection))
-                                        {
-                                            insertCmd2.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                            insertCmd2.ExecuteNonQuery();
                                         }
 
-
-                                        //---------for update N in temp det-----------------------------//
-
-                                        string UPDATEQuerydet1 = "Update temp_m_item_det set open_yn='N' WHERE item_id = ?";
-
-                                        using (OdbcCommand UPDATEQuerydetcmd1 = new OdbcCommand(UPDATEQuerydet1, dbConnector.connection))
-                                        {
-                                            UPDATEQuerydetcmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                            UPDATEQuerydetcmd1.ExecuteNonQuery();
-                                        }
-
-                                        //-------- for delete data from the temp tbl after insert in det----------------//
-                                        string DelQuerydet1 = "delete from temp_m_item_det WHERE item_id = ? and open_yn='N'";
-
-                                        using (OdbcCommand DelQuerydetcmd1 = new OdbcCommand(DelQuerydet1, dbConnector.connection))
-                                        {
-                                            DelQuerydetcmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                            DelQuerydetcmd1.ExecuteNonQuery();
-                                        }
 
                                     }
+                                }
+
+                            }
+                        }//--------------over code for updation now add//
+
+                        //ClearForm();
+                        //}
+
+                    }
+
+                    else if (mblnSearch == true)
+                    {
+                        // The record does not exist, so insert a new one
+                        reader.Close();
+                        if (chkItemid == "Y" && strMode != string.Empty && saveflag == true)
+                        {
+                            txtItemId.Text = General.GenMDocno("ITSN").ToString().Trim();
+                            if (txtItemId.Text.Length == 0)
+                            {
+                                txtItemId.Text = "";
+                                string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
+                                Messages.ErrorMsg(gstrMsg);
+                                saveflag = false;
+                            }
+
+                        }
+                        if (DeTools.CheckTemporaryTableExists("m_item_hdr") != null)
+                        {
+                            if (DeTools.CheckTemporaryTableExists("m_item_det") != null)
+                            {
+                                Cursor.Current = Cursors.WaitCursor;
+
+                                string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, open_yn, comp_name) VALUES" +
+                                        " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
+                                        " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
+                                        " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                OdbcCommand cmdd = new OdbcCommand(insert, dbConnector.connection);
+                                // cmd.Transaction = transaction;
+
+
+
+                                cmdd.CommandText = insert;
+
+                                cmdd.Transaction = transaction;
+                                cmdd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("short_desc", txtShDesc.Text.Trim()));
+                                string type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("item_type_id", type));
+
+                                string grp = cboGroup.SelectedItem != null ? cboGroup.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("group_id", grp));
+
+                                string sgrp = cboSGroup.SelectedItem != null ? cboSGroup.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("sub_group_id", sgrp));
+
+                                string ssgrp = cboSSGroupDesc.SelectedItem != null ? cboSSGroupDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("sub_sub_group_id", ssgrp));
+
+                                string size = cboSizeDesc.SelectedItem != null ? cboSizeDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("size_id", size));
+
+                                string color = cboColorDesc.SelectedItem != null ? cboColorDesc.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("color_id", color));
+
+                                cmdd.Parameters.Add(new OdbcParameter("style", txtStyle.Text.ToString().Trim()));
+
+                                string manuf = cboManuf.SelectedItem != null ? cboManuf.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("manuf_id", manuf));
+                                cmdd.Parameters.Add(new OdbcParameter("manuf_name", rotManuf.Text.ToString().Trim()));
+
+                                string purunit = cboPurUnit.SelectedItem != null ? cboPurUnit.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("pur_unit_id", purunit));
+
+                                string salunit = cboSaleUnit.SelectedItem != null ? cboSaleUnit.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("sale_unit_id", salunit));
+
+                                cmdd.Parameters.Add(new OdbcParameter("conv_pur_sale", txtConv.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("op_bal_unit", txtOpBal.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("min_level", txtMinLevel.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("re_order_level", txtReOLevel.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("max_level", txtMaxLevel.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("qty_decimal_yn", chkDecimal.Checked ? "Y" : "N"));
+                                cmdd.Parameters.Add(new OdbcParameter("decimal_upto", txtDecimalupto.Text.ToString().Trim()));
+
+                                string sltax = cboSaleTax.SelectedItem != null ? cboSaleTax.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("sale_tax_paid", sltax));
+
+                                cmdd.Parameters.Add(new OdbcParameter("cost_price", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()) ? "" : dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("mrp", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()) ? "" : dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("sale_price", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()) ? "" : dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("bar_yn", chkBarYN.Checked ? "Y" : "N"));
+                                cmdd.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
+                                cmdd.Parameters.Add(new OdbcParameter("status", "V"));
+                                cmdd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                                cmdd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                                cmdd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
+
+                                string loc = cboLoc.SelectedItem != null ? cboLoc.SelectedItem.ToString().Trim() : string.Empty;
+                                cmdd.Parameters.Add(new OdbcParameter("loc_id", loc));
+
+                                cmdd.Parameters.Add(new OdbcParameter("lt", txtLT.ToString().Trim()));// Required frequency
+                                cmdd.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("disc_per", txtDisc.Text.ToString().Trim()));
+                                cmdd.Parameters.Add(new OdbcParameter("HSN_CODE", txtHSN.Text.ToString().Trim()));
+
+                                string cessValue = string.IsNullOrEmpty(txtCess.Text) ? "0.00" : txtCess.Text.ToString().Trim();
+                                string excisperc = string.IsNullOrEmpty(txtexisper.Text) ? "0.00" : txtexisper.Text.ToString().Trim();
+
+                                cmdd.Parameters.Add(new OdbcParameter("cess_perc", cessValue));
+                                cmdd.Parameters.Add(new OdbcParameter("excis_perc", excisperc));
+                                cmdd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
+                                string barCodeValue = dbgBarDet.Rows[0].Cells[1].Value?.ToString().Trim();
+                                cmdd.Parameters.Add(new OdbcParameter("bar_code", string.IsNullOrEmpty(barCodeValue) ? "" : barCodeValue));
+                                cmdd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
+                                cmdd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                                cmdd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+
+                                cmdd.ExecuteNonQuery();
+                                //transaction.Commit();
+
+                                //DeTools.SelectDataFromTemporaryTable("m_group");
+                                reader.Close();
+
+                                // Specify the columns explicitly in the SELECT statement
+                                string insertQuery = "INSERT INTO m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                    "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
+                                    "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn FROM temp_m_item_hdr WHERE item_id = ?";
+
+
+                                using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
+                                {
+                                    insertCmd.Transaction = transaction;
+                                    insertCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                    insertCmd.ExecuteNonQuery();
 
 
                                 }
-                            }
 
-                        }
-                    }//--------------over code for updation now add//
+                                //-------------------------------Hdr end done-----------------------//
 
-                    //ClearForm();
-                    //}
 
-                }
+                                string inserttempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price," +
+                                    " mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn, open_yn," +
+                                    " comp_name) VALUES" +
+                                   " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                                OdbcCommand cmddet = new OdbcCommand(inserttempdet, dbConnector.connection);
 
-                else if (mblnSearch == true)
-                {
-                    // The record does not exist, so insert a new one
-                    reader.Close();
-                    if (chkItemid == "Y" && strMode != string.Empty && saveflag == true)
-                    {
-                        txtItemId.Text = General.GenMDocno("ITSN").ToString().Trim();
-                        if (txtItemId.Text.Length == 0)
-                        {
-                            txtItemId.Text = "";
-                            string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
-                            Messages.ErrorMsg(gstrMsg);
-                            saveflag = false;
-                        }
+                                // Uncomment the following line if you want to use a transaction
+                                // cmd.Transaction = transaction;
 
+                                cmddet.CommandText = inserttempdet;
+                                cmddet.Transaction = transaction;
+                                cmddet.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
+                                cmddet.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
+                                string barCodeValue1 = dbgBarDet.Rows[0].Cells[1].Value == null ? "" : dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim();
+                                cmddet.Parameters.Add(new OdbcParameter("bar_code", string.IsNullOrEmpty(barCodeValue1) ? "" : barCodeValue1));
+
+                                cmddet.Parameters.Add(new OdbcParameter("plu", txtItemId.Text.Trim() + dbgBarDet.Rows[0].Cells[0].Value.ToString().Trim()));
+                                cmddet.Parameters.Add(new OdbcParameter("cost_price", dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
+                                cmddet.Parameters.Add(new OdbcParameter("mrp", dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
+                                cmddet.Parameters.Add(new OdbcParameter("sale_price", dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
+                                //string activeyn_val = dbgBarDet.Rows[0].Cells[7].Value.ToString().Trim() == "true" ? "Y" : "N";
+                                cmddet.Parameters.Add(new OdbcParameter("active_yn", activeyn_val));
+                                cmddet.Parameters.Add(new OdbcParameter("Trans_status", "N"));
+                                cmddet.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
+                                cmddet.Parameters.Add(new OdbcParameter("margin_per", dbgBarDet.Rows[0].Cells[6].Value.ToString().Trim()));
+                                cmddet.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
+                                cmddet.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                                cmddet.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+
+                                //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+                                cmddet.ExecuteNonQuery();
+                                // transaction.Commit();
+
+                                //DeTools.SelectDataFromTemporaryTable("m_group");
+                                reader.Close();
+
+                                // Specify the columns explicitly in the SELECT statement
+                                string insertQuerydet = "INSERT INTO m_item_det (item_id, item_desc, bar_code, plu, cost_price," +
+                                    " mrp,sale_price, active_yn, Trans_status, net_rate,margin_per, local_rate_yn) SELECT item_id, item_desc," +
+                                    " bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per," +
+                                    " local_rate_yn FROM temp_m_item_det WHERE item_id = ?";
+
+                                using (OdbcCommand insertCmd1 = new OdbcCommand(insertQuerydet, dbConnector.connection))
+                                {
+                                    insertCmd1.Transaction = transaction;
+                                    insertCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
+                                    insertCmd1.ExecuteNonQuery();
+                                }
+                                //Messages.SavingMsg();
+                                //Cursor.Current = Cursors.Default;
+
+                                string quer1 = "update temp_m_item_hdr set open_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "' order by ent_on desc ";
+                                using (OdbcCommand qurCmd = new OdbcCommand(quer1, dbConnector.connection))
+                                {
+                                    qurCmd.Transaction = transaction;
+                                    qurCmd.ExecuteNonQuery();
+                                }
+                                string quer2 = "update temp_m_item_det set open_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "'";
+                                using (OdbcCommand qur2Cmd = new OdbcCommand(quer2, dbConnector.connection))
+                                {
+                                    qur2Cmd.Transaction = transaction;
+                                    qur2Cmd.ExecuteNonQuery();
+                                }
+
+                                string querDEL1 = "delete from temp_m_item_hdr where item_id='" + txtItemId.Text.ToString().Trim() + "' and open_yn='N'";
+                                using (OdbcCommand qurdelCmd = new OdbcCommand(querDEL1, dbConnector.connection))
+                                {
+                                    qurdelCmd.Transaction = transaction;
+                                    qurdelCmd.ExecuteNonQuery();
+                                }
+                                string querDEL2 = "delete from temp_m_item_det where item_id='" + txtItemId.Text.ToString().Trim() + "' and open_yn='N'";
+                                using (OdbcCommand qurdel2Cmd = new OdbcCommand(querDEL2, dbConnector.connection))
+                                {
+                                    qurdel2Cmd.Transaction = transaction;
+                                    qurdel2Cmd.ExecuteNonQuery();
+                                }
+                            }//--------end of CheckTemporaryTableExists("m_item_det")--//
+
+
+                        }//-----end of CheckTemporaryTableExists("m_item_hdr")----//
                     }
-                    if (DeTools.CheckTemporaryTableExists("m_item_hdr") != null)
-                    {
-                        if (DeTools.CheckTemporaryTableExists("m_item_det") != null)
-                        {
-                            Cursor.Current = Cursors.WaitCursor;
-
-                            string insert = "INSERT INTO temp_m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per,    HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn, open_yn, comp_name) VALUES" +
-                                    " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
-                                    " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?," +
-                                    " ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                            OdbcCommand cmdd = new OdbcCommand(insert, dbConnector.connection);
-                            // cmd.Transaction = transaction;
-
-
-
-                            cmdd.CommandText = insert;
-
-                            cmdd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("short_desc", txtShDesc.Text.Trim()));
-                            string type = cboType.SelectedItem != null ? cboType.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("item_type_id", type));
-
-                            string grp = cboGroup.SelectedItem != null ? cboGroup.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("group_id", grp));
-
-                            string sgrp = cboSGroup.SelectedItem != null ? cboSGroup.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("sub_group_id", sgrp));
-
-                            string ssgrp = cboSSGroupDesc.SelectedItem != null ? cboSSGroupDesc.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("sub_sub_group_id", ssgrp));
-
-                            string size = cboSizeDesc.SelectedItem != null ? cboSizeDesc.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("size_id", size));
-
-                            string color = cboColorDesc.SelectedItem != null ? cboColorDesc.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("color_id", color));
-
-                            cmdd.Parameters.Add(new OdbcParameter("style", txtStyle.Text.ToString().Trim()));
-
-                            string manuf = cboManuf.SelectedItem != null ? cboManuf.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("manuf_id", manuf));
-                            cmdd.Parameters.Add(new OdbcParameter("manuf_name", rotManuf.Text.ToString().Trim()));
-
-                            string purunit = cboPurUnit.SelectedItem != null ? cboPurUnit.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("pur_unit_id", purunit));
-
-                            string salunit = cboSaleUnit.SelectedItem != null ? cboSaleUnit.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("sale_unit_id", salunit));
-
-                            cmdd.Parameters.Add(new OdbcParameter("conv_pur_sale", txtConv.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("op_bal_unit", txtOpBal.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("min_level", txtMinLevel.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("re_order_level", txtReOLevel.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("max_level", txtMaxLevel.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("qty_decimal_yn", chkDecimal.Checked ? "Y" : "N"));
-                            cmdd.Parameters.Add(new OdbcParameter("decimal_upto", txtDecimalupto.Text.ToString().Trim()));
-
-                            string sltax = cboSaleTax.SelectedItem != null ? cboSaleTax.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("sale_tax_paid", sltax));
-
-                            cmdd.Parameters.Add(new OdbcParameter("cost_price", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim())?"": dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("mrp", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim())?"": dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("sale_price", string.IsNullOrEmpty(dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim())?"": dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("bar_yn", chkBarYN.Checked ? "Y" : "N"));
-                            cmdd.Parameters.Add(new OdbcParameter("active_yn", chkAct.Checked ? "Y" : "N"));
-                            cmdd.Parameters.Add(new OdbcParameter("status", "V"));
-                            cmdd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                            cmdd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                            cmdd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
-
-                            string loc = cboLoc.SelectedItem != null ? cboLoc.SelectedItem.ToString().Trim() : string.Empty;
-                            cmdd.Parameters.Add(new OdbcParameter("loc_id", loc));
-
-                            cmdd.Parameters.Add(new OdbcParameter("lt", txtLT.ToString().Trim()));// Required frequency
-                            cmdd.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("disc_per", txtDisc.Text.ToString().Trim()));
-                            cmdd.Parameters.Add(new OdbcParameter("HSN_CODE", txtHSN.Text.ToString().Trim()));
-
-                            string cessValue = string.IsNullOrEmpty(txtCess.Text) ? "0.00" : txtCess.Text.ToString().Trim();
-                            string excisperc = string.IsNullOrEmpty(txtexisper.Text) ? "0.00" : txtexisper.Text.ToString().Trim();
-
-                            cmdd.Parameters.Add(new OdbcParameter("cess_perc", cessValue));
-                            cmdd.Parameters.Add(new OdbcParameter("excis_perc", excisperc));
-                            cmdd.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                            string barCodeValue = dbgBarDet.Rows[0].Cells[1].Value?.ToString().Trim();
-                            cmdd.Parameters.Add(new OdbcParameter("bar_code", string.IsNullOrEmpty(barCodeValue) ? "" : barCodeValue));
-                            cmdd.Parameters.Add(new OdbcParameter("disc_yn", chkNodisc.Checked ? "N" : "Y"));
-                            cmdd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                            cmdd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-
-
-                            cmdd.ExecuteNonQuery();
-                            //transaction.Commit();
-
-                            //DeTools.SelectDataFromTemporaryTable("m_group");
-                            reader.Close();
-
-                            // Specify the columns explicitly in the SELECT statement
-                            string insertQuery = "INSERT INTO m_item_hdr (item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn) SELECT item_id, item_desc, short_desc, item_type_id, group_id, sub_group_id, sub_sub_group_id,size_id, color_id, style, manuf_id, manuf_name, pur_unit_id, sale_unit_id, conv_pur_sale, op_bal_unit, min_level, re_order_level, max_level, qty_decimal_yn, decimal_upto, sale_tax_paid, cost_price, mrp,     sale_price, bar_yn, active_yn, status, ent_on, ent_by, Trans_status, loc_id, lt, net_rate, disc_per," +
-                                "HSN_CODE, cess_perc, excis_perc, local_rate_yn, bar_code, disc_yn FROM temp_m_item_hdr WHERE item_id = ?";
-
-
-                            using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
-                            {
-                                insertCmd.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                insertCmd.ExecuteNonQuery();
-
-
-                            }
-
-                            //-------------------------------Hdr end done-----------------------//
-
-
-                            string inserttempdet = "INSERT INTO temp_m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn, open_yn, comp_name) VALUES" +
-                               " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                            OdbcCommand cmddet = new OdbcCommand(inserttempdet, dbConnector.connection);
-
-                            // Uncomment the following line if you want to use a transaction
-                            // cmd.Transaction = transaction;
-
-                            cmddet.CommandText = inserttempdet;
-                            cmddet.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("item_desc", txtItemDesc.Text.Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("bar_code", dbgBarDet.Rows[0].Cells[1].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("plu", txtItemId.Text.Trim() + dbgBarDet.Rows[0].Cells[0].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("cost_price", dbgBarDet.Rows[0].Cells[2].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("mrp", dbgBarDet.Rows[0].Cells[3].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("sale_price", dbgBarDet.Rows[0].Cells[4].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("active_yn", dbgBarDet.Rows[0].Cells[7].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("Trans_status", "N"));
-                            cmddet.Parameters.Add(new OdbcParameter("net_rate", dbgBarDet.Rows[0].Cells[5].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("margin_per", dbgBarDet.Rows[0].Cells[6].Value.ToString().Trim()));
-                            cmddet.Parameters.Add(new OdbcParameter("local_rate_yn", "N")); //todo -its for rate can't be change when there will be transfer in.
-                            cmddet.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                            cmddet.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-
-                            //cmd.Parameters.Add(new OdbcParameter("status", "V"));
-
-                            cmddet.ExecuteNonQuery();
-                            // transaction.Commit();
-
-                            //DeTools.SelectDataFromTemporaryTable("m_group");
-                            reader.Close();
-
-                            // Specify the columns explicitly in the SELECT statement
-                            string insertQuerydet = "INSERT INTO m_item_det (item_id, item_desc, bar_code, plu, cost_price, mrp,sale_price, active_yn, Trans_status, net_rate, local_rate_yn) SELECT item_id, item_desc, bar_code,plu, cost_price, mrp, sale_price, active_yn, Trans_status, net_rate, margin_per, local_rate_yn FROM temp_m_item_det WHERE item_id = ?";
-
-                            using (OdbcCommand insertCmd1 = new OdbcCommand(insertQuerydet, dbConnector.connection))
-                            {
-                                insertCmd1.Parameters.Add(new OdbcParameter("item_id", txtItemId.Text.ToString().Trim()));
-                                insertCmd1.ExecuteNonQuery();
-                            }
-                            Messages.SavingMsg();
-                            Cursor.Current = Cursors.Default;
-
-                            string quer1 = "update temp_m_item_hdr set open_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "' order by ent_on desc ";
-                            using (OdbcCommand qurCmd = new OdbcCommand(quer1, dbConnector.connection))
-                            {
-                                qurCmd.ExecuteNonQuery();
-                            }
-                            string quer2 = "update temp_m_item_det set open_yn='N' where item_id='" + txtItemId.Text.ToString().Trim() + "'";
-                            using (OdbcCommand qur2Cmd = new OdbcCommand(quer2, dbConnector.connection))
-                            {
-                                qur2Cmd.ExecuteNonQuery();
-                            }
-                        }//--------end of CheckTemporaryTableExists("m_item_det")--//
-
-
-                    }//-----end of CheckTemporaryTableExists("m_item_hdr")----//
                 }
-
-                Messages.SavedMsg();
-                dbConnector.connection.Close();
+                transaction.Commit();
+                //Messages.SavedMsg();
+                //dbConnector.connection.Close();
 
 
             }
             catch (Exception ex)
             {
-
-                Messages msg = new Messages();
-                msg.VBError(ex, this.Name, "Save Form", null);
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                MessageBox.Show(" Item Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+            finally
+            {
+                if (dbConnector.connection != null && dbConnector.connection.State == ConnectionState.Open)
+                {
+                    dbConnector.connection.Close();
+                }
+                Cursor.Current = Cursors.Default;
 
+                Messages.SavedMsg();
+            }
         }
 
         public void SearchForm()
@@ -1629,7 +1539,10 @@ namespace softgen
 
             this.Resize += frmM_Item_Resize;
             this.Deactivate += frmM_Item_Deactivate;
+            dbgBarDet.CurrentCellChanged += new EventHandler(dbgBarDet_CurrentCellChanged);
 
+            dbgBarDet.CellValueChanged += new DataGridViewCellEventHandler(dbgBarDet_CellValueChanged);
+            dbgBarDet.CurrentCellDirtyStateChanged += new EventHandler(dbgBarDet_CurrentCellDirtyStateChanged);
         }
 
         //////Set Text On Form ///////////////////////
@@ -2115,14 +2028,14 @@ namespace softgen
                 //}
             }
 
-            else if (e.ColumnIndex == activeColIndex)
-            {
-                if (dbgBarDet.Rows[e.RowIndex].Cells[7].Value?.ToString() != "Y")
-                {
-                    MessageBox.Show("Pls Check for Active the Item!", "Validation Message", MessageBoxButtons.OK);
-                }
+            //else if (e.ColumnIndex == activeColIndex)
+            //{
+            //    if (dbgBarDet.Rows[e.RowIndex].Cells[7].Value?.ToString() != "Y")
+            //    {
+            //        MessageBox.Show("Pls Check for Active the Item!", "Validation Message", MessageBoxButtons.OK);
+            //    }
 
-            }
+            //}
 
 
 
@@ -2144,6 +2057,22 @@ namespace softgen
             //    // Format the input to display two decimal places
             //    cell.Value = result.ToString("0.00");
             //}
+
+            // Check if the edited cell is the specific cell you are interested in (cell index 4)
+            if (e.ColumnIndex == 4 && e.RowIndex >= 0)
+            {
+                var cellValue = dbgBarDet.Rows[e.RowIndex].Cells[4].Value;
+                var checkboxValue = dbgBarDet.Rows[e.RowIndex].Cells[7].Value;
+
+                // Check if the specific cell has a value and the checkbox is not checked
+                if (cellValue != null && !string.IsNullOrWhiteSpace(cellValue.ToString()))
+                {
+                    if (checkboxValue == null || !Convert.ToBoolean(checkboxValue))
+                    {
+                        MessageBox.Show("Pls Check for Active the Item!", "Validation Message", MessageBoxButtons.OK);
+                    }
+                }
+            }
         }
 
         private void ValidateCellValues(int rowIndex, int columnIndex)
@@ -2455,6 +2384,7 @@ namespace softgen
                     }
 
 
+
                 }
 
                 //else if (e.ColumnIndex == barcodeColIndex)
@@ -2519,7 +2449,23 @@ namespace softgen
 
         private void dbgBarDet_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.RowIndex >= 0 && e.ColumnIndex == 7 && dbgBarDet.RowCount > 1)
+            {
+                if (dbgBarDet.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn)
+                {
+                    // Ensure the cell is not null and the value can be converted to boolean
+                    var cellValue = dbgBarDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                    if (cellValue != null)
+                    {
+                        bool isChecked = Convert.ToBoolean(cellValue);
 
+                        // Do something with isChecked
+                        activeyn_val = isChecked ? "Y" : "N";
+
+                    }
+
+                }
+            }
         }
 
         private void frmM_Item_FormClosing(object sender, FormClosingEventArgs e)
@@ -2751,7 +2697,28 @@ namespace softgen
             // UpdateToolbarVisibility();
         }
 
+        private void dbgBarDet_CurrentCellChanged(object sender, EventArgs e)
+        {
+            if (dbgBarDet.CurrentCell is DataGridViewCheckBoxCell)
+            {
+                // Access the current cell
+                DataGridViewCheckBoxCell cell = dbgBarDet.CurrentCell as DataGridViewCheckBoxCell;
 
+                if (cell != null && !Convert.ToBoolean(cell.Value)) // Check if the value is false
+                {
+                    cell.Value = true; // Set the value to true
+                    dbgBarDet.EndEdit(); // Commit the change to the data source
+                }
+            }
+        }
+
+        private void dbgBarDet_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        {
+            if (dbgBarDet.IsCurrentCellDirty)
+            {
+                dbgBarDet.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            }
+        }
     }///////////////////////End
 
 }

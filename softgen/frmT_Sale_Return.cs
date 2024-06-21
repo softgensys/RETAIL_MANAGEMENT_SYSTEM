@@ -261,7 +261,8 @@ namespace softgen
                             {
                                 if (cboInvNo.SelectedItem != null && !string.IsNullOrEmpty(cboInvNo.SelectedItem.ToString().Trim()))
                                 {
-                                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", string.IsNullOrEmpty(cboInvNo.SelectedItem.ToString().Trim())));
+                                    string invoiceNo = cboInvNo.SelectedItem.ToString().Trim();
+                                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", invoiceNo));
                                 }
                             }
                             else

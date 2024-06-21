@@ -109,46 +109,10 @@ namespace softgen
             DataTable dataTable = new DataTable();
             frmR_invoice_wise_sale_rpt invoice_Wise_Sale_Rpt = new frmR_invoice_wise_sale_rpt();
 
-            //// Create an instance of your database connector
-            //DbConnector dbConnector = new DbConnector();
-            //dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
-
+            
             try
             {
-                //// Open the database connection
-                //dbConnector.connection.Open();                
-                //string formattedFDate = invoice_Wise_Sale_Rpt.GetFormattedFDate();
-                //string formattedTDate = invoice_Wise_Sale_Rpt.GetFormattedTDate();
-                //// Define your SQL query (stored procedure)
-                //string gstrSQL = "{ CALL r_invoice_sale(?,?,?) }";
-
-                //// Create a command to execute the stored procedure
-                //using (OdbcCommand command = new OdbcCommand(gstrSQL, dbConnector.connection))
-                //{
-                //    command.CommandType = CommandType.StoredProcedure;
-
-                //    // Add parameters to the stored procedure
-                //    command.Parameters.Add(new OdbcParameter("F_Date", OdbcType.VarChar)).Value = formattedFDate;
-                //    command.Parameters.Add(new OdbcParameter("T_Date", OdbcType.VarChar)).Value = formattedTDate;
-                //    if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "Y")
-                //    {
-                //        command.Parameters.Add(new OdbcParameter("PayMode", OdbcType.VarChar)).Value = invoice_Wise_Sale_Rpt.selectedPaymItem.Trim();
-
-                //    }
-                //    else if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "N")
-                //    {
-                //        command.Parameters.Add(new OdbcParameter("PayMode", OdbcType.VarChar)).Value = "";
-                //    }
-
-                //    // Execute the command and fill the DataTable
-                //    using (OdbcDataAdapter adapter = new OdbcDataAdapter(command))
-                //    {
-                //        adapter.Fill(dataTable);
-                //    }
-                //}
-
-                //// Set the processing mode for the ReportViewer to Local
-                //invwisesalerpt.ProcessingMode = ProcessingMode.Local;
+               
 
                 // Construct the path of the rdlc file dynamically
                 if (frmR_invoice_wise_sale_rpt.Paymchecked_yn == "Y" || !string.IsNullOrEmpty(frmR_invoice_wise_sale_rpt.selectedPaymItem.ToString().Trim()))

@@ -1032,6 +1032,30 @@ namespace softgen
                             mobjbutton.TextImageRelation = TextImageRelation.Overlay;
                             mobjToolbar.Items.Add(mobjbutton);
 
+                            // Attach a click event handler for the button
+                            mobjbutton.Click += (sender, e) =>
+                            {
+                                Messages.gstrMsg = "Do you want to exit without saving the changes?";
+                                if (searchableForm.GetDEStatus() == true)
+                                {
+                                    if (MessageBox.Show(Messages.gstrMsg, null, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                                    {
+                                        return;
+                                    }
+                                }
+                                if (gobjActiveForm.Name == "frmT_Invoice" && GetMode(gobjActiveForm) == ADDMODE)
+                                {
+                                    // gobjActiveForm.SaveTempDataForm();
+                                }
+
+                                gobjActiveForm.Text = RestoreCaption(gobjActiveForm);
+                                DestroyToolbar(gobjActiveForm);
+                                CreateToolbar(gobjActiveForm, strOptions);
+                                ActivateForm(gobjActiveForm, false, null);
+                                //    gobjActiveForm.Icon = mdiMain.Icon;
+                                ClearStatusBarHelp();
+                            };
+
                             CreateButton(mobjToolbar, "Help", "Help Information");
 
                             if (gobjActiveForm.Name == "frmM_Item")

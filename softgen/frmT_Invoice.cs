@@ -1,6 +1,7 @@
 ﻿using Microsoft.ReportingServices.Diagnostics.Internal;
 using System.Data;
 using System.Data.Odbc;
+using System.Transactions;
 
 namespace softgen
 {
@@ -55,6 +56,9 @@ namespace softgen
         public static bool fields_disable = true;
         public static bool dbgItemdet_disable = true;
         public static bool chkInvNo = true;
+        public static bool resetcntrl_inUpdateform= false;
+        public static bool resetcntrl_inAddform= false;
+
 
 
         public frmT_Invoice()
@@ -382,28 +386,136 @@ namespace softgen
 
         public void ResetControls(Control.ControlCollection controls)
         {
-            foreach (Control control in controls)
+            
+            
+            if (resetcntrl_inAddform == true)
             {
-                // Check if the control is a TextBox and its ID starts with "txt"
-                if (control is System.Windows.Forms.TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                foreach (Control control in controls)
                 {
-                    System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
+                    // Check if the control is a TextBox and its ID starts with "txt"
+                    if (control is System.Windows.Forms.TextBox && control.Name != null && control.Name.StartsWith("txt") && control.Name != "txtInvNo")
+                    {
+                        System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
 
-                    // Reset the value
-                    textBox.Text = "";
+                        // Reset the value
+                        textBox.Text = "";
 
-                    // Enable the TextBox
-                    textBox.Enabled = true;
-                }
+                        // Enable the TextBox
+                        textBox.Enabled = true;
+                    }
 
-                // Recursively call the method for nested controls
-                if (control.Controls.Count > 0)
-                {
-                    ResetControls(control.Controls);
+                    // Recursively call the method for nested controls
+                    if (control.Controls.Count > 0)
+                    {
+                        ResetControls(control.Controls);
+                    }
+
+                    if (control is System.Windows.Forms.ComboBox && control.Name != null && control.Name.StartsWith("cbo"))
+                    {
+                        System.Windows.Forms.ComboBox cboBox = (System.Windows.Forms.ComboBox)control;
+
+                        // Reset the value
+                        cboBox.Text = "";
+
+                        // Enable the TextBox
+                        cboBox.Enabled = true;
+                    }
+
+                    if (control is Label && control.Name != null && control.Name.StartsWith("rot"))
+                    {
+                        Label lbl = (Label)control;
+                        lbl.Text = "";
+                        //textBox.Enabled = true;
+                    }
+
+
+                    //if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg"))
+                    //{
+                    //    DataGridView dataGridView = (DataGridView)control;
+
+                    //    // Clear existing rows
+                    //    dataGridView.Rows.Clear();
+                    //    if (dataGridView.AllowUserToAddRows)
+                    //    {
+                    //        dataGridView.Rows.Add();
+
+                    //    }
+
+
+                    //    // Reset any other DataGridView-specific properties or settings as needed
+                    //}
+
+                    // Recursively call the method for nested controls
+                    if (control.Controls.Count > 0)
+                    {
+                        ResetControls(control.Controls);
+                    }
+
+
                 }
             }
+            else
+            {
+                foreach (Control control in controls)
+                {
+                    // Check if the control is a TextBox and its ID starts with "txt"
+                    if (control is System.Windows.Forms.TextBox && control.Name != null && control.Name.StartsWith("txt") && control.Name != "txtInvNo")
+                    {
+                        System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
+
+                        // Reset the value
+                        textBox.Text = "";
+
+                        // Enable the TextBox
+                        textBox.Enabled = true;
+                    }
+
+                    // Recursively call the method for nested controls
+                    if (control.Controls.Count > 0)
+                    {
+                        ResetControls(control.Controls);
+                    }
+
+                    if (control is System.Windows.Forms.ComboBox && control.Name != null && control.Name.StartsWith("cbo"))
+                    {
+                        System.Windows.Forms.ComboBox cboBox = (System.Windows.Forms.ComboBox)control;
+
+                        // Reset the value
+                        cboBox.Text = "";
+
+                        // Enable the TextBox
+                        cboBox.Enabled = true;
+                    }
+
+                    if (control is Label && control.Name != null && control.Name.StartsWith("rot"))
+                    {
+                        Label lbl = (Label)control;
+                        lbl.Text = "";
+                        //textBox.Enabled = true;
+                    }
 
 
+                    //if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg"))
+                    //{
+                    //    DataGridView dataGridView = (DataGridView)control;
+
+                    //    // Clear existing rows
+                    //    dataGridView.Rows.Clear();
+
+
+                    //    // Reset any other DataGridView-specific properties or settings as needed
+                    //}
+
+                    // Recursively call the method for nested controls
+                    if (control.Controls.Count > 0)
+                    {
+                        ResetControls(control.Controls);
+                    }
+
+
+                }
+
+            }
         }
         
         public void ControlsForModify(Control.ControlCollection controls)
@@ -433,541 +545,626 @@ namespace softgen
 
         public void UpdateInSaveForm()
         {
+            OdbcTransaction transaction = null;
             // Create the SQL query to fetch the required data
-            DeTools.gstrSQL = "SELECT a.*, b.*, c.* FROM t_invoice_det a " +
-                              "JOIN t_invoice_hdr b ON a.invoice_no = b.invoice_no " +
-                              "JOIN t_invoice_pay_det c ON a.invoice_no = c.invoice_no " +
-                              "WHERE a.invoice_no = ? " +
-                              "AND b.invoice_no = ? " +
-                              "AND c.invoice_no = ? LIMIT 1;";
-
-            using (OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection))
+            try
             {
-                cmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                cmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                cmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+
+
                 dbConnector.connection.Open();
+                transaction = dbConnector.connection.BeginTransaction();
 
-                using (OdbcDataReader reader = cmd.ExecuteReader())
+                DeTools.gstrSQL = "SELECT a.*, b.*, c.* FROM t_invoice_det a " +
+                                  "JOIN t_invoice_hdr b ON a.invoice_no = b.invoice_no " +
+                                  "JOIN t_invoice_pay_det c ON a.invoice_no = c.invoice_no " +
+                                  "WHERE a.invoice_no = ? " +
+                                  "AND b.invoice_no = ? " +
+                                  "AND c.invoice_no = ? LIMIT 1;";
+
+                using (OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection))
                 {
-                    blnItem_H = true;
-                    string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
-                    string machine_name = DeTools.fOSMachineName.GetMachineName();
+                    cmd.Transaction = transaction;
+                    cmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                    cmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                    cmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
 
-                    // Check if the record with the specified Group_id exists
-                    if (DeTools.GetMode(this) == DeTools.MODIFYMODE)
+
+                    using (OdbcDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader.HasRows)
+                        blnItem_H = true;
+                        string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
+                        string machine_name = DeTools.fOSMachineName.GetMachineName();
+
+                        // Check if the record with the specified Group_id exists
+                        if (DeTools.GetMode(this) == DeTools.MODIFYMODE)
                         {
-                            if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") &&
-                                DeTools.CheckTemporaryTableExists("t_invoice_det") &&
-                                DeTools.CheckTemporaryTableExists("t_invoice_pay_det"))
+                            if (reader.HasRows)
                             {
-                                reader.Close();
-                                Cursor.Current = Cursors.WaitCursor;
-
-                                // Insert into temp_t_invoice_hdr
-                                string gstrSQL1 = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname," +
-                                    " custaddress, gross_amt, xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, " +
-                                    "net_amt, cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME, machine_id_m," +
-                                    " veh_no, po_no, open_yn, comp_name, mod_date, mod_by) " +
-                                                  "SELECT invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt," +
-                                                  " xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt," +
-                                                  " cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME, machine_id_m," +
-                                                  " veh_no, po_no, 'Y' AS open_yn, ? AS comp_name, mod_date, mod_by FROM t_invoice_hdr WHERE invoice_no = ?;";
-
-                                using (OdbcCommand insertintotemphdr1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
+                                if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") &&
+                                    DeTools.CheckTemporaryTableExists("t_invoice_det") &&
+                                    DeTools.CheckTemporaryTableExists("t_invoice_pay_det"))
                                 {
-                                    insertintotemphdr1.Parameters.Add(new OdbcParameter("comp_name", machine_name));
-                                    insertintotemphdr1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    insertintotemphdr1.ExecuteNonQuery();
-                                }
+                                    reader.Close();
+                                    Cursor.Current = Cursors.WaitCursor;
 
-                                // Check if data was inserted into temp table
-                                string gstrSQL2 = "SELECT * FROM temp_t_invoice_hdr WHERE invoice_no = ? AND open_yn = 'Y'";
-                                using (OdbcCommand selectintemp1 = new OdbcCommand(gstrSQL2, dbConnector.connection))
-                                {
-                                    selectintemp1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    using (OdbcDataReader selectread = selectintemp1.ExecuteReader())
+                                    // Insert into temp_t_invoice_hdr
+                                    string gstrSQL1 = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname," +
+                                        " custaddress, gross_amt, xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, " +
+                                        "net_amt, cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME, machine_id_m," +
+                                        " veh_no, po_no, open_yn, comp_name, mod_date, mod_by) " +
+                                                      "SELECT invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt," +
+                                                      " xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt," +
+                                                      " cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME, machine_id_m," +
+                                                      " veh_no, po_no, 'Y' AS open_yn, ? AS comp_name, mod_date, mod_by FROM t_invoice_hdr WHERE invoice_no = ?;";
+
+                                    using (OdbcCommand insertintotemphdr1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
                                     {
-                                        if (selectread.HasRows)
-                                        {
-                                            // Delete from main table
-                                            string delSQL = "DELETE FROM t_invoice_hdr WHERE invoice_no = ?; ";
-                                            using (OdbcCommand delfrmhdr1 = new OdbcCommand(delSQL, dbConnector.connection))
-                                            {
-                                                delfrmhdr1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                delfrmhdr1.ExecuteNonQuery();
-                                            }
-                                        }
+                                        insertintotemphdr1.Transaction = transaction;
+                                        insertintotemphdr1.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+                                        insertintotemphdr1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        insertintotemphdr1.ExecuteNonQuery();
                                     }
-                                }
 
-                                // Insert into temp_t_invoice_det
-                                string gstrSQLdet = "INSERT INTO temp_t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp," +
-                                    " sale_price, disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc," +
-                                    " cess_amt, excis_perc, excis_amt, group_id, mod_date, mod_by, open_yn, comp_name) " +
-                                                    "SELECT invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, disc_per, disc_amt," +
-                                                    " sale_tax_per, sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc, cess_amt, excis_perc," +
-                                                    " excis_amt, group_id, mod_date, mod_by, 'Y' AS open_yn, ? AS comp_name FROM t_invoice_det WHERE invoice_no = ?;";
-
-                                using (OdbcCommand insertintotempdet1 = new OdbcCommand(gstrSQLdet, dbConnector.connection))
-                                {
-                                    insertintotempdet1.Parameters.Add(new OdbcParameter("comp_name", machine_name));
-                                    insertintotempdet1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    insertintotempdet1.ExecuteNonQuery();
-                                }
-
-                                // Check if data was inserted into temp table
-                                string gstrSQLdet2 = "SELECT * FROM temp_t_invoice_det WHERE invoice_no = ? AND open_yn = 'Y'";
-                                using (OdbcCommand selectintempdet1 = new OdbcCommand(gstrSQLdet2, dbConnector.connection))
-                                {
-                                    selectintempdet1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    using (OdbcDataReader selectdetread = selectintempdet1.ExecuteReader())
+                                    // Check if data was inserted into temp table
+                                    string gstrSQL2 = "SELECT * FROM temp_t_invoice_hdr WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand selectintemp1 = new OdbcCommand(gstrSQL2, dbConnector.connection))
                                     {
-                                        if (selectdetread.HasRows)
+                                        selectintemp1.Transaction = transaction;
+                                        selectintemp1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        using (OdbcDataReader selectread = selectintemp1.ExecuteReader())
                                         {
-                                            // Delete from main table
-                                            string delSQLdet = "DELETE FROM t_invoice_det WHERE invoice_no = ?; ";
-                                            using (OdbcCommand delfrmdet1 = new OdbcCommand(delSQLdet, dbConnector.connection))
+                                            if (selectread.HasRows)
                                             {
-                                                delfrmdet1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                delfrmdet1.ExecuteNonQuery();
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Fetch and update temp_t_invoice_hdr
-                                string gstrSql3 = "SELECT * FROM temp_t_invoice_hdr WHERE invoice_no = ? AND open_yn = 'Y'";
-                                using (OdbcCommand fetchtempdata1 = new OdbcCommand(gstrSql3, dbConnector.connection))
-                                {
-                                    fetchtempdata1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    using (OdbcDataReader fetchread = fetchtempdata1.ExecuteReader())
-                                    {
-                                        if (fetchread.HasRows)
-                                        {
-                                            fetchread.Read();
-                                            string org_amt = fetchread["net_amt_after_disc"].ToString().Trim();
-                                            string updatehdr = "UPDATE temp_t_invoice_hdr SET branch_id=?, cust_id=?, sm_id=?, custname=?, custaddress=?, gross_amt=?," +
-                                                " xmode='M', disc_per=?, disc_amt=?, oth_amt=?, net_amt_after_disc=?, round_off=?, net_amt=?, cash_id=?, notes=?, status='V'," +
-                                                " sale_type=?, machine_id=?, o_amt=?, INV_TIME=?, machine_id_m=?, mod_date=?, mod_by=?, open_yn=?, comp_name=? WHERE invoice_no = ?;";
-
-                                            using (OdbcCommand updateCmd = new OdbcCommand(updatehdr, dbConnector.connection))
-                                            {
-                                                updateCmd.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch));
-                                                updateCmd.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase));
-                                                updateCmd.Parameters.Add(new OdbcParameter("sm_id", ""));
-                                                updateCmd.Parameters.Add(new OdbcParameter("custname", custName));
-                                                updateCmd.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
-                                                updateCmd.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("oth_amt", ""));
-                                                updateCmd.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
-                                                updateCmd.Parameters.Add(new OdbcParameter("notes", ""));
-                                                updateCmd.Parameters.Add(new OdbcParameter("status", "V"));
-                                                updateCmd.Parameters.Add(new OdbcParameter("sale_type", ""));
-                                                updateCmd.Parameters.Add(new OdbcParameter("machine_id", machine_name));
-                                                updateCmd.Parameters.Add(new OdbcParameter("o_amt", org_amt));
-                                                updateCmd.Parameters.Add(new OdbcParameter("INV_TIME", rotBillTime.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("machine_id_m", machine_name));
-                                                updateCmd.Parameters.Add(new OdbcParameter("mod_date", DateTime.Now));
-                                                updateCmd.Parameters.Add(new OdbcParameter("mod_by", pnlusername));
-                                                updateCmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                                                updateCmd.Parameters.Add(new OdbcParameter("comp_name", machine_name));
-                                                updateCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-
-                                                updateCmd.ExecuteNonQuery();
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Insert back into main table from temp
-                                string insertSQL = "INSERT INTO t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id," +
-                                                " custname, custaddress, gross_amt, xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc," +
-                                                " round_off, net_amt, cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
-                                                "  mod_date, mod_by) " +
-                                                  "SELECT invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt," +
-                                                  " xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt," +
-                                                  " cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
-                                                  " mod_date, mod_by FROM temp_t_invoice_hdr" +
-                                                  " WHERE invoice_no = ? AND open_yn = 'Y' LIMIT 1";
-
-                                using (OdbcCommand insertCmd = new OdbcCommand(insertSQL, dbConnector.connection))
-                                {
-                                    insertCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    insertCmd.ExecuteNonQuery();
-                                }
-
-                                // Update and delete temp_t_invoice_hdr
-                                string updateTempHdrSQL = "UPDATE temp_t_invoice_hdr SET open_yn = 'N' WHERE invoice_no = ?";
-                                using (OdbcCommand updateTempCmd = new OdbcCommand(updateTempHdrSQL, dbConnector.connection))
-                                {
-                                    updateTempCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    updateTempCmd.ExecuteNonQuery();
-                                }
-
-                                string deleteTempHdrSQL = "DELETE FROM temp_t_invoice_hdr WHERE invoice_no = ?";
-                                using (OdbcCommand deleteTempCmd = new OdbcCommand(deleteTempHdrSQL, dbConnector.connection))
-                                {
-                                    deleteTempCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    deleteTempCmd.ExecuteNonQuery();
-                                }
-
-                                // Fetch and update temp_t_invoice_det
-                                string gstrSql4 = "SELECT * FROM temp_t_invoice_det WHERE invoice_no = ? AND open_yn = 'Y'";
-                                using (OdbcCommand fetchtempdetdata1 = new OdbcCommand(gstrSql4, dbConnector.connection))
-                                {
-                                    fetchtempdetdata1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    using (OdbcDataReader fetchdetread = fetchtempdetdata1.ExecuteReader())
-                                    {
-                                        while (fetchdetread.Read())
-                                        {
-                                            string item_id = fetchdetread["item_id"].ToString().Trim();
-                                            string sl_no = fetchdetread["item_sl_no"].ToString().Trim();
-                                            string org_amt = fetchdetread["net_amt"].ToString().Trim();
-                                            string updatehdr = "UPDATE temp_t_invoice_det SET branch_id=?, item_id=?, bar_code=?, item_sl_no=?, qty=?, mrp=?, sale_price=?, " +
-                                                "disc_per=?, disc_amt=?, sale_tax_per=?, sale_tax_amt=?, net_amt=?, free_item_id=?, free_item_qty=?, free_amt=?, pur_rate=?," +
-                                                " cess_perc=?, cess_amt=?, excis_perc=?, excis_amt=?, mod_date=?, mod_by=?, open_yn=?, comp_name=?" +
-                                                " WHERE invoice_no = ? AND item_id = ? AND item_sl_no = ?;";
-
-                                            using (OdbcCommand updateCmd = new OdbcCommand(updatehdr, dbConnector.connection))
-                                            {
-                                                updateCmd.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch));
-                                                updateCmd.Parameters.Add(new OdbcParameter("item_id", item_id));
-                                                updateCmd.Parameters.Add(new OdbcParameter("bar_code", fetchdetread["bar_code"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("item_sl_no", sl_no));
-                                                updateCmd.Parameters.Add(new OdbcParameter("qty", fetchdetread["qty"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("mrp", fetchdetread["mrp"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("sale_price", fetchdetread["sale_price"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("disc_per", fetchdetread["disc_per"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("disc_amt", fetchdetread["disc_amt"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("sale_tax_per", fetchdetread["sale_tax_per"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("sale_tax_amt", fetchdetread["sale_tax_amt"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("net_amt", fetchdetread["net_amt"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("free_item_id", fetchdetread["free_item_id"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("free_item_qty", fetchdetread["free_item_qty"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("free_amt", fetchdetread["free_amt"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("pur_rate", fetchdetread["pur_rate"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("cess_perc", fetchdetread["cess_perc"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("cess_amt", fetchdetread["cess_amt"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("excis_perc", fetchdetread["excis_perc"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("excis_amt", fetchdetread["excis_amt"].ToString().Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("mod_date", DateTime.Now));
-                                                updateCmd.Parameters.Add(new OdbcParameter("mod_by", pnlusername));
-                                                updateCmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                                                updateCmd.Parameters.Add(new OdbcParameter("comp_name", machine_name));
-                                                updateCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                updateCmd.Parameters.Add(new OdbcParameter("item_id", item_id));
-                                                updateCmd.Parameters.Add(new OdbcParameter("item_sl_no", sl_no));
-
-                                                updateCmd.ExecuteNonQuery();
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Insert back into main table from temp
-                                string insertDetSQL = "INSERT INTO t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price," +
-                                    " disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc, cess_amt, excis_perc," +
-                                    " excis_amt, group_id, mod_date, mod_by) " +
-                                                  "SELECT invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, disc_per, disc_amt, sale_tax_per," +
-                                                  " sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc, cess_amt, excis_perc, excis_amt, group_id," +
-                                                  " mod_date, mod_by FROM temp_t_invoice_det WHERE invoice_no = ? AND open_yn = 'Y'";
-
-                                using (OdbcCommand insertDetCmd = new OdbcCommand(insertDetSQL, dbConnector.connection))
-                                {
-                                    insertDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    insertDetCmd.ExecuteNonQuery();
-                                }
-
-                                // Update and delete temp_t_invoice_det
-                                string updateTempDetSQL = "UPDATE temp_t_invoice_det SET open_yn = 'N' WHERE invoice_no = ?";
-                                using (OdbcCommand updateTempDetCmd = new OdbcCommand(updateTempDetSQL, dbConnector.connection))
-                                {
-                                    updateTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    updateTempDetCmd.ExecuteNonQuery();
-                                }
-
-                                string deleteTempDetSQL = "DELETE FROM temp_t_invoice_det WHERE invoice_no = ?";
-                                using (OdbcCommand deleteTempDetCmd = new OdbcCommand(deleteTempDetSQL, dbConnector.connection))
-                                {
-                                    deleteTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    deleteTempDetCmd.ExecuteNonQuery();
-                                }
-
-
-                                //---------------For Updation so We are entering in temp pay det table while modifying
-                                string gstrSQLpaydet = "INSERT INTO temp_t_invoice_pay_det (invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
-                                                        "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by, open_yn, comp_name) " +
-                                                        "SELECT invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
-                                                        "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by, 'Y' AS open_yn, ? AS comp_name " +
-                                                        "FROM t_invoice_pay_det WHERE invoice_no = ?";
-
-                                using (OdbcCommand insertIntoTempPayDet = new OdbcCommand(gstrSQLpaydet, dbConnector.connection))
-                                {
-                                    insertIntoTempPayDet.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-                                    insertIntoTempPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    insertIntoTempPayDet.ExecuteNonQuery();
-                                }
-
-                                //--------Fetch to check if data inserted to temp table then delete from main table to send updated records
-                                string gstrSQLpaydet2 = "SELECT * FROM temp_t_invoice_pay_det WHERE invoice_no = ? AND open_yn = 'Y'";
-                                using (OdbcCommand selectInTempPayDet = new OdbcCommand(gstrSQLpaydet2, dbConnector.connection))
-                                {
-                                    selectInTempPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    using (OdbcDataReader selectPayDetRead = selectInTempPayDet.ExecuteReader())
-                                    {
-                                        if (selectPayDetRead.HasRows)
-                                        {
-                                            string delSQLpaydet = "DELETE FROM t_invoice_pay_det WHERE invoice_no = ?";
-                                            using (OdbcCommand delFrmPayDet = new OdbcCommand(delSQLpaydet, dbConnector.connection))
-                                            {
-                                                delFrmPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                delFrmPayDet.ExecuteNonQuery();
-                                            }
-                                        }
-                                    }
-                                }
-
-                                //--------Check data if it's entered in temp table or not
-                                string gstrSqlpaydet3 = "SELECT * FROM temp_t_invoice_pay_det WHERE invoice_no = ? AND open_yn = 'Y'";
-                                using (OdbcCommand fetchTempDataPayDet = new OdbcCommand(gstrSqlpaydet3, dbConnector.connection))
-                                {
-                                    fetchTempDataPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                    using (OdbcDataReader fetchReadPayDet = fetchTempDataPayDet.ExecuteReader())
-                                    {
-                                        if (fetchReadPayDet.HasRows)
-                                        {
-                                            string updatePayDet = "UPDATE temp_t_invoice_pay_det SET branch_id = ?, pay_mode_id = ?, pay_amt = ?, cash_t_amt = ?," +
-                                                " ref_amt = ?, cc_code = ?, cc_no = ?, coup_id = ?, cust_id = ?, " +
-                                                                   "bank_name = ?, cheque_no = ?, cheque_dt = ?, gv_no = ?, gv_amt = ?, mod_date = ?, mod_by = ?," +
-                                                                   " open_yn = ?, comp_name = ? " +
-                                                                   "WHERE invoice_no = ? AND pay_mode_id = ?";
-
-                                            using (OdbcCommand updateCmd = new OdbcCommand(updatePayDet, dbConnector.connection))
-                                            {
-                                                foreach (DataGridViewRow row in dbgPayDet.Rows)
+                                                // Delete from main table
+                                                string delSQL = "DELETE FROM t_invoice_hdr WHERE invoice_no = ?; ";
+                                                using (OdbcCommand delfrmhdr1 = new OdbcCommand(delSQL, dbConnector.connection))
                                                 {
-                                                    DataGridViewComboBoxCell comboBoxCell = row.Cells[1] as DataGridViewComboBoxCell;
-                                                    if (comboBoxCell == null)
-                                                    {
-                                                        MessageBox.Show("Please Select Payment Mode First!", "Select Payment Mode!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                                        break;
-                                                    }
-                                                    string selectedValue = comboBoxCell.Value?.ToString();
-                                                    if (string.IsNullOrEmpty(selectedValue))
-                                                    {
-                                                        MessageBox.Show("Please Select Payment Mode First!", "Select Payment Mode!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                                        break;
-                                                    }
-                                                    updateCmd.Parameters.Clear();
+                                                    delfrmhdr1.Transaction = transaction;
+                                                    delfrmhdr1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    delfrmhdr1.ExecuteNonQuery();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Insert into temp_t_invoice_det
+                                    string gstrSQLdet = "INSERT INTO temp_t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp," +
+                                        " sale_price, disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc," +
+                                        " cess_amt, excis_perc, excis_amt, group_id, mod_date, mod_by, open_yn, comp_name) " +
+                                                        "SELECT invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, disc_per, disc_amt," +
+                                                        " sale_tax_per, sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc, cess_amt, excis_perc," +
+                                                        " excis_amt, group_id, mod_date, mod_by, 'Y' AS open_yn, ? AS comp_name FROM t_invoice_det WHERE invoice_no = ?;";
+
+                                    using (OdbcCommand insertintotempdet1 = new OdbcCommand(gstrSQLdet, dbConnector.connection))
+                                    {
+                                        insertintotempdet1.Transaction = transaction;
+                                        insertintotempdet1.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+                                        insertintotempdet1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        insertintotempdet1.ExecuteNonQuery();
+                                    }
+
+                                    // Check if data was inserted into temp table
+                                    string gstrSQLdet2 = "SELECT * FROM temp_t_invoice_det WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand selectintempdet1 = new OdbcCommand(gstrSQLdet2, dbConnector.connection))
+                                    {
+                                        selectintempdet1.Transaction = transaction;
+                                        selectintempdet1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        using (OdbcDataReader selectdetread = selectintempdet1.ExecuteReader())
+                                        {
+                                            if (selectdetread.HasRows)
+                                            {
+                                                // Delete from main table
+                                                string delSQLdet = "DELETE FROM t_invoice_det WHERE invoice_no = ?; ";
+                                                using (OdbcCommand delfrmdet1 = new OdbcCommand(delSQLdet, dbConnector.connection))
+                                                {
+                                                    delfrmdet1.Transaction = transaction;
+                                                    delfrmdet1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    delfrmdet1.ExecuteNonQuery();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Fetch and update temp_t_invoice_hdr
+                                    string gstrSql3 = "SELECT * FROM temp_t_invoice_hdr WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand fetchtempdata1 = new OdbcCommand(gstrSql3, dbConnector.connection))
+                                    {
+                                        fetchtempdata1.Transaction = transaction;
+                                        fetchtempdata1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        using (OdbcDataReader fetchread = fetchtempdata1.ExecuteReader())
+                                        {
+                                            if (fetchread.HasRows)
+                                            {
+                                                fetchread.Read();
+                                                string org_amt = fetchread["net_amt_after_disc"].ToString().Trim();
+                                                string updatehdr = "UPDATE temp_t_invoice_hdr SET branch_id=?, cust_id=?, sm_id=?, custname=?, custaddress=?, gross_amt=?," +
+                                                    " xmode='M', disc_per=?, disc_amt=?, oth_amt=?, net_amt_after_disc=?, round_off=?, net_amt=?, cash_id=?, notes=?, status='V'," +
+                                                    " sale_type=?, machine_id=?, o_amt=?, INV_TIME=?, machine_id_m=?, mod_date=?, mod_by=?, open_yn=?, comp_name=? WHERE invoice_no = ?;";
+
+                                                using (OdbcCommand updateCmd = new OdbcCommand(updatehdr, dbConnector.connection))
+                                                {
+                                                    updateCmd.Transaction = transaction;
                                                     updateCmd.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("pay_mode_id", selectedValue));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("pay_amt", row.Cells[2].Value?.ToString() ?? "0"));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("cash_t_amt", row.Cells[3].Value?.ToString().Trim()));
-                                                    if (selectedValue == "CASH" && !string.IsNullOrEmpty(row.Cells[3].Value?.ToString().Trim()) && row.Cells[3].Value.ToString().Trim() != "0")
-                                                    {
-                                                        updateCmd.Parameters.Add(new OdbcParameter("ref_amt", Math.Round(decimal.Parse(row.Cells[3].Value.ToString().Trim()) - decimal.Parse(row.Cells[2].Value.ToString().Trim()), 0)));
-                                                    }
-                                                    if (string.IsNullOrEmpty(row.Cells[1].Value?.ToString().Trim()))
-                                                    {
-                                                        MessageBox.Show("Select The Payment Mode First!", "Empty Paymode Mode!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                                        break;
-                                                    }
-                                                    else
-                                                    {
-                                                        updateCmd.Parameters.Add(new OdbcParameter("ref_amt","0"));
-                                                    }
-                                                    //else
-                                                    //{
-                                                    //    MessageBox.Show("Please Enter Cash Tend First!", "Enter Cash Tend!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                                    //    break;
-                                                    //}
-                                                    DataGridViewComboBoxCell comboBoxCellCC = row.Cells[5] as DataGridViewComboBoxCell;
-                                                    if (selectedValue == "CC" && comboBoxCellCC != null)
-                                                    {
-                                                        string selectedValCC = comboBoxCellCC.Value?.ToString();
-                                                        if (!string.IsNullOrEmpty(selectedValCC))
-                                                        {
-                                                            updateCmd.Parameters.Add(new OdbcParameter("cc_code", selectedValCC));
-                                                        }
-                                                        else
-                                                        {
-                                                            MessageBox.Show("Please Select CC Code First!", "Select CC Code!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                                            break;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        updateCmd.Parameters.Add(new OdbcParameter("cc_code", ""));
-                                                    }
-                                                    updateCmd.Parameters.Add(new OdbcParameter("cc_no", row.Cells[6].Value?.ToString() ?? "0"));
-                                                    DataGridViewComboBoxCell comboBoxCellCoup = row.Cells[7] as DataGridViewComboBoxCell;
-                                                    string selectedValCoup = comboBoxCellCoup?.Value?.ToString() ?? "";
-                                                    updateCmd.Parameters.Add(new OdbcParameter("coup_id", selectedValCoup));
-                                                    DataGridViewComboBoxCell comboBoxCellCust = row.Cells[8] as DataGridViewComboBoxCell;
-                                                    string selectedValCust = comboBoxCellCust?.Value?.ToString() ?? row.Cells[8].Value?.ToString().Trim();
-                                                    if (selectedValue == "CR" && string.IsNullOrEmpty(selectedValCust))
-                                                    {
-                                                        MessageBox.Show("Please Select Customer Id First!", "Select Customer Id!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                                        break;
-                                                    }
-                                                    updateCmd.Parameters.Add(new OdbcParameter("cust_id", selectedValCust));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("bank_name", row.Cells[8].Value?.ToString() ?? ""));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("cheque_no", row.Cells[9].Value?.ToString() ?? ""));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("cheque_dt", row.Cells[10].Value?.ToString() ?? ""));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("gv_no", row.Cells[11].Value?.ToString() ?? ""));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("gv_amt", row.Cells[12].Value?.ToString() ?? ""));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("sm_id", ""));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("custname", custName));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("oth_amt", ""));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("notes", ""));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("status", "V"));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("sale_type", ""));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("machine_id", machine_name));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("o_amt", org_amt));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("INV_TIME", rotBillTime.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("machine_id_m", machine_name));
                                                     updateCmd.Parameters.Add(new OdbcParameter("mod_date", DateTime.Now));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("mod_by", pnlusername));
                                                     updateCmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
                                                     updateCmd.Parameters.Add(new OdbcParameter("comp_name", machine_name));
                                                     updateCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                    updateCmd.Parameters.Add(new OdbcParameter("pay_mode_id", selectedValue));
 
                                                     updateCmd.ExecuteNonQuery();
                                                 }
                                             }
+                                        }
+                                    }
 
-                                            Cursor.Current = Cursors.Default;
+                                    // Insert back into main table from temp
+                                    string insertSQL = "INSERT INTO t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id," +
+                                                    " custname, custaddress, gross_amt, xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc," +
+                                                    " round_off, net_amt, cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+                                                    "  mod_date, mod_by) " +
+                                                      "SELECT invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt," +
+                                                      " xmode, sr_no, sr_inv_no, sr_amt, disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt," +
+                                                      " cash_id, notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+                                                      " mod_date, mod_by FROM temp_t_invoice_hdr" +
+                                                      " WHERE invoice_no = ? AND open_yn = 'Y' LIMIT 1";
 
-                                            string insertTempToPayDet = "INSERT INTO t_invoice_pay_det (invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
-                                                                        "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by) " +
-                                                                        "SELECT invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
-                                                                        "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by " +
-                                                                        "FROM temp_t_invoice_pay_det WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand insertCmd = new OdbcCommand(insertSQL, dbConnector.connection))
+                                    {
+                                        insertCmd.Transaction = transaction;
+                                        insertCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        insertCmd.ExecuteNonQuery();
+                                    }
 
-                                            using (OdbcCommand insertCmdPayDet = new OdbcCommand(insertTempToPayDet, dbConnector.connection))
+                                    // Update and delete temp_t_invoice_hdr
+                                    string updateTempHdrSQL = "UPDATE temp_t_invoice_hdr SET open_yn = 'N' WHERE invoice_no = ?";
+                                    using (OdbcCommand updateTempCmd = new OdbcCommand(updateTempHdrSQL, dbConnector.connection))
+                                    {
+                                        updateTempCmd.Transaction = transaction;
+                                        updateTempCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        updateTempCmd.ExecuteNonQuery();
+                                    }
+
+                                    string deleteTempHdrSQL = "DELETE FROM temp_t_invoice_hdr WHERE invoice_no = ?";
+                                    using (OdbcCommand deleteTempCmd = new OdbcCommand(deleteTempHdrSQL, dbConnector.connection))
+                                    {
+                                        deleteTempCmd.Transaction = transaction;
+                                        deleteTempCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        deleteTempCmd.ExecuteNonQuery();
+                                    }
+
+                                    // Fetch and update temp_t_invoice_det
+                                    string gstrSql4 = "SELECT * FROM temp_t_invoice_det WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand fetchtempdetdata1 = new OdbcCommand(gstrSql4, dbConnector.connection))
+                                    {
+                                        fetchtempdetdata1.Transaction = transaction;
+                                        fetchtempdetdata1.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        using (OdbcDataReader fetchdetread = fetchtempdetdata1.ExecuteReader())
+                                        {
+                                            while (fetchdetread.Read())
                                             {
-                                                insertCmdPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                insertCmdPayDet.ExecuteNonQuery();
-                                            }
+                                                string item_id = fetchdetread["item_id"].ToString().Trim();
+                                                string sl_no = fetchdetread["item_sl_no"].ToString().Trim();
+                                                string org_amt = fetchdetread["net_amt"].ToString().Trim();
+                                                string updatehdr = "UPDATE temp_t_invoice_det SET branch_id=?, item_id=?, bar_code=?, item_sl_no=?, qty=?, mrp=?, sale_price=?, " +
+                                                    "disc_per=?, disc_amt=?, sale_tax_per=?, sale_tax_amt=?, net_amt=?, free_item_id=?, free_item_qty=?, free_amt=?, pur_rate=?," +
+                                                    " cess_perc=?, cess_amt=?, excis_perc=?, excis_amt=?, mod_date=?, mod_by=?, open_yn=?, comp_name=?" +
+                                                    " WHERE invoice_no = ? AND item_id = ? AND item_sl_no = ?;";
 
-                                            updateTempDetSQL = "UPDATE temp_t_invoice_pay_det SET open_yn = 'N' WHERE invoice_no = ?";
-                                            using (OdbcCommand updateTempDetCmd = new OdbcCommand(updateTempDetSQL, dbConnector.connection))
-                                            {
-                                                updateTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                updateTempDetCmd.ExecuteNonQuery();
-                                            }
+                                                using (OdbcCommand updateCmd = new OdbcCommand(updatehdr, dbConnector.connection))
+                                                {
+                                                    updateCmd.Transaction = transaction;
+                                                    updateCmd.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("item_id", item_id));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("bar_code", fetchdetread["bar_code"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("item_sl_no", sl_no));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("qty", fetchdetread["qty"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("mrp", fetchdetread["mrp"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("sale_price", fetchdetread["sale_price"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("disc_per", fetchdetread["disc_per"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("disc_amt", fetchdetread["disc_amt"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("sale_tax_per", fetchdetread["sale_tax_per"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("sale_tax_amt", fetchdetread["sale_tax_amt"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("net_amt", fetchdetread["net_amt"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("free_item_id", fetchdetread["free_item_id"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("free_item_qty", fetchdetread["free_item_qty"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("free_amt", fetchdetread["free_amt"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("pur_rate", fetchdetread["pur_rate"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("cess_perc", fetchdetread["cess_perc"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("cess_amt", fetchdetread["cess_amt"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("excis_perc", fetchdetread["excis_perc"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("excis_amt", fetchdetread["excis_amt"].ToString().Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("mod_date", DateTime.Now));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("mod_by", pnlusername));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("item_id", item_id));
+                                                    updateCmd.Parameters.Add(new OdbcParameter("item_sl_no", sl_no));
 
-                                            deleteTempDetSQL = "DELETE FROM temp_t_invoice_pay_det WHERE invoice_no = ?";
-                                            using (OdbcCommand deleteTempDetCmd = new OdbcCommand(deleteTempDetSQL, dbConnector.connection))
-                                            {
-                                                deleteTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
-                                                deleteTempDetCmd.ExecuteNonQuery();
+                                                    updateCmd.ExecuteNonQuery();
+                                                }
                                             }
                                         }
                                     }
+
+                                    // Insert back into main table from temp
+                                    string insertDetSQL = "INSERT INTO t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price," +
+                                        " disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc, cess_amt, excis_perc," +
+                                        " excis_amt, group_id, mod_date, mod_by) " +
+                                                      "SELECT invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, disc_per, disc_amt, sale_tax_per," +
+                                                      " sale_tax_amt, net_amt, free_item_id, free_item_qty, free_amt, pur_rate, cess_perc, cess_amt, excis_perc, excis_amt, group_id," +
+                                                      " mod_date, mod_by FROM temp_t_invoice_det WHERE invoice_no = ? AND open_yn = 'Y'";
+
+                                    using (OdbcCommand insertDetCmd = new OdbcCommand(insertDetSQL, dbConnector.connection))
+                                    {
+                                        insertDetCmd.Transaction = transaction;
+                                        insertDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        insertDetCmd.ExecuteNonQuery();
+                                    }
+
+                                    // Update and delete temp_t_invoice_det
+                                    string updateTempDetSQL = "UPDATE temp_t_invoice_det SET open_yn = 'N' WHERE invoice_no = ?";
+                                    using (OdbcCommand updateTempDetCmd = new OdbcCommand(updateTempDetSQL, dbConnector.connection))
+                                    {
+                                        updateTempDetCmd.Transaction = transaction;
+                                        updateTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        updateTempDetCmd.ExecuteNonQuery();
+                                    }
+
+                                    string deleteTempDetSQL = "DELETE FROM temp_t_invoice_det WHERE invoice_no = ?";
+                                    using (OdbcCommand deleteTempDetCmd = new OdbcCommand(deleteTempDetSQL, dbConnector.connection))
+                                    {
+                                        deleteTempDetCmd.Transaction = transaction;
+                                        deleteTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        deleteTempDetCmd.ExecuteNonQuery();
+                                    }
+
+
+                                    //---------------For Updation so We are entering in temp pay det table while modifying
+                                    string gstrSQLpaydet = "INSERT INTO temp_t_invoice_pay_det (invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
+                                                            "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by, open_yn, comp_name) " +
+                                                            "SELECT invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
+                                                            "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by, 'Y' AS open_yn, ? AS comp_name " +
+                                                            "FROM t_invoice_pay_det WHERE invoice_no = ?";
+
+                                    using (OdbcCommand insertIntoTempPayDet = new OdbcCommand(gstrSQLpaydet, dbConnector.connection))
+                                    {
+                                        insertIntoTempPayDet.Transaction = transaction;
+                                        insertIntoTempPayDet.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+                                        insertIntoTempPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        insertIntoTempPayDet.ExecuteNonQuery();
+                                    }
+
+                                    //--------Fetch to check if data inserted to temp table then delete from main table to send updated records
+                                    string gstrSQLpaydet2 = "SELECT * FROM temp_t_invoice_pay_det WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand selectInTempPayDet = new OdbcCommand(gstrSQLpaydet2, dbConnector.connection))
+                                    {
+                                        selectInTempPayDet.Transaction = transaction;
+                                        selectInTempPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        using (OdbcDataReader selectPayDetRead = selectInTempPayDet.ExecuteReader())
+                                        {
+                                            if (selectPayDetRead.HasRows)
+                                            {
+                                                string delSQLpaydet = "DELETE FROM t_invoice_pay_det WHERE invoice_no = ?";
+                                                using (OdbcCommand delFrmPayDet = new OdbcCommand(delSQLpaydet, dbConnector.connection))
+                                                {
+                                                    delFrmPayDet.Transaction = transaction;
+                                                    delFrmPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    delFrmPayDet.ExecuteNonQuery();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    //--------Check data if it's entered in temp table or not
+                                    string gstrSqlpaydet3 = "SELECT * FROM temp_t_invoice_pay_det WHERE invoice_no = ? AND open_yn = 'Y'";
+                                    using (OdbcCommand fetchTempDataPayDet = new OdbcCommand(gstrSqlpaydet3, dbConnector.connection))
+                                    {
+                                        fetchTempDataPayDet.Transaction = transaction;
+                                        fetchTempDataPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                        using (OdbcDataReader fetchReadPayDet = fetchTempDataPayDet.ExecuteReader())
+                                        {
+                                            if (fetchReadPayDet.HasRows)
+                                            {
+                                                string updatePayDet = "UPDATE temp_t_invoice_pay_det SET branch_id = ?, pay_mode_id = ?, pay_amt = ?, cash_t_amt = ?," +
+                                                    " ref_amt = ?, cc_code = ?, cc_no = ?, coup_id = ?, cust_id = ?, " +
+                                                                       "bank_name = ?, cheque_no = ?, cheque_dt = ?, gv_no = ?, gv_amt = ?, mod_date = ?, mod_by = ?," +
+                                                                       " open_yn = ?, comp_name = ? " +
+                                                                       "WHERE invoice_no = ? AND pay_mode_id = ?";
+
+                                                using (OdbcCommand updateCmd = new OdbcCommand(updatePayDet, dbConnector.connection))
+                                                {
+                                                    updateCmd.Transaction = transaction;
+                                                    foreach (DataGridViewRow row in dbgPayDet.Rows)
+                                                    {
+                                                        DataGridViewComboBoxCell comboBoxCell = row.Cells[1] as DataGridViewComboBoxCell;
+                                                        if (comboBoxCell == null)
+                                                        {
+                                                            MessageBox.Show("Please Select Payment Mode First!", "Select Payment Mode!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                            break;
+                                                        }
+                                                        string selectedValue = comboBoxCell.Value?.ToString();
+                                                        if (string.IsNullOrEmpty(selectedValue))
+                                                        {
+                                                            MessageBox.Show("Please Select Payment Mode First!", "Select Payment Mode!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                            break;
+                                                        }
+                                                        updateCmd.Parameters.Clear();
+                                                        updateCmd.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("pay_mode_id", selectedValue));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("pay_amt", row.Cells[2].Value?.ToString() ?? "0"));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("cash_t_amt", row.Cells[3].Value?.ToString().Trim()));
+                                                        if (selectedValue == "CASH" && !string.IsNullOrEmpty(row.Cells[3].Value?.ToString().Trim()) && row.Cells[3].Value.ToString().Trim() != "0")
+                                                        {
+                                                            updateCmd.Parameters.Add(new OdbcParameter("ref_amt", Math.Round(decimal.Parse(row.Cells[3].Value.ToString().Trim()) - decimal.Parse(row.Cells[2].Value.ToString().Trim()), 0)));
+                                                        }
+                                                        if (string.IsNullOrEmpty(row.Cells[1].Value?.ToString().Trim()))
+                                                        {
+                                                            MessageBox.Show("Select The Payment Mode First!", "Empty Paymode Mode!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                            break;
+                                                        }
+                                                        else
+                                                        {
+                                                            updateCmd.Parameters.Add(new OdbcParameter("ref_amt", "0"));
+                                                        }
+                                                        //else
+                                                        //{
+                                                        //    MessageBox.Show("Please Enter Cash Tend First!", "Enter Cash Tend!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                        //    break;
+                                                        //}
+                                                        DataGridViewComboBoxCell comboBoxCellCC = row.Cells[5] as DataGridViewComboBoxCell;
+                                                        if (selectedValue == "CC" && comboBoxCellCC != null)
+                                                        {
+                                                            string selectedValCC = comboBoxCellCC.Value?.ToString();
+                                                            if (!string.IsNullOrEmpty(selectedValCC))
+                                                            {
+                                                                updateCmd.Parameters.Add(new OdbcParameter("cc_code", selectedValCC));
+                                                            }
+                                                            else
+                                                            {
+                                                                MessageBox.Show("Please Select CC Code First!", "Select CC Code!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                                break;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            updateCmd.Parameters.Add(new OdbcParameter("cc_code", ""));
+                                                        }
+                                                        updateCmd.Parameters.Add(new OdbcParameter("cc_no", row.Cells[6].Value?.ToString() ?? "0"));
+                                                        DataGridViewComboBoxCell comboBoxCellCoup = row.Cells[7] as DataGridViewComboBoxCell;
+                                                        string selectedValCoup = comboBoxCellCoup?.Value?.ToString() ?? "";
+                                                        updateCmd.Parameters.Add(new OdbcParameter("coup_id", selectedValCoup));
+                                                        DataGridViewComboBoxCell comboBoxCellCust = row.Cells[8] as DataGridViewComboBoxCell;
+                                                        string selectedValCust = comboBoxCellCust?.Value?.ToString() ?? row.Cells[8].Value?.ToString().Trim();
+                                                        if (selectedValue == "CR" && string.IsNullOrEmpty(selectedValCust))
+                                                        {
+                                                            MessageBox.Show("Please Select Customer Id First!", "Select Customer Id!!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                                            break;
+                                                        }
+                                                        updateCmd.Parameters.Add(new OdbcParameter("cust_id", selectedValCust));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("bank_name", row.Cells[8].Value?.ToString() ?? ""));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("cheque_no", row.Cells[9].Value?.ToString() ?? ""));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("cheque_dt", row.Cells[10].Value?.ToString() ?? ""));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("gv_no", row.Cells[11].Value?.ToString() ?? ""));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("gv_amt", row.Cells[12].Value?.ToString() ?? ""));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("mod_date", DateTime.Now));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                        updateCmd.Parameters.Add(new OdbcParameter("pay_mode_id", selectedValue));
+
+                                                        updateCmd.ExecuteNonQuery();
+                                                    }
+                                                }
+
+                                                Cursor.Current = Cursors.Default;
+
+                                                string insertTempToPayDet = "INSERT INTO t_invoice_pay_det (invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
+                                                                            "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by) " +
+                                                                            "SELECT invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, coup_id, cust_id, " +
+                                                                            "bank_name, cheque_no, cheque_dt, gv_no, gv_amt, mod_date, mod_by " +
+                                                                            "FROM temp_t_invoice_pay_det WHERE invoice_no = ? AND open_yn = 'Y'";
+
+                                                using (OdbcCommand insertCmdPayDet = new OdbcCommand(insertTempToPayDet, dbConnector.connection))
+                                                {
+                                                    insertCmdPayDet.Transaction = transaction;
+                                                    insertCmdPayDet.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    insertCmdPayDet.ExecuteNonQuery();
+                                                }
+
+                                                updateTempDetSQL = "UPDATE temp_t_invoice_pay_det SET open_yn = 'N' WHERE invoice_no = ?";
+                                                using (OdbcCommand updateTempDetCmd = new OdbcCommand(updateTempDetSQL, dbConnector.connection))
+                                                {
+                                                    updateTempDetCmd.Transaction = transaction;
+                                                    updateTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    updateTempDetCmd.ExecuteNonQuery();
+                                                }
+
+                                                deleteTempDetSQL = "DELETE FROM temp_t_invoice_pay_det WHERE invoice_no = ?";
+                                                using (OdbcCommand deleteTempDetCmd = new OdbcCommand(deleteTempDetSQL, dbConnector.connection))
+                                                {
+                                                    deleteTempDetCmd.Transaction = transaction;
+                                                    deleteTempDetCmd.Parameters.Add(new OdbcParameter("invoice_no", txtInvNo.Text.Trim()));
+                                                    deleteTempDetCmd.ExecuteNonQuery();
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Messages.SavedMsg();
+
                                 }
-
-                               // Messages.SavedMsg();
-
                             }
                         }
                     }
+                    // reader.Close();
+                    Cursor.Current = Cursors.WaitCursor;
                 }
-               // reader.Close();
-            }
+                transaction.Commit();
 
+            }
+            catch (Exception ex)
+            {
+
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (dbConnector.connection != null && dbConnector.connection.State == ConnectionState.Open)
+                {
+                    dbConnector.connection.Close();
+                }
+                Cursor.Current = Cursors.Default;
+
+             //   Messages.SavedMsg();
+            }
         }
 
         public void AddInSaveForm()
         {
             DbConnector dbConnector = new DbConnector();
+            OdbcTransaction transaction = null;
             Cursor.Current = Cursors.WaitCursor;
             dayclosing();
             string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
             string machine_name = DeTools.fOSMachineName.GetMachineName();
 
-            if (closingdayok == "Y")
+            try
             {
-                dbConnector.OpenConnection();
 
-                if (dbConnector.connection != null)
+
+                if (closingdayok == "Y")
                 {
+                    dbConnector.OpenConnection();
+                   transaction= dbConnector.connection.BeginTransaction();
 
-                    string inserthdrnew = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
-                                             "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
-                                             "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
-                                             "veh_no, po_no, open_yn, comp_name) VALUES" +
-                                             " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                    OdbcCommand cmddhdr = new OdbcCommand(inserthdrnew, dbConnector.connection);
-                    // cmd.Transaction = transaction;
-
-                    //rotBillTime.Text = DateTime.Now.ToString("HH:mm:ss");
-                    string BillTime = DateTime.Now.ToString("HH:mm:ss");
-                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", gen_invoice_no.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("invoice_dt", dtpInvDate.Value));
-                    cmddhdr.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("bill_time", BillTime));
-                    //-------------------------Cust combo----------------------------//
-                    //general.FillCombo(cboCust, "cust_id", "m_customer", false);
-
-
-
-                    if (cboCust.SelectedItem != null && !string.IsNullOrEmpty(cboCust.SelectedItem.ToString().Trim()))
+                    if (dbConnector.connection != null)
                     {
-                        CustIDFromDatabase = cboCust.SelectedItem.ToString().Trim();
 
-                        if (CustIDFromDatabase != "")
+                        string inserthdrnew = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+                                                 "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+                                                 "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+                                                 "veh_no, po_no, open_yn, comp_name) VALUES" +
+                                                 " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                        using (OdbcCommand cmddhdr = new OdbcCommand(inserthdrnew, dbConnector.connection))
                         {
+                            cmddhdr.Transaction = transaction;
 
-                            DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
+                            //rotBillTime.Text = DateTime.Now.ToString("HH:mm:ss");
+                            string BillTime = DateTime.Now.ToString("HH:mm:ss");
+                            cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", gen_invoice_no.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("invoice_dt", dtpInvDate.Value));
+                            cmddhdr.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("bill_time", BillTime));
+                            //-------------------------Cust combo----------------------------//
+                            //general.FillCombo(cboCust, "cust_id", "m_customer", false);
 
-                            if (customerData != null)
+
+
+                            if (cboCust.SelectedItem != null && !string.IsNullOrEmpty(cboCust.SelectedItem.ToString().Trim()))
                             {
-                                custName = customerData["cust_name"].ToString().Trim();
-                                custPhoneNo = customerData["phone_1"].ToString().Trim();
-                                custAdd1 = customerData["address1"].ToString().Trim();
-                                custAdd2 = customerData["address2"].ToString().Trim();
-                                custEmail = customerData["email"].ToString().Trim();
+                                CustIDFromDatabase = cboCust.SelectedItem.ToString().Trim();
+
+                                if (CustIDFromDatabase != "")
+                                {
+
+                                    DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
+
+                                    if (customerData != null)
+                                    {
+                                        custName = customerData["cust_name"].ToString().Trim();
+                                        custPhoneNo = customerData["phone_1"].ToString().Trim();
+                                        custAdd1 = customerData["address1"].ToString().Trim();
+                                        custAdd2 = customerData["address2"].ToString().Trim();
+                                        custEmail = customerData["email"].ToString().Trim();
+                                    }
+
+                                }
+
+
                             }
 
+                            cmddhdr.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase ?? ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("sm_id", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("custname", custName));
+                            cmddhdr.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
+                            cmddhdr.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("oth_amt", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
+                            cmddhdr.Parameters.Add(new OdbcParameter("notes", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("status", "V"));
+                            cmddhdr.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                            cmddhdr.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                            cmddhdr.Parameters.Add(new OdbcParameter("auth_on", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("auth_by", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("sale_type", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("machine_id", machine_name));
+                            cmddhdr.Parameters.Add(new OdbcParameter("o_amt", rotPayAmt.Text.Trim()));
+                            cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", BillTime));
+                            cmddhdr.Parameters.Add(new OdbcParameter("veh_no", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("po_no", ""));
+                            cmddhdr.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                            cmddhdr.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+
+                            cmddhdr.ExecuteNonQuery();
+
+                            Cursor.Current = Cursors.Default;
                         }
-
-
                     }
-
-                    cmddhdr.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase ?? ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("sm_id", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("custname", custName));
-                    cmddhdr.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
-                    cmddhdr.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("oth_amt", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
-                    cmddhdr.Parameters.Add(new OdbcParameter("notes", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("status", "V"));
-                    cmddhdr.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                    cmddhdr.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                    cmddhdr.Parameters.Add(new OdbcParameter("auth_on", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("auth_by", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("sale_type", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("machine_id", machine_name));
-                    cmddhdr.Parameters.Add(new OdbcParameter("o_amt", rotPayAmt.Text.Trim()));
-                    cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", BillTime));
-                    cmddhdr.Parameters.Add(new OdbcParameter("veh_no", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("po_no", ""));
-                    cmddhdr.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                    cmddhdr.Parameters.Add(new OdbcParameter("comp_name", machine_name));
-
-                    cmddhdr.ExecuteNonQuery();
-
-                    Cursor.Current = Cursors.Default;
                 }
+                Cursor.Current = Cursors.WaitCursor;
+                transaction.Commit();
+                //dbConnector.connection.Close();
             }
-            dbConnector.connection.Close();
+            catch (Exception ex)
+            {
+
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (dbConnector.connection != null && dbConnector.connection.State == ConnectionState.Open)
+                {
+                    dbConnector.connection.Close();
+                }
+                Cursor.Current = Cursors.Default;
+
+                //   Messages.SavedMsg();
+            }
         }
 
         //public void SaveForm()
@@ -1347,6 +1544,7 @@ namespace softgen
 
         public void SaveForm()
         {
+               
             try
             {
 
@@ -1375,6 +1573,7 @@ namespace softgen
                     //else
 
                     UpdateInSaveForm();
+
 
 
                     MessageBox.Show("Changes Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1406,14 +1605,15 @@ namespace softgen
                                     string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
                                     string machine_name = DeTools.fOSMachineName.GetMachineName();
 
-
                                     dbConnector.OpenConnection();
+                                   
 
                                     if (dbConnector.connection != null)
                                     {
                                         string GetLastTempInv = "select invoice_no from temp_t_invoice_hdr order by invoice_dt";
                                         using (OdbcCommand cmdGetLastTempInv = new OdbcCommand(GetLastTempInv, dbConnector.connection))
                                         {
+                                           
                                             OdbcDataReader fetchGetLastTempInv = cmdGetLastTempInv.ExecuteReader();
 
                                             // Check if there are any rows returned
@@ -1434,6 +1634,7 @@ namespace softgen
 
                                         using (OdbcCommand cmddhdr = new OdbcCommand(inserthdrnew, dbConnector.connection))
                                         {
+                                            
                                             string BillTime = DateTime.Now.ToString("HH:mm:ss");
                                             // cmd.Transaction = transaction;
 
@@ -1529,6 +1730,7 @@ namespace softgen
 
                                     using (OdbcCommand cmdtohdr = new OdbcCommand(inserttohdrnew, dbConnector.connection))
                                     {
+                                    
                                         cmdtohdr.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
                                         cmdtohdr.Parameters.AddWithValue("@tempinv", tempinv.ToString());
                                         cmdtohdr.ExecuteNonQuery();
@@ -1537,6 +1739,7 @@ namespace softgen
                                     string CheckInvInHdr = "Select * from t_invoice_hdr where invoice_no = ?";
                                     using (OdbcCommand CheckInvInHdr1 = new OdbcCommand(CheckInvInHdr, dbConnector.connection))
                                     {
+                                       
                                         // Assuming dbConnector.connection is a valid OdbcConnection object
                                         CheckInvInHdr1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
 
@@ -1585,6 +1788,7 @@ namespace softgen
 
                                     using (OdbcCommand cmdddet = new OdbcCommand(insertdetnew, dbConnector.connection))
                                     {
+                                       
                                         cmdddet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
                                         cmdddet.Parameters.Add(new OdbcParameter("@invoice_dt", dtpInvDate.Value));
                                         cmdddet.Parameters.Add(new OdbcParameter("@branch_id", DeTools.strBranch.Trim()));
@@ -1621,6 +1825,7 @@ namespace softgen
 
                                 using (OdbcCommand cmdtodet = new OdbcCommand(inserttodetnew, dbConnector.connection))
                                 {
+                                   
                                     cmdtodet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
                                     cmdtodet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
                                     cmdtodet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
@@ -1630,6 +1835,7 @@ namespace softgen
                                 string CheckInvInDet = "Select * from t_invoice_det where invoice_no = ?";
                                 using (OdbcCommand CheckInvInDet1 = new OdbcCommand(CheckInvInDet, dbConnector.connection))
                                 {
+                                   
                                     // Assuming dbConnector.connection is a valid OdbcConnection object
                                     CheckInvInDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
 
@@ -1645,6 +1851,7 @@ namespace softgen
                                         string UpdNIntempDet = "update temp_t_invoice_det set open_yn='N' where invoice_no=?";
                                         using (OdbcCommand cmdUpdNIntempDet = new OdbcCommand(UpdNIntempDet, dbConnector.connection))
                                         {
+                                         
                                             cmdUpdNIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
                                             cmdUpdNIntempDet.ExecuteNonQuery();
                                         }
@@ -1652,6 +1859,7 @@ namespace softgen
                                         string delIntempDet = "delete from temp_t_invoice_det where invoice_no=? and open_yn='N' and comp_name=?";
                                         using (OdbcCommand cmddelIntempDet = new OdbcCommand(delIntempDet, dbConnector.connection))
                                         {
+                                           
                                             cmddelIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
                                             cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
                                             cmddelIntempDet.ExecuteNonQuery();
@@ -1673,18 +1881,28 @@ namespace softgen
                     }
                     Cursor.Current = Cursors.Default;
 
-                    MessageBox.Show("Invoice Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }//===========================End of ADD================================
+               
 
             }//-------try over---------------
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+              
+                MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
             finally
             {
+                if (dbConnector.connection != null && dbConnector.connection.State == ConnectionState.Open)
+                {
+                    dbConnector.connection.Close();
+                }
+                Cursor.Current = Cursors.Default;
 
+                
+                    MessageBox.Show("Invoice Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    resetcntrl_inAddform = true;
+                    ResetControls(this.Controls);
             }
         }
 
@@ -1733,6 +1951,7 @@ namespace softgen
 
         public void addinpaydet(int tempinv)
         {
+            
             try
             {
 
@@ -1747,6 +1966,7 @@ namespace softgen
                 // dbConnector.connectionString= new OdbcConnection();
                 dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
                 dbConnector.OpenConnection();
+                
                 if (dbConnector.connection != null)
                 {
 
@@ -1758,6 +1978,7 @@ namespace softgen
 
                         using (OdbcCommand cmdpaydet = new OdbcCommand(insertPayDetQuery, dbConnector.connection))
                         {
+                            
                             cmdpaydet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
                             // Assuming the second column is the ComboBox column
                             //DataGridViewComboBoxCell comboBoxCell = row.Cells[1] as DataGridViewComboBoxCell;
@@ -1850,6 +2071,7 @@ namespace softgen
 
                     using (OdbcCommand cmdtopaydet = new OdbcCommand(inserttopaydetnew, dbConnector.connection))
                     {
+                       
                         cmdtopaydet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
                         cmdtopaydet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
                         cmdtopaydet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
@@ -1859,6 +2081,7 @@ namespace softgen
                     string CheckInvInpayPayDet = "Select * from t_invoice_pay_det where invoice_no = ?";
                     using (OdbcCommand CheckInvInPayDet1 = new OdbcCommand(CheckInvInpayPayDet, dbConnector.connection))
                     {
+                       
                         // Assuming dbConnector.connection is a valid OdbcConnection object
                         CheckInvInPayDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
 
@@ -1874,6 +2097,7 @@ namespace softgen
                             string UpdNIntempPayDet = "update temp_t_invoice_pay_det set open_yn='N' where invoice_no=?";
                             using (OdbcCommand cmdUpdNIntempPayDet = new OdbcCommand(UpdNIntempPayDet, dbConnector.connection))
                             {
+                              
                                 cmdUpdNIntempPayDet.Parameters.AddWithValue("@tempinv", tempinv);
                                 cmdUpdNIntempPayDet.ExecuteNonQuery();
                             }
@@ -1881,6 +2105,7 @@ namespace softgen
                             string delIntempPayDet = "delete from temp_t_invoice_pay_det where invoice_no=? and open_yn='N' and comp_name=?";
                             using (OdbcCommand cmddelIntempPayDet = new OdbcCommand(delIntempPayDet, dbConnector.connection))
                             {
+                               
                                 cmddelIntempPayDet.Parameters.AddWithValue("@tempinv", tempinv);
                                 cmddelIntempPayDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
                                 cmddelIntempPayDet.ExecuteNonQuery();
@@ -1894,11 +2119,23 @@ namespace softgen
 
 
                 }
+              
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                
+                MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
-                throw;
+            finally
+            {
+                if (dbConnector.connection != null && dbConnector.connection.State == ConnectionState.Open)
+                {
+                    dbConnector.connection.Close();
+                }
+                Cursor.Current = Cursors.Default;
+
+             
             }
         }
         public string GetBrand()

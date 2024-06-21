@@ -360,7 +360,7 @@ namespace softgen
             // 
             mnuTbillmodule.DropDownItems.AddRange(new ToolStripItem[] { mnuTBInvGenmenu, mnuTBSRGenmenu });
             mnuTbillmodule.Name = "mnuTbillmodule";
-            mnuTbillmodule.Size = new Size(180, 22);
+            mnuTbillmodule.Size = new Size(151, 22);
             mnuTbillmodule.Text = "Billing Module";
             // 
             // mnuTBInvGenmenu
@@ -388,7 +388,7 @@ namespace softgen
             // 
             mnuRSaleReportMenu.DropDownItems.AddRange(new ToolStripItem[] { mnuSinvoiceWiseSaleReportMenu });
             mnuRSaleReportMenu.Name = "mnuRSaleReportMenu";
-            mnuRSaleReportMenu.Size = new Size(180, 22);
+            mnuRSaleReportMenu.Size = new Size(133, 22);
             mnuRSaleReportMenu.Text = "Sale Report";
             // 
             // mnuSinvoiceWiseSaleReportMenu
@@ -460,11 +460,12 @@ namespace softgen
             // statusStrip1
             // 
             statusStrip1.AutoSize = false;
-            statusStrip1.Location = new Point(0, 610);
+            statusStrip1.Location = new Point(0, 599);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(1202, 97);
+            statusStrip1.Size = new Size(1202, 123);
             statusStrip1.TabIndex = 2;
             statusStrip1.Text = "statusStrip1";
+            statusStrip1.ItemClicked += statusStrip1_ItemClicked;
             // 
             // panel
             // 
@@ -475,9 +476,9 @@ namespace softgen
             panel.Controls.Add(pnlHelp);
             panel.Controls.Add(panel1);
             panel.Controls.Add(pnlCreated_by);
-            panel.Location = new Point(0, 616);
+            panel.Location = new Point(0, 618);
             panel.Name = "panel";
-            panel.Size = new Size(1380, 90);
+            panel.Size = new Size(1380, 227);
             panel.TabIndex = 10;
             panel.Paint += panel_Paint;
             // 
@@ -511,7 +512,7 @@ namespace softgen
             // pnlHelp
             // 
             pnlHelp.BackColor = Color.Silver;
-            pnlHelp.Location = new Point(470, 59);
+            pnlHelp.Location = new Point(470, 73);
             pnlHelp.Name = "pnlHelp";
             pnlHelp.Size = new Size(496, 16);
             pnlHelp.TabIndex = 8;
@@ -520,7 +521,7 @@ namespace softgen
             // 
             panel1.BackColor = Color.Gainsboro;
             panel1.Controls.Add(linkLabel1);
-            panel1.Location = new Point(690, 5);
+            panel1.Location = new Point(690, 18);
             panel1.Name = "panel1";
             panel1.Size = new Size(260, 50);
             panel1.TabIndex = 2;
@@ -582,7 +583,7 @@ namespace softgen
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = Color.MediumTurquoise;
             BackgroundImageLayout = ImageLayout.Center;
-            ClientSize = new Size(1202, 707);
+            ClientSize = new Size(1202, 722);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(panel);
             Controls.Add(statusStrip1);

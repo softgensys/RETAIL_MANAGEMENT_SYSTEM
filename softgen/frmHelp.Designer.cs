@@ -256,6 +256,7 @@
             Name = "frmHelp";
             Text = "Help";
             FormClosing += frmHelp_FormClosing;
+            Load += frmHelp_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)grdHelp).EndInit();
