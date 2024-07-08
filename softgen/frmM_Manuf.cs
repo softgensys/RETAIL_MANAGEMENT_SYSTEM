@@ -19,7 +19,9 @@ namespace softgen
             DbConnector dbConnector = new DbConnector();
             this.Activated += MyForm_Activated;
             this.KeyPreview = true; // Make sure the form has key preview enabled
-            this.KeyUp += DeTools.Form_KeyUp; // Subscribe to the KeyUp event
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
+            DeTools.MakeTextBoxUppercase(txtName);
+            this.FormClosed += frmM_Manuf_FormClosed;
         }
 
         private void MyForm_Activated(object sender, EventArgs e)
@@ -319,7 +321,7 @@ namespace softgen
 
                 Messages.SavedMsg();
                 dbConnector.connection.Close();
-                ClearForm();
+                ResetControls(this.Controls);
 
             }
             catch (Exception)
@@ -426,6 +428,10 @@ namespace softgen
             {
 
                 throw;
+            }
+            finally
+            {
+                txtManufId.Enabled = false;
             }
         }
 
@@ -608,5 +614,32 @@ namespace softgen
             MainForm.Instance.mnuMManuf.Enabled = true;
         }
 
+        private void frmM_Manuf_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.Text.Contains("<Add>"))
+            {
+
+
+                if (!DeTools.IsFieldUnique("m_manuf", "manuf_id", txtManufId.Text.ToString().Trim()))
+                {
+                    MessageBox.Show("Id :" + txtManufId.Text + " already Exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtManufId.Text = null;
+                    txtManufId.Refresh();
+                    txtManufId.Focus();
+                    // You can also clear the control or perform other actions
+                }
+            }
+        }
+
+        private void txtManufId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (mblnSearch == false)
+                {
+                    SearchForm();
+                }
+            }
+        }
     }//-END
 }

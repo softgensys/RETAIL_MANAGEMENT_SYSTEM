@@ -283,7 +283,7 @@ namespace softgen
             // 
             // mnuMaster
             // 
-            mnuMaster.DropDownItems.AddRange(new ToolStripItem[] { MItemmenu, documentSeriesToolStripMenuItem, documentTypeToolStripMenuItem, Mgroupmenu, mnuMSGroup, mnuMSSGroup, mnuMCust, mnuMSupplier, mnuMManuf });
+            mnuMaster.DropDownItems.AddRange(new ToolStripItem[] { Mgroupmenu, mnuMSGroup, mnuMSSGroup, MItemmenu, mnuMCust, mnuMSupplier, mnuMManuf, documentSeriesToolStripMenuItem, documentTypeToolStripMenuItem });
             mnuMaster.Name = "mnuMaster";
             mnuMaster.Size = new Size(55, 20);
             mnuMaster.Text = "Master";
@@ -291,61 +291,61 @@ namespace softgen
             // MItemmenu
             // 
             MItemmenu.Name = "MItemmenu";
-            MItemmenu.Size = new Size(165, 22);
+            MItemmenu.Size = new Size(180, 22);
             MItemmenu.Text = "Item";
             MItemmenu.Click += MItemmenu_Click;
             // 
             // documentSeriesToolStripMenuItem
             // 
             documentSeriesToolStripMenuItem.Name = "documentSeriesToolStripMenuItem";
-            documentSeriesToolStripMenuItem.Size = new Size(165, 22);
+            documentSeriesToolStripMenuItem.Size = new Size(180, 22);
             documentSeriesToolStripMenuItem.Text = "Document Series";
             // 
             // documentTypeToolStripMenuItem
             // 
             documentTypeToolStripMenuItem.Name = "documentTypeToolStripMenuItem";
-            documentTypeToolStripMenuItem.Size = new Size(165, 22);
+            documentTypeToolStripMenuItem.Size = new Size(180, 22);
             documentTypeToolStripMenuItem.Text = "Document Type";
             // 
             // Mgroupmenu
             // 
             Mgroupmenu.Name = "Mgroupmenu";
-            Mgroupmenu.Size = new Size(165, 22);
+            Mgroupmenu.Size = new Size(180, 22);
             Mgroupmenu.Text = "Group";
             Mgroupmenu.Click += groupToolStripMenuItem_Click;
             // 
             // mnuMSGroup
             // 
             mnuMSGroup.Name = "mnuMSGroup";
-            mnuMSGroup.Size = new Size(165, 22);
+            mnuMSGroup.Size = new Size(180, 22);
             mnuMSGroup.Text = "Sub Group";
             mnuMSGroup.Click += mnuMSGroup_Click;
             // 
             // mnuMSSGroup
             // 
             mnuMSSGroup.Name = "mnuMSSGroup";
-            mnuMSSGroup.Size = new Size(165, 22);
+            mnuMSSGroup.Size = new Size(180, 22);
             mnuMSSGroup.Text = "Sub Sub Group";
             mnuMSSGroup.Click += mnuMSSGroup_Click;
             // 
             // mnuMCust
             // 
             mnuMCust.Name = "mnuMCust";
-            mnuMCust.Size = new Size(165, 22);
+            mnuMCust.Size = new Size(180, 22);
             mnuMCust.Text = "Customer Master";
             mnuMCust.Click += mnuMCust_Click;
             // 
             // mnuMSupplier
             // 
             mnuMSupplier.Name = "mnuMSupplier";
-            mnuMSupplier.Size = new Size(165, 22);
+            mnuMSupplier.Size = new Size(180, 22);
             mnuMSupplier.Text = "Supplier Master";
             mnuMSupplier.Click += mnuMSupplier_Click;
             // 
             // mnuMManuf
             // 
             mnuMManuf.Name = "mnuMManuf";
-            mnuMManuf.Size = new Size(165, 22);
+            mnuMManuf.Size = new Size(180, 22);
             mnuMManuf.Text = "Manufacturer";
             mnuMManuf.Click += mnuMManuf_Click;
             // 
@@ -589,6 +589,7 @@ namespace softgen
             Controls.Add(statusStrip1);
             Controls.Add(menuStrip1);
             Font = new Font("Times New Roman", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            KeyPreview = true;
             MainMenuStrip = menuStrip1;
             MdiChildrenMinimizedAnchorBottom = false;
             Name = "MainForm";
@@ -597,6 +598,9 @@ namespace softgen
             TransparencyKey = Color.PowderBlue;
             WindowState = FormWindowState.Maximized;
             Load += MainForm_Load_1;
+            KeyDown += MainForm_KeyDown;
+            KeyPress += MainForm_KeyPress;
+            KeyUp += MainForm_KeyUp;
             tableLayoutPanel1.ResumeLayout(false);
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();

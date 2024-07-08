@@ -199,6 +199,34 @@ namespace softgen
 
         private void frmWelscr_Load(object sender, EventArgs e)
         {
+            cboServer.SelectedIndex = 0;
+        }
+
+        private void txtLogin_Id_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Prevent the beep sound on Enter key press
+                this.SelectNextControl((Control)sender, true, true, true, true);
+            }
+        }
+
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Prevent the beep sound on Enter key press
+
+                Cursor = Cursors.WaitCursor;
+                // Simulate the visual click
+                cmdOK.PerformClick();
+                Cursor = Cursors.Default;
+                
+            }
+        }
+
+        private void cboServer_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
         }
     }

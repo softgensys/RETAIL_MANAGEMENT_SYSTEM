@@ -111,6 +111,8 @@
             cboSubGrpId.TabIndex = 206;
             cboSubGrpId.DropDown += cboSubGrpId_DropDown;
             cboSubGrpId.SelectedIndexChanged += cboSubGrpId_SelectedIndexChanged;
+            cboSubGrpId.KeyUp += cboSubGrpId_KeyUp;
+            cboSubGrpId.Layout += cboSubGrpId_Layout;
             // 
             // lblSubSGrpId
             // 
@@ -290,6 +292,7 @@
             FormClosing += frmM_Sub_Subgroup_FormClosing;
             FormClosed += frmM_Sub_Subgroup_FormClosed;
             Load += frmM_Sub_Subgroup_Load;
+            Validating += frmM_Sub_Subgroup_Validating;
             M_Sub_Subgroup.ResumeLayout(false);
             M_Sub_Subgroup.PerformLayout();
             ResumeLayout(false);

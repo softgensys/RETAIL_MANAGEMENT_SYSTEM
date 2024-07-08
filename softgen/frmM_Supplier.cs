@@ -18,12 +18,18 @@ namespace softgen
             DbConnector dbConnector = new DbConnector();
             this.Activated += MyForm_Activated;
             this.KeyPreview = true; // Make sure the form has key preview enabled
-            this.KeyUp += DeTools.Form_KeyUp; // Subscribe to the KeyUp event
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
+            DeTools.MakeTextBoxUppercase(txtName);
+
+            this.FormClosed += frmM_Supplier_FormClosed;
         }
+
 
         private void lblTinNo_Click(object sender, EventArgs e)
         {
-
+            this.KeyPreview = true; // Make sure the form has key preview enabled
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp); this.KeyPreview = true; // Make sure the form has key preview enabled
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
         }
 
         private void MyForm_Activated(object sender, EventArgs e)
@@ -49,6 +55,8 @@ namespace softgen
 
                     // Enable the TextBox
                     textBox.Enabled = true;
+
+                    txtSuppId.Focus();
                 }
 
                 // Recursively call the method for nested controls
@@ -347,8 +355,7 @@ namespace softgen
 
                 Messages.SavedMsg();
                 dbConnector.connection.Close();
-                ClearForm();
-
+                ResetControls(this.Controls);
             }
             catch (Exception)
             {
@@ -469,6 +476,10 @@ namespace softgen
             {
 
                 throw;
+            }
+            finally
+            {
+                txtSuppId.Enabled = false;
             }
         }
 
@@ -697,6 +708,34 @@ namespace softgen
         {
             DeTools.DestroyToolbar(this);
             MainForm.Instance.mnuMSupplier.Enabled = true;
+        }
+
+        private void frmM_Supplier_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.Text.Contains("<Add>"))
+            {
+
+
+                if (!DeTools.IsFieldUnique("m_supplier", "supp_id", txtSuppId.Text.ToString().Trim()))
+                {
+                    MessageBox.Show("Id :" + txtSuppId.Text + " already Exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtSuppId.Text = null;
+                    txtSuppId.Refresh();
+                    txtSuppId.Focus();
+                    // You can also clear the control or perform other actions
+                }
+            }
+        }
+
+        private void txtSuppId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (mblnSearch == false)
+                {
+                    SearchForm();
+                }
+            }
         }
     }
 }

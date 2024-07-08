@@ -483,6 +483,7 @@
             txtSuppId.Name = "txtSuppId";
             txtSuppId.Size = new Size(106, 23);
             txtSuppId.TabIndex = 83;
+            txtSuppId.KeyUp += txtSuppId_KeyUp;
             // 
             // lblSuppId
             // 
@@ -504,6 +505,7 @@
             FormClosing += frmM_Supplier_FormClosing;
             FormClosed += frmM_Supplier_FormClosed;
             Load += frmM_Supplier_Load;
+            Validating += frmM_Supplier_Validating;
             M_Supplier.ResumeLayout(false);
             M_Supplier.PerformLayout();
             ResumeLayout(false);

@@ -39,6 +39,10 @@ namespace softgen
 
 
                 this.Activated += MyForm_Activated;
+                this.KeyPreview = true;
+                //this.KeyDown += MainForm_KeyDown;
+                this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
+
             }
             catch (Exception ex)
             {
@@ -725,7 +729,6 @@ namespace softgen
             }
         }
 
-
         private void tmrActiveForm_Tick(object sender, EventArgs e)
         {
             try
@@ -733,10 +736,17 @@ namespace softgen
                 Messages messages = new Messages();
                 string msg = "Click on any of the above buttons to complete the desired task.";
 
+                // Hide all toolbars initially
+                foreach (var toolbars in DeTools.toolbarDictionary1.Values)
+                {
+                    foreach (ToolStrip toolbar in toolbars)
+                    {
+                        toolbar.Visible = false;
+                    }
+                }
 
                 if (ActiveMdiChild != null && ActiveMdiChild.Name != Name)
                 {
-
                     DeTools.gobjActiveForm = ActiveMdiChild;
                     switch (DeTools.GetMode(DeTools.gobjActiveForm))
                     {
@@ -747,44 +757,30 @@ namespace softgen
                             messages.HelpMsg(msg);
                             break;
                     }
-                }
 
-                if (ActiveMdiChild != null && ActiveMdiChild.Tag != null)
-                {
-                    if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
+                    string formKey = GetFormKey(DeTools.gobjActiveForm);
+                    if (formKey != null && DeTools.toolbarDictionary1.ContainsKey(formKey))
                     {
-                        string formKey = GetFormKey(DeTools.gobjActiveForm);
-                        if (formKey != null)
+                        List<ToolStrip> toolbars = DeTools.toolbarDictionary1[formKey];
+                        foreach (ToolStrip currentToolbar in toolbars)
                         {
-                            if (DeTools.toolbarDictionary1.ContainsKey(formKey))
-                            {
-                                List<ToolStrip> toolbars = DeTools.toolbarDictionary1[formKey];
-
-                                foreach (ToolStrip currentToolbar in toolbars)
-                                {
-                                    currentToolbar.Visible = true;
-                                    currentToolbar.BringToFront();
-
-                                }
-                            }
+                            currentToolbar.Visible = true;
+                            currentToolbar.BringToFront();
                         }
                     }
                 }
                 else if (ActiveMdiChild == null)
                 {
-
-                    // There is no active child form, so you can ensure the main form's tbrtools is displayed here.
+                    // There is no active child form, so display the main form's toolbars.
                     if (DeTools.toolbarDictionary1.ContainsKey(this.Name))
                     {
                         List<ToolStrip> mainToolbars = DeTools.toolbarDictionary1[this.Name];
-
                         foreach (ToolStrip mainToolbar in mainToolbars)
                         {
                             mainToolbar.Visible = true;
                             mainToolbar.BringToFront();
                         }
                     }
-
                 }
             }
             catch (Exception ex)
@@ -792,6 +788,76 @@ namespace softgen
                 messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
             }
         }
+
+
+
+        //-------******02-jul-2024
+        //private void tmrActiveForm_Tick(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        Messages messages = new Messages();
+        //        string msg = "Click on any of the above buttons to complete the desired task.";
+
+
+        //        if (ActiveMdiChild != null && ActiveMdiChild.Name != Name)
+        //        {
+
+        //            DeTools.gobjActiveForm = ActiveMdiChild;
+        //            switch (DeTools.GetMode(DeTools.gobjActiveForm))
+        //            {
+        //                case DeTools.DELETEMODE:
+        //                case DeTools.INQUIREMODE:
+        //                case DeTools.POSTMODE:
+        //                case "":
+        //                    messages.HelpMsg(msg);
+        //                    break;
+        //            }
+        //        }
+
+        //        if (ActiveMdiChild != null && ActiveMdiChild.Tag != null)
+        //        {
+        //            if (int.TryParse(ActiveMdiChild.Tag.ToString(), out int tagValue))
+        //            {
+        //                string formKey = GetFormKey(DeTools.gobjActiveForm);
+        //                if (formKey != null)
+        //                {
+        //                    if (DeTools.toolbarDictionary1.ContainsKey(formKey))
+        //                    {
+        //                        List<ToolStrip> toolbars = DeTools.toolbarDictionary1[formKey];
+
+        //                        foreach (ToolStrip currentToolbar in toolbars)
+        //                        {
+        //                            currentToolbar.Visible = true;
+        //                            currentToolbar.BringToFront();
+
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else if (ActiveMdiChild == null)
+        //        {
+
+        //            // There is no active child form, so you can ensure the main form's tbrtools is displayed here.
+        //            if (DeTools.toolbarDictionary1.ContainsKey(this.Name))
+        //            {
+        //                List<ToolStrip> mainToolbars = DeTools.toolbarDictionary1[this.Name];
+
+        //                foreach (ToolStrip mainToolbar in mainToolbars)
+        //                {
+        //                    mainToolbar.Visible = true;
+        //                    mainToolbar.BringToFront();
+        //                }
+        //            }
+
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        messages.VBError(ex, Name, "tmrActiveForm_Tick", "");
+        //    }
+        //}
 
         private void MItemmenu_Click(object sender, EventArgs e)
         {
@@ -1069,6 +1135,31 @@ namespace softgen
         private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+
+
+            //if (e.KeyCode == Keys.A)
+            //{
+            //    this.KeyDown += new KeyEventHandler(DeTools.Form_KeyDown);
+
+            //}
+        }
+
+        private void MainForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+
+        }
+
+        private void MainForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            //if (e.Control && e.KeyCode == Keys.M)
+            //{
+            //    this.KeyDown += new KeyEventHandler(DeTools.Form_KeyDown);
+
+            //}
         }
 
 

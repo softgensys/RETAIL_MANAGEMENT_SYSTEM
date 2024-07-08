@@ -15,13 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0D9A7F329099407BBF8D6E5E8DBA1431"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5F3C6063E05742EFB9F346B86AE62F6B"
+        "MsmKey" = "8:_B5D2ECE45F5F440497A146A21C2A614A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -43,6 +37,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -168,21 +178,21 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Softgen New Setup"
         "ProductCode" = "8:{CEBE0A21-3ED2-4371-81AE-C491305CFACD}"
-        "PackageCode" = "8:{9619E327-3E6F-4DB6-859B-C06771322699}"
+        "PackageCode" = "8:{0F07C023-F12C-4253-984A-B62D7ACD5FCF}"
         "UpgradeCode" = "8:{C41551F6-5538-4DEE-A651-71B0F803F172}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
-        "RemovePreviousVersions" = "11:FALSE"
+        "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
-        "InstallAllUsers" = "11:FALSE"
+        "InstallAllUsers" = "11:TRUE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Default Company Name"
+        "Manufacturer" = "8:SOFTGEN SYSTEMS"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:Softgen New Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
-        "Keywords" = "8:"
+        "ARPCONTACT" = "8:SOFTGEN SYSTEMS"
+        "Keywords" = "8:SOFTGEN"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
@@ -288,15 +298,29 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C9BEC625BE464B7986AC67EDF3456565"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1BCD41B5655F441B9D275F00C8EE40BD"
             {
-            "Name" = "8:Softgen (Active)"
+            "Name" = "8:Shortcut to %sPublish Items from softgen (Active)"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_5F3C6063E05742EFB9F346B86AE62F6B"
+            "Target" = "8:_B5D2ECE45F5F440497A146A21C2A614A"
+            "Folder" = "8:_CE6F65CFD1C240D6986CF83046155D7A"
+            "WorkingFolder" = "8:_5DBC4FEEFF964AB4A12D561D9B0562E2"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8C7BAC187C954032869705ABE864429E"
+            {
+            "Name" = "8:Shortcut to %sPublish Items from softgen (Active)"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_B5D2ECE45F5F440497A146A21C2A614A"
             "Folder" = "8:_581D5B82534549CCB5F76453A83F0A5A"
             "WorkingFolder" = "8:_5DBC4FEEFF964AB4A12D561D9B0562E2"
             "Icon" = "8:"
@@ -701,35 +725,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0D9A7F329099407BBF8D6E5E8DBA1431"
-            {
-            "SourcePath" = "8:..\\softgen\\obj\\Release\\net7.0-windows\\apphost.exe"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_581D5B82534549CCB5F76453A83F0A5A"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:PublishItems"
-            "OutputProjectGuid" = "8:{8167F6D3-F9A4-4271-B2C0-BF42C41DA1DC}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5F3C6063E05742EFB9F346B86AE62F6B"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_B5D2ECE45F5F440497A146A21C2A614A"
             {
             "SourcePath" = "8:..\\softgen\\obj\\Release\\net7.0-windows\\apphost.exe"
             "TargetName" = "8:"

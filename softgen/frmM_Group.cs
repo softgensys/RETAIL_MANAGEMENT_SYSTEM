@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Data.Odbc;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 
 namespace softgen
@@ -21,9 +22,12 @@ namespace softgen
             this.Activated += MyForm_Activated;
             // Add this event handler in the form's constructor or Load event
             this.KeyPreview = true; // Make sure the form has key preview enabled
-            this.KeyUp += DeTools.Form_KeyUp; // Subscribe to the KeyUp event
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
             //txtGrpId.KeyDown += txtGrpId_KeyDown;
             txtGrpId.TextChanged += txtGrpId_TextChanged;
+            DeTools.MakeTextBoxUppercase(txtGrpDesc);
+
+
 
 
         }
@@ -190,93 +194,101 @@ namespace softgen
 
 
                 //dbConnector.transactiono=new OdbcTransaction;
-
-                DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" + txtGrpId.Text.Trim() + "'";
-                OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-                dbConnector.connection.Open();
-                OdbcDataReader reader = cmd.ExecuteReader();
-
-                // Check if the record with the specified Group_id exists
-                if (DeTools.GetMode(this) != DeTools.ADDMODE)
+                if (txtGrpId.Text != "" || txtGrpDesc.Text != "")
                 {
 
-                    if (reader.HasRows)
+
+                    DeTools.gstrSQL = "SELECT * FROM m_Group WHERE Group_id = '" + txtGrpId.Text.Trim() + "'";
+                    OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                    dbConnector.connection.Open();
+                    OdbcDataReader reader = cmd.ExecuteReader();
+
+                    // Check if the record with the specified Group_id exists
+                    if (DeTools.GetMode(this) != DeTools.ADDMODE)
                     {
 
+                        if (reader.HasRows)
+                        {
 
-                        // The record exists, so update it
-                        reader.Close();
-                        //transaction = dbConnector.connection.BeginTransaction();
 
-                        Cursor.Current = Cursors.WaitCursor;
+                            // The record exists, so update it
+                            reader.Close();
+                            //transaction = dbConnector.connection.BeginTransaction();
 
-                        DeTools.gstrSQL = "UPDATE m_Group SET group_desc = ?, active_yn = ?, sales_tax = ?, ent_by = ?, ent_on = ?, trans_status = ? WHERE Group_id = ?";
-                        cmd.CommandText = DeTools.gstrSQL;
-                        cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
-                        cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                        cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
-                        cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                        //cmd.Parameters.Add(new OdbcParameter("ent_on", "NOW()"));
-                        cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                        cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                            Cursor.Current = Cursors.WaitCursor;
 
-                        cmd.ExecuteNonQuery();
+                            DeTools.gstrSQL = "UPDATE m_Group SET group_desc = ?, active_yn = ?, sales_tax = ?, ent_by = ?, ent_on = ?, trans_status = ? WHERE Group_id = ?";
+                            cmd.CommandText = DeTools.gstrSQL;
+                            cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                            cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                            cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                            cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                            //cmd.Parameters.Add(new OdbcParameter("ent_on", "NOW()"));
+                            cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                            cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                            cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
 
-                        Messages.SavingMsg();
-                        string quer1 = "update temp_m_group set open_yn='N' where group_id=? order by ent_on desc ";
-                        Cursor.Current = Cursors.Default;
+                            cmd.ExecuteNonQuery();
 
-                        //string quer = "update temp_m_group set open_yn='N' where group_id=? order by ent_on desc ";
+                            Messages.SavingMsg();
+                            string quer1 = "update temp_m_group set open_yn='N' where group_id=? order by ent_on desc ";
+                            Cursor.Current = Cursors.Default;
 
-                        //transaction.Commit();
+                            //string quer = "update temp_m_group set open_yn='N' where group_id=? order by ent_on desc ";
+
+                            //transaction.Commit();
+                        }
                     }
-                }
 
+                    else
+                    {
+                        // cmd.Transaction = transaction;
+
+                        // The record does not exist, so insert a new one
+                        reader.Close();
+
+                        if (DeTools.CheckTemporaryTableExists("m_group") != null)
+                        {
+                            Cursor.Current = Cursors.WaitCursor;
+
+                            DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, open_yn,comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                            cmd.CommandText = DeTools.gstrSQL;
+                            cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
+                            cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
+                            cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                            cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
+                            cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                            cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                            cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                            cmd.Parameters.Add(new OdbcParameter("open_yn", "N"));
+                            cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+                            //cmd.Parameters.Add(new OdbcParameter("status", "V"));
+
+                            cmd.ExecuteNonQuery();
+
+                            //DeTools.SelectDataFromTemporaryTable("m_group");
+
+                            DeTools.InsertDataIntoMainTable("m_group", "group_id", txtGrpId.Text.ToString().Trim());
+                            // transaction.Commit();
+
+                            Messages.SavingMsg();
+                            Cursor.Current = Cursors.Default;
+                            string quer1 = "update temp_m_group set open_yn='N' where group_id=? order by ent_on desc ";
+                        }
+                    }
+                    dbConnector.connection.Close();
+
+                    Messages.SavedMsg();
+
+                    ResetControls(this.Controls);
+                    txtGrpId.Focus();
+
+                    // Additional logic here for clearing fields, displaying messages, etc.
+                }
                 else
                 {
-                    // cmd.Transaction = transaction;
-
-                    // The record does not exist, so insert a new one
-                    reader.Close();
-
-                    if (DeTools.CheckTemporaryTableExists("m_group") != null)
-                    {
-                        Cursor.Current = Cursors.WaitCursor;
-
-                        DeTools.gstrSQL = "INSERT INTO temp_m_Group (Group_id, group_desc, active_yn, sales_tax, ent_by, ent_on, trans_status, open_yn,comp_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        cmd.CommandText = DeTools.gstrSQL;
-                        cmd.Parameters.Add(new OdbcParameter("Group_id", txtGrpId.Text));
-                        cmd.Parameters.Add(new OdbcParameter("group_desc", txtGrpDesc.Text));
-                        cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                        cmd.Parameters.Add(new OdbcParameter("sales_tax", txtSTaxPer.Text));
-                        cmd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                        cmd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                        cmd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                        cmd.Parameters.Add(new OdbcParameter("open_yn", "N"));
-                        cmd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-                        //cmd.Parameters.Add(new OdbcParameter("status", "V"));
-
-                        cmd.ExecuteNonQuery();
-
-                        //DeTools.SelectDataFromTemporaryTable("m_group");
-
-                        DeTools.InsertDataIntoMainTable("m_group", "group_id", txtGrpId.Text.ToString().Trim());
-                        // transaction.Commit();
-
-                        Messages.SavingMsg();
-                        Cursor.Current = Cursors.Default;
-                        string quer1 = "update temp_m_group set open_yn='N' where group_id=? order by ent_on desc ";
-                    }
+                    MessageBox.Show("Pls Enter Group Id or Group Name!", "Group Id or Group Name Is Empty!",MessageBoxButtons.OK,MessageBoxIcon.Stop);
                 }
-                dbConnector.connection.Close();
-
-                Messages.SavedMsg();
-
-                ResetControls(this.Controls);
-                txtGrpId.Focus();
-
-                // Additional logic here for clearing fields, displaying messages, etc.
 
             }
             catch (Exception ex)
@@ -320,6 +332,8 @@ namespace softgen
                     {
                         Help.o_control.Focus();
                     }
+
+                    txtGrpId.Focus();
                 }
 
                 // Recursively call the method for nested controls
@@ -405,6 +419,7 @@ namespace softgen
                         //msg.FoundMsg("Information Found!");
                         msg.HelpMsg("Information Found!");
                         mblnSearch = true;
+                        txtGrpId.Enabled = false;
                     }
                 }
                 else
@@ -418,13 +433,15 @@ namespace softgen
 
                 msg.VBError(ex, "frmM_Group", "SearchForm", null);
             }
+
         }
 
 
         private void txtGrpId_Validating(object sender, CancelEventArgs e)
 
         {
-            if (this.Text.Contains("<Add>"))
+            string mode = DeTools.GetMode(DeTools.gobjActiveForm);
+            if (mode == DeTools.ADDMODE)
             {
 
 
@@ -493,6 +510,25 @@ namespace softgen
                     // transaction.Commit();
                     dbConnector.connection.Close();
                 }
+            }
+
+            // Check if there are any other child forms open
+            if (this.MdiParent.MdiChildren.Length > 1)
+            {
+                // Bring another child form to the front
+                foreach (Form child in this.MdiParent.MdiChildren)
+                {
+                    if (child != this)
+                    {
+                        child.Focus();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // Bring the main form to the front
+                this.MdiParent.Focus();
             }
         }
 
@@ -630,6 +666,30 @@ namespace softgen
             //        textBox.Text = textBox.Text.ToUpper();
 
             //    }
+        }
+
+        private void txtGrpId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string mode = DeTools.GetMode(DeTools.gobjActiveForm);
+                if (mode == DeTools.MODIFYMODE)
+                {
+                    SearchForm();
+                    //txtGrpId.Enabled=false;
+                    txtGrpDesc.Focus();
+                }
+            }
+        }
+
+        private void frmM_Group_KeyUp(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void txtGrpDesc_Validating(object sender, CancelEventArgs e)
+        {
+
         }
     }////////////////End///////////
 }

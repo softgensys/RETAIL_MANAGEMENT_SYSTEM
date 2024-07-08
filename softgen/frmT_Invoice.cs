@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.Odbc;
 using System.Transactions;
+using System.Windows.Forms;
 
 namespace softgen
 {
@@ -52,12 +53,14 @@ namespace softgen
         public static string GetInvNoFromHelp = "";
         private Dictionary<int, Dictionary<int, object>> originalValues = new Dictionary<int, Dictionary<int, object>>();
         //private List<int> changedRows = new List<int>();
-        //***Central Parameter for Edit In Modify Mode
-        public static bool fields_disable = true;
+        //***Central Parameter for Enable/Disable
+        public static bool Cent_InvNo_enb = false;
         public static bool dbgItemdet_disable = true;
         public static bool chkInvNo = true;
-        public static bool resetcntrl_inUpdateform= false;
-        public static bool resetcntrl_inAddform= false;
+        public static bool resetcntrl_inUpdateform = false;
+        public static bool resetcntrl_inAddform = false;
+        //--------*****FOR TRANSACTION IN PAYDET
+        bool flagrollback_paydet = false;
 
 
 
@@ -67,6 +70,10 @@ namespace softgen
 
             this.Activated += MyForm_Activated;
             // dbgPayDet.EditingControlShowing += dbgPayDet_EditingControlShowing;
+            this.KeyPreview = true; // Make sure the form has key preview enabled
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
+            //this.dbgItemDet.CellEnter += new DataGridViewCellEventHandler(this.dbgItemDet_CellEnter);
+            InitializeDataGridView();
         }
 
         private void MyForm_Activated(object sender, EventArgs e)
@@ -87,7 +94,7 @@ namespace softgen
             // Implementation of SetSearchVar
             // You can define the behavior of SetSearchVar here
 
-            mblnSearch = StartVal;          
+            mblnSearch = StartVal;
         }
 
         public bool GetDEStatus()
@@ -378,6 +385,10 @@ namespace softgen
                     calculatedDiscAmt = Math.Round((qty * sp * discPer) / 100, 2);
                     dbgItemDet.Rows[i].Cells[7].Value = calculatedDiscAmt;
                 }
+                else if (sp >= 0 && discPer == 0)
+                {
+                    dbgItemDet.Rows[i].Cells[7].Value = 0;
+                }
                 dbgItemDet.Rows[i].Cells[10].Value = (qty * sp) - calculatedDiscAmt;
             }
 
@@ -386,9 +397,140 @@ namespace softgen
 
         public void ResetControls(Control.ControlCollection controls)
         {
-            
-            
-            if (resetcntrl_inAddform == true)
+
+            //after save everything is clear
+            //if (resetcntrl_inAddform == true )
+            //{
+            //    foreach (Control control in controls)
+            //    {
+            //        // Check if the control is a TextBox and its ID starts with "txt"
+            //        if (control is System.Windows.Forms.TextBox && control.Name != null && control.Name.StartsWith("txt") && control.Name != "txtInvNo")
+            //        {
+            //            System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
+
+            //            // Reset the value
+            //            textBox.Text = "";
+
+            //            // Enable the TextBox
+            //            textBox.Enabled = true;
+            //        }
+
+            //        txtInvNo.Enabled = Cent_InvNo_enb;
+
+            //        // Recursively call the method for nested controls
+            //        if (control.Controls.Count > 0)
+            //        {
+            //            ResetControls(control.Controls);
+            //        }
+
+            //        if (control is System.Windows.Forms.ComboBox && control.Name != null && control.Name.StartsWith("cbo"))
+            //        {
+            //            System.Windows.Forms.ComboBox cboBox = (System.Windows.Forms.ComboBox)control;
+
+            //            // Reset the value
+            //            cboBox.Text = "";
+
+            //            // Enable the TextBox
+            //            cboBox.Enabled = true;
+            //            //cboCust.Focus();
+            //        }
+
+            //        if (control is Label && control.Name != null && control.Name.StartsWith("rot"))
+            //        {
+            //            Label lbl = (Label)control;
+            //            lbl.Text = "";
+            //            //textBox.Enabled = true;
+            //        }
+
+
+            //        if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg") && !control.Name.StartsWith("dbgPaydet"))
+            //        {
+            //            DataGridView dataGridView = (DataGridView)control;
+
+            //            // Ensure the current row is not dirty
+            //            if (dataGridView.IsCurrentRowDirty)
+            //            {
+            //                // Commit row changes
+            //                dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+            //            }
+
+            //            // Ensure the DataGridView is not in edit mode
+            //            if (dataGridView.IsCurrentCellInEditMode)
+            //            {
+            //                // End edit mode
+            //                dataGridView.EndEdit();
+            //            }
+
+            //            // Clear any combo box columns' items from the data source if necessary
+            //            foreach (DataGridViewColumn column in dataGridView.Columns)
+            //            {
+            //                if (column is DataGridViewComboBoxColumn comboBoxColumn)
+            //                {
+            //                    if (comboBoxColumn.DataSource != null)
+            //                    {
+            //                        // Clear the data source of the combo box column
+            //                        ClearComboBoxColumnDataSource(comboBoxColumn);
+            //                    }
+            //                    else
+            //                    {
+            //                        // If not bound, clear the Items collection
+            //                        comboBoxColumn.Items.Clear();
+            //                    }
+            //                }
+            //            }
+
+            //            // Clear rows directly if not bound to a data source
+            //            if (dataGridView.DataSource == null)
+            //            {
+            //                dataGridView.Rows.Clear();
+            //                PopulateDataGridViewWithComboBox();
+            //                //dbgPayDet.CellValidating += dbgPayDet_CellValidating;
+
+            //                //dbgPayDet.CellValueChanged += dbgPayDet_CellValueChanged;
+            //                // dbgPayDet.CellValueChanged -= dbgPayDet_CellValueChanged;
+            //                UpdateDataGridViewStatus();
+            //                FillCustCombo();
+            //            }
+            //            else
+            //            {
+            //                // Clear the data source itself if bound
+            //                if (dataGridView.DataSource is DataTable dataTable)
+            //                {
+            //                    dataTable.Rows.Clear();
+            //                }
+            //                else if (dataGridView.DataSource is BindingSource bindingSource)
+            //                {
+            //                    bindingSource.Clear();
+            //                }
+            //                // Add additional checks for other data sources as needed
+            //            }
+            //            // Check if the row index and column index are within the valid range
+
+
+
+            //        }
+            //        if (control.Name.StartsWith("dbgItemDet"))
+            //        {
+            //            dbgItemDet.Focus();
+            //            dbgItemDet.CurrentCell = dbgItemDet.Rows[0].Cells[1];
+            //            //dbgItemDet.BeginEdit(true); // This will put the cell in edit mode
+
+            //        }
+
+
+            //        // Recursively call the method for nested controls
+            //        if (control.Controls.Count > 0)
+            //        {
+            //            ResetControls(control.Controls);
+            //        }
+
+            //    }
+
+
+            //}
+            //***for ADD
+
+            if (mblnSearch == true || resetcntrl_inAddform == true)
             {
                 foreach (Control control in controls)
                 {
@@ -403,6 +545,8 @@ namespace softgen
                         // Enable the TextBox
                         textBox.Enabled = true;
                     }
+
+                    txtInvNo.Enabled = Cent_InvNo_enb;
 
                     // Recursively call the method for nested controls
                     if (control.Controls.Count > 0)
@@ -419,6 +563,7 @@ namespace softgen
 
                         // Enable the TextBox
                         cboBox.Enabled = true;
+                        //cboCust.Focus();
                     }
 
                     if (control is Label && control.Name != null && control.Name.StartsWith("rot"))
@@ -429,21 +574,82 @@ namespace softgen
                     }
 
 
-                    //if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg"))
-                    //{
-                    //    DataGridView dataGridView = (DataGridView)control;
+                    if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg") && !control.Name.StartsWith("dbgPaydet"))
+                    {
+                        DataGridView dataGridView = (DataGridView)control;
 
-                    //    // Clear existing rows
-                    //    dataGridView.Rows.Clear();
-                    //    if (dataGridView.AllowUserToAddRows)
-                    //    {
-                    //        dataGridView.Rows.Add();
+                        // Ensure the current row is not dirty
+                        if (dataGridView.IsCurrentRowDirty)
+                        {
+                            // Commit row changes
+                            dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                        }
 
-                    //    }
+                        // Ensure the DataGridView is not in edit mode
+                        if (dataGridView.IsCurrentCellInEditMode)
+                        {
+                            // End edit mode
+                            dataGridView.EndEdit();
+                        }
+
+                        // Clear any combo box columns' items from the data source if necessary
+                        foreach (DataGridViewColumn column in dataGridView.Columns)
+                        {
+                            if (column is DataGridViewComboBoxColumn comboBoxColumn)
+                            {
+                                if (comboBoxColumn.DataSource != null)
+                                {
+                                    // Clear the data source of the combo box column
+                                    ClearComboBoxColumnDataSource(comboBoxColumn);
+                                }
+                                else
+                                {
+                                    // If not bound, clear the Items collection
+                                    comboBoxColumn.Items.Clear();
+                                }
+                            }
+                        }
+
+                        // Clear rows directly if not bound to a data source
+                        if (dataGridView.DataSource == null)
+                        {
+                            dataGridView.Rows.Clear();
+                            PopulateDataGridViewWithComboBox();
+                            //dbgPayDet.CellValidating += dbgPayDet_CellValidating;
+
+                            //dbgPayDet.CellValueChanged += dbgPayDet_CellValueChanged;
+                            // dbgPayDet.CellValueChanged -= dbgPayDet_CellValueChanged;
+                            UpdateDataGridViewStatus();
+                            FillCustCombo();
+                        }
+                        else
+                        {
+                            // Clear the data source itself if bound
+                            if (dataGridView.DataSource is DataTable dataTable)
+                            {
+                                dataTable.Rows.Clear();
+                            }
+                            else if (dataGridView.DataSource is BindingSource bindingSource)
+                            {
+                                bindingSource.Clear();
+                            }
+                            // Add additional checks for other data sources as needed
+                        }
+                    }
+
+                    if (control.Name.StartsWith("dbgItemDet"))
+                    {
+
+                        dbgItemDet.Focus();
+                        dbgItemDet.CurrentCell = dbgItemDet.Rows[0].Cells[1];
+                        // Add the KeyDown event handler
+                        dbgItemDet.KeyDown += dbgItemDet_KeyDown;
+
+                        //dbgItemDet.BeginEdit(true); // This will put the cell in edit mode
+
+                    }
 
 
-                    //    // Reset any other DataGridView-specific properties or settings as needed
-                    //}
 
                     // Recursively call the method for nested controls
                     if (control.Controls.Count > 0)
@@ -451,15 +657,16 @@ namespace softgen
                         ResetControls(control.Controls);
                     }
 
-
                 }
+
             }
+
             else
             {
                 foreach (Control control in controls)
                 {
                     // Check if the control is a TextBox and its ID starts with "txt"
-                    if (control is System.Windows.Forms.TextBox && control.Name != null && control.Name.StartsWith("txt") && control.Name != "txtInvNo")
+                    if (control is System.Windows.Forms.TextBox && control.Name != null && control.Name.StartsWith("txt"))
                     {
                         System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
 
@@ -468,7 +675,10 @@ namespace softgen
 
                         // Enable the TextBox
                         textBox.Enabled = true;
+                        txtInvNo.Focus();
                     }
+
+                    //txtInvNo.Enabled = Cent_InvNo_enb;
 
                     // Recursively call the method for nested controls
                     if (control.Controls.Count > 0)
@@ -485,6 +695,7 @@ namespace softgen
 
                         // Enable the TextBox
                         cboBox.Enabled = true;
+                        //  cboCust.Focus();
                     }
 
                     if (control is Label && control.Name != null && control.Name.StartsWith("rot"))
@@ -495,29 +706,86 @@ namespace softgen
                     }
 
 
-                    //if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg"))
-                    //{
-                    //    DataGridView dataGridView = (DataGridView)control;
-
-                    //    // Clear existing rows
-                    //    dataGridView.Rows.Clear();
-
-
-                    //    // Reset any other DataGridView-specific properties or settings as needed
-                    //}
-
-                    // Recursively call the method for nested controls
-                    if (control.Controls.Count > 0)
+                    if (control is DataGridView && control.Name != null && control.Name.StartsWith("dbg"))
                     {
-                        ResetControls(control.Controls);
+                        DataGridView dataGridView = (DataGridView)control;
+
+                        // Ensure the current row is not dirty
+                        if (dataGridView.IsCurrentRowDirty)
+                        {
+                            // Commit row changes
+                            dataGridView.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                        }
+
+                        // Ensure the DataGridView is not in edit mode
+                        if (dataGridView.IsCurrentCellInEditMode)
+                        {
+                            // End edit mode
+                            dataGridView.EndEdit();
+                        }
+
+                        // Clear any combo box columns' items from the data source if necessary
+                        foreach (DataGridViewColumn column in dataGridView.Columns)
+                        {
+                            if (column is DataGridViewComboBoxColumn comboBoxColumn)
+                            {
+                                if (comboBoxColumn.DataSource != null)
+                                {
+                                    // Clear the data source of the combo box column
+                                    ClearComboBoxColumnDataSource(comboBoxColumn);
+                                }
+                                else
+                                {
+                                    // If not bound, clear the Items collection
+                                    comboBoxColumn.Items.Clear();
+                                }
+                            }
+                        }
+
+                        // Clear rows directly if not bound to a data source
+                        if (dataGridView.DataSource == null)
+                        {
+                            dataGridView.Rows.Clear();
+                            PopulateDataGridViewWithComboBox();
+                            //dbgPayDet.CellValidating += dbgPayDet_CellValidating;
+
+                            //dbgPayDet.CellValueChanged += dbgPayDet_CellValueChanged;
+                            // dbgPayDet.CellValueChanged -= dbgPayDet_CellValueChanged;
+                            UpdateDataGridViewStatus();
+                            FillCustCombo();
+                        }
+                        else
+                        {
+                            // Clear the data source itself if bound
+                            if (dataGridView.DataSource is DataTable dataTable)
+                            {
+                                dataTable.Rows.Clear();
+                            }
+                            else if (dataGridView.DataSource is BindingSource bindingSource)
+                            {
+                                bindingSource.Clear();
+                            }
+                            // Add additional checks for other data sources as needed
+                        }
                     }
-
-
                 }
-
             }
         }
-        
+
+        private void ClearComboBoxColumnDataSource(DataGridViewComboBoxColumn comboBoxColumn)
+        {
+            // Clear the data source of the combo box column
+            if (comboBoxColumn.DataSource is DataTable dataTable)
+            {
+                dataTable.Rows.Clear();
+            }
+            else if (comboBoxColumn.DataSource is BindingSource bindingSource)
+            {
+                bindingSource.Clear();
+            }
+            // Add additional checks for other data sources as needed
+        }
+
         public void ControlsForModify(Control.ControlCollection controls)
         {
             dbgItemDet.ReadOnly = true;
@@ -529,16 +797,16 @@ namespace softgen
                 {
                     System.Windows.Forms.TextBox textBox = (System.Windows.Forms.TextBox)control;
 
-                   
+
                     // Enable the TextBox
                     textBox.Enabled = false;
                 }
 
                 // Recursively call the method for nested controls
-                if (control.Controls.Count > 0)
-                {
-                    ResetControls(control.Controls);
-                }
+                //if (control.Controls.Count > 0)
+                //{
+                //    ResetControls(control.Controls);
+                //}
             }
 
         }
@@ -1020,27 +1288,13 @@ namespace softgen
                     // reader.Close();
                     Cursor.Current = Cursors.WaitCursor;
                 }
-                transaction.Commit();
+                //transaction.Commit();
 
             }
             catch (Exception ex)
             {
 
-                if (transaction != null)
-                {
-                    transaction.Rollback();
-                }
                 MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (dbConnector.connection != null && dbConnector.connection.State == ConnectionState.Open)
-                {
-                    dbConnector.connection.Close();
-                }
-                Cursor.Current = Cursors.Default;
-
-             //   Messages.SavedMsg();
             }
         }
 
@@ -1060,7 +1314,7 @@ namespace softgen
                 if (closingdayok == "Y")
                 {
                     dbConnector.OpenConnection();
-                   transaction= dbConnector.connection.BeginTransaction();
+                    transaction = dbConnector.connection.BeginTransaction();
 
                     if (dbConnector.connection != null)
                     {
@@ -1544,7 +1798,10 @@ namespace softgen
 
         public void SaveForm()
         {
-               
+            bool flagrollback = false;
+            decimal sum = 0;
+            decimal payamt = 0;
+            OdbcTransaction transaction = null;
             try
             {
 
@@ -1561,334 +1818,397 @@ namespace softgen
                 dbgItemDet.Update();
                 //transaction = dbConnector.connection.BeginTransaction();
 
-
-
-                if (mblnSearch == false)
+                // Check the 2nd cell (ComboBox cell)
+                if (dbgItemDet.RowCount - 1 >= 0)
                 {
-                    //if (!CheckMandatoryFields())
-                    //{
-                    //    saveflag = false;
-                    //}
-
-                    //else
-
-                    UpdateInSaveForm();
 
 
 
-                    MessageBox.Show("Changes Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                }  //-------End of If//===========******End of Update Now Add*******==============
-
-                else if (mblnSearch == true)
-                {
-                    int tempinv = 1;
-                    int upperlimit = 999999999;
 
 
+                    // Do something if the 7th cell is checked and the 2nd cell has a selected item
 
-                    dayclosing();
-                    if (closingdayok == "Y")
+
+                    if (mblnSearch == false)
                     {
+                        //if (!CheckMandatoryFields())
+                        //{
+                        //    saveflag = false;
+                        //}
+
+                        //else
+
+                        UpdateInSaveForm();
 
 
 
+                        MessageBox.Show("Changes Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") != null)
+                    }  //-------End of If//===========******End of Update Now Add*******==============
+
+                    else if (mblnSearch == true)
+                    {
+                        int tempinv = 1;
+                        int upperlimit = 999999999;
+
+
+
+                        dayclosing();
+                        if (closingdayok == "Y")
                         {
-                            if (DeTools.CheckTemporaryTableExists("t_invoice_det") != null)
+
+
+
+                            if (DeTools.CheckTemporaryTableExists("t_invoice_hdr") != null)
                             {
-                                if (DeTools.CheckTemporaryTableExists("t_invoice_pay_det") != null)
+                                if (DeTools.CheckTemporaryTableExists("t_invoice_det") != null)
                                 {
-                                    DbConnector dbConnector = new DbConnector();
-                                    Cursor.Current = Cursors.WaitCursor;
-                                    string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
-                                    string machine_name = DeTools.fOSMachineName.GetMachineName();
-
-                                    dbConnector.OpenConnection();
-                                   
-
-                                    if (dbConnector.connection != null)
+                                    if (DeTools.CheckTemporaryTableExists("t_invoice_pay_det") != null)
                                     {
-                                        string GetLastTempInv = "select invoice_no from temp_t_invoice_hdr order by invoice_dt";
-                                        using (OdbcCommand cmdGetLastTempInv = new OdbcCommand(GetLastTempInv, dbConnector.connection))
+                                        DbConnector dbConnector = new DbConnector();
+                                        Cursor.Current = Cursors.WaitCursor;
+                                        string pnlusername = MainForm.Instance.pnlUserName.Text.Trim();
+                                        string machine_name = DeTools.fOSMachineName.GetMachineName();
+
+                                        dbConnector.OpenConnection();
+
+
+                                        if (dbConnector.connection != null)
                                         {
-                                           
-                                            OdbcDataReader fetchGetLastTempInv = cmdGetLastTempInv.ExecuteReader();
+                                            transaction = dbConnector.connection.BeginTransaction();
 
-                                            // Check if there are any rows returned
-                                            if (fetchGetLastTempInv.HasRows)
+                                            string GetLastTempInv = "select invoice_no from temp_t_invoice_hdr order by invoice_dt";
+                                            using (OdbcCommand cmdGetLastTempInv = new OdbcCommand(GetLastTempInv, dbConnector.connection))
                                             {
-                                                tempinv = Convert.ToInt32(cmdGetLastTempInv.ExecuteScalar());
-                                                tempinv++;
-                                            }
-                                        }
+                                                cmdGetLastTempInv.Transaction = transaction;
+                                                OdbcDataReader fetchGetLastTempInv = cmdGetLastTempInv.ExecuteReader();
 
-
-                                        string inserthdrnew = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
-                                                                 "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
-                                                                 "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
-                                                                 "veh_no, po_no, open_yn, comp_name) VALUES" +
-                                                                 " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-
-                                        using (OdbcCommand cmddhdr = new OdbcCommand(inserthdrnew, dbConnector.connection))
-                                        {
-                                            
-                                            string BillTime = DateTime.Now.ToString("HH:mm:ss");
-                                            // cmd.Transaction = transaction;
-
-                                            //cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", gen_invoice_no.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", tempinv));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("invoice_dt", dtpInvDate.Value));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("bill_time", BillTime));
-                                            //-------------------------Cust combo----------------------------//
-                                            //general.FillCombo(cboCust, "cust_id", "m_customer", false);
-
-
-
-                                            if (cboCust.SelectedItem != null && !string.IsNullOrEmpty(cboCust.SelectedItem.ToString().Trim()))
-                                            {
-                                                CustIDFromDatabase = cboCust.SelectedItem.ToString().Trim();
-
-                                                if (CustIDFromDatabase != "")
+                                                // Check if there are any rows returned
+                                                if (fetchGetLastTempInv.HasRows)
                                                 {
+                                                    tempinv = Convert.ToInt32(cmdGetLastTempInv.ExecuteScalar());
+                                                    tempinv++;
+                                                }
+                                            }
 
-                                                    DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
 
-                                                    if (customerData != null)
+                                            string inserthdrnew = "INSERT INTO temp_t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+                                                                     "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+                                                                     "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+                                                                     "veh_no, po_no, open_yn, comp_name) VALUES" +
+                                                                     " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+
+                                            using (OdbcCommand cmddhdr = new OdbcCommand(inserthdrnew, dbConnector.connection))
+                                            {
+                                                cmddhdr.Transaction = transaction;
+                                                string BillTime = DateTime.Now.ToString("HH:mm:ss");
+                                                // cmd.Transaction = transaction;
+
+                                                //cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", gen_invoice_no.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("invoice_no", tempinv));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("invoice_dt", dtpInvDate.Value));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("branch_id", DeTools.strBranch.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("bill_time", BillTime));
+                                                //-------------------------Cust combo----------------------------//
+                                                //general.FillCombo(cboCust, "cust_id", "m_customer", false);
+
+
+
+                                                if (cboCust.SelectedItem != null && !string.IsNullOrEmpty(cboCust.SelectedItem.ToString().Trim()))
+                                                {
+                                                    CustIDFromDatabase = cboCust.SelectedItem.ToString().Trim();
+
+                                                    if (CustIDFromDatabase != "")
                                                     {
-                                                        custName = customerData["cust_name"].ToString().Trim();
-                                                        custPhoneNo = customerData["phone_1"].ToString().Trim();
-                                                        custAdd1 = customerData["address_1"].ToString().Trim();
-                                                        custAdd2 = customerData["address_2"].ToString().Trim();
-                                                        custEmail = customerData["email"].ToString().Trim();
+
+                                                        DataRow customerData = GetCustomerData("m_customer", "cust_id", "C", CustIDFromDatabase);
+
+                                                        if (customerData != null)
+                                                        {
+                                                            custName = customerData["cust_name"].ToString().Trim();
+                                                            custPhoneNo = customerData["phone_1"].ToString().Trim();
+                                                            custAdd1 = customerData["address_1"].ToString().Trim();
+                                                            custAdd2 = customerData["address_2"].ToString().Trim();
+                                                            custEmail = customerData["email"].ToString().Trim();
+                                                        }
+
                                                     }
+
 
                                                 }
 
+                                                cmddhdr.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase ?? ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("sm_id", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("custname", custName));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
 
+                                                cmddhdr.Parameters.Add(new OdbcParameter("xmode", "A"));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("oth_amt", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("notes", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("status", "V"));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                                                cmddhdr.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("auth_on", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("auth_by", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("sale_type", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("machine_id", machine_name));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("o_amt", rotPayAmt.Text.Trim()));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", BillTime));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("veh_no", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("po_no", ""));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+                                                cmddhdr.Parameters.Add(new OdbcParameter("comp_name", machine_name));
+
+                                                cmddhdr.ExecuteNonQuery();
+
+
+                                                Cursor.Current = Cursors.WaitCursor;
                                             }
 
-                                            cmddhdr.Parameters.Add(new OdbcParameter("cust_id", CustIDFromDatabase ?? ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("sm_id", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("custname", custName));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("custaddress", custAdd1 + custAdd2));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("gross_amt", rotGAmt.Text.Trim()));
 
-                                            cmddhdr.Parameters.Add(new OdbcParameter("xmode", "A"));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("disc_amt", txtDiscAmt.Text.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("oth_amt", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("net_amt_after_disc", rotPayAmt.Text.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("round_off", rotRO.Text.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("net_amt", rotNetAmt.Text.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("cash_id", pnlusername));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("notes", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("status", "V"));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                                            cmddhdr.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("auth_on", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("auth_by", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("sale_type", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("machine_id", machine_name));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("o_amt", rotPayAmt.Text.Trim()));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("INV_TIME", BillTime));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("veh_no", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("po_no", ""));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-                                            cmddhdr.Parameters.Add(new OdbcParameter("comp_name", machine_name));
-
-                                            cmddhdr.ExecuteNonQuery();
-
-
-                                            Cursor.Current = Cursors.WaitCursor;
-                                        }
-                                    }
-
-                                    if (strMode != string.Empty && saveflag == true)
-                                    {
-                                        gen_invoice_no = General.GenMDocno("INV").ToString().Trim();
-                                        if (gen_invoice_no.Length == 0)
-                                        {
-                                            gen_invoice_no = "";
-                                            string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
-                                            Messages.ErrorMsg(gstrMsg);
-                                            saveflag = false;
-                                        }
-
-                                    }
-
-                                    string inserttohdrnew = "INSERT INTO t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
-                                                                 "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
-                                                                 "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
-                                                                 "veh_no, po_no) Select ?, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
-                                                                 "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
-                                                                 "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
-                                                                 "veh_no, po_no from temp_t_invoice_hdr where invoice_no= ? and open_yn='Y';";
-
-                                    using (OdbcCommand cmdtohdr = new OdbcCommand(inserttohdrnew, dbConnector.connection))
-                                    {
-                                    
-                                        cmdtohdr.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
-                                        cmdtohdr.Parameters.AddWithValue("@tempinv", tempinv.ToString());
-                                        cmdtohdr.ExecuteNonQuery();
-                                    }
-
-                                    string CheckInvInHdr = "Select * from t_invoice_hdr where invoice_no = ?";
-                                    using (OdbcCommand CheckInvInHdr1 = new OdbcCommand(CheckInvInHdr, dbConnector.connection))
-                                    {
-                                       
-                                        // Assuming dbConnector.connection is a valid OdbcConnection object
-                                        CheckInvInHdr1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
-
-                                        // Open the connection before executing the command
-                                        dbConnector.OpenConnection();
-
-                                        // Execute the query
-                                        OdbcDataReader fetchInvInHdr = CheckInvInHdr1.ExecuteReader();
-
-                                        // Check if there are any rows returned
-                                        if (fetchInvInHdr.HasRows)
-                                        {
-                                            string UpdNIntempHdr = "update temp_t_invoice_hdr set open_yn='N' where invoice_no=?";
-                                            using (OdbcCommand cmdUpdNIntempHdr = new OdbcCommand(UpdNIntempHdr, dbConnector.connection))
+                                            if (strMode != string.Empty && saveflag == true)
                                             {
-                                                cmdUpdNIntempHdr.Parameters.AddWithValue("@tempinv", tempinv);
-                                                cmdUpdNIntempHdr.ExecuteNonQuery();
-                                            }
+                                                gen_invoice_no = General.GenMDocno("INV").ToString().Trim();
+                                                if (gen_invoice_no.Length == 0)
+                                                {
+                                                    gen_invoice_no = "";
 
-                                            string delIntempHdr = "delete from temp_t_invoice_hdr where invoice_no=? and open_yn='N'";
-                                            using (OdbcCommand cmddelIntempHdr = new OdbcCommand(delIntempHdr, dbConnector.connection))
+                                                    saveflag = false;
+                                                }
+
+                                                if (saveflag == true)
+                                                {
+
+
+
+
+
+                                                    string inserttohdrnew = "INSERT INTO t_invoice_hdr (invoice_no, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+                                                                                 "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+                                                                                 "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+                                                                                 "veh_no, po_no) Select ?, invoice_dt, branch_id, bill_time, cust_id, sm_id, custname, custaddress, gross_amt, xmode," +
+                                                                                 "disc_per, disc_amt, oth_amt, net_amt_after_disc, round_off, net_amt, cash_id," +
+                                                                                 "notes, status, ent_on, ent_by, auth_on, auth_by, sale_type, machine_id, o_amt, INV_TIME," +
+                                                                                 "veh_no, po_no from temp_t_invoice_hdr where invoice_no= ? and open_yn='Y';";
+
+                                                    using (OdbcCommand cmdtohdr = new OdbcCommand(inserttohdrnew, dbConnector.connection))
+                                                    {
+
+                                                        cmdtohdr.Transaction = transaction;
+                                                        cmdtohdr.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
+                                                        cmdtohdr.Parameters.AddWithValue("@tempinv", tempinv.ToString());
+                                                        cmdtohdr.ExecuteNonQuery();
+                                                    }
+
+                                                    string CheckInvInHdr = "Select * from t_invoice_hdr where invoice_no = ?";
+                                                    using (OdbcCommand CheckInvInHdr1 = new OdbcCommand(CheckInvInHdr, dbConnector.connection))
+                                                    {
+                                                        CheckInvInHdr1.Transaction = transaction;
+                                                        // Assuming dbConnector.connection is a valid OdbcConnection object
+                                                        CheckInvInHdr1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
+
+                                                        // Open the connection before executing the command
+                                                        //dbConnector.OpenConnection();
+
+                                                        // Execute the query
+                                                        OdbcDataReader fetchInvInHdr = CheckInvInHdr1.ExecuteReader();
+
+                                                        // Check if there are any rows returned
+                                                        if (fetchInvInHdr.HasRows)
+                                                        {
+                                                            string UpdNIntempHdr = "update temp_t_invoice_hdr set open_yn='N' where invoice_no=?";
+                                                            using (OdbcCommand cmdUpdNIntempHdr = new OdbcCommand(UpdNIntempHdr, dbConnector.connection))
+                                                            {
+                                                                cmdUpdNIntempHdr.Transaction = transaction;
+                                                                cmdUpdNIntempHdr.Parameters.AddWithValue("@tempinv", tempinv);
+                                                                cmdUpdNIntempHdr.ExecuteNonQuery();
+                                                            }
+
+                                                            string delIntempHdr = "delete from temp_t_invoice_hdr where invoice_no=? and open_yn='N'";
+                                                            using (OdbcCommand cmddelIntempHdr = new OdbcCommand(delIntempHdr, dbConnector.connection))
+                                                            {
+                                                                cmddelIntempHdr.Transaction = transaction;
+                                                                cmddelIntempHdr.Parameters.AddWithValue("@tempinv", tempinv);
+                                                                cmddelIntempHdr.ExecuteNonQuery();
+                                                            }
+                                                        }
+
+                                                        // Close the reader and connection
+                                                        //fetchInvInHdr.Close();
+
+                                                    }
+
+                                                    //=============END FOR HDR=================//
+                                                    string insertdetnew = "INSERT INTO temp_t_invoice_det" +
+                                                                            "(invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, " +
+                                                                            "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, " +
+                                                                            " pur_rate, cess_perc, cess_amt, excis_amt," +
+                                                                            "open_yn, comp_name) " +
+                                                                            "VALUES " +
+                                                                            "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                                                    //dbConnector.OpenConnection();
+                                                    for (int i = 0; i < dbgItemDet.Rows.Count - 1; i++) // Iterate up to the second last row
+                                                    {
+                                                        DataGridViewRow row = dbgItemDet.Rows[i];
+
+                                                        using (OdbcCommand cmdddet = new OdbcCommand(insertdetnew, dbConnector.connection))
+                                                        {
+                                                            cmdddet.Transaction = transaction;
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@invoice_dt", dtpInvDate.Value));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@branch_id", DeTools.strBranch.Trim()));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@item_id", row.Cells[13].Value?.ToString()));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@bar_code", row.Cells[1].Value?.ToString()));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@item_sl_no", row.Cells[0].Value?.ToString()));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@qty", row.Cells[3].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@mrp", row.Cells[4].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@sale_price", row.Cells[5].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@disc_per", row.Cells[6].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@disc_amt", row.Cells[7].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@sale_tax_per", row.Cells[8].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@sale_tax_amt", row.Cells[11].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@net_amt", row.Cells[10].Value?.ToString() ?? "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@pur_rate", "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@cess_perc", "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@cess_amt", "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@excis_amt", "0.00"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@open_yn", "Y"));
+                                                            cmdddet.Parameters.Add(new OdbcParameter("@comp_name", DeTools.fOSMachineName.GetMachineName()));
+
+                                                            // Execute the command
+                                                            cmdddet.ExecuteNonQuery();
+                                                        }
+                                                    }
+
+                                                    string inserttodetnew = "INSERT INTO t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, " +
+                                                                            "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, " +
+                                                                            " pur_rate, cess_perc, cess_amt, excis_amt)" +
+                                                                            "Select ?, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price," +
+                                                                            "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt," +
+                                                                            "pur_rate, cess_perc, cess_amt, excis_amt  from temp_t_invoice_det where invoice_no= ? and open_yn='Y' and comp_name=?;";
+
+
+                                                    using (OdbcCommand cmdtodet = new OdbcCommand(inserttodetnew, dbConnector.connection))
+                                                    {
+                                                        cmdtodet.Transaction = transaction;
+                                                        cmdtodet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
+                                                        cmdtodet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
+                                                        cmdtodet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                                        cmdtodet.ExecuteNonQuery();
+                                                    }
+
+                                                    string CheckInvInDet = "Select * from t_invoice_det where invoice_no = ?";
+                                                    using (OdbcCommand CheckInvInDet1 = new OdbcCommand(CheckInvInDet, dbConnector.connection))
+                                                    {
+                                                        CheckInvInDet1.Transaction = transaction;
+                                                        // Assuming dbConnector.connection is a valid OdbcConnection object
+                                                        CheckInvInDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
+
+                                                        // Open the connection before executing the command
+                                                        //dbConnector.OpenConnection();
+
+                                                        // Execute the query
+                                                        OdbcDataReader fetchInvInDet = CheckInvInDet1.ExecuteReader();
+
+                                                        // Check if there are any rows returned
+                                                        if (fetchInvInDet.HasRows)
+                                                        {
+                                                            string UpdNIntempDet = "update temp_t_invoice_det set open_yn='N' where invoice_no=?";
+                                                            using (OdbcCommand cmdUpdNIntempDet = new OdbcCommand(UpdNIntempDet, dbConnector.connection))
+                                                            {
+                                                                cmdUpdNIntempDet.Transaction = transaction;
+                                                                cmdUpdNIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
+                                                                cmdUpdNIntempDet.ExecuteNonQuery();
+                                                            }
+
+                                                            string delIntempDet = "delete from temp_t_invoice_det where invoice_no=? and open_yn='N' and comp_name=?";
+                                                            using (OdbcCommand cmddelIntempDet = new OdbcCommand(delIntempDet, dbConnector.connection))
+                                                            {
+                                                                cmddelIntempDet.Transaction = transaction;
+                                                                cmddelIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
+                                                                cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                                                cmddelIntempDet.ExecuteNonQuery();
+                                                            }
+                                                        }
+
+                                                        // Close the reader and connection
+                                                        //fetchInvInDet.Close();
+
+                                                    }
+
+
+                                                    //=============END FOR DET=================//
+
+                                                    addinpaydet(tempinv);
+                                                    if (flagrollback_paydet == false)
+                                                    {
+                                                        transaction.Commit();
+
+                                                    }
+                                                    else if (flagrollback_paydet == true)
+                                                    {
+                                                        transaction.Rollback();
+                                                    }
+                                                }
+                                                else if (saveflag == true)
+                                                {
+                                                    string gstrMsg = "Document series for Item Serial Generation. exhausted or not available. Item cannot be saved.";
+                                                    Messages.ErrorMsg(gstrMsg);
+                                                    transaction.Rollback();
+                                                }
+                                            }
+                                            else
                                             {
-                                                cmddelIntempHdr.Parameters.AddWithValue("@tempinv", tempinv);
-                                                cmddelIntempHdr.ExecuteNonQuery();
+                                                transaction.Rollback();
+                                                flagrollback = true;
                                             }
                                         }
-
-                                        // Close the reader and connection
-                                        fetchInvInHdr.Close();
-
                                     }
                                 }
-                                //=============END FOR HDR=================//
-                                string insertdetnew = "INSERT INTO temp_t_invoice_det" +
-                                                        "(invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, " +
-                                                        "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, " +
-                                                        " pur_rate, cess_perc, cess_amt, excis_amt," +
-                                                        "open_yn, comp_name) " +
-                                                        "VALUES " +
-                                                        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                                dbConnector.OpenConnection();
-                                for (int i = 0; i < dbgItemDet.Rows.Count - 1; i++) // Iterate up to the second last row
-                                {
-                                    DataGridViewRow row = dbgItemDet.Rows[i];
-
-                                    using (OdbcCommand cmdddet = new OdbcCommand(insertdetnew, dbConnector.connection))
-                                    {
-                                       
-                                        cmdddet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@invoice_dt", dtpInvDate.Value));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@branch_id", DeTools.strBranch.Trim()));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@item_id", row.Cells[13].Value?.ToString()));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@bar_code", row.Cells[1].Value?.ToString()));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@item_sl_no", row.Cells[0].Value?.ToString()));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@qty", row.Cells[3].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@mrp", row.Cells[4].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@sale_price", row.Cells[5].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@disc_per", row.Cells[6].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@disc_amt", row.Cells[7].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@sale_tax_per", row.Cells[8].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@sale_tax_amt", row.Cells[11].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@net_amt", row.Cells[10].Value?.ToString() ?? "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@pur_rate", "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@cess_perc", "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@cess_amt", "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@excis_amt", "0.00"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@open_yn", "Y"));
-                                        cmdddet.Parameters.Add(new OdbcParameter("@comp_name", DeTools.fOSMachineName.GetMachineName()));
-
-                                        // Execute the command
-                                        cmdddet.ExecuteNonQuery();
-                                    }
-                                }
-
-                                string inserttodetnew = "INSERT INTO t_invoice_det (invoice_no, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price, " +
-                                                        "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt, " +
-                                                        " pur_rate, cess_perc, cess_amt, excis_amt)" +
-                                                        "Select ?, invoice_dt, branch_id, item_id, bar_code, item_sl_no, qty, mrp, sale_price," +
-                                                        "disc_per, disc_amt, sale_tax_per, sale_tax_amt, net_amt," +
-                                                        "pur_rate, cess_perc, cess_amt, excis_amt  from temp_t_invoice_det where invoice_no= ? and open_yn='Y' and comp_name=?;";
-
-
-                                using (OdbcCommand cmdtodet = new OdbcCommand(inserttodetnew, dbConnector.connection))
-                                {
-                                   
-                                    cmdtodet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
-                                    cmdtodet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
-                                    cmdtodet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
-                                    cmdtodet.ExecuteNonQuery();
-                                }
-
-                                string CheckInvInDet = "Select * from t_invoice_det where invoice_no = ?";
-                                using (OdbcCommand CheckInvInDet1 = new OdbcCommand(CheckInvInDet, dbConnector.connection))
-                                {
-                                   
-                                    // Assuming dbConnector.connection is a valid OdbcConnection object
-                                    CheckInvInDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
-
-                                    // Open the connection before executing the command
-                                    dbConnector.OpenConnection();
-
-                                    // Execute the query
-                                    OdbcDataReader fetchInvInDet = CheckInvInDet1.ExecuteReader();
-
-                                    // Check if there are any rows returned
-                                    if (fetchInvInDet.HasRows)
-                                    {
-                                        string UpdNIntempDet = "update temp_t_invoice_det set open_yn='N' where invoice_no=?";
-                                        using (OdbcCommand cmdUpdNIntempDet = new OdbcCommand(UpdNIntempDet, dbConnector.connection))
-                                        {
-                                         
-                                            cmdUpdNIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
-                                            cmdUpdNIntempDet.ExecuteNonQuery();
-                                        }
-
-                                        string delIntempDet = "delete from temp_t_invoice_det where invoice_no=? and open_yn='N' and comp_name=?";
-                                        using (OdbcCommand cmddelIntempDet = new OdbcCommand(delIntempDet, dbConnector.connection))
-                                        {
-                                           
-                                            cmddelIntempDet.Parameters.AddWithValue("@tempinv", tempinv);
-                                            cmddelIntempDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
-                                            cmddelIntempDet.ExecuteNonQuery();
-                                        }
-                                    }
-
-                                    // Close the reader and connection
-                                    //fetchInvInDet.Close();
-
-                                }
-
                             }
-                            //=============END FOR DET=================//
-
-                            addinpaydet(tempinv);
-
-
+                            Cursor.Current = Cursors.Default;
                         }
-                    }
-                    Cursor.Current = Cursors.Default;
+                        else if (closingdayok == "N")
+                        {
+                            // Do something if either the 7th cell is not checked or the 2nd cell does not have a selected item
+                            MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            //transaction.Rollback();
+                            flagrollback = true;
+                        }
 
-                }//===========================End of ADD================================
-               
+                    }//===========================End of ADD================================
+
+
+
+                }
+                else
+                {
+                    // Do something if either the 7th cell is not checked or the 2nd cell does not have a selected item
+                    MessageBox.Show("Pls Add Any Item In Invoice!", "NO ITEM ADDED!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    //transaction.Rollback();
+                    flagrollback = true;
+
+                }
 
             }//-------try over---------------
             catch (Exception ex)
             {
-              
+
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
                 MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                flagrollback = true;
             }
 
             finally
@@ -1899,10 +2219,18 @@ namespace softgen
                 }
                 Cursor.Current = Cursors.Default;
 
-                
+                if (flagrollback == false && flagrollback_paydet == false)
+                {
                     MessageBox.Show("Invoice Saved Successfully!", "Invoice Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     resetcntrl_inAddform = true;
                     ResetControls(this.Controls);
+
+                }
+                else
+                {
+                    MessageBox.Show(" Bill Not Saved! \n ", "BILL NOT SAVED!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                }
             }
         }
 
@@ -1951,180 +2279,246 @@ namespace softgen
 
         public void addinpaydet(int tempinv)
         {
-            
+            flagrollback_paydet = false;
+            decimal sum = 0;
+            decimal payamt = 0;
+            OdbcTransaction transaction1 = null;
             try
             {
 
+                if (dbgPayDet.RowCount >= 0)
+                {
+                    for (int ii = 0; ii < dbgPayDet.Rows.Count - 1; ii++) // Iterate up to the second last row
+                    {
+                        DataGridViewRow rowpay = dbgPayDet.Rows[ii];
 
-                string insertPayDetQuery = "INSERT INTO temp_t_invoice_pay_det" +
+                        if (rowpay.Cells[1].Value != null && decimal.TryParse(rowpay.Cells[2].Value.ToString(), out decimal value))
+                        {
+                            sum += value;
+                        }
+
+                    }
+                    payamt = Decimal.Parse(rotPayAmt.Text.Trim());
+
+                    if (sum == payamt)
+                    {
+                        var comboBoxCell = dbgPayDet.Rows[0].Cells[1] as DataGridViewComboBoxCell;
+                        bool hasSelectedItem = false;
+
+                        if (comboBoxCell != null && comboBoxCell.Value != null)
+                        {
+                            hasSelectedItem = !string.IsNullOrWhiteSpace(comboBoxCell.Value.ToString());
+                        }
+
+                        if (hasSelectedItem)
+                        {
+                            string insertPayDetQuery = "INSERT INTO temp_t_invoice_pay_det" +
                                  "(invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, " +
                                  "coup_id, cust_id, bank_name, cheque_no, cheque_dt, gv_no, gv_amt, " +
                                  "open_yn, comp_name) " +
                                  "VALUES " +
                                  "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                dbConnector = new DbConnector();
-                // dbConnector.connectionString= new OdbcConnection();
-                dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
-                dbConnector.OpenConnection();
-                
-                if (dbConnector.connection != null)
-                {
+                            dbConnector = new DbConnector();
+                            // dbConnector.connectionString= new OdbcConnection();
+                            dbConnector.connection = new OdbcConnection(dbConnector.connectionString);
+                            dbConnector.OpenConnection();
 
-                    for (int i = 0; i < dbgPayDet.Rows.Count - 1; i++) // Iterate up to the second last row
-                    {
+                            if (dbConnector.connection != null)
+                            {
+                                transaction1 = dbConnector.connection.BeginTransaction();
+
+                                for (int i = 0; i < dbgPayDet.Rows.Count - 1; i++) // Iterate up to the second last row
+                                {
 
 
-                        DataGridViewRow row = dbgPayDet.Rows[i];
+                                    DataGridViewRow row = dbgPayDet.Rows[i];
 
-                        using (OdbcCommand cmdpaydet = new OdbcCommand(insertPayDetQuery, dbConnector.connection))
+                                    using (OdbcCommand cmdpaydet = new OdbcCommand(insertPayDetQuery, dbConnector.connection))
+                                    {
+                                        cmdpaydet.Transaction = transaction1;
+                                        cmdpaydet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
+                                        // Assuming the second column is the ComboBox column
+                                        //DataGridViewComboBoxCell comboBoxCell = row.Cells[1] as DataGridViewComboBoxCell;
+
+
+
+                                        if (paymodtxt != "")
+                                        {
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@pay_mode_id", paymodtxt.Trim()));
+
+
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@branch_id", DeTools.strBranch.Trim()));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@pay_Amt", row.Cells[2].Value?.ToString() ?? "0.00"));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@cash_t_amt", row.Cells[3].Value?.ToString() ?? "0.00"));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@ref_amt", row.Cells[4].Value?.ToString() ?? "0.00"));
+
+                                            // Assuming paymode is a control that contains the payment mode value
+                                            if (paymodtxt == "CC")
+                                            {
+
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@cc_code", ccodetxt.Trim()));
+
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@cc_no", row.Cells[6].Value?.ToString() ?? ""));
+                                            }
+                                            else
+                                            {
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@cc_code", ""));
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@cc_no", ""));
+                                            }
+
+                                            if (paymodtxt == "COUP")
+                                            {
+
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@coup_id", couptxt.Trim()));
+
+                                            }
+                                            else
+                                            {
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@coup_id", ""));
+                                            }
+
+                                            if (cboCust.Text != "")
+                                            {
+
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@cust_id", row.Cells[8].Value.ToString()));
+
+                                            }
+
+                                            else
+                                            {
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@cust_id", ""));
+                                            }
+
+                                            if (row.Cells[9].Value != null)
+                                            {
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@bank_name", row.Cells[9].Value.ToString()));
+                                            }
+                                            else
+                                            {
+                                                cmdpaydet.Parameters.Add(new OdbcParameter("@bank_name", ""));
+                                            }
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@cheque_no", (row.Cells[10].Value != null) ? row.Cells[10].Value.ToString() : ""));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@cheque_dt", (row.Cells[11].Value != null) ? row.Cells[11].Value.ToString() : ""));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@gv_no", (row.Cells[12].Value != null) ? row.Cells[12].Value.ToString() : ""));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@gv_amt", (row.Cells[13].Value != null) ? row.Cells[13].Value.ToString() : ""));
+
+
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@open_yn", "Y"));
+                                            cmdpaydet.Parameters.Add(new OdbcParameter("@comp_name", DeTools.fOSMachineName.GetMachineName()));
+
+
+                                            // Execute the command
+                                            cmdpaydet.ExecuteNonQuery();
+                                        }
+                                        else
+                                        {
+                                            // Handle the case where selectedValue is null
+                                            MessageBox.Show("Selected value is null!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+
+                                    }
+                                }
+
+                                string inserttopaydetnew = "INSERT INTO t_invoice_pay_det (invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, " +
+                                                         "coup_id, cust_id, bank_name, cheque_no, cheque_dt, gv_no, gv_amt)" +
+                                                         "Select ?, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, " +
+                                                         "coup_id, cust_id, bank_name, cheque_no, cheque_dt, gv_no, gv_amt " +
+                                                         "from temp_t_invoice_pay_det where invoice_no= ? and open_yn='Y' and comp_name=?;";
+
+
+                                using (OdbcCommand cmdtopaydet = new OdbcCommand(inserttopaydetnew, dbConnector.connection))
+                                {
+                                    cmdtopaydet.Transaction = transaction1;
+                                    cmdtopaydet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
+                                    cmdtopaydet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
+                                    cmdtopaydet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                    cmdtopaydet.ExecuteNonQuery();
+                                }
+
+                                string CheckInvInpayPayDet = "Select * from t_invoice_pay_det where invoice_no = ?";
+                                using (OdbcCommand CheckInvInPayDet1 = new OdbcCommand(CheckInvInpayPayDet, dbConnector.connection))
+                                {
+                                    CheckInvInPayDet1.Transaction = transaction1;
+                                    // Assuming dbConnector.connection is a valid OdbcConnection object
+                                    CheckInvInPayDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
+
+                                    // Open the connection before executing the command
+                                    //dbConnector.OpenConnection();
+
+                                    // Execute the query
+                                    OdbcDataReader fetchInvInPayDet = CheckInvInPayDet1.ExecuteReader();
+
+                                    // Check if there are any rows returned
+                                    if (fetchInvInPayDet.HasRows)
+                                    {
+                                        string UpdNIntempPayDet = "update temp_t_invoice_pay_det set open_yn='N' where invoice_no=?";
+                                        using (OdbcCommand cmdUpdNIntempPayDet = new OdbcCommand(UpdNIntempPayDet, dbConnector.connection))
+                                        {
+                                            cmdUpdNIntempPayDet.Transaction = transaction1;
+                                            cmdUpdNIntempPayDet.Parameters.AddWithValue("@tempinv", tempinv);
+                                            cmdUpdNIntempPayDet.ExecuteNonQuery();
+                                        }
+
+                                        string delIntempPayDet = "delete from temp_t_invoice_pay_det where invoice_no=? and open_yn='N' and comp_name=?";
+                                        using (OdbcCommand cmddelIntempPayDet = new OdbcCommand(delIntempPayDet, dbConnector.connection))
+                                        {
+                                            cmddelIntempPayDet.Transaction = transaction1;
+                                            cmddelIntempPayDet.Parameters.AddWithValue("@tempinv", tempinv);
+                                            cmddelIntempPayDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
+                                            cmddelIntempPayDet.ExecuteNonQuery();
+                                        }
+                                    }
+
+                                    // Close the reader and connection
+                                    // fetchInvInPayDet.Close();
+
+                                }
+
+                                if (flagrollback_paydet == false)
+                                {
+                                    transaction1.Commit();
+
+                                }
+                            }
+                        }
+                        else
                         {
-                            
-                            cmdpaydet.Parameters.Add(new OdbcParameter("@invoice_no", tempinv));
-                            // Assuming the second column is the ComboBox column
-                            //DataGridViewComboBoxCell comboBoxCell = row.Cells[1] as DataGridViewComboBoxCell;
-
-
-
-                            if (paymodtxt != "")
-                            {
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@pay_mode_id", paymodtxt.Trim()));
-
-
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@branch_id", DeTools.strBranch.Trim()));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@pay_Amt", row.Cells[2].Value?.ToString() ?? "0.00"));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@cash_t_amt", row.Cells[3].Value?.ToString() ?? "0.00"));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@ref_amt", row.Cells[4].Value?.ToString() ?? "0.00"));
-
-                                // Assuming paymode is a control that contains the payment mode value
-                                if (paymodtxt == "CC")
-                                {
-
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@cc_code", ccodetxt.Trim()));
-
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@cc_no", row.Cells[6].Value?.ToString() ?? ""));
-                                }
-                                else
-                                {
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@cc_code", ""));
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@cc_no", ""));
-                                }
-
-                                if (paymodtxt == "COUP")
-                                {
-
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@coup_id", couptxt.Trim()));
-
-                                }
-                                else
-                                {
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@coup_id", ""));
-                                }
-
-                                if (cboCust.Text != "")
-                                {
-
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@cust_id", row.Cells[8].Value.ToString()));
-
-                                }
-
-                                else
-                                {
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@cust_id", ""));
-                                }
-
-                                if (row.Cells[9].Value != null)
-                                {
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@bank_name", row.Cells[9].Value.ToString()));
-                                }
-                                else
-                                {
-                                    cmdpaydet.Parameters.Add(new OdbcParameter("@bank_name", ""));
-                                }
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@cheque_no", (row.Cells[10].Value != null) ? row.Cells[10].Value.ToString() : ""));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@cheque_dt", (row.Cells[11].Value != null) ? row.Cells[11].Value.ToString() : ""));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@gv_no", (row.Cells[12].Value != null) ? row.Cells[12].Value.ToString() : ""));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@gv_amt", (row.Cells[13].Value != null) ? row.Cells[13].Value.ToString() : ""));
-
-
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@open_yn", "Y"));
-                                cmdpaydet.Parameters.Add(new OdbcParameter("@comp_name", DeTools.fOSMachineName.GetMachineName()));
-
-
-                                // Execute the command
-                                cmdpaydet.ExecuteNonQuery();
-                            }
-                            else
-                            {
-                                // Handle the case where selectedValue is null
-                                MessageBox.Show("Selected value is null!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            // Do something if either the 7th cell is not checked or the 2nd cell does not have a selected item
+                            MessageBox.Show("Pls Select The Payment Mode!", "SELECT PAYMENT MODE!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            //transaction1.Rollback();
+                            flagrollback_paydet = true;
 
                         }
                     }
-
-                    string inserttopaydetnew = "INSERT INTO t_invoice_pay_det (invoice_no, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, " +
-                                             "coup_id, cust_id, bank_name, cheque_no, cheque_dt, gv_no, gv_amt)" +
-                                             "Select ?, pay_mode_id, branch_id, pay_amt, cash_t_amt, ref_amt, cc_code, cc_no, " +
-                                             "coup_id, cust_id, bank_name, cheque_no, cheque_dt, gv_no, gv_amt " +
-                                             "from temp_t_invoice_pay_det where invoice_no= ? and open_yn='Y' and comp_name=?;";
-
-
-                    using (OdbcCommand cmdtopaydet = new OdbcCommand(inserttopaydetnew, dbConnector.connection))
+                    else
                     {
-                       
-                        cmdtopaydet.Parameters.AddWithValue("@invoice_no", gen_invoice_no.Trim());
-                        cmdtopaydet.Parameters.AddWithValue("@tempinv", tempinv.ToString());
-                        cmdtopaydet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
-                        cmdtopaydet.ExecuteNonQuery();
-                    }
-
-                    string CheckInvInpayPayDet = "Select * from t_invoice_pay_det where invoice_no = ?";
-                    using (OdbcCommand CheckInvInPayDet1 = new OdbcCommand(CheckInvInpayPayDet, dbConnector.connection))
-                    {
-                       
-                        // Assuming dbConnector.connection is a valid OdbcConnection object
-                        CheckInvInPayDet1.Parameters.AddWithValue("@gen_invoice_no", gen_invoice_no.Trim());
-
-                        // Open the connection before executing the command
-                        dbConnector.OpenConnection();
-
-                        // Execute the query
-                        OdbcDataReader fetchInvInPayDet = CheckInvInPayDet1.ExecuteReader();
-
-                        // Check if there are any rows returned
-                        if (fetchInvInPayDet.HasRows)
-                        {
-                            string UpdNIntempPayDet = "update temp_t_invoice_pay_det set open_yn='N' where invoice_no=?";
-                            using (OdbcCommand cmdUpdNIntempPayDet = new OdbcCommand(UpdNIntempPayDet, dbConnector.connection))
-                            {
-                              
-                                cmdUpdNIntempPayDet.Parameters.AddWithValue("@tempinv", tempinv);
-                                cmdUpdNIntempPayDet.ExecuteNonQuery();
-                            }
-
-                            string delIntempPayDet = "delete from temp_t_invoice_pay_det where invoice_no=? and open_yn='N' and comp_name=?";
-                            using (OdbcCommand cmddelIntempPayDet = new OdbcCommand(delIntempPayDet, dbConnector.connection))
-                            {
-                               
-                                cmddelIntempPayDet.Parameters.AddWithValue("@tempinv", tempinv);
-                                cmddelIntempPayDet.Parameters.AddWithValue("@comp_name", DeTools.fOSMachineName.GetMachineName());
-                                cmddelIntempPayDet.ExecuteNonQuery();
-                            }
-                        }
-
-                        // Close the reader and connection
-                        fetchInvInPayDet.Close();
+                        // Do something if either the 7th cell is not checked or the 2nd cell does not have a selected item
+                        MessageBox.Show("SETTLEMENT MISMATCH! \n Pls Pay The Exact Payment Amount!", "PAYMENT AMOUNT NOT MATCHED!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                        //transaction1.Rollback();
+                        flagrollback_paydet = true;
 
                     }
-
 
                 }
-              
+                else
+                {
+                    // Do something if either the 7th cell is not checked or the 2nd cell does not have a selected item
+                    MessageBox.Show("Pls Select The Payment Mode!", "NO PAYMENT MODE ADDED!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    //transaction1.Rollback();
+                    flagrollback_paydet = true;
+
+                }
+
+
             }
             catch (Exception ex)
             {
-                
+                if (transaction1 != null)
+                {
+                    transaction1.Rollback();
+                }
                 MessageBox.Show(" Bill Not Saved \n An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                flagrollback_paydet = true;
             }
 
             finally
@@ -2135,7 +2529,7 @@ namespace softgen
                 }
                 Cursor.Current = Cursors.Default;
 
-             
+
             }
         }
         public string GetBrand()
@@ -2477,7 +2871,7 @@ namespace softgen
             {
                 dbConnector.OpenConnection();
 
-                string chk_cls_day = "select IFNULL(max(invoice_dt),0) as max_invoice_dt from t_invoice_hdr;";
+                string chk_cls_day = "select IFNULL(max(invoice_dt),'0') as max_invoice_dt from t_invoice_hdr;";
                 using (OdbcDataReader chk_cls_day_read = dbConnector.CreateResultset(chk_cls_day))
                 {
                     if (chk_cls_day_read.HasRows && chk_cls_day_read.Read())
@@ -2488,37 +2882,59 @@ namespace softgen
                             // Retrieve the max_invoice_dt value
                             string maxInvoiceDateStr = chk_cls_day_read.GetString(chk_cls_day_read.GetOrdinal("max_invoice_dt"));
                             string closedt;
-                            // Check if max_invoice_dt is empty or equal to the current date
-                            if (!string.IsNullOrEmpty(maxInvoiceDateStr) || DateTime.TryParse(maxInvoiceDateStr, out DateTime maxInvoiceDate) && maxInvoiceDate.Date == DateTime.Today)
-                            {
-                                closedt = chk_cls_day_read["max_invoice_dt"].ToString().Trim();
-                                closingdayok = "Y";
 
+                            // Check if max_invoice_dt is empty or equal to the current date
+                            if (!string.IsNullOrEmpty(maxInvoiceDateStr))
+                            {
+                                // Specify the format of the date string
+                                string format = "yyyy-MM-dd HH:mm:ss";
+
+                                if (DateTime.TryParseExact(maxInvoiceDateStr, format, null, System.Globalization.DateTimeStyles.None, out DateTime maxInvoiceDate))
+                                {
+                                    if (maxInvoiceDate.Date <= DateTime.Today)
+                                    {
+                                        closedt = maxInvoiceDateStr;
+                                        closingdayok = "Y";
+                                    }
+                                    else
+                                    {
+                                        //MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                        closingdayok = "N";
+                                    }
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Invalid date format in database!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    closingdayok = "N";
+                                }
                             }
                             else
                             {
-                                MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                                 closingdayok = "N";
                             }
-
+                        }
+                        else
+                        {
+                            closingdayok = "N";
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Billing Not Possible In Back Date!", "Billing Not Possible", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                         closingdayok = "N";
                     }
-
                 }
+
                 dbConnector.connection.Close();
                 return closingdayok;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                MessageBox.Show("An error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 throw;
             }
         }
+
+
 
         //**FOR THE PURPOSE OF SEARCHING THE INVOICE WHICH IS NOT SAVED AND ALSO WHICH IS SAVED
         public void SearchForm()
@@ -3058,6 +3474,10 @@ namespace softgen
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    MessageBox.Show("SORRY !, \n No Information Available! for " + txtInvNo.Text.ToString() + "", "NO INFO AVAILABLE!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                                }
                             }
                         }
                     }
@@ -3199,13 +3619,33 @@ namespace softgen
 
         }
 
+
+        private void DiscountPercentage_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Allow control keys such as backspace
+            if (char.IsControl(e.KeyChar))
+            {
+                return;
+            }
+
+            // Allow digits and a single decimal point
+            TextBox textBox = sender as TextBox;
+            if (char.IsDigit(e.KeyChar) || (e.KeyChar == '.' && !textBox.Text.Contains(".")))
+            {
+                return;
+            }
+
+            // Disallow any other characters
+            e.Handled = true;
+        }
+
         private void dbgItemDet_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             if (e.Control is DataGridViewTextBoxEditingControl editingControl)
             {
                 // Assuming the columns you want to restrict are at indices 1, 2, and 3
                 int columnIndex = dbgItemDet.CurrentCell.ColumnIndex;
-                if (columnIndex > 3)
+                if (columnIndex > 3 && columnIndex != 6)
                 {
                     editingControl.KeyPress -= NumericKeyPressHandlergrthree;
                     editingControl.KeyPress += NumericKeyPressHandlergrthree;
@@ -3218,6 +3658,22 @@ namespace softgen
                     editingControl.KeyPress += NumericKeyPressHandlerforthree;
 
 
+                }
+                else if (columnIndex == 6)
+                {
+                    editingControl.KeyPress -= NumericKeyPressHandlergrthreeFORDISC;
+                    editingControl.KeyPress += NumericKeyPressHandlergrthreeFORDISC;
+                }
+            }
+            if (dbgItemDet.CurrentCell.ColumnIndex == 6)
+            {
+                TextBox txt = e.Control as TextBox;
+                if (txt != null)
+                {
+                    // Detach the existing event handler to avoid multiple subscriptions
+                    txt.KeyPress -= new KeyPressEventHandler(DiscountPercentage_KeyPress);
+                    // Attach the event handler to restrict the input
+                    txt.KeyPress += new KeyPressEventHandler(DiscountPercentage_KeyPress);
                 }
             }
         }
@@ -3267,18 +3723,71 @@ namespace softgen
 
         private void dbgItemDet_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (!cellValueChangedInProgress)
+            int columnIndex = 1;
+            // Ensure we are not in the new row already
+            //if (e.RowIndex >= 0 && e.RowIndex < dbgItemDet.Rows.Count - 1)
+            //{
+            //    // Check if cell 1 (second column) has data
+            //    if (e.ColumnIndex == 1 && dbgItemDet.Rows[e.RowIndex].Cells[1].Value != null)
+            //    {
+            //        AddNewRowIfNeeded();
+            //    }
+            //}
+
+            // Check if the value changed is in the second column
+            // Check if the value changed is in the second column
+            if (e.ColumnIndex == columnIndex && e.RowIndex >= 0)
             {
-                cellValueChangedInProgress = true;
+                DataGridView dgv = (DataGridView)sender;
 
-                // Your event handling code here
-                UpdateRotGAmt();
-                disccal();
+                // Get the value of the edited cell
+                var cellValue = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
 
-                cellValueChangedInProgress = false;
-                UpdateDataGridViewStatus();
+                // Check if the value is not null or empty
+                if (cellValue != null && !string.IsNullOrEmpty(cellValue.ToString()))
+                {
+                    // Check if the current row is the last row (new row)
+                    if (e.RowIndex == dgv.Rows.Count - 1)
+                    {
+                        // Add a new row to the DataGridView
+                        dgv.Rows.Add();
+
+                        // Set the focus on the second column of the new row
+                        dgv.CurrentCell = dgv.Rows[dgv.Rows.Count - 1].Cells[columnIndex];
+
+                        // Optionally, refresh the DataGridView if needed
+                        dgv.Update();
+                        dgv.Refresh();
+                    }
+                }
             }
 
+        }
+
+        private void AddNewRowIfNeeded()
+        {
+            // Check if there is already an empty row (excluding the new row placeholder)
+            bool emptyRowExists = false;
+
+            for (int i = 0; i < dbgItemDet.Rows.Count - 1; i++)
+            {
+                var row = dbgItemDet.Rows[i];
+                if (string.IsNullOrEmpty(Convert.ToString(row.Cells[0].Value)) &&
+                    string.IsNullOrEmpty(Convert.ToString(row.Cells[1].Value)) &&
+                    string.IsNullOrEmpty(Convert.ToString(row.Cells[2].Value)))
+                {
+                    emptyRowExists = true;
+                    break;
+                }
+            }
+
+            // If no empty row exists, add a new row and set default value
+            if (!emptyRowExists)
+            {
+                int newRowIdx = dbgItemDet.Rows.Add();
+                dbgItemDet.Rows[newRowIdx].Cells[10].Value = 0; // Add default value 0 to the 11th cell (index 10)
+                dbgItemDet.CurrentCell = dbgItemDet.Rows[newRowIdx].Cells[1];
+            }
         }
 
         private void dbgItemDet_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
@@ -3374,43 +3883,184 @@ namespace softgen
         private void dbgItemDet_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             int columnIndex = 1; // 0 corresponds to the first column
+            int columnIndex2 = 2; // 0 corresponds to the first column
+            int columnIndex3 = 3; // 0 corresponds to the first column
+
 
             if (e.RowIndex >= 0 && e.ColumnIndex == columnIndex)
             {
-                DataGridView dgv = (DataGridView)sender;
+                DeTools.dgv = (DataGridView)sender;
+                DeTools.dgvCell = DeTools.dgv.Rows[e.RowIndex].Cells[e.ColumnIndex];
                 string helpTopic = "9001"; // Adjust this based on your requirement
 
                 // Store the help topic for the specific cell
-                Tuple<DataGridView, int, int> key = Tuple.Create(dgv, e.RowIndex, e.ColumnIndex);
+                Tuple<DataGridView, int, int> key = Tuple.Create(DeTools.dgv, e.RowIndex, e.ColumnIndex);
                 Help.dgvCellToHelpTopicMapping[key] = helpTopic;
+
+
+            }
+
+
+        }
+
+        private void InitializeDataGridView()
+        {
+            // Add a hidden column to store the flag
+            DataGridViewTextBoxColumn flagColumn = new DataGridViewTextBoxColumn();
+            flagColumn.Name = "RowAddedFlag";
+            flagColumn.HeaderText = "RowAddedFlag";
+            flagColumn.Visible = false; // Hide the column
+            this.dbgItemDet.Columns.Add(flagColumn);
+
+            // Initialize the flag for the default row
+            if (this.dbgItemDet.Rows.Count > 0)
+            {
+                this.dbgItemDet.Rows[0].Cells["RowAddedFlag"].Value = true;
             }
         }
 
         private void NumericKeyPressHandlergrthree(object sender, KeyPressEventArgs e)
         {
-            // Allow numeric characters, backspace, and the decimal point
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+            if (sender is TextBox textBox)
             {
-                e.Handled = true; // Suppress the key press
-            }
-            //If the character is a decimal point
-            if (sender is System.Windows.Forms.TextBox textBox)
-            {
-                if (textBox.Text.Contains('.'))
+                // Allow control characters, digits, and a single decimal point
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+                {
+                    e.Handled = true; // Suppress the key press
+                    return;
+                }
+
+                // Allow only one decimal point
+                if (e.KeyChar == '.' && textBox.Text.Contains('.'))
+                {
+                    e.Handled = true; // Suppress the key press
+                    return;
+                }
+
+                // Restrict the input to two decimal places
+                if (char.IsDigit(e.KeyChar) && textBox.Text.Contains('.'))
                 {
                     int dotIndex = textBox.Text.IndexOf('.');
-
-
-                    if (dotIndex != -1 && textBox.Text.Length - dotIndex > 2)
+                    if (textBox.SelectionStart > dotIndex && textBox.Text.Substring(dotIndex + 1).Length >= 2)
                     {
-                        // Remove extra digits beyond 3 decimal places
-                        textBox.Text = textBox.Text.Substring(0, dotIndex + 2);
-                        //textBox.SelectionStart = textBox.Text.Length; // Move cursor to the end
+                        e.Handled = true; // Suppress the key press
+                        return;
                     }
                 }
             }
-
         }
+
+        private void NumericKeyPressHandlergrthreeFORDISC(object sender, KeyPressEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Allow control characters, digits, and a single decimal point
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+                {
+                    e.Handled = true; // Suppress the key press
+                    return;
+                }
+
+                // Allow only one decimal point
+                if (e.KeyChar == '.' && textBox.Text.Contains('.'))
+                {
+                    e.Handled = true; // Suppress the key press
+                    return;
+                }
+
+                // Restrict the input to two decimal places
+                if (char.IsDigit(e.KeyChar) && textBox.Text.Contains('.'))
+                {
+                    int dotIndex = textBox.Text.IndexOf('.');
+                    if (textBox.SelectionStart > dotIndex && textBox.Text.Substring(dotIndex + 1).Length >= 2)
+                    {
+                        e.Handled = true; // Suppress the key press
+                        return;
+                    }
+                }
+
+                // Restrict the input to two digits before the decimal point
+                if (char.IsDigit(e.KeyChar) && !textBox.Text.Contains('.'))
+                {
+                    if (textBox.Text.Length >= 2 && textBox.SelectionStart <= 2)
+                    {
+                        e.Handled = true; // Suppress the key press
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void NumericKeyPressHandlergrthreeFORAmtPay(object sender, KeyPressEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Allow control characters, digits, and a single decimal point
+                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+                {
+                    e.Handled = true; // Suppress the key press
+                    return;
+                }
+
+                // Allow only one decimal point
+                if (e.KeyChar == '.' && textBox.Text.Contains('.'))
+                {
+                    e.Handled = true; // Suppress the key press
+                    return;
+                }
+
+                // Restrict the input to two decimal places
+                if (char.IsDigit(e.KeyChar) && textBox.Text.Contains('.'))
+                {
+                    int dotIndex = textBox.Text.IndexOf('.');
+                    if (textBox.SelectionStart > dotIndex && textBox.Text.Substring(dotIndex + 1).Length >= 2)
+                    {
+                        e.Handled = true; // Suppress the key press
+                        return;
+                    }
+                }
+
+                // Restrict the input to two digits before the decimal point
+                if (char.IsDigit(e.KeyChar) && !textBox.Text.Contains('.'))
+                {
+                    if (textBox.Text.Length >= 2 && textBox.SelectionStart <= 2)
+                    {
+                        e.Handled = true; // Suppress the key press
+                        return;
+                    }
+                }
+
+                // Get the current value in the rotPayAmt label
+                decimal rotPayAmtValue = decimal.Parse(rotPayAmt.Text);
+
+                // Get the potential new text value if the key press is allowed
+                string newText;
+                if (textBox.SelectionLength > 0)
+                {
+                    // If text is selected, it will be replaced by the new key press
+                    newText = textBox.Text.Substring(0, textBox.SelectionStart) + e.KeyChar + textBox.Text.Substring(textBox.SelectionStart + textBox.SelectionLength);
+                }
+                else
+                {
+                    // If no text is selected, the new character will be inserted at the caret position
+                    newText = textBox.Text.Substring(0, textBox.SelectionStart) + e.KeyChar + textBox.Text.Substring(textBox.SelectionStart);
+                }
+
+                // Try to parse the new text to a decimal
+                if (decimal.TryParse(newText, out decimal newValue))
+                {
+                    // Check if the new value exceeds the rotPayAmt value
+                    if (newValue > rotPayAmtValue)
+                    {
+                        e.Handled = true; // Suppress the key press
+                        return;
+                    }
+                }
+            }
+        }
+
+
+
         private void NumericKeyPressHandlerforthree(object sender, KeyPressEventArgs e)
         {
             // Allow numeric characters, backspace, and the decimal point
@@ -3437,6 +4087,7 @@ namespace softgen
             try
             {
 
+
                 // Check if the edited cell is in a column where formatting is desired
                 if (e.ColumnIndex >= 3)
                 {
@@ -3462,178 +4113,228 @@ namespace softgen
                 }
 
                 // Check if the edited cell is in the second column (index 1)
+                //if (e.ColumnIndex == 1 && e.RowIndex >= 0)
+                //{
+                //    if (dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() != null && dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() != "")
+                //    {
+
+
+                //        string userInput = dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+
+                //        bool itemFound;
+                //        bool barFound;
+                //        DataTable dataTable;
+                //        string bar_code = null;
+                //        string bar = null;
+                //        string itemnm = null;
+                //        string itemid = null;
+                //        string plu;
+                //        bool itempluFound;
+                //        string mrp = null;
+                //        string sale_price = null;
+                //        string disc_per = null;
+                //        string sale_tax_paid = null;
+                //        string cess_perc = null;
+                //        SearchItemByID(userInput, out itemFound, out itemnm, out itemid, out mrp, out sale_price, out disc_per, out sale_tax_paid, out cess_perc, out dataTable);
+
+                //        // If item not found by ID, search by barcode
+                //        if (!itemFound)
+                //        {
+                //            SearchItemByBarcode(userInput, out barFound, out itemnm, out bar, out dataTable);
+
+
+                //            if (!barFound)
+                //            {
+                //                SearchItemByBarcodeSingle(userInput, out barFound, out itemnm, out bar, out mrp, out sale_price, out itemid, out disc_per, out sale_tax_paid, out cess_perc);
+
+                //                dbgItemDet.Rows[e.RowIndex].Cells[1].Value = bar; // Barcode
+                //                dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                //                dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+                //                dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
+                //                dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;
+                //                dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
+                //                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
+                //                decimal salePrice = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                //                decimal discountPercent = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
+                //                decimal discountAmount = salePrice * discountPercent / 100; // Calculate discount amount
+
+                //                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
+
+                //                decimal salePrice1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                //                decimal discPerValue;
+                //                if (Decimal.TryParse(disc_per, out discPerValue) && discPerValue > 0.00M)
+                //                {
+                //                    decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
+                //                    decimal discountPercent1 = (discountAmount1 / salePrice1) * 100; // Calculate discount percent
+                //                    dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
+
+
+                //                }
+
+
+                //                dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
+                //                dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
+                //                dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
+                //                                                                   //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
+                //                dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
+                //                dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
+
+
+
+                //                if (!barFound)
+                //                {
+                //                    SearchItemByPLU(userInput, out itempluFound, out itemnm, out plu, out mrp, out sale_price, out itemid, out disc_per, out sale_tax_paid, out cess_perc);
+                //                    //if (!itempluFound)
+                //                    //{
+                //                    //    //MessageBox.Show("This Item Does Not Exists!", "Item Not Exists", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                //                    //}
+                //                    if (itempluFound)
+                //                    {
+
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[1].Value = plu; // Barcode
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
+                //                        decimal salePricee = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                //                        decimal discountPercentt = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
+                //                        decimal discountAmountt = salePricee * discountPercentt / 100; // Calculate discount amount
+
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
+
+                //                        decimal salePrice11 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
+                //                        decimal discPerValuee;
+                //                        if (Decimal.TryParse(disc_per, out discPerValuee) && discPerValuee > 0.00M)
+                //                        {
+                //                            decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
+                //                            decimal discountPercent1 = (discountAmount1 / salePrice11) * 100; // Calculate discount percent
+                //                            dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
+
+
+                //                        }
+
+
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
+                //                                                                           //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
+                //                        dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
+                //                    }
+                //                    else
+                //                    {
+                //                        MessageBox.Show("No Such Item Found!\n Pls Search It Again!", "ITEM NOT FOUND", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //                        flaggotonextcell = 1;
+                //                    }
+                //                }
+
+
+                //            }
+                //            //else
+                //            //{
+                //            //    // Populate columns with retrieved data
+                //            //    if (rowCount > 1)
+                //            //    {
+                //            //        DisplayDataTable(dataTable, "bar_code", "item_desc", "mrp", "sale_price");
+
+                //            //    }
+                //            //    else
+                //            //    {
+                //            //        dbgItemDet.Rows[e.RowIndex].Cells[1].Value = bar; // Barcode
+                //            //        dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
+                //            //        dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
+
+                //            //    }
+                //            //}
+                //        }
+
+                //        else if (rowCount > 1)
+                //        {
+
+                //            DisplayDataTable(dataTable, "item_id", "item_desc", "mrp", "sale_price");
+
+
+                //        }
+                //        else
+                //        {
+                //            MessageBox.Show("No Such Item Found!\n Pls Search It Again!", "ITEM NOT FOUND", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //            flaggotonextcell = 1;
+                //        }
+                //    }
+                //}
+                //**********old above
+
                 if (e.ColumnIndex == 1 && e.RowIndex >= 0)
                 {
-                    if (dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() != null && dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString() != "")
+                    string userInput = dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+
+                    if (!string.IsNullOrWhiteSpace(userInput))
                     {
-
-
-                        string userInput = dbgItemDet.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
-
                         bool itemFound;
                         bool barFound;
+                        bool itempluFound;
                         DataTable dataTable;
                         string bar_code = null;
                         string bar = null;
                         string itemnm = null;
                         string itemid = null;
                         string plu;
-                        bool itempluFound;
                         string mrp = null;
                         string sale_price = null;
                         string disc_per = null;
                         string sale_tax_paid = null;
                         string cess_perc = null;
+
                         SearchItemByID(userInput, out itemFound, out itemnm, out itemid, out mrp, out sale_price, out disc_per, out sale_tax_paid, out cess_perc, out dataTable);
 
-                        // If item not found by ID, search by barcode
                         if (!itemFound)
                         {
                             SearchItemByBarcode(userInput, out barFound, out itemnm, out bar, out dataTable);
 
-
-                            if (!barFound)
+                            if (barFound && dataTable.Rows.Count > 1)
+                            {
+                                DisplayDataTable(dataTable, "bar_code", "item_desc", "mrp", "sale_price");
+                            }
+                            else if (!barFound)
                             {
                                 SearchItemByBarcodeSingle(userInput, out barFound, out itemnm, out bar, out mrp, out sale_price, out itemid, out disc_per, out sale_tax_paid, out cess_perc);
 
-                                dbgItemDet.Rows[e.RowIndex].Cells[1].Value = bar; // Barcode
-                                dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
-                                dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
-                                dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
-                                dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;
-                                dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
-                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
-                                decimal salePrice = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
-                                decimal discountPercent = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
-                                decimal discountAmount = salePrice * discountPercent / 100; // Calculate discount amount
-
-                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
-
-                                decimal salePrice1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
-                                decimal discPerValue;
-                                if (Decimal.TryParse(disc_per, out discPerValue) && discPerValue > 0.00M)
+                                if (barFound)
                                 {
-                                    decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
-                                    decimal discountPercent1 = (discountAmount1 / salePrice1) * 100; // Calculate discount percent
-                                    dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
-
-
+                                    SetItemDetails(e.RowIndex, bar, itemnm, "1", mrp, sale_price, disc_per, sale_tax_paid, cess_perc, itemid);
                                 }
-
-
-                                dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
-                                dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
-                                dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
-                                                                                   //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
-                                dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
-                                dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
-
-
-
-                                if (!barFound)
+                                else
                                 {
                                     SearchItemByPLU(userInput, out itempluFound, out itemnm, out plu, out mrp, out sale_price, out itemid, out disc_per, out sale_tax_paid, out cess_perc);
-                                    //if (!itempluFound)
-                                    //{
-                                    //    //MessageBox.Show("This Item Does Not Exists!", "Item Not Exists", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                                    //}
+
                                     if (itempluFound)
                                     {
-
-                                        dbgItemDet.Rows[e.RowIndex].Cells[1].Value = plu; // Barcode
-                                        dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
-                                        dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
-                                        dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
-                                        dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;
-                                        dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
-                                        dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
-                                        decimal salePricee = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
-                                        decimal discountPercentt = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
-                                        decimal discountAmountt = salePricee * discountPercentt / 100; // Calculate discount amount
-
-                                        dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
-
-                                        decimal salePrice11 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
-                                        decimal discPerValuee;
-                                        if (Decimal.TryParse(disc_per, out discPerValuee) && discPerValuee > 0.00M)
-                                        {
-                                            decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
-                                            decimal discountPercent1 = (discountAmount1 / salePrice11) * 100; // Calculate discount percent
-                                            dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
-
-
-                                        }
-
-
-                                        dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
-                                        dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
-                                        dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
-                                                                                           //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
-                                        dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
-                                        dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
+                                        SetItemDetails(e.RowIndex, plu, itemnm, "1", mrp, sale_price, disc_per, sale_tax_paid, cess_perc, itemid);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No Such Item Found!\nPlease Search Again!", "ITEM NOT FOUND", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        flaggotonextcell = 1;
                                     }
                                 }
-
-
                             }
-                            //else
-                            //{
-                            //    // Populate columns with retrieved data
-                            //    if (rowCount > 1)
-                            //    {
-                            //        DisplayDataTable(dataTable, "bar_code", "item_desc", "mrp", "sale_price");
-
-                            //    }
-                            //    else
-                            //    {
-                            //        dbgItemDet.Rows[e.RowIndex].Cells[1].Value = bar; // Barcode
-                            //        dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
-                            //        dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
-
-                            //    }
-                            //}
+                            else
+                            {
+                                SetItemDetails(e.RowIndex, bar, itemnm, "1", mrp, sale_price, disc_per, sale_tax_paid, cess_perc, itemid);
+                            }
                         }
-
                         else
                         {
-                            if (rowCount > 1)
+                            if (dataTable.Rows.Count > 1)
                             {
                                 DisplayDataTable(dataTable, "item_id", "item_desc", "mrp", "sale_price");
                             }
                             else
                             {
-
-                                // Populate columns with retrieved data
-                                dbgItemDet.Rows[e.RowIndex].Cells[1].Value = itemid; // Itemid
-                                dbgItemDet.Rows[e.RowIndex].Cells[2].Value = itemnm; // Item Name
-                                dbgItemDet.Rows[e.RowIndex].Cells[3].Value = "1"; // Default Quantity
-                                dbgItemDet.Rows[e.RowIndex].Cells[4].Value = mrp;
-                                dbgItemDet.Rows[e.RowIndex].Cells[5].Value = sale_price;
-                                dbgItemDet.Rows[e.RowIndex].Cells[6].Value = disc_per;
-                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = "0.00"; //discamt                        
-                                decimal salePrice = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
-                                decimal discountPercent = Convert.ToDecimal(disc_per ?? "0"); // Discount percent
-                                decimal discountAmount = salePrice * discountPercent / 100; // Calculate discount amount
-
-                                dbgItemDet.Rows[e.RowIndex].Cells[7].Value = discountAmount.ToString("0.00"); // Set discount amount
-
-                                decimal salePrice1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[5].Value ?? "0"); // Sale price
-                                decimal discPerValue;
-                                if (Decimal.TryParse(disc_per, out discPerValue) && discPerValue > 0.00M)
-                                {
-                                    decimal discountAmount1 = Convert.ToDecimal(dbgItemDet.Rows[e.RowIndex].Cells[7].Value ?? "0"); // Discount amount
-                                    decimal discountPercent1 = (discountAmount1 / salePrice1) * 100; // Calculate discount percent
-                                    dbgItemDet.Rows[e.RowIndex].Cells[6].Value = discountPercent1.ToString("0.00"); // Set discount percent
-                                }
-
-
-                                dbgItemDet.Rows[e.RowIndex].Cells[8].Value = sale_tax_paid;
-                                dbgItemDet.Rows[e.RowIndex].Cells[9].Value = cess_perc;
-                                dbgItemDet.Rows[e.RowIndex].Cells[10].Value = "0"; //amount
-                                                                                   //dbgItemDet.Rows[e.RowIndex].Cells[11].Value = "0"; //gstamount
-                                dbgItemDet.Rows[e.RowIndex].Cells[12].Value = "0"; //cessamount
-                                dbgItemDet.Rows[e.RowIndex].Cells[13].Value = itemid;
-
+                                MessageBox.Show("No Such Item Found!\nPlease Search Again!", "ITEM NOT FOUND", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                flaggotonextcell = 1;
                             }
                         }
                     }
@@ -3644,6 +4345,30 @@ namespace softgen
 
 
             }
+        }
+        private decimal CalculateDiscountAmount(string salePrice, string discountPercent)
+        {
+            if (decimal.TryParse(salePrice, out decimal sp) && decimal.TryParse(discountPercent, out decimal dp))
+            {
+                return sp * dp / 100;
+            }
+            return 0;
+        }
+
+        private void SetItemDetails(int rowIndex, string barcode, string itemName, string quantity, string mrp, string salePrice, string discountPercent, string saleTaxPaid, string cessPercent, string itemId)
+        {
+            dbgItemDet.Rows[rowIndex].Cells[1].Value = barcode;
+            dbgItemDet.Rows[rowIndex].Cells[2].Value = itemName;
+            dbgItemDet.Rows[rowIndex].Cells[3].Value = quantity;
+            dbgItemDet.Rows[rowIndex].Cells[4].Value = mrp;
+            dbgItemDet.Rows[rowIndex].Cells[5].Value = salePrice;
+            dbgItemDet.Rows[rowIndex].Cells[6].Value = discountPercent;
+            dbgItemDet.Rows[rowIndex].Cells[7].Value = CalculateDiscountAmount(salePrice, discountPercent).ToString("0.00");
+            dbgItemDet.Rows[rowIndex].Cells[8].Value = saleTaxPaid;
+            dbgItemDet.Rows[rowIndex].Cells[9].Value = cessPercent;
+            dbgItemDet.Rows[rowIndex].Cells[10].Value = "0"; // amount
+            dbgItemDet.Rows[rowIndex].Cells[12].Value = "0"; // cess amount
+            dbgItemDet.Rows[rowIndex].Cells[13].Value = itemId;
         }
 
         private void dbgItemDet_RowLeave(object sender, DataGridViewCellEventArgs e)
@@ -3694,6 +4419,43 @@ namespace softgen
                         // Update other calculations as needed
                         UpdateRotGAmt();
                         disccal();
+                    }
+                }
+                // Check if the current column is the 7th column (index 6 since it's 0-based)
+                if (e.ColumnIndex == 6)
+                {
+                    // Get the value from the editing control
+                    string newValue = e.FormattedValue.ToString();
+
+                    // Try to parse the value to a decimal
+                    if (decimal.TryParse(newValue, out decimal discountPercentage))
+                    {
+                        // Check if the value exceeds 99.99
+                        if (discountPercentage > 99.99m)
+                        {
+                            // Show an error message
+                            MessageBox.Show("Discount percentage cannot exceed 99.99%", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            // Cancel the cell value change
+                            e.Cancel = true;
+                        }
+                    }
+                    else
+                    {
+                        // Show an error message if the value is not a valid decimal
+                        MessageBox.Show("Please enter a valid discount percentage", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                        // Cancel the cell value change
+                        e.Cancel = true;
+                    }
+                }
+                if (e.ColumnIndex == 1)
+                {
+                    if (flaggotonextcell == 1)
+                    {
+                        e.Cancel = true;
+                        flaggotonextcell = 0;
+
                     }
                 }
             }
@@ -3840,9 +4602,36 @@ namespace softgen
 
         private void dbgPayDet_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
+            if (e.Control is DataGridViewTextBoxEditingControl editingControl)
+            {
+                // Get the column index of the current cell
+                int columnIndex = dbgPayDet.CurrentCell.ColumnIndex;
+
+                // Check if the column index is 2
+                if (columnIndex == 2)
+                {
+                    if (e.Control is TextBox textBox)
+                    {
+                        // Remove any previously attached handlers
+                        textBox.KeyPress -= NumericKeyPressHandlergrthreeFORAmtPay;
+
+                        // Attach the new handler
+                        textBox.KeyPress += NumericKeyPressHandlergrthreeFORAmtPay;
+                    }
+                }
+                else
+                {
+                    // Remove the handler if the cell is not in the 2nd column
+                    if (e.Control is TextBox textBox)
+                    {
+                        textBox.KeyPress -= NumericKeyPressHandlergrthreeFORAmtPay;
+                    }
+                }
+            }
         }
 
-        
+
+
 
         private void dbgPayDet_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
@@ -4157,7 +4946,7 @@ namespace softgen
             //    }
 
             //}
-           
+
 
         }
 
@@ -4738,6 +5527,8 @@ namespace softgen
                     }
 
                 }
+
+
             }
             //if (e.RowIndex >= 0 && e.ColumnIndex == 1) // Check if the edited cell is in the 'Paymod' column
             //{
@@ -5183,17 +5974,78 @@ namespace softgen
 
         }
 
+        //**********old
+        //private void DisplayDataTable(DataTable originalTable, params string[] columnsToShow)
+        //{
+        //    // Create a new DataTable with specified columns
+        //    DataTable displayTable = new DataTable();
+        //    foreach (string column in columnsToShow)
+        //    {
+        //        displayTable.Columns.Add(column, originalTable.Columns[column].DataType);
+        //    }
+
+        //    // Copy rows from original DataTable to display DataTable
+        //    foreach (DataRow row in originalTable.Rows)
+        //    {
+        //        DataRow newRow = displayTable.NewRow();
+        //        foreach (string column in columnsToShow)
+        //        {
+        //            newRow[column] = row[column];
+        //        }
+        //        displayTable.Rows.Add(newRow);
+
+        //    }
+
+        //    // Create the popup window
+        //    Form dataTableForm = new Form();
+
+        //    // Create the DataGridView
+        //    DataGridView dataGridView = new DataGridView();
+        //    dataGridView.DataSource = displayTable;
+        //    dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells; // Auto-size columns
+        //    dataGridView.CellDoubleClick += (sender, e) =>
+        //    {
+        //        if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
+        //        {
+        //            // Transfer data from the double-clicked row to the main form's DataGridView
+        //            TransferDataToMainForm(dataGridView.Rows[e.RowIndex]);
+        //            dataTableForm.Close(); // Close the popup window after transferring data
+        //        }
+        //    };
+
+        //    // Allow the user to press Enter key to select a row
+        //    dataGridView.KeyDown += (sender, e) =>
+        //    {
+        //        if (e.KeyCode == Keys.Enter && dataGridView.CurrentRow != null)
+        //        {
+        //            // Transfer data from the selected row to the main form's DataGridView
+        //            TransferDataToMainForm(dataGridView.CurrentRow);
+        //            dataTableForm.Close(); // Close the popup window after transferring data
+        //        }
+        //    };
+
+
+        //    // Set the size of the popup window to exactly fit the DataGridView
+        //    dataTableForm.ClientSize = new System.Drawing.Size(dataGridView.Width + 140, dataGridView.Height + 20);
+
+        //    // Set the DataGridView to fill the entire area of the form
+        //    dataGridView.Dock = DockStyle.Fill;
+
+        //    // Add the DataGridView to the popup window
+        //    dataTableForm.Controls.Add(dataGridView);
+
+        //    // Show the popup window
+        //    dataTableForm.ShowDialog();
+        //}
 
         private void DisplayDataTable(DataTable originalTable, params string[] columnsToShow)
         {
-            // Create a new DataTable with specified columns
             DataTable displayTable = new DataTable();
             foreach (string column in columnsToShow)
             {
                 displayTable.Columns.Add(column, originalTable.Columns[column].DataType);
             }
 
-            // Copy rows from original DataTable to display DataTable
             foreach (DataRow row in originalTable.Rows)
             {
                 DataRow newRow = displayTable.NewRow();
@@ -5204,45 +6056,32 @@ namespace softgen
                 displayTable.Rows.Add(newRow);
             }
 
-            // Create the popup window
             Form dataTableForm = new Form();
-
-            // Create the DataGridView
             DataGridView dataGridView = new DataGridView();
             dataGridView.DataSource = displayTable;
-            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells; // Auto-size columns
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
             dataGridView.CellDoubleClick += (sender, e) =>
             {
                 if (e.RowIndex >= 0 && e.RowIndex < dataGridView.Rows.Count)
                 {
-                    // Transfer data from the double-clicked row to the main form's DataGridView
                     TransferDataToMainForm(dataGridView.Rows[e.RowIndex]);
-                    dataTableForm.Close(); // Close the popup window after transferring data
+                    dataTableForm.Close();
                 }
             };
 
-            // Allow the user to press Enter key to select a row
             dataGridView.KeyDown += (sender, e) =>
             {
                 if (e.KeyCode == Keys.Enter && dataGridView.CurrentRow != null)
                 {
-                    // Transfer data from the selected row to the main form's DataGridView
                     TransferDataToMainForm(dataGridView.CurrentRow);
-                    dataTableForm.Close(); // Close the popup window after transferring data
+                    dataTableForm.Close();
                 }
             };
 
-
-            // Set the size of the popup window to exactly fit the DataGridView
             dataTableForm.ClientSize = new System.Drawing.Size(dataGridView.Width + 140, dataGridView.Height + 20);
-
-            // Set the DataGridView to fill the entire area of the form
             dataGridView.Dock = DockStyle.Fill;
-
-            // Add the DataGridView to the popup window
             dataTableForm.Controls.Add(dataGridView);
-
-            // Show the popup window
             dataTableForm.ShowDialog();
         }
 
@@ -5250,39 +6089,159 @@ namespace softgen
 
         //---for invoice---------------//
         // Transfer data to the main form's DataGridView
+        //*************old
+
+        //private void TransferDataToMainForm(DataGridViewRow selectedRow)
+        //{
+        //    // Assuming that targetGrid is your DataGridView in the main form
+        //    DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDet", true).FirstOrDefault();
+
+        //    // Get the current row index
+        //    //int rowIndex = targetGrid.Rows.Add();
+        //    int rowIndex = targetGrid.CurrentRow.Index;
+        //    // Assuming you have a list of column indexes to transfer data
+        //    List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }; // Add the column indexes you want to transfer
+
+        //    foreach (int columnIndex in columnIndexesToTransfer)
+        //    {
+        //        // Check if the column index is within the bounds
+        //        if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+        //        {
+        //            // Assuming that targetGrid has enough columns
+        //            targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[1].Value;
+        //            targetGrid.Rows[rowIndex].Cells[3].Value = "1"; // Quantity set to 1
+        //            targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value;
+        //            targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value;
+
+        //            // Calculate spqty
+        //            string mrpString = selectedRow.Cells[2].Value.ToString();
+        //            string qtyString = "1";
+        //            decimal spqtyDecimal = decimal.Parse(selectedRow.Cells[3].Value.ToString());
+        //            string spqtyString = (spqtyDecimal * decimal.Parse(qtyString)).ToString();
+
+        //            // Get barcode and mrp
+        //            string barcode = selectedRow.Cells[0].Value.ToString();
+        //            string mrp = mrpString;
+
+        //            // Count rows in m_item_det for the given barcode and mrp
+        //            string countQuery = "SELECT COUNT(*) FROM m_item_det WHERE bar_code = ? AND mrp = ? AND active_yn='Y'";
+        //            int rowCountnew = 0;
+
+        //            using (OdbcCommand countCmd1 = new OdbcCommand(countQuery, dbConnector.connection))
+        //            {
+        //                countCmd1.Parameters.AddWithValue("?", barcode);
+        //                countCmd1.Parameters.AddWithValue("?", mrp);
+
+        //                try
+        //                {
+        //                    dbConnector.connection.Open();
+        //                    rowCountnew = Convert.ToInt32(countCmd1.ExecuteScalar());
+
+        //                    if (rowCountnew == 1)
+        //                    {
+        //                        // Retrieve data from m_item_det
+        //                        string query = "SELECT item_id FROM m_item_det WHERE bar_code = ? AND mrp = ? AND active_yn='Y'";
+        //                        using (OdbcCommand dataCmd = new OdbcCommand(query, dbConnector.connection))
+        //                        {
+        //                            dataCmd.Parameters.AddWithValue("?", barcode);
+        //                            dataCmd.Parameters.AddWithValue("?", mrp);
+
+        //                            using (OdbcDataReader reader = dataCmd.ExecuteReader())
+        //                            {
+        //                                if (reader.Read())
+        //                                {
+        //                                    string itemidval = reader["item_id"].ToString().Trim();
+
+        //                                    // Retrieve discount percentage, cess percentage, and sale tax paid from m_item_hdr
+        //                                    string discperQuery = "SELECT disc_per, cess_perc, sale_tax_paid FROM m_item_hdr WHERE item_id = ? AND active_yn='Y'";
+        //                                    using (OdbcCommand discperCmd = new OdbcCommand(discperQuery, dbConnector.connection))
+        //                                    {
+        //                                        discperCmd.Parameters.AddWithValue("?", itemidval);
+
+        //                                        using (OdbcDataReader discreader = discperCmd.ExecuteReader())
+        //                                        {
+        //                                            if (discreader.Read())
+        //                                            {
+        //                                                string disc_perString = discreader["disc_per"].ToString();
+        //                                                string discamtString = ((decimal.Parse(spqtyString) * decimal.Parse(disc_perString)) / 100).ToString();
+
+        //                                                // Assign string values to the DataGridView cells
+        //                                                targetGrid.Rows[rowIndex].Cells[6].Value = disc_perString;
+        //                                                targetGrid.Rows[rowIndex].Cells[7].Value = discamtString;
+
+        //                                                // For the cess_perc, assuming it's also a decimal value
+        //                                                string cess_percString = discreader["cess_perc"].ToString();
+        //                                                targetGrid.Rows[rowIndex].Cells[8].Value = cess_percString;
+
+        //                                                // Retrieve tax_per from m_tax_type
+        //                                                string gstperQuery = "SELECT tax_per FROM m_tax_type WHERE tax_type_id = ?";
+        //                                                using (OdbcCommand gstperCmd = new OdbcCommand(gstperQuery, dbConnector.connection))
+        //                                                {
+        //                                                    gstperCmd.Parameters.AddWithValue("?", discreader["sale_tax_paid"]);
+
+        //                                                    using (OdbcDataReader gstreader = gstperCmd.ExecuteReader())
+        //                                                    {
+        //                                                        if (gstreader.Read())
+        //                                                        {
+        //                                                            string tax_perString = gstreader["tax_per"].ToString();
+        //                                                            targetGrid.Rows[rowIndex].Cells[9].Value = tax_perString;
+        //                                                        }
+        //                                                    }
+        //                                                }
+
+        //                                                // Calculate the result and convert it to string
+        //                                                string resultString = (decimal.Parse(spqtyString) - decimal.Parse(discamtString)).ToString();
+
+        //                                                // Assign the string value to the cell
+        //                                                targetGrid.Rows[rowIndex].Cells[10].Value = resultString;
+        //                                                UpdateRotGAmt();
+        //                                            }
+        //                                        }
+        //                                    }
+        //                                }
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Console.WriteLine("Error: " + ex.Message);
+        //                }
+        //            }
+        //        }
+
+        //        else
+        //        {
+        //            // Handle the case where the column index is out of bounds
+        //            // You can log a message or take appropriate action
+        //        }
+        //    }
+        //}
+
         private void TransferDataToMainForm(DataGridViewRow selectedRow)
         {
-            // Assuming that targetGrid is your DataGridView in the main form
             DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDet", true).FirstOrDefault();
-
-            // Get the current row index
-            //int rowIndex = targetGrid.Rows.Add();
             int rowIndex = targetGrid.CurrentRow.Index;
-            // Assuming you have a list of column indexes to transfer data
-            List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }; // Add the column indexes you want to transfer
+
+            List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
 
             foreach (int columnIndex in columnIndexesToTransfer)
             {
-                // Check if the column index is within the bounds
                 if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
                 {
-                    // Assuming that targetGrid has enough columns
                     targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[1].Value;
-                    targetGrid.Rows[rowIndex].Cells[3].Value = "1"; // Quantity set to 1
+                    targetGrid.Rows[rowIndex].Cells[3].Value = "1";
                     targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value;
                     targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value;
 
-                    // Calculate spqty
                     string mrpString = selectedRow.Cells[2].Value.ToString();
                     string qtyString = "1";
                     decimal spqtyDecimal = decimal.Parse(selectedRow.Cells[3].Value.ToString());
                     string spqtyString = (spqtyDecimal * decimal.Parse(qtyString)).ToString();
 
-                    // Get barcode and mrp
                     string barcode = selectedRow.Cells[0].Value.ToString();
                     string mrp = mrpString;
 
-                    // Count rows in m_item_det for the given barcode and mrp
                     string countQuery = "SELECT COUNT(*) FROM m_item_det WHERE bar_code = ? AND mrp = ? AND active_yn='Y'";
                     int rowCountnew = 0;
 
@@ -5298,7 +6257,6 @@ namespace softgen
 
                             if (rowCountnew == 1)
                             {
-                                // Retrieve data from m_item_det
                                 string query = "SELECT item_id FROM m_item_det WHERE bar_code = ? AND mrp = ? AND active_yn='Y'";
                                 using (OdbcCommand dataCmd = new OdbcCommand(query, dbConnector.connection))
                                 {
@@ -5311,7 +6269,6 @@ namespace softgen
                                         {
                                             string itemidval = reader["item_id"].ToString().Trim();
 
-                                            // Retrieve discount percentage, cess percentage, and sale tax paid from m_item_hdr
                                             string discperQuery = "SELECT disc_per, cess_perc, sale_tax_paid FROM m_item_hdr WHERE item_id = ? AND active_yn='Y'";
                                             using (OdbcCommand discperCmd = new OdbcCommand(discperQuery, dbConnector.connection))
                                             {
@@ -5324,15 +6281,12 @@ namespace softgen
                                                         string disc_perString = discreader["disc_per"].ToString();
                                                         string discamtString = ((decimal.Parse(spqtyString) * decimal.Parse(disc_perString)) / 100).ToString();
 
-                                                        // Assign string values to the DataGridView cells
                                                         targetGrid.Rows[rowIndex].Cells[6].Value = disc_perString;
                                                         targetGrid.Rows[rowIndex].Cells[7].Value = discamtString;
 
-                                                        // For the cess_perc, assuming it's also a decimal value
                                                         string cess_percString = discreader["cess_perc"].ToString();
                                                         targetGrid.Rows[rowIndex].Cells[8].Value = cess_percString;
 
-                                                        // Retrieve tax_per from m_tax_type
                                                         string gstperQuery = "SELECT tax_per FROM m_tax_type WHERE tax_type_id = ?";
                                                         using (OdbcCommand gstperCmd = new OdbcCommand(gstperQuery, dbConnector.connection))
                                                         {
@@ -5348,10 +6302,7 @@ namespace softgen
                                                             }
                                                         }
 
-                                                        // Calculate the result and convert it to string
                                                         string resultString = (decimal.Parse(spqtyString) - decimal.Parse(discamtString)).ToString();
-
-                                                        // Assign the string value to the cell
                                                         targetGrid.Rows[rowIndex].Cells[10].Value = resultString;
                                                         UpdateRotGAmt();
                                                     }
@@ -5364,18 +6315,17 @@ namespace softgen
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Error: " + ex.Message);
+                            MessageBox.Show("Error: " + ex.Message);
+                        }
+                        finally
+                        {
+                            dbConnector.connection.Close();
                         }
                     }
                 }
-
-                else
-                {
-                    // Handle the case where the column index is out of bounds
-                    // You can log a message or take appropriate action
-                }
             }
         }
+
 
         private void txtDiscPer_TextChanged(object sender, EventArgs e)
         {
@@ -5612,5 +6562,22 @@ namespace softgen
 
         }
 
+        private void txtInvNo_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string mode = DeTools.GetMode(DeTools.gobjActiveForm);
+                if (mode == DeTools.MODIFYMODE)
+                {
+                    SearchForm();
+                }
+            }
+        }
+
+        private void dbgItemDet_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
+        {
+            // Set default values for new rows
+            e.Row.Cells[1].Value = "";
+        }
     }  ///////end
 }

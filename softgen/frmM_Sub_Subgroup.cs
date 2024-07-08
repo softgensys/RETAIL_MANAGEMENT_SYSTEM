@@ -19,6 +19,9 @@ namespace softgen
             InitializeComponent();
 
             this.Activated += MyForm_Activated;
+            DeTools.MakeTextBoxUppercase(txtSubSGrpDesc);
+            this.KeyPreview = true; // Make sure the form has key preview enabled
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
         }
 
         private void MyForm_Activated(object sender, EventArgs e)
@@ -299,7 +302,7 @@ namespace softgen
                 }
 
                 dbConnector.connection.Close();
-                ClearForm();
+                ResetControls(this.Controls);
 
             }
             catch (Exception)
@@ -431,12 +434,16 @@ namespace softgen
                     return;
                 }
 
-                ClearForm();
+
             }
             catch (Exception)
             {
 
                 throw;
+            }
+            finally
+            {
+                txtSubSGrpId.Enabled = false;
             }
         }
 
@@ -682,6 +689,39 @@ namespace softgen
             else
             {
                 general.FillSubGroup(cboSubGrpId, cboGrpId.SelectedItem.ToString().Trim());
+            }
+        }
+
+        private void frmM_Sub_Subgroup_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.Text.Contains("<Add>"))
+            {
+
+
+                if (!DeTools.IsFieldUnique("m_sub_sub_group", "sub_sub_group_id", txtSubSGrpId.Text.ToString().Trim()))
+                {
+                    MessageBox.Show("Id :" + txtSubSGrpId.Text + " already Exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtSubSGrpId.Text = null;
+                    txtSubSGrpId.Refresh();
+                    txtSubSGrpId.Focus();
+                    // You can also clear the control or perform other actions
+                }
+            }
+        }
+
+        private void cboSubGrpId_Layout(object sender, LayoutEventArgs e)
+        {
+
+        }
+
+        private void cboSubGrpId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (mblnSearch == false)
+                {
+                    SearchForm();
+                }
             }
         }
     }  //-----------End-----//

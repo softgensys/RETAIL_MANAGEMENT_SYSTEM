@@ -30,7 +30,6 @@
         {
             lblStock = new Label();
             txtDisc = new TextBox();
-            lblDisc = new Label();
             cboLoc = new ComboBox();
             lblLoc = new Label();
             chkBarYN = new CheckBox();
@@ -59,47 +58,29 @@
             lblReOLevel = new Label();
             txtMinLevel = new TextBox();
             lblMinLevel = new Label();
-            txtOpBal = new TextBox();
-            lblOpBal = new Label();
-            txtConv = new TextBox();
-            lblConv = new Label();
             lblSaleUnit = new Label();
-            txtShDesc = new TextBox();
-            lblShDesc = new Label();
             cboColorDesc = new ComboBox();
             lblColorDesc = new Label();
-            lblPurUnit = new Label();
             cboManuf = new ComboBox();
             lblManuf = new Label();
-            cboSizeDesc = new ComboBox();
-            lblSizeDesc = new Label();
             cboSSGroupDesc = new ComboBox();
             lblSSGroupDesc = new Label();
-            cboSGroup = new ComboBox();
-            lblSubGroup = new Label();
             cboGroup = new ComboBox();
             lblGroup = new Label();
-            cboType = new ComboBox();
             lblType = new Label();
             txtItemDesc = new TextBox();
             lblItemDesc = new Label();
             txtItemId = new TextBox();
             lblItemId = new Label();
-            rotType = new Label();
             rotGroup = new Label();
-            rotSGroup = new Label();
             rotSSGroupDesc = new Label();
-            rotSizeDesc = new Label();
             rotColorDesc = new Label();
             rotManuf = new Label();
-            rotPurUnit = new Label();
             rotSaleUnit = new Label();
             rotSaleTax = new Label();
             rotLoc = new Label();
             rotStock = new Label();
             cboSaleUnit = new ComboBox();
-            cboPurUnit = new ComboBox();
-            panel2 = new Panel();
             panel3 = new Panel();
             dbgBarDet = new DataGridView();
             PLU = new DataGridViewTextBoxColumn();
@@ -114,7 +95,25 @@
             chkNodisc = new CheckBox();
             label1 = new Label();
             rotNetRate = new Label();
-            panel2.SuspendLayout();
+            cboType = new ComboBox();
+            rotType = new Label();
+            rotSGroup = new Label();
+            lblSubGroup = new Label();
+            cboSGroup = new ComboBox();
+            lblOpBal = new Label();
+            txtConv = new TextBox();
+            lblConv = new Label();
+            txtOpBal = new TextBox();
+            lblPurUnit = new Label();
+            rotPurUnit = new Label();
+            cboPurUnit = new ComboBox();
+            textBox3 = new TextBox();
+            lblSizeDesc = new Label();
+            cboSizeDesc = new ComboBox();
+            rotSizeDesc = new Label();
+            lblShDesc = new Label();
+            txtShDesc = new TextBox();
+            lblDisc = new Label();
             ((System.ComponentModel.ISupportInitialize)dbgBarDet).BeginInit();
             SuspendLayout();
             // 
@@ -131,31 +130,22 @@
             // 
             // txtDisc
             // 
+            txtDisc.Enabled = false;
             txtDisc.Location = new Point(470, 254);
             txtDisc.Name = "txtDisc";
             txtDisc.Size = new Size(50, 23);
-            txtDisc.TabIndex = 149;
-            // 
-            // lblDisc
-            // 
-            lblDisc.AutoSize = true;
-            lblDisc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblDisc.ImeMode = ImeMode.NoControl;
-            lblDisc.Location = new Point(413, 265);
-            lblDisc.Name = "lblDisc";
-            lblDisc.Size = new Size(51, 15);
-            lblDisc.TabIndex = 148;
-            lblDisc.Text = "Disc (%)";
+            txtDisc.TabIndex = 29;
             // 
             // cboLoc
             // 
             cboLoc.DropDownHeight = 60;
+            cboLoc.Enabled = false;
             cboLoc.FormattingEnabled = true;
             cboLoc.IntegralHeight = false;
             cboLoc.Location = new Point(268, 254);
             cboLoc.Name = "cboLoc";
             cboLoc.Size = new Size(61, 23);
-            cboLoc.TabIndex = 146;
+            cboLoc.TabIndex = 28;
             // 
             // lblLoc
             // 
@@ -173,10 +163,11 @@
             chkBarYN.AutoSize = true;
             chkBarYN.Checked = true;
             chkBarYN.CheckState = CheckState.Checked;
+            chkBarYN.Enabled = false;
             chkBarYN.Location = new Point(198, 257);
             chkBarYN.Name = "chkBarYN";
             chkBarYN.Size = new Size(15, 14);
-            chkBarYN.TabIndex = 144;
+            chkBarYN.TabIndex = 27;
             chkBarYN.UseVisualStyleBackColor = true;
             // 
             // lblBarYN
@@ -195,10 +186,11 @@
             chkAct.AutoSize = true;
             chkAct.Checked = true;
             chkAct.CheckState = CheckState.Checked;
+            chkAct.Enabled = false;
             chkAct.Location = new Point(57, 256);
             chkAct.Name = "chkAct";
             chkAct.Size = new Size(15, 14);
-            chkAct.TabIndex = 142;
+            chkAct.TabIndex = 26;
             chkAct.UseVisualStyleBackColor = true;
             // 
             // lblAct
@@ -208,16 +200,17 @@
             lblAct.ImeMode = ImeMode.NoControl;
             lblAct.Location = new Point(8, 255);
             lblAct.Name = "lblAct";
-            lblAct.Size = new Size(43, 15);
+            lblAct.Size = new Size(48, 15);
             lblAct.TabIndex = 141;
-            lblAct.Text = "Active";
+            lblAct.Text = "Active*";
             // 
             // txtCess
             // 
+            txtCess.Enabled = false;
             txtCess.Location = new Point(684, 225);
             txtCess.Name = "txtCess";
             txtCess.Size = new Size(53, 23);
-            txtCess.TabIndex = 140;
+            txtCess.TabIndex = 25;
             // 
             // lblCess
             // 
@@ -233,14 +226,16 @@
             // cboSaleTax
             // 
             cboSaleTax.DropDownHeight = 100;
+            cboSaleTax.Enabled = false;
             cboSaleTax.FormattingEnabled = true;
             cboSaleTax.IntegralHeight = false;
             cboSaleTax.Location = new Point(457, 224);
             cboSaleTax.Name = "cboSaleTax";
             cboSaleTax.Size = new Size(88, 23);
-            cboSaleTax.TabIndex = 137;
+            cboSaleTax.TabIndex = 24;
             cboSaleTax.DropDown += cboSaleTax_DropDown;
             cboSaleTax.SelectedIndexChanged += cboSaleTax_SelectedIndexChanged;
+            cboSaleTax.KeyUp += cboSaleTax_KeyUp;
             cboSaleTax.MouseDown += gstperccomb_MouseDown;
             // 
             // lblSaleTax
@@ -250,16 +245,17 @@
             lblSaleTax.ImeMode = ImeMode.NoControl;
             lblSaleTax.Location = new Point(403, 228);
             lblSaleTax.Name = "lblSaleTax";
-            lblSaleTax.Size = new Size(51, 15);
+            lblSaleTax.Size = new Size(56, 15);
             lblSaleTax.TabIndex = 136;
-            lblSaleTax.Text = "GST (%)";
+            lblSaleTax.Text = "GST (%)*";
             // 
             // txtHSN
             // 
+            txtHSN.Enabled = false;
             txtHSN.Location = new Point(312, 224);
             txtHSN.Name = "txtHSN";
             txtHSN.Size = new Size(85, 23);
-            txtHSN.TabIndex = 135;
+            txtHSN.TabIndex = 23;
             // 
             // lblHSN
             // 
@@ -274,10 +270,11 @@
             // 
             // txtDecimalupto
             // 
+            txtDecimalupto.Enabled = false;
             txtDecimalupto.Location = new Point(243, 224);
             txtDecimalupto.Name = "txtDecimalupto";
             txtDecimalupto.Size = new Size(24, 23);
-            txtDecimalupto.TabIndex = 133;
+            txtDecimalupto.TabIndex = 22;
             // 
             // lblDecimalupto
             // 
@@ -293,10 +290,11 @@
             // chkDecimal
             // 
             chkDecimal.AutoSize = true;
+            chkDecimal.Enabled = false;
             chkDecimal.Location = new Point(154, 229);
             chkDecimal.Name = "chkDecimal";
             chkDecimal.Size = new Size(15, 14);
-            chkDecimal.TabIndex = 131;
+            chkDecimal.TabIndex = 21;
             chkDecimal.UseVisualStyleBackColor = true;
             // 
             // lblDecimal
@@ -312,10 +310,12 @@
             // 
             // txtLT
             // 
+            txtLT.Enabled = false;
             txtLT.Location = new Point(66, 223);
             txtLT.Name = "txtLT";
             txtLT.Size = new Size(24, 23);
-            txtLT.TabIndex = 129;
+            txtLT.TabIndex = 20;
+            txtLT.TextChanged += txtLT_TextChanged;
             // 
             // lblLT
             // 
@@ -330,10 +330,11 @@
             // 
             // txtexisper
             // 
+            txtexisper.Enabled = false;
             txtexisper.Location = new Point(699, 191);
             txtexisper.Name = "txtexisper";
             txtexisper.Size = new Size(38, 23);
-            txtexisper.TabIndex = 127;
+            txtexisper.TabIndex = 19;
             // 
             // lblExcis
             // 
@@ -348,10 +349,11 @@
             // 
             // txtStyle
             // 
+            txtStyle.Enabled = false;
             txtStyle.Location = new Point(570, 191);
             txtStyle.Name = "txtStyle";
             txtStyle.Size = new Size(68, 23);
-            txtStyle.TabIndex = 125;
+            txtStyle.TabIndex = 18;
             // 
             // lblStyle
             // 
@@ -366,10 +368,14 @@
             // 
             // txtMaxLevel
             // 
+            txtMaxLevel.Enabled = false;
             txtMaxLevel.Location = new Point(440, 191);
             txtMaxLevel.Name = "txtMaxLevel";
             txtMaxLevel.Size = new Size(85, 23);
-            txtMaxLevel.TabIndex = 123;
+            txtMaxLevel.TabIndex = 17;
+            txtMaxLevel.TextChanged += txtMaxLevel_TextChanged;
+            txtMaxLevel.Validating += txtMaxLevel_Validating;
+            txtMaxLevel.Validated += txtMaxLevel_Validated;
             // 
             // lblMaxLevel
             // 
@@ -387,7 +393,8 @@
             txtReOLevel.Location = new Point(277, 191);
             txtReOLevel.Name = "txtReOLevel";
             txtReOLevel.Size = new Size(84, 23);
-            txtReOLevel.TabIndex = 121;
+            txtReOLevel.TabIndex = 16;
+            txtReOLevel.Validating += txtReOLevel_Validating;
             // 
             // lblReOLevel
             // 
@@ -405,7 +412,8 @@
             txtMinLevel.Location = new Point(79, 190);
             txtMinLevel.Name = "txtMinLevel";
             txtMinLevel.Size = new Size(91, 23);
-            txtMinLevel.TabIndex = 119;
+            txtMinLevel.TabIndex = 15;
+            txtMinLevel.Validating += txtMinLevel_Validating;
             // 
             // lblMinLevel
             // 
@@ -418,42 +426,6 @@
             lblMinLevel.TabIndex = 118;
             lblMinLevel.Text = "MIn. Level";
             // 
-            // txtOpBal
-            // 
-            txtOpBal.Location = new Point(652, 160);
-            txtOpBal.Name = "txtOpBal";
-            txtOpBal.Size = new Size(84, 23);
-            txtOpBal.TabIndex = 117;
-            // 
-            // lblOpBal
-            // 
-            lblOpBal.AutoSize = true;
-            lblOpBal.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblOpBal.ImeMode = ImeMode.NoControl;
-            lblOpBal.Location = new Point(576, 164);
-            lblOpBal.Name = "lblOpBal";
-            lblOpBal.Size = new Size(69, 15);
-            lblOpBal.TabIndex = 116;
-            lblOpBal.Text = "OP Balance";
-            // 
-            // txtConv
-            // 
-            txtConv.Location = new Point(481, 160);
-            txtConv.Name = "txtConv";
-            txtConv.Size = new Size(85, 23);
-            txtConv.TabIndex = 115;
-            // 
-            // lblConv
-            // 
-            lblConv.AutoSize = true;
-            lblConv.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblConv.ImeMode = ImeMode.NoControl;
-            lblConv.Location = new Point(406, 165);
-            lblConv.Name = "lblConv";
-            lblConv.Size = new Size(69, 15);
-            lblConv.TabIndex = 114;
-            lblConv.Text = "Conversion";
-            // 
             // lblSaleUnit
             // 
             lblSaleUnit.AutoSize = true;
@@ -465,26 +437,6 @@
             lblSaleUnit.TabIndex = 111;
             lblSaleUnit.Text = "Sale Unit";
             // 
-            // txtShDesc
-            // 
-            txtShDesc.AutoCompleteSource = AutoCompleteSource.HistoryList;
-            txtShDesc.Enabled = false;
-            txtShDesc.Location = new Point(462, 101);
-            txtShDesc.Name = "txtShDesc";
-            txtShDesc.Size = new Size(275, 23);
-            txtShDesc.TabIndex = 110;
-            // 
-            // lblShDesc
-            // 
-            lblShDesc.AutoSize = true;
-            lblShDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblShDesc.ImeMode = ImeMode.NoControl;
-            lblShDesc.Location = new Point(385, 105);
-            lblShDesc.Name = "lblShDesc";
-            lblShDesc.Size = new Size(71, 15);
-            lblShDesc.TabIndex = 109;
-            lblShDesc.Text = "Short Desc.";
-            // 
             // cboColorDesc
             // 
             cboColorDesc.DropDownHeight = 50;
@@ -493,9 +445,11 @@
             cboColorDesc.Location = new Point(61, 96);
             cboColorDesc.Name = "cboColorDesc";
             cboColorDesc.Size = new Size(88, 23);
-            cboColorDesc.TabIndex = 107;
+            cboColorDesc.TabIndex = 7;
             cboColorDesc.DropDown += cboColorDesc_DropDown;
             cboColorDesc.SelectedIndexChanged += colidcomb_SelectedIndexChanged;
+            cboColorDesc.KeyDown += cboColorDesc_KeyDown;
+            cboColorDesc.KeyUp += cboColorDesc_KeyUp;
             cboColorDesc.MouseDown += colidcomb_MouseDown;
             // 
             // lblColorDesc
@@ -509,28 +463,18 @@
             lblColorDesc.TabIndex = 106;
             lblColorDesc.Text = "Color Id";
             // 
-            // lblPurUnit
-            // 
-            lblPurUnit.AutoSize = true;
-            lblPurUnit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblPurUnit.ImeMode = ImeMode.NoControl;
-            lblPurUnit.Location = new Point(402, 133);
-            lblPurUnit.Name = "lblPurUnit";
-            lblPurUnit.Size = new Size(87, 15);
-            lblPurUnit.TabIndex = 103;
-            lblPurUnit.Text = "Purchase  Unit";
-            // 
             // cboManuf
             // 
             cboManuf.DropDownHeight = 100;
             cboManuf.FormattingEnabled = true;
             cboManuf.IntegralHeight = false;
-            cboManuf.Location = new Point(61, 127);
+            cboManuf.Location = new Point(55, 127);
             cboManuf.Name = "cboManuf";
             cboManuf.Size = new Size(106, 23);
-            cboManuf.TabIndex = 101;
+            cboManuf.TabIndex = 9;
             cboManuf.DropDown += cboManuf_DropDown;
             cboManuf.SelectedIndexChanged += manufcomb_SelectedIndexChanged;
+            cboManuf.KeyUp += cboManuf_KeyUp;
             cboManuf.MouseDown += comboBox2_MouseDown;
             // 
             // lblManuf
@@ -538,35 +482,11 @@
             lblManuf.AutoSize = true;
             lblManuf.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             lblManuf.ImeMode = ImeMode.NoControl;
-            lblManuf.Location = new Point(9, 130);
+            lblManuf.Location = new Point(3, 130);
             lblManuf.Name = "lblManuf";
             lblManuf.Size = new Size(45, 15);
             lblManuf.TabIndex = 100;
             lblManuf.Text = "Manuf.";
-            // 
-            // cboSizeDesc
-            // 
-            cboSizeDesc.DropDownHeight = 100;
-            cboSizeDesc.FormattingEnabled = true;
-            cboSizeDesc.IntegralHeight = false;
-            cboSizeDesc.Location = new Point(461, 70);
-            cboSizeDesc.Name = "cboSizeDesc";
-            cboSizeDesc.Size = new Size(85, 23);
-            cboSizeDesc.TabIndex = 98;
-            cboSizeDesc.DropDown += cboSizeDesc_DropDown;
-            cboSizeDesc.SelectedIndexChanged += sizecomb_SelectedIndexChanged;
-            cboSizeDesc.MouseDown += sizecomb_MouseDown;
-            // 
-            // lblSizeDesc
-            // 
-            lblSizeDesc.AutoSize = true;
-            lblSizeDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblSizeDesc.ImeMode = ImeMode.NoControl;
-            lblSizeDesc.Location = new Point(405, 74);
-            lblSizeDesc.Name = "lblSizeDesc";
-            lblSizeDesc.Size = new Size(44, 15);
-            lblSizeDesc.TabIndex = 97;
-            lblSizeDesc.Text = "Size Id";
             // 
             // cboSSGroupDesc
             // 
@@ -577,9 +497,11 @@
             cboSSGroupDesc.Location = new Point(65, 65);
             cboSSGroupDesc.Name = "cboSSGroupDesc";
             cboSSGroupDesc.Size = new Size(88, 23);
-            cboSSGroupDesc.TabIndex = 95;
+            cboSSGroupDesc.TabIndex = 5;
             cboSSGroupDesc.DropDown += cboSSGroupDesc_DropDown;
             cboSSGroupDesc.SelectedIndexChanged += ssgrpcomb_SelectedIndexChanged;
+            cboSSGroupDesc.KeyDown += cboSSGroupDesc_KeyDown;
+            cboSSGroupDesc.KeyUp += cboSSGroupDesc_KeyUp;
             cboSSGroupDesc.MouseDown += ssgrpcomb_MouseDown;
             // 
             // lblSSGroupDesc
@@ -593,31 +515,6 @@
             lblSSGroupDesc.TabIndex = 94;
             lblSSGroupDesc.Text = "S.S Group";
             // 
-            // cboSGroup
-            // 
-            cboSGroup.DropDownHeight = 100;
-            cboSGroup.Enabled = false;
-            cboSGroup.FormattingEnabled = true;
-            cboSGroup.IntegralHeight = false;
-            cboSGroup.Location = new Point(462, 39);
-            cboSGroup.Name = "cboSGroup";
-            cboSGroup.Size = new Size(85, 23);
-            cboSGroup.TabIndex = 92;
-            cboSGroup.DropDown += cboSGroup_DropDown;
-            cboSGroup.SelectedIndexChanged += subgrpcomb_SelectedIndexChanged;
-            cboSGroup.MouseDown += subgrpcomb_MouseDown;
-            // 
-            // lblSubGroup
-            // 
-            lblSubGroup.AutoSize = true;
-            lblSubGroup.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            lblSubGroup.ImeMode = ImeMode.NoControl;
-            lblSubGroup.Location = new Point(389, 43);
-            lblSubGroup.Name = "lblSubGroup";
-            lblSubGroup.Size = new Size(66, 15);
-            lblSubGroup.TabIndex = 91;
-            lblSubGroup.Text = "Sub Group";
-            // 
             // cboGroup
             // 
             cboGroup.DropDownHeight = 100;
@@ -628,9 +525,12 @@
             cboGroup.MaxDropDownItems = 5;
             cboGroup.Name = "cboGroup";
             cboGroup.Size = new Size(111, 23);
-            cboGroup.TabIndex = 89;
+            cboGroup.TabIndex = 3;
             cboGroup.DropDown += cboGroup_DropDown;
             cboGroup.SelectedIndexChanged += grpcomb_SelectedIndexChanged;
+            cboGroup.KeyDown += cboGroup_KeyDown;
+            cboGroup.KeyPress += cboGroup_KeyPress;
+            cboGroup.KeyUp += cboGroup_KeyUp;
             cboGroup.MouseDown += grpcomb_MouseDown;
             // 
             // lblGroup
@@ -643,21 +543,6 @@
             lblGroup.Size = new Size(42, 15);
             lblGroup.TabIndex = 88;
             lblGroup.Text = "Group";
-            // 
-            // cboType
-            // 
-            cboType.AutoCompleteSource = AutoCompleteSource.ListItems;
-            cboType.DropDownHeight = 100;
-            cboType.FormattingEnabled = true;
-            cboType.IntegralHeight = false;
-            cboType.Location = new Point(516, 4);
-            cboType.Name = "cboType";
-            cboType.Size = new Size(52, 23);
-            cboType.TabIndex = 86;
-            cboType.DropDown += cboType_DropDown;
-            cboType.SelectedIndexChanged += typcomb_SelectedIndexChanged;
-            cboType.MouseClick += cboType_MouseClick;
-            cboType.MouseDown += typcomb_MouseDown;
             // 
             // lblType
             // 
@@ -677,26 +562,33 @@
             txtItemDesc.Location = new Point(222, 4);
             txtItemDesc.Name = "txtItemDesc";
             txtItemDesc.Size = new Size(246, 23);
-            txtItemDesc.TabIndex = 84;
+            txtItemDesc.TabIndex = 1;
+            txtItemDesc.TabIndexChanged += txtItemDesc_TabIndexChanged;
+            txtItemDesc.KeyDown += txtItemDesc_KeyDown;
+            txtItemDesc.KeyUp += txtItemDesc_KeyUp;
+            txtItemDesc.Validating += txtItemDesc_Validating;
             // 
             // lblItemDesc
             // 
             lblItemDesc.AutoSize = true;
             lblItemDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblItemDesc.ForeColor = SystemColors.MenuText;
             lblItemDesc.ImeMode = ImeMode.NoControl;
             lblItemDesc.Location = new Point(182, 7);
             lblItemDesc.Name = "lblItemDesc";
-            lblItemDesc.Size = new Size(37, 15);
+            lblItemDesc.Size = new Size(42, 15);
             lblItemDesc.TabIndex = 83;
-            lblItemDesc.Text = "Desc.";
+            lblItemDesc.Text = "Desc.*";
             // 
             // txtItemId
             // 
             txtItemId.Location = new Point(61, 4);
             txtItemId.Name = "txtItemId";
             txtItemId.Size = new Size(109, 23);
-            txtItemId.TabIndex = 82;
+            txtItemId.TabIndex = 0;
+            txtItemId.TabStop = false;
             txtItemId.TextChanged += itemidtxt_TextChanged;
+            txtItemId.KeyUp += txtItemId_KeyUp;
             // 
             // lblItemId
             // 
@@ -708,15 +600,7 @@
             lblItemId.Size = new Size(48, 15);
             lblItemId.TabIndex = 81;
             lblItemId.Text = "Item Id";
-            // 
-            // rotType
-            // 
-            rotType.BackColor = Color.Bisque;
-            rotType.BorderStyle = BorderStyle.Fixed3D;
-            rotType.Location = new Point(575, 9);
-            rotType.Name = "rotType";
-            rotType.Size = new Size(161, 23);
-            rotType.TabIndex = 166;
+            lblItemId.Click += lblItemId_Click;
             // 
             // rotGroup
             // 
@@ -728,15 +612,6 @@
             rotGroup.TabIndex = 167;
             rotGroup.Click += lblgrp_Click;
             // 
-            // rotSGroup
-            // 
-            rotSGroup.BackColor = Color.Bisque;
-            rotSGroup.BorderStyle = BorderStyle.Fixed3D;
-            rotSGroup.Location = new Point(553, 39);
-            rotSGroup.Name = "rotSGroup";
-            rotSGroup.Size = new Size(184, 23);
-            rotSGroup.TabIndex = 168;
-            // 
             // rotSSGroupDesc
             // 
             rotSSGroupDesc.BackColor = Color.Bisque;
@@ -745,15 +620,6 @@
             rotSSGroupDesc.Name = "rotSSGroupDesc";
             rotSSGroupDesc.Size = new Size(223, 23);
             rotSSGroupDesc.TabIndex = 169;
-            // 
-            // rotSizeDesc
-            // 
-            rotSizeDesc.BackColor = Color.Bisque;
-            rotSizeDesc.BorderStyle = BorderStyle.Fixed3D;
-            rotSizeDesc.Location = new Point(552, 70);
-            rotSizeDesc.Name = "rotSizeDesc";
-            rotSizeDesc.Size = new Size(184, 23);
-            rotSizeDesc.TabIndex = 170;
             // 
             // rotColorDesc
             // 
@@ -768,24 +634,16 @@
             // 
             rotManuf.BackColor = Color.Bisque;
             rotManuf.BorderStyle = BorderStyle.Fixed3D;
-            rotManuf.Location = new Point(176, 126);
+            rotManuf.Location = new Point(170, 126);
             rotManuf.Name = "rotManuf";
             rotManuf.Size = new Size(217, 23);
             rotManuf.TabIndex = 172;
-            // 
-            // rotPurUnit
-            // 
-            rotPurUnit.BackColor = Color.Bisque;
-            rotPurUnit.BorderStyle = BorderStyle.Fixed3D;
-            rotPurUnit.Location = new Point(553, 131);
-            rotPurUnit.Name = "rotPurUnit";
-            rotPurUnit.Size = new Size(184, 23);
-            rotPurUnit.TabIndex = 173;
             // 
             // rotSaleUnit
             // 
             rotSaleUnit.BackColor = Color.Bisque;
             rotSaleUnit.BorderStyle = BorderStyle.Fixed3D;
+            rotSaleUnit.Enabled = false;
             rotSaleUnit.Location = new Point(166, 157);
             rotSaleUnit.Name = "rotSaleUnit";
             rotSaleUnit.Size = new Size(130, 23);
@@ -795,6 +653,7 @@
             // 
             rotSaleTax.BackColor = Color.Bisque;
             rotSaleTax.BorderStyle = BorderStyle.Fixed3D;
+            rotSaleTax.Enabled = false;
             rotSaleTax.Location = new Point(552, 224);
             rotSaleTax.Name = "rotSaleTax";
             rotSaleTax.Size = new Size(73, 23);
@@ -805,6 +664,7 @@
             rotLoc.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             rotLoc.BackColor = Color.Bisque;
             rotLoc.BorderStyle = BorderStyle.Fixed3D;
+            rotLoc.Enabled = false;
             rotLoc.Location = new Point(335, 254);
             rotLoc.Name = "rotLoc";
             rotLoc.Size = new Size(71, 23);
@@ -814,6 +674,7 @@
             // 
             rotStock.BackColor = Color.Bisque;
             rotStock.BorderStyle = BorderStyle.Fixed3D;
+            rotStock.Enabled = false;
             rotStock.Location = new Point(577, 256);
             rotStock.Name = "rotStock";
             rotStock.Size = new Size(89, 23);
@@ -822,53 +683,16 @@
             // cboSaleUnit
             // 
             cboSaleUnit.DropDownHeight = 100;
+            cboSaleUnit.Enabled = false;
             cboSaleUnit.FormattingEnabled = true;
             cboSaleUnit.IntegralHeight = false;
             cboSaleUnit.Location = new Point(61, 157);
             cboSaleUnit.Name = "cboSaleUnit";
             cboSaleUnit.Size = new Size(98, 23);
-            cboSaleUnit.TabIndex = 180;
+            cboSaleUnit.TabIndex = 11;
             cboSaleUnit.DropDown += cboSaleUnit_DropDown;
             cboSaleUnit.SelectedIndexChanged += salunitcomb_SelectedIndexChanged;
             cboSaleUnit.MouseDown += salunitcomb_MouseDown;
-            // 
-            // cboPurUnit
-            // 
-            cboPurUnit.DropDownHeight = 100;
-            cboPurUnit.FormattingEnabled = true;
-            cboPurUnit.IntegralHeight = false;
-            cboPurUnit.Location = new Point(462, 131);
-            cboPurUnit.Name = "cboPurUnit";
-            cboPurUnit.Size = new Size(88, 23);
-            cboPurUnit.TabIndex = 181;
-            cboPurUnit.DropDown += cboPurUnit_DropDown;
-            cboPurUnit.SelectedIndexChanged += purunitcomb_SelectedIndexChanged;
-            cboPurUnit.MouseDown += purunitcomb_MouseDown;
-            // 
-            // panel2
-            // 
-            panel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            panel2.Controls.Add(lblDisc);
-            panel2.Controls.Add(rotType);
-            panel2.Controls.Add(rotSGroup);
-            panel2.Controls.Add(cboPurUnit);
-            panel2.Controls.Add(lblSubGroup);
-            panel2.Controls.Add(cboSGroup);
-            panel2.Controls.Add(rotPurUnit);
-            panel2.Controls.Add(lblSizeDesc);
-            panel2.Controls.Add(cboSizeDesc);
-            panel2.Controls.Add(lblPurUnit);
-            panel2.Controls.Add(lblShDesc);
-            panel2.Controls.Add(txtShDesc);
-            panel2.Controls.Add(rotSizeDesc);
-            panel2.Controls.Add(txtOpBal);
-            panel2.Controls.Add(lblConv);
-            panel2.Controls.Add(txtConv);
-            panel2.Controls.Add(lblOpBal);
-            panel2.Location = new Point(1, -5);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(756, 295);
-            panel2.TabIndex = 183;
             // 
             // panel3
             // 
@@ -886,9 +710,11 @@
             dbgBarDet.Location = new Point(-2, 310);
             dbgBarDet.Name = "dbgBarDet";
             dbgBarDet.RowTemplate.Height = 25;
-            dbgBarDet.Size = new Size(770, 134);
-            dbgBarDet.TabIndex = 165;
+            dbgBarDet.Size = new Size(758, 134);
+            dbgBarDet.TabIndex = 30;
+            dbgBarDet.CellBeginEdit += dbgBarDet_CellBeginEdit;
             dbgBarDet.CellEndEdit += dataGridView1_CellEndEdit;
+            dbgBarDet.CellEnter += dbgBarDet_CellEnter;
             dbgBarDet.CellFormatting += dataGridView1_CellFormatting;
             dbgBarDet.CellLeave += dbgBarDet_CellLeave;
             dbgBarDet.CellValidating += dbgBarDet_CellValidating;
@@ -903,6 +729,7 @@
             // PLU
             // 
             PLU.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            PLU.Frozen = true;
             PLU.HeaderText = "PLU";
             PLU.Name = "PLU";
             PLU.ReadOnly = true;
@@ -918,20 +745,22 @@
             // cp
             // 
             cp.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            cp.HeaderText = "Cost Price";
+            cp.HeaderText = "Cost Price*";
             cp.Name = "cp";
             // 
             // MRP
             // 
             MRP.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            MRP.HeaderText = "MRP";
+            MRP.HeaderText = "MRP*";
             MRP.Name = "MRP";
+            MRP.ReadOnly = true;
             // 
             // salepric
             // 
             salepric.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            salepric.HeaderText = "SALE PRICE";
+            salepric.HeaderText = "SALE PRICE*";
             salepric.Name = "salepric";
+            salepric.ReadOnly = true;
             // 
             // netrate
             // 
@@ -953,7 +782,7 @@
             // 
             ACTIVE.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ACTIVE.FalseValue = "N";
-            ACTIVE.HeaderText = "ACTIVE";
+            ACTIVE.HeaderText = "ACTIVE*";
             ACTIVE.Name = "ACTIVE";
             ACTIVE.Resizable = DataGridViewTriState.True;
             ACTIVE.SortMode = DataGridViewColumnSortMode.Automatic;
@@ -976,10 +805,11 @@
             // chkNodisc
             // 
             chkNodisc.AutoSize = true;
+            chkNodisc.Enabled = false;
             chkNodisc.Location = new Point(370, 162);
             chkNodisc.Name = "chkNodisc";
             chkNodisc.Size = new Size(15, 14);
-            chkNodisc.TabIndex = 188;
+            chkNodisc.TabIndex = 12;
             chkNodisc.UseVisualStyleBackColor = true;
             // 
             // label1
@@ -997,10 +827,214 @@
             // 
             rotNetRate.BackColor = Color.Bisque;
             rotNetRate.BorderStyle = BorderStyle.Fixed3D;
+            rotNetRate.Enabled = false;
             rotNetRate.Location = new Point(681, 256);
             rotNetRate.Name = "rotNetRate";
             rotNetRate.Size = new Size(57, 23);
             rotNetRate.TabIndex = 179;
+            // 
+            // cboType
+            // 
+            cboType.DropDownHeight = 100;
+            cboType.Enabled = false;
+            cboType.FormattingEnabled = true;
+            cboType.IntegralHeight = false;
+            cboType.ItemHeight = 15;
+            cboType.Location = new Point(513, 4);
+            cboType.MaxDropDownItems = 5;
+            cboType.Name = "cboType";
+            cboType.Size = new Size(55, 23);
+            cboType.TabIndex = 2;
+            cboType.DropDown += cboType_DropDown_2;
+            cboType.SelectedIndexChanged += cboType_SelectedIndexChanged_1;
+            // 
+            // rotType
+            // 
+            rotType.BackColor = Color.Bisque;
+            rotType.BorderStyle = BorderStyle.Fixed3D;
+            rotType.Location = new Point(577, 4);
+            rotType.Name = "rotType";
+            rotType.Size = new Size(161, 23);
+            rotType.TabIndex = 190;
+            // 
+            // rotSGroup
+            // 
+            rotSGroup.BackColor = Color.Bisque;
+            rotSGroup.BorderStyle = BorderStyle.Fixed3D;
+            rotSGroup.Location = new Point(561, 33);
+            rotSGroup.Name = "rotSGroup";
+            rotSGroup.Size = new Size(184, 23);
+            rotSGroup.TabIndex = 193;
+            // 
+            // lblSubGroup
+            // 
+            lblSubGroup.AutoSize = true;
+            lblSubGroup.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSubGroup.ImeMode = ImeMode.NoControl;
+            lblSubGroup.Location = new Point(397, 37);
+            lblSubGroup.Name = "lblSubGroup";
+            lblSubGroup.Size = new Size(66, 15);
+            lblSubGroup.TabIndex = 192;
+            lblSubGroup.Text = "Sub Group";
+            // 
+            // cboSGroup
+            // 
+            cboSGroup.DropDownHeight = 100;
+            cboSGroup.Enabled = false;
+            cboSGroup.FormattingEnabled = true;
+            cboSGroup.IntegralHeight = false;
+            cboSGroup.Location = new Point(470, 33);
+            cboSGroup.Name = "cboSGroup";
+            cboSGroup.Size = new Size(85, 23);
+            cboSGroup.TabIndex = 4;
+            cboSGroup.SelectedIndexChanged += subgrpcomb_SelectedIndexChanged;
+            cboSGroup.DragDrop += cboSGroup_DropDown;
+            cboSGroup.KeyDown += cboSGroup_KeyDown;
+            // 
+            // lblOpBal
+            // 
+            lblOpBal.AutoSize = true;
+            lblOpBal.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblOpBal.ImeMode = ImeMode.NoControl;
+            lblOpBal.Location = new Point(581, 159);
+            lblOpBal.Name = "lblOpBal";
+            lblOpBal.Size = new Size(69, 15);
+            lblOpBal.TabIndex = 116;
+            lblOpBal.Text = "OP Balance";
+            // 
+            // txtConv
+            // 
+            txtConv.Enabled = false;
+            txtConv.Location = new Point(486, 155);
+            txtConv.Name = "txtConv";
+            txtConv.Size = new Size(85, 23);
+            txtConv.TabIndex = 13;
+            // 
+            // lblConv
+            // 
+            lblConv.AutoSize = true;
+            lblConv.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblConv.ImeMode = ImeMode.NoControl;
+            lblConv.Location = new Point(411, 160);
+            lblConv.Name = "lblConv";
+            lblConv.Size = new Size(69, 15);
+            lblConv.TabIndex = 114;
+            lblConv.Text = "Conversion";
+            // 
+            // txtOpBal
+            // 
+            txtOpBal.Enabled = false;
+            txtOpBal.Location = new Point(657, 155);
+            txtOpBal.Name = "txtOpBal";
+            txtOpBal.Size = new Size(84, 23);
+            txtOpBal.TabIndex = 14;
+            // 
+            // lblPurUnit
+            // 
+            lblPurUnit.AutoSize = true;
+            lblPurUnit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblPurUnit.ImeMode = ImeMode.NoControl;
+            lblPurUnit.Location = new Point(401, 129);
+            lblPurUnit.Name = "lblPurUnit";
+            lblPurUnit.Size = new Size(58, 15);
+            lblPurUnit.TabIndex = 103;
+            lblPurUnit.Text = "Pur.  Unit";
+            // 
+            // rotPurUnit
+            // 
+            rotPurUnit.BackColor = Color.Bisque;
+            rotPurUnit.BorderStyle = BorderStyle.Fixed3D;
+            rotPurUnit.Location = new Point(558, 126);
+            rotPurUnit.Name = "rotPurUnit";
+            rotPurUnit.Size = new Size(184, 23);
+            rotPurUnit.TabIndex = 173;
+            // 
+            // cboPurUnit
+            // 
+            cboPurUnit.DropDownHeight = 100;
+            cboPurUnit.Enabled = false;
+            cboPurUnit.FormattingEnabled = true;
+            cboPurUnit.IntegralHeight = false;
+            cboPurUnit.Location = new Point(467, 126);
+            cboPurUnit.Name = "cboPurUnit";
+            cboPurUnit.Size = new Size(88, 23);
+            cboPurUnit.TabIndex = 10;
+            cboPurUnit.DropDown += cboPurUnit_DropDown;
+            cboPurUnit.SelectedIndexChanged += purunitcomb_SelectedIndexChanged;
+            cboPurUnit.MouseDown += purunitcomb_MouseDown;
+            // 
+            // textBox3
+            // 
+            textBox3.Font = new Font("Segoe UI", 5.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox3.Location = new Point(68, 8);
+            textBox3.Name = "textBox3";
+            textBox3.Size = new Size(9, 17);
+            textBox3.TabIndex = 182;
+            // 
+            // lblSizeDesc
+            // 
+            lblSizeDesc.AutoSize = true;
+            lblSizeDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblSizeDesc.ImeMode = ImeMode.NoControl;
+            lblSizeDesc.Location = new Point(409, 69);
+            lblSizeDesc.Name = "lblSizeDesc";
+            lblSizeDesc.Size = new Size(44, 15);
+            lblSizeDesc.TabIndex = 195;
+            lblSizeDesc.Text = "Size Id";
+            // 
+            // cboSizeDesc
+            // 
+            cboSizeDesc.DropDownHeight = 100;
+            cboSizeDesc.Enabled = false;
+            cboSizeDesc.FormattingEnabled = true;
+            cboSizeDesc.IntegralHeight = false;
+            cboSizeDesc.Location = new Point(465, 65);
+            cboSizeDesc.Name = "cboSizeDesc";
+            cboSizeDesc.Size = new Size(85, 23);
+            cboSizeDesc.TabIndex = 6;
+            cboSizeDesc.DropDown += cboSizeDesc_DropDown;
+            cboSizeDesc.SelectedIndexChanged += sizecomb_SelectedIndexChanged;
+            cboSizeDesc.KeyDown += cboSizeDesc_KeyDown;
+            // 
+            // rotSizeDesc
+            // 
+            rotSizeDesc.BackColor = Color.Bisque;
+            rotSizeDesc.BorderStyle = BorderStyle.Fixed3D;
+            rotSizeDesc.Location = new Point(556, 65);
+            rotSizeDesc.Name = "rotSizeDesc";
+            rotSizeDesc.Size = new Size(184, 23);
+            rotSizeDesc.TabIndex = 196;
+            // 
+            // lblShDesc
+            // 
+            lblShDesc.AutoSize = true;
+            lblShDesc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblShDesc.ImeMode = ImeMode.NoControl;
+            lblShDesc.Location = new Point(393, 100);
+            lblShDesc.Name = "lblShDesc";
+            lblShDesc.Size = new Size(71, 15);
+            lblShDesc.TabIndex = 197;
+            lblShDesc.Text = "Short Desc.";
+            // 
+            // txtShDesc
+            // 
+            txtShDesc.AutoCompleteSource = AutoCompleteSource.HistoryList;
+            txtShDesc.Enabled = false;
+            txtShDesc.Location = new Point(470, 96);
+            txtShDesc.Name = "txtShDesc";
+            txtShDesc.Size = new Size(275, 23);
+            txtShDesc.TabIndex = 8;
+            // 
+            // lblDisc
+            // 
+            lblDisc.AutoSize = true;
+            lblDisc.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            lblDisc.ImeMode = ImeMode.NoControl;
+            lblDisc.Location = new Point(412, 260);
+            lblDisc.Name = "lblDisc";
+            lblDisc.Size = new Size(51, 15);
+            lblDisc.TabIndex = 199;
+            lblDisc.Text = "Disc (%)";
             // 
             // frmM_Item
             // 
@@ -1008,6 +1042,24 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
             ClientSize = new Size(755, 447);
+            Controls.Add(lblDisc);
+            Controls.Add(lblShDesc);
+            Controls.Add(txtShDesc);
+            Controls.Add(cboPurUnit);
+            Controls.Add(rotPurUnit);
+            Controls.Add(lblSizeDesc);
+            Controls.Add(lblPurUnit);
+            Controls.Add(cboSizeDesc);
+            Controls.Add(txtOpBal);
+            Controls.Add(rotSizeDesc);
+            Controls.Add(lblConv);
+            Controls.Add(txtConv);
+            Controls.Add(rotSGroup);
+            Controls.Add(lblOpBal);
+            Controls.Add(lblSubGroup);
+            Controls.Add(cboSGroup);
+            Controls.Add(cboType);
+            Controls.Add(rotType);
             Controls.Add(chkNodisc);
             Controls.Add(label1);
             Controls.Add(label25);
@@ -1061,14 +1113,13 @@
             Controls.Add(lblSSGroupDesc);
             Controls.Add(cboGroup);
             Controls.Add(lblGroup);
-            Controls.Add(cboType);
             Controls.Add(lblType);
             Controls.Add(txtItemDesc);
             Controls.Add(lblItemDesc);
             Controls.Add(txtItemId);
             Controls.Add(lblItemId);
-            Controls.Add(panel2);
             Controls.Add(panel3);
+            Controls.Add(textBox3);
             Location = new Point(10, 10);
             MdiChildrenMinimizedAnchorBottom = false;
             Name = "frmM_Item";
@@ -1079,9 +1130,8 @@
             FormClosing += frmM_Item_FormClosing;
             FormClosed += Item_FormClosed;
             Load += Item_Load;
+            KeyPress += frmM_Item_KeyPress;
             Resize += frmM_Item_Resize;
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dbgBarDet).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -1090,7 +1140,6 @@
         #endregion
         private Label lblStock;
         private TextBox txtDisc;
-        private Label lblDisc;
         private ComboBox cboLoc;
         private Label lblLoc;
         private CheckBox chkBarYN;
@@ -1119,58 +1168,59 @@
         private Label lblReOLevel;
         private TextBox txtMinLevel;
         private Label lblMinLevel;
-        private TextBox txtOpBal;
-        private Label lblOpBal;
-        private TextBox txtConv;
-        private Label lblConv;
         private TextBox textBox5;
         private ComboBox comboBox3;
         private Label lblSaleUnit;
-        private TextBox txtShDesc;
-        private Label lblShDesc;
         private TextBox textBox4;
-        private ComboBox cboColorDesc;
         private Label lblColorDesc;
         private TextBox textBox1;
-        private ComboBox cboPurUnit;
-        private Label lblPurUnit;
         private TextBox textBox2;
         private ComboBox cboManuf;
         private Label lblManuf;
-        private ComboBox cboSizeDesc;
-        private Label lblSizeDesc;
         private Label lblSSGroupDesc;
-        private Label lblSubGroup;
         private Label lblGroup;
-        private ComboBox cboType;
         private Label lblType;
         private TextBox txtItemDesc;
         private Label lblItemDesc;
         private TextBox txtItemId;
         private Label lblItemId;
-        private Label rotType;
-        private Label rotSGroup;
         private Label rotSSGroupDesc;
-        private Label rotSizeDesc;
-        private Label rotColorDesc;
         private Label rotManuf;
-        private Label rotPurUnit;
         private Label rotSaleUnit;
         private Label rotSaleTax;
         private Label rotLoc;
         private Label rotStock;
         private ComboBox cboSaleUnit;
-        private Panel panel2;
         private Panel panel3;
         private Label label25;
         public ComboBox cboGroup;
-        public ComboBox cboSGroup;
         public ComboBox cboSSGroupDesc;
         public DataGridView dbgBarDet;
         private CheckBox chkNodisc;
         private Label label1;
         public Label rotGroup;
         private Label rotNetRate;
+        public ComboBox cboColorDesc;
+        public Label rotColorDesc;
+        public ComboBox cboType;
+        private Label rotType;
+        private Label rotSGroup;
+        private Label lblSubGroup;
+        public ComboBox cboSGroup;
+        private Label lblOpBal;
+        private TextBox txtConv;
+        private Label lblConv;
+        private TextBox txtOpBal;
+        private Label lblPurUnit;
+        private Label rotPurUnit;
+        private ComboBox cboPurUnit;
+        private TextBox textBox3;
+        private Label lblSizeDesc;
+        public ComboBox cboSizeDesc;
+        public Label rotSizeDesc;
+        public Label lblShDesc;
+        public TextBox txtShDesc;
+        private Label lblDisc;
         private DataGridViewTextBoxColumn PLU;
         private DataGridViewTextBoxColumn BARCODE;
         private DataGridViewTextBoxColumn cp;

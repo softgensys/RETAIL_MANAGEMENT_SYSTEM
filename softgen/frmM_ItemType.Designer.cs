@@ -95,6 +95,7 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "frmM_ItemType";
             Text = "Item Type Master";
+            Validating += frmM_ItemType_Validating;
             M_ItemType.ResumeLayout(false);
             M_ItemType.PerformLayout();
             ResumeLayout(false);

@@ -37,6 +37,7 @@
             lblSTaxPer = new Label();
             lblGrpDesc = new Label();
             lblGrpId = new Label();
+            textBox1 = new TextBox();
             SuspendLayout();
             // 
             // chkStatus
@@ -56,6 +57,7 @@
             // 
             resources.ApplyResources(txtGrpDesc, "txtGrpDesc");
             txtGrpDesc.Name = "txtGrpDesc";
+            txtGrpDesc.Validating += txtGrpDesc_Validating;
             // 
             // txtGrpId
             // 
@@ -66,6 +68,7 @@
             txtGrpId.TextChanged += txtGrpId_TextChanged;
             txtGrpId.KeyDown += txtGrpId_KeyDown;
             txtGrpId.KeyPress += txtGrpId_KeyPress;
+            txtGrpId.KeyUp += txtGrpId_KeyUp;
             txtGrpId.Validating += txtGrpId_Validating;
             // 
             // lblStatus
@@ -88,6 +91,13 @@
             resources.ApplyResources(lblGrpId, "lblGrpId");
             lblGrpId.Name = "lblGrpId";
             // 
+            // textBox1
+            // 
+            textBox1.AutoCompleteMode = AutoCompleteMode.Suggest;
+            textBox1.AutoCompleteSource = AutoCompleteSource.HistoryList;
+            resources.ApplyResources(textBox1, "textBox1");
+            textBox1.Name = "textBox1";
+            // 
             // frmM_Group
             // 
             resources.ApplyResources(this, "$this");
@@ -101,12 +111,14 @@
             Controls.Add(lblSTaxPer);
             Controls.Add(lblGrpDesc);
             Controls.Add(lblGrpId);
+            Controls.Add(textBox1);
             Name = "frmM_Group";
             Deactivate += frmM_Group_Deactivate;
             FormClosing += frmM_Group_FormClosing;
             FormClosed += frmM_Group_FormClosed;
             Load += Group_Load;
             KeyPress += frmM_Group_KeyPress;
+            KeyUp += frmM_Group_KeyUp;
             Resize += frmM_Group_Resize;
             ResumeLayout(false);
             PerformLayout();
@@ -121,5 +133,6 @@
         private Label lblGrpDesc;
         private Label lblGrpId;
         public TextBox txtGrpId;
+        public TextBox textBox1;
     }
 }

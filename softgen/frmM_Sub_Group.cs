@@ -20,6 +20,10 @@ namespace softgen
             dbConnector = new DbConnector();
 
             this.Activated += MyForm_Activated;
+            this.KeyPreview = true; // Make sure the form has key preview enabled
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
+
+            this.FormClosed += frmM_Sub_Group_FormClosed;
         }
 
         private void MyForm_Activated(object sender, EventArgs e)
@@ -28,7 +32,7 @@ namespace softgen
             DeTools.ActiveFileMenu(this);
             DeTools.CreatedBy(mstrEntBy, mstrEntOn);
             DeTools.PostedBy(mstrAuthBy, mstrAuthOn);
-
+            DeTools.MakeTextBoxUppercase(txtSubGrpDesc);
 
 
         }
@@ -54,25 +58,72 @@ namespace softgen
 
         public void ResetControls(Control.ControlCollection controls)
         {
-            foreach (Control control in controls)
+            if (mblnSearch == true)
             {
-                // Check if the control is a TextBox and its ID starts with "txt"
-                if (control is TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                foreach (Control control in controls)
                 {
-                    TextBox textBox = (TextBox)control;
+                    // Check if the control is a TextBox and its ID starts with "txt"
+                    if (control is TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                    {
+                        TextBox textBox = (TextBox)control;
 
-                    // Reset the value
-                    textBox.Text = "";
+                        // Reset the value
+                        textBox.Text = "";
 
-                    // Enable the TextBox
-                    textBox.Enabled = true;
+                        // Enable the TextBox
+                        textBox.Enabled = true;
+
+
+                    }
+
+                    // Recursively call the method for nested controls
+                    if (control.Controls.Count > 0)
+                    {
+                        ResetControls(control.Controls);
+                    }
+
+                    if (control is Label && control.Name != null && control.Name.StartsWith("rot"))
+                    {
+                        Label lbl = (Label)control;
+                        lbl.Text = "";
+                        //textBox.Enabled = true;
+                    }
+
+                    // Check if the control is a ComboBox
+                    if (control is ComboBox && control.Name != null && control.Name.StartsWith("cbo"))
+                    {
+                        ComboBox comboBox = (ComboBox)control;
+                        comboBox.SelectedIndex = -1; // Select none
+                    }
                 }
 
-                // Recursively call the method for nested controls
-                if (control.Controls.Count > 0)
+
+            }
+            else
+            {
+                foreach (Control control in controls)
                 {
-                    ResetControls(control.Controls);
+                    // Check if the control is a TextBox and its ID starts with "txt"
+                    if (control is TextBox && control.Name != null && control.Name.StartsWith("txt"))
+                    {
+                        TextBox textBox = (TextBox)control;
+
+                        // Reset the value
+                        textBox.Text = "";
+
+                        // Enable the TextBox
+                        textBox.Enabled = true;
+                    }
+
+                    // Recursively call the method for nested controls
+                    if (control.Controls.Count > 0)
+                    {
+                        ResetControls(control.Controls);
+                    }
+
+                    //txtSubGrpId.Enabled = false;
                 }
+
             }
         }
 
@@ -299,7 +350,7 @@ namespace softgen
 
                 Messages.SavedMsg();
                 dbConnector.connection.Close();
-                ClearForm();
+                ResetControls(this.Controls);
 
             }
             catch (Exception)
@@ -401,12 +452,16 @@ namespace softgen
                     return;
                 }
 
-                ClearForm();
+
             }
             catch (Exception)
             {
 
                 throw;
+            }
+            finally
+            {
+                txtSubGrpId.Enabled = false;
             }
         }
 
@@ -627,6 +682,92 @@ namespace softgen
         {
             DeTools.DestroyToolbar(this);
             MainForm.Instance.mnuMSGroup.Enabled = true;
+        }
+
+        private void txtSubGrpId_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.Text.Contains("<Add>"))
+            {
+
+
+                if (!DeTools.IsFieldUnique("m_sub_group", "sub_group_id", txtSubGrpId.Text.ToString().Trim()))
+                {
+                    MessageBox.Show("Id :" + txtSubGrpId.Text + " already Exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtSubGrpId.Text = null;
+                    txtSubGrpId.Refresh();
+                    txtSubGrpId.Focus();
+                    // You can also clear the control or perform other actions
+                }
+            }
+        }
+
+        private void cboGrpId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab)
+            {
+                //string mode = DeTools.GetMode(DeTools.gobjActiveForm);
+                //if (mode == DeTools.MODIFYMODE)
+                //{
+                    
+                //}
+                general.FillCombo(cboGrpId, "group_id", "m_group", false);
+
+                // Suppress the default Tab behavior
+                e.SuppressKeyPress = true;
+
+                ComboBox comboBox = sender as ComboBox;
+                if (comboBox != null && !string.IsNullOrEmpty(comboBox.Text))
+                {
+                    string enteredText = comboBox.Text.Trim();
+
+                    // Check if the entered text matches any item in the ComboBox
+                    foreach (var item in comboBox.Items)
+                    {
+                        if (item.ToString().Equals(enteredText, StringComparison.OrdinalIgnoreCase))
+                        {
+                            // If a match is found, set it as the selected item
+                            comboBox.SelectedItem = item;
+
+                            // Perform the required action
+                            if (comboBox.SelectedItem != null)
+                            {
+                                string desc = general.GetDesc("m_group", "group_id", "group_desc", "C", comboBox.SelectedItem.ToString().Trim());
+                                rotGrpDesc.Text = desc;
+                                
+                            }
+                            else
+                            {
+                                MessageBox.Show("No Such Id Present In This!", "NOT FOUND!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+
+                            return;
+                        }
+                    }
+
+                    // If no match is found, clear the selection
+                    comboBox.SelectedItem = null;
+                }
+                txtSubGrpId.Focus();
+            }
+        }
+
+        private void txtSubGrpId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string mode = DeTools.GetMode(DeTools.gobjActiveForm);
+                if (mode == DeTools.MODIFYMODE)
+                {
+                    SearchForm();
+                    txtSubGrpId.Enabled = false;
+                    
+
+                }
+             
+                
+
+            }
+
         }
     }//-----------END-//
 }

@@ -87,6 +87,7 @@
             cboServer.Name = "cboServer";
             cboServer.Size = new Size(121, 23);
             cboServer.TabIndex = 6;
+            cboServer.SelectedIndexChanged += cboServer_SelectedIndexChanged;
             // 
             // label4
             // 
@@ -106,6 +107,7 @@
             txtPassword.PasswordChar = '*';
             txtPassword.Size = new Size(180, 23);
             txtPassword.TabIndex = 4;
+            txtPassword.KeyDown += txtPassword_KeyDown;
             // 
             // txtLogin_Id
             // 
@@ -114,6 +116,7 @@
             txtLogin_Id.Name = "txtLogin_Id";
             txtLogin_Id.Size = new Size(180, 23);
             txtLogin_Id.TabIndex = 3;
+            txtLogin_Id.KeyDown += txtLogin_Id_KeyDown;
             // 
             // label3
             // 

@@ -110,6 +110,7 @@
             txtManufId.Name = "txtManufId";
             txtManufId.Size = new Size(110, 23);
             txtManufId.TabIndex = 22;
+            txtManufId.KeyUp += txtManufId_KeyUp;
             // 
             // lblManufId
             // 
@@ -263,6 +264,7 @@
             FormClosing += frmM_Manuf_FormClosing;
             FormClosed += frmM_Manuf_FormClosed;
             Load += frmM_Manuf_Load;
+            Validating += frmM_Manuf_Validating;
             M_Manuf.ResumeLayout(false);
             M_Manuf.PerformLayout();
             ResumeLayout(false);

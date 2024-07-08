@@ -81,6 +81,7 @@
             grdHelp.TabIndex = 3;
             grdHelp.CellContentClick += grdHelp_CellContentClick;
             grdHelp.CellDoubleClick += grdHelp_CellDoubleClick;
+            grdHelp.KeyDown += grdHelp_KeyDown;
             // 
             // pnlText
             // 
@@ -153,6 +154,7 @@
             txtValue.Name = "txtValue";
             txtValue.Size = new Size(205, 23);
             txtValue.TabIndex = 5;
+            txtValue.KeyDown += txtValue_KeyDown;
             // 
             // cboRel
             // 

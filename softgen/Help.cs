@@ -1,4 +1,5 @@
 ﻿using System.Data.Odbc;
+using System.Windows.Forms;
 
 namespace softgen
 {
@@ -23,7 +24,8 @@ namespace softgen
         public static string send_combo_box_value;
         public static General general = new General();
         public static string getcbogrpval = "";
-
+        public static string selectedFieldcboRel = "";
+        public static int selectedrel;
 
         /////////////////////////////////---start-----///////////////////////////////////
 
@@ -86,7 +88,8 @@ namespace softgen
         {
             try
             {
-
+                frmHelp.grdHelp.Rows.Clear();
+                frmHelp.txtValue.Clear();
                 var helpTopic = "";
                 if (keyCode == (int)Keys.F1)
                 {
@@ -116,119 +119,218 @@ namespace softgen
                                 if (s_Mode == DeTools.ADDMODE)
                                 {
                                     PrepareGridHelp();
+
+                                    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                    FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                    FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                    frmHelp.Show();
+
                                 }
                                 else
                                 {
                                     PrepareGridHelp();
+
+                                    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                    FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                    FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                    frmHelp.Show();
+
                                 }
                                 break;
 
                             case var _ when i_Help_id > 9000:
                                 // These helps are for a substitute for combo help.
                                 PrepareGridHelp();
+
+                                frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                frmHelp.Show();
+
                                 break;
 
                             case var _ when i_Help_id > 3000:
                                 PrepareTextHelp();
+
+                                frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                frmHelp.Show();
+
                                 break;
                         }
 
-                      
+
                     }
 
                     else
                     {
-                        Tuple<DataGridView, int, int> key = Tuple.Create(DeTools.dgv, DeTools.dgvCell.RowIndex, DeTools.dgvCell.ColumnIndex);
-                        dgvCellToHelpTopicMapping.TryGetValue(key, out helpTopic);
-                        i_Help_id = Int32.Parse(helpTopic);
-
-
-                        switch (i_Help_id)
+                        if (DeTools.dgv != null && DeTools.dgvCell != null)
                         {
-                            case 0:
-                                // Currently Help is not available
-                                frmHelp.pnlText.Text = "Currently Help is not available.";
-                                frmHelp.pnlText.Visible = true;
-                                break;
+                            Tuple<DataGridView, int, int> key = Tuple.Create(DeTools.dgv, DeTools.dgvCell.RowIndex, DeTools.dgvCell.ColumnIndex);
+                            dgvCellToHelpTopicMapping.TryGetValue(key, out helpTopic);
+                            i_Help_id = Int32.Parse(helpTopic);
 
-                            case var _ when i_Help_id < 3000:
-                                // In add mode, don't display the grid help.
-                                if (s_Mode == DeTools.ADDMODE)
-                                {
+
+                            switch (i_Help_id)
+                            {
+                                case 0:
+                                    // Currently Help is not available
+                                    frmHelp.pnlText.Text = "Currently Help is not available.";
+                                    frmHelp.pnlText.Visible = true;
+                                    break;
+
+                                case var _ when i_Help_id < 3000:
+                                    // In add mode, don't display the grid help.
+                                    if (s_Mode == DeTools.ADDMODE)
+                                    {
+                                        PrepareGridHelp();
+
+                                        frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                        frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                        FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                        FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                        frmHelp.Show();
+
+                                    }
+                                    else
+                                    {
+                                        PrepareGridHelp();
+
+                                        frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                        frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                        FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                        FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                        frmHelp.Show();
+
+                                    }
+                                    break;
+
+                                case var _ when i_Help_id > 9000:
+                                    // These helps are for a substitute for combo help.
                                     PrepareGridHelp();
-                                }
-                                else
-                                {
-                                    PrepareGridHelp();
-                                }
-                                break;
 
-                            case var _ when i_Help_id > 9000:
-                                // These helps are for a substitute for combo help.
-                                PrepareGridHelp();
-                                break;
+                                    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                    FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                    FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                    frmHelp.Show();
 
-                            case var _ when i_Help_id > 3000:
-                                PrepareTextHelp();
-                                break;
+                                    break;
+
+                                case var _ when i_Help_id > 3000:
+                                    PrepareTextHelp();
+
+                                    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                                    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                                    FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                                    FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                                    frmHelp.Show();
+
+                                    break;
+                            }
+
                         }
-                 
+
+
+                        //frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
+                        //frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
+                        //FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
+                        //FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
+                        //frmHelp.Show();
+
+                       
                     }
 
-
-                    frmHelp.pnlToptxt.Text = DeTools.RestoreCaption(form) + " (" + i_NoOfRecords.ToString().Trim() + ")";
-                    frmHelp.pnlToptxt.Tag = DeTools.RestoreCaption(form);
-                    FillFields(frmHelp.cboFields, frmHelp.cboFieldsId);
-                    FillFields(frmHelp.cboOrder, frmHelp.cboOrderId);
-                    frmHelp.Show();
-
-                    switch (i_Help_id)
+                    if (frmHelp.cboFields.Items != null && frmHelp.cboFields.Items.Count > 0)
                     {
-                        case 9001:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Item Description");
-                            break;
-                        case 9002:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Customer Name");
-                            break;
-                        case 9005:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Supplier Name");
-                            break;
-                        case 9010:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Item Description");
-                            break;
-                        case 9011:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Item Description");
-                            break;
-                        case 1005:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Customer Name");
-                            break;
-                        case 1006:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Item Name");
-                            break;
-                        case 1013:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Supplier Name");
-                            break;
-                        case 9014:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Description");
-                            break;
-                        case 9018:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Description");
-                            break;
-                        case 9006:
-                            frmHelp.cboDataType.Items.Add(1);
-                            frmHelp.cboFields.Items.Add("Description");
-                            break;
+                        string selectedCaption = "";
+                        frmHelp.cboFields.SelectedIndex = 0;
+                        selectedCaption = frmHelp.cboFields.SelectedItem.ToString().Trim();
+                        string selectedColumn = frmHelp.GetColumnForCaption(selectedCaption);
+                        string dataType = frmHelp.GetDataTypeForField(selectedColumn);
+                        if (!string.IsNullOrEmpty(dataType))
+                        {
+                            // Update Help.send_combo_box_value
+                            send_combo_box_value = dataType;
+
+                            // Clear and populate cboRel based on data type
+                            frmHelp.cboRel.Items.Clear();
+
+                            if (dataType == "char" || dataType == "varchar")
+                            {
+                                frmHelp.cboRel.Items.Add("=");
+                                frmHelp.cboRel.Items.Add("LIKE");
+                            }
+                            else
+                            {
+                                frmHelp.cboRel.Items.Add("=");
+                                frmHelp.cboRel.Items.Add("<");
+                                frmHelp.cboRel.Items.Add("<=");
+                                frmHelp.cboRel.Items.Add(">");
+                                frmHelp.cboRel.Items.Add(">=");
+                            }
+
+                        }
                     }
+
+                    //switch (i_Help_id)
+                    //{
+                    //    case 9001:
+                    //        //frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Item Description");
+                    //        break;
+                    //    case 9002:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Customer Name");
+                    //        break;
+                    //    case 9005:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Supplier Name");
+                    //        break;
+                    //    case 9010:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Item Description");
+                    //        break;
+                    //    case 9011:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Item Description");
+                    //        break;
+                    //    case 1004:
+                    //        //frmHelp.cboDataType.Items.Add(1);
+
+
+                    //        break;
+                    //    case 1005:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Customer Name");
+                    //        break;
+                    //    case 1006:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Item Name");
+                    //        break;
+                    //    case 1013:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Supplier Name");
+                    //        break;
+                    //    case 9014:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Description");
+                    //        break;
+                    //    case 9018:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Description");
+                    //        break;
+                    //    case 9006:
+                    //        frmHelp.cboDataType.Items.Add(1);
+                    //        frmHelp.cboFields.Items.Add("Description");
+                    //        break;
+                    //}
+
                 }
             }
             catch (Exception)
@@ -360,7 +462,7 @@ namespace softgen
             int i, j, i_Rows = 0, Count;
             string strFieldName, strFormType, strOrderBy;
             string strFields;
-            string strCondition;
+            string strCondition=null;
             object strValue = null;
             string strheading = "";
             int selectedIndex=-2;
@@ -506,21 +608,27 @@ namespace softgen
                     }
                 }
 
-                if (frmHelp.cboRel.SelectedItem == null)
-                {
-                    strCondition = string.Empty;
-                }
-                else
-                {
-                    string selectedField = frmHelp.cboRel.SelectedItem.ToString().Trim();
-                    // Assign the selected item
-                    strCondition = selectedField;
-                }
 
+                //if (frmHelp.cboRel.SelectedItem == null)
+                if (frmHelp.cboRel.Items.Count > 0)
+                {
+                    if (frmHelp.cboRel.SelectedIndex == -1)
+                    {
+                        // Set to default index if none is selected
+                        frmHelp.cboRel.SelectedIndex = 1;
+                    }
+
+                    if (frmHelp.cboRel.SelectedItem != null)
+                    {
+                        selectedFieldcboRel = frmHelp.cboRel.SelectedItem.ToString().Trim();
+                    }
+                        strCondition = selectedFieldcboRel;
+                }
                 if (string.IsNullOrEmpty(frmHelp.txtValue.Text.Trim()))
                 {
                     strValue = string.Empty;
                 }
+
                 else
                 {
                     if (selectedIndex >= 0)
@@ -532,14 +640,31 @@ namespace softgen
 
                         if (selectedItemValue == copyComboBoxItemValue)
                         {
-                            if (frmHelp.cboRel.SelectedItem.ToString().Trim() == "LIKE")
+                            if (selectedFieldcboRel.ToString().Trim() == "LIKE")
                             {
                                 strValue = $"'%{frmHelp.txtValue.Text.Trim()}%'";
                             }
-                            else if (frmHelp.cboRel.SelectedItem.ToString().Trim() == "=")
+                            else if (selectedFieldcboRel.ToString().Trim() == "=")
                             {
                                 strValue = $"'{frmHelp.txtValue.Text.Trim()}'";
                             }
+                            else if (selectedFieldcboRel.ToString().Trim() == ">")
+                            {
+                                strValue = $"'{frmHelp.txtValue.Text.Trim()}'";
+                            }
+                            else if (selectedFieldcboRel.ToString().Trim() == "<")
+                            {
+                                strValue = $"'{frmHelp.txtValue.Text.Trim()}'";
+                            }
+                            else if (selectedFieldcboRel.ToString().Trim() == "<=")
+                            {
+                                strValue = $"'{frmHelp.txtValue.Text.Trim()}'";
+                            }
+                            else if (selectedFieldcboRel.ToString().Trim() == ">=")
+                            {
+                                strValue = $"'{frmHelp.txtValue.Text.Trim()}'";
+                            }
+
                         }
                         else if (selectedItemValue == copyComboBoxItemValue)
                         {
@@ -1294,10 +1419,22 @@ namespace softgen
                     DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
                     if (selectedRow.Cells.Count > 0)
                     {
-                        o_control.Text = selectedRow.Cells[0].Value.ToString();
-                        if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+                        if (o_form.Name == "frmM_Item")
                         {
-                            searchableForm.SearchForm();
+                            o_control.Text = selectedRow.Cells[1].Value.ToString();
+                            if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+                            {
+                                searchableForm.SearchForm();
+                            }
+                        }
+                        else
+                        {
+                            o_control.Text = selectedRow.Cells[0].Value.ToString();
+                            if (DeTools.gobjActiveForm is Interface_for_Common_methods.ISearchableForm searchableForm)
+                            {
+                                searchableForm.SearchForm();
+                            }
+
                         }
 
                     }
@@ -1440,14 +1577,20 @@ namespace softgen
             // Transfer data from help form to main form.
             if (i_Help_id == 9001 && DeTools.gobjActiveForm.Name == "frmT_Invoice")
             {
+                //if (frmHelp.flag_Enteryn == false)
+                //{
+
+
                 // Single key fields
                 if (frmHelp.grdHelp.CurrentRow != null)
                 {
+
                     // Assuming that targetGrid is your DataGridView
                     DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDet", true).FirstOrDefault();
 
                     // Get the current row index
-                    int rowIndex = targetGrid.Rows.Add();
+                    //int rowIndex = targetGrid.Rows.Add();
+                    int rowIndex = targetGrid.CurrentRow.Index;
 
                     // Assuming that grdHelp is your source DataGridView in frmHelp
                     DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
@@ -1486,6 +1629,10 @@ namespace softgen
                                 // You can log a message or take appropriate action
                             }
                         }
+                        // Scroll to the newly added row
+                        //rowIndex = targetGrid.Rows.Add();
+                        
+                        //***targetGrid.FirstDisplayedScrollingRowIndex = rowIndex;
 
                         //targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1];
 
@@ -1494,7 +1641,84 @@ namespace softgen
 
                     }
                 }
+                //}
+                //else if (frmHelp.flag_Enteryn == true)
+                //{
+
+                //    // Single key fields
+                //    if (frmHelp.grdHelp.CurrentRow != null)
+                //    {
+
+                //        // Assuming that targetGrid is your DataGridView
+                //        DataGridView targetGrid = (DataGridView)DeTools.gobjActiveForm.Controls.Find("dbgItemDet", true).FirstOrDefault();
+                //        int rowIndex = targetGrid.Rows.Count - 1;
+
+                //        // Get the current row index
+
+                //        //int rowIndex = targetGrid.Rows.Add();
+
+                //        if (rowIndex <= 0)
+                //        {
+                //            rowIndex = targetGrid.Rows.Add();
+                //        }
+                //        else if (rowIndex > 0)
+                //        {
+                //            rowIndex = targetGrid.Rows.Count - 1;
+                //        }
+
+                //        // Assuming that grdHelp is your source DataGridView in frmHelp
+                //        DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+
+                //        if (selectedRow != null)
+                //        {
+                //            // Assuming you have a list of column indexes to transfer data
+                //            List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 }; // Add the column indexes you want to transfer
+
+                //            foreach (int columnIndex in columnIndexesToTransfer)
+                //            {
+                //                // Check if the column index is within the bounds
+                //                if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                //                {
+                //                    // Assuming that targetGrid has enough columns
+                //                    targetGrid.Rows[rowIndex].Cells[1].Value = selectedRow.Cells[1].Value; //barcode
+                //                    targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[0].Value; //itemnm
+                //                    targetGrid.Rows[rowIndex].Cells[3].Value = "1";
+                //                    targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value; //mrp
+                //                    targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value; //unitprice
+                //                    targetGrid.Rows[rowIndex].Cells[6].Value = selectedRow.Cells[6].Value; //disc%
+                //                    targetGrid.Rows[rowIndex].Cells[7].Value = "0.00"; //discamt
+                //                    targetGrid.Rows[rowIndex].Cells[8].Value = selectedRow.Cells[5].Value; //gst%
+                //                    targetGrid.Rows[rowIndex].Cells[9].Value = selectedRow.Cells[7].Value; //cess%
+                //                    targetGrid.Rows[rowIndex].Cells[10].Value = ((decimal.Parse(selectedRow.Cells[3].Value.ToString()) * 1) - decimal.Parse(targetGrid.Rows[rowIndex].Cells[7].Value.ToString())).ToString();
+
+                //                    //targetGrid.Rows[rowIndex].Cells[10].Value = selectedRow.Cells[5].Value;
+                //                    targetGrid.Rows[rowIndex].Cells[13].Value = selectedRow.Cells[4].Value;
+
+
+
+                //                }
+                //                else
+                //                {
+                //                    // Handle the case where the column index is out of bounds
+                //                    // You can log a message or take appropriate action
+                //                }
+                //            }
+                //            // Scroll to the newly added row
+                //            targetGrid.FirstDisplayedScrollingRowIndex = rowIndex;
+
+                //            //targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1];
+
+                //            //// Begin the edit to activate the cell for editing
+                //            //targetGrid.BeginEdit(true);
+
+                //        }
+                //    }
+                //}
             }
+
+            //*****old
+
+
 
             // Transfer data from help form to main form.
             if (i_Help_id == 1012)
@@ -1516,29 +1740,59 @@ namespace softgen
             }
 
 
-            //else if (i_Help_id == 1012 && DeTools.gobjActiveForm.Name == "frmT_Invoice" && s_Mode == DeTools.MODIFYMODE)
-            //{
-            //    // Assuming that grdHelp is your source DataGridView in frmHelp
-            //    DataGridViewRow selectedRow = frmHelp.grdHelp.CurrentRow;
+        
+        }
 
-            //    if (selectedRow != null)
-            //    {
-            //        // Assuming you have a list of column indexes to transfer data
-            //        List<int> columnIndexesToTransfer = new List<int> { 0 }; // Add the column indexes you want to transfer
+        private static void TransferDataToRow(DataGridView targetGrid, int rowIndex, DataGridViewRow selectedRow)
+        {
+            // Assuming you have a list of column indexes to transfer data
+            List<int> columnIndexesToTransfer = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7 };
 
-            //        foreach (int columnIndex in columnIndexesToTransfer)
-            //        {
-            //            // Check if the column index is within the bounds
-            //            if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
-            //            {
-            //                frmT_Invoice.GetInvNoFromHelp = selectedRow.Cells[0].Value.ToString().Trim();
-            //                frmT_Invoice frminv = new frmT_Invoice();
-            //                frminv.txtInvNo.Text = selectedRow.Cells[0].Value.ToString().Trim();
-            //                frminv.SearchForm();
-            //            }
-            //        }
-            //    }
-            //}
+            foreach (int columnIndex in columnIndexesToTransfer)
+            {
+                if (columnIndex >= 0 && columnIndex < selectedRow.Cells.Count)
+                {
+                    targetGrid.Rows[rowIndex].Cells[1].Value = selectedRow.Cells[1].Value; // barcode
+                    targetGrid.Rows[rowIndex].Cells[2].Value = selectedRow.Cells[0].Value; // itemnm
+                    targetGrid.Rows[rowIndex].Cells[3].Value = "1";
+                    targetGrid.Rows[rowIndex].Cells[4].Value = selectedRow.Cells[2].Value; // mrp
+                    targetGrid.Rows[rowIndex].Cells[5].Value = selectedRow.Cells[3].Value; // unitprice
+                    targetGrid.Rows[rowIndex].Cells[6].Value = selectedRow.Cells[6].Value; // disc%
+                    targetGrid.Rows[rowIndex].Cells[7].Value = "0.00"; // discamt
+                    targetGrid.Rows[rowIndex].Cells[8].Value = selectedRow.Cells[5].Value; // gst%
+                    targetGrid.Rows[rowIndex].Cells[9].Value = selectedRow.Cells[7].Value; // cess%
+                    targetGrid.Rows[rowIndex].Cells[10].Value = ((decimal.Parse(selectedRow.Cells[3].Value.ToString()) * 1) - decimal.Parse(targetGrid.Rows[rowIndex].Cells[7].Value.ToString())).ToString();
+                    targetGrid.Rows[rowIndex].Cells[13].Value = selectedRow.Cells[4].Value;
+                }
+            }
+        }
+
+        private static void AddNewRowIfNeeded(DataGridView targetGrid)
+        {
+            bool emptyRowExists = false;
+            foreach (DataGridViewRow row in targetGrid.Rows)
+            {
+                if (IsRowEmpty(row))
+                {
+                    emptyRowExists = true;
+                    break;
+                }
+            }
+
+            if (!emptyRowExists)
+            {
+                int newRowIdx = targetGrid.Rows.Add();
+                targetGrid.Rows[newRowIdx].Cells[10].Value = 0; // Set default value in the 11th cell
+                targetGrid.CurrentCell = targetGrid.Rows[newRowIdx].Cells[1]; // Set focus to the second cell
+                targetGrid.BeginEdit(true); // Begin edit to activate the cell
+            }
+        }
+
+        private static bool IsRowEmpty(DataGridViewRow row)
+        {
+            return string.IsNullOrEmpty(Convert.ToString(row.Cells[0].Value)) &&
+                   string.IsNullOrEmpty(Convert.ToString(row.Cells[1].Value)) &&
+                   string.IsNullOrEmpty(Convert.ToString(row.Cells[2].Value));
         }
 
         public static void TransferDataSr(Form form)
@@ -1593,6 +1847,8 @@ namespace softgen
                                 // You can log a message or take appropriate action
                             }
                         }
+                        // Scroll to the newly added row
+                        targetGrid.FirstDisplayedScrollingRowIndex = rowIndex;
 
                         //targetGrid.CurrentCell = targetGrid.Rows[rowIndex].Cells[1];
 

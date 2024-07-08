@@ -78,6 +78,7 @@
             lblAdd = new Label();
             txtCustId = new TextBox();
             lblCustId = new Label();
+            textBox1 = new TextBox();
             M_Cust.SuspendLayout();
             SuspendLayout();
             // 
@@ -134,6 +135,7 @@
             M_Cust.Controls.Add(lblAdd);
             M_Cust.Controls.Add(txtCustId);
             M_Cust.Controls.Add(lblCustId);
+            M_Cust.Controls.Add(textBox1);
             M_Cust.Location = new Point(-2, 0);
             M_Cust.Name = "M_Cust";
             M_Cust.Size = new Size(579, 375);
@@ -144,7 +146,7 @@
             txtComm.Location = new Point(497, 328);
             txtComm.Name = "txtComm";
             txtComm.Size = new Size(68, 23);
-            txtComm.TabIndex = 196;
+            txtComm.TabIndex = 25;
             // 
             // chkCPBill
             // 
@@ -152,7 +154,7 @@
             chkCPBill.Location = new Point(423, 334);
             chkCPBill.Name = "chkCPBill";
             chkCPBill.Size = new Size(15, 14);
-            chkCPBill.TabIndex = 195;
+            chkCPBill.TabIndex = 24;
             chkCPBill.UseVisualStyleBackColor = true;
             // 
             // lblComm
@@ -179,7 +181,7 @@
             chkDealer.Location = new Point(317, 331);
             chkDealer.Name = "chkDealer";
             chkDealer.Size = new Size(15, 14);
-            chkDealer.TabIndex = 193;
+            chkDealer.TabIndex = 23;
             chkDealer.UseVisualStyleBackColor = true;
             // 
             // lblDealer
@@ -196,7 +198,7 @@
             txtTinNo.Location = new Point(92, 328);
             txtTinNo.Name = "txtTinNo";
             txtTinNo.Size = new Size(172, 23);
-            txtTinNo.TabIndex = 191;
+            txtTinNo.TabIndex = 22;
             // 
             // lblTinNo
             // 
@@ -213,7 +215,7 @@
             txtNotes.Multiline = true;
             txtNotes.Name = "txtNotes";
             txtNotes.Size = new Size(473, 41);
-            txtNotes.TabIndex = 189;
+            txtNotes.TabIndex = 21;
             // 
             // lblNotes
             // 
@@ -229,7 +231,7 @@
             txtOpBal.Location = new Point(442, 253);
             txtOpBal.Name = "txtOpBal";
             txtOpBal.Size = new Size(123, 23);
-            txtOpBal.TabIndex = 187;
+            txtOpBal.TabIndex = 20;
             // 
             // lblOpBal
             // 
@@ -256,7 +258,7 @@
             dtpDiscEDt.Location = new Point(282, 255);
             dtpDiscEDt.Name = "dtpDiscEDt";
             dtpDiscEDt.Size = new Size(105, 23);
-            dtpDiscEDt.TabIndex = 184;
+            dtpDiscEDt.TabIndex = 19;
             dtpDiscEDt.Value = new DateTime(2023, 8, 25, 0, 0, 0, 0);
             // 
             // dtpDiscSDt
@@ -266,7 +268,7 @@
             dtpDiscSDt.Location = new Point(93, 256);
             dtpDiscSDt.Name = "dtpDiscSDt";
             dtpDiscSDt.Size = new Size(105, 23);
-            dtpDiscSDt.TabIndex = 183;
+            dtpDiscSDt.TabIndex = 18;
             dtpDiscSDt.Value = new DateTime(2023, 8, 25, 0, 0, 0, 0);
             // 
             // txtDiscPer
@@ -274,7 +276,7 @@
             txtDiscPer.Location = new Point(469, 226);
             txtDiscPer.Name = "txtDiscPer";
             txtDiscPer.Size = new Size(97, 23);
-            txtDiscPer.TabIndex = 182;
+            txtDiscPer.TabIndex = 17;
             // 
             // lblDiscPer
             // 
@@ -302,7 +304,7 @@
             dtpMA.Location = new Point(282, 228);
             dtpMA.Name = "dtpMA";
             dtpMA.Size = new Size(105, 23);
-            dtpMA.TabIndex = 179;
+            dtpMA.TabIndex = 16;
             dtpMA.Value = new DateTime(2023, 8, 25, 0, 0, 0, 0);
             // 
             // lblDiscSDt
@@ -330,7 +332,7 @@
             dtpDoB.Location = new Point(93, 229);
             dtpDoB.Name = "dtpDoB";
             dtpDoB.Size = new Size(105, 23);
-            dtpDoB.TabIndex = 176;
+            dtpDoB.TabIndex = 15;
             dtpDoB.Value = new DateTime(2023, 8, 25, 0, 0, 0, 0);
             // 
             // txtEmail
@@ -338,7 +340,7 @@
             txtEmail.Location = new Point(381, 200);
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(186, 23);
-            txtEmail.TabIndex = 108;
+            txtEmail.TabIndex = 14;
             // 
             // lblEmail
             // 
@@ -354,14 +356,14 @@
             txtPhone2.Location = new Point(205, 201);
             txtPhone2.Name = "txtPhone2";
             txtPhone2.Size = new Size(109, 23);
-            txtPhone2.TabIndex = 106;
+            txtPhone2.TabIndex = 13;
             // 
             // txtPhone1
             // 
             txtPhone1.Location = new Point(93, 201);
             txtPhone1.Name = "txtPhone1";
             txtPhone1.Size = new Size(109, 23);
-            txtPhone1.TabIndex = 105;
+            txtPhone1.TabIndex = 12;
             // 
             // lblPhone
             // 
@@ -377,7 +379,7 @@
             txtMobNo.Location = new Point(360, 174);
             txtMobNo.Name = "txtMobNo";
             txtMobNo.Size = new Size(207, 23);
-            txtMobNo.TabIndex = 103;
+            txtMobNo.TabIndex = 11;
             // 
             // lblMobNo
             // 
@@ -393,7 +395,7 @@
             txtZip.Location = new Point(94, 174);
             txtZip.Name = "txtZip";
             txtZip.Size = new Size(178, 23);
-            txtZip.TabIndex = 101;
+            txtZip.TabIndex = 10;
             // 
             // lblZip
             // 
@@ -409,7 +411,7 @@
             txtCountry.Location = new Point(360, 147);
             txtCountry.Name = "txtCountry";
             txtCountry.Size = new Size(207, 23);
-            txtCountry.TabIndex = 99;
+            txtCountry.TabIndex = 9;
             // 
             // lblCountry
             // 
@@ -425,7 +427,7 @@
             txtState.Location = new Point(94, 147);
             txtState.Name = "txtState";
             txtState.Size = new Size(178, 23);
-            txtState.TabIndex = 97;
+            txtState.TabIndex = 8;
             // 
             // lblState
             // 
@@ -441,7 +443,7 @@
             txrDist.Location = new Point(360, 120);
             txrDist.Name = "txrDist";
             txrDist.Size = new Size(207, 23);
-            txrDist.TabIndex = 95;
+            txrDist.TabIndex = 7;
             // 
             // lblDist
             // 
@@ -457,7 +459,7 @@
             txtCity.Location = new Point(94, 120);
             txtCity.Name = "txtCity";
             txtCity.Size = new Size(178, 23);
-            txtCity.TabIndex = 93;
+            txtCity.TabIndex = 6;
             // 
             // lblCity
             // 
@@ -474,7 +476,7 @@
             chkStatus.Location = new Point(553, 15);
             chkStatus.Name = "chkStatus";
             chkStatus.Size = new Size(15, 14);
-            chkStatus.TabIndex = 91;
+            chkStatus.TabIndex = 2;
             chkStatus.UseVisualStyleBackColor = true;
             // 
             // lblStatus
@@ -491,7 +493,7 @@
             txtName.Location = new Point(248, 9);
             txtName.Name = "txtName";
             txtName.Size = new Size(254, 23);
-            txtName.TabIndex = 89;
+            txtName.TabIndex = 1;
             // 
             // lblName
             // 
@@ -507,21 +509,21 @@
             txtAdd3.Location = new Point(94, 93);
             txtAdd3.Name = "txtAdd3";
             txtAdd3.Size = new Size(473, 23);
-            txtAdd3.TabIndex = 87;
+            txtAdd3.TabIndex = 5;
             // 
             // txtAdd2
             // 
             txtAdd2.Location = new Point(94, 67);
             txtAdd2.Name = "txtAdd2";
             txtAdd2.Size = new Size(473, 23);
-            txtAdd2.TabIndex = 86;
+            txtAdd2.TabIndex = 4;
             // 
             // txtAdd1
             // 
             txtAdd1.Location = new Point(94, 41);
             txtAdd1.Name = "txtAdd1";
             txtAdd1.Size = new Size(473, 23);
-            txtAdd1.TabIndex = 85;
+            txtAdd1.TabIndex = 3;
             // 
             // lblAdd
             // 
@@ -537,7 +539,9 @@
             txtCustId.Location = new Point(94, 9);
             txtCustId.Name = "txtCustId";
             txtCustId.Size = new Size(106, 23);
-            txtCustId.TabIndex = 83;
+            txtCustId.TabIndex = 0;
+            txtCustId.TextChanged += txtCustId_TextChanged;
+            txtCustId.KeyUp += txtCustId_KeyUp;
             // 
             // lblCustId
             // 
@@ -547,6 +551,14 @@
             lblCustId.Size = new Size(77, 18);
             lblCustId.TabIndex = 0;
             lblCustId.Text = "Customer Id";
+            // 
+            // textBox1
+            // 
+            textBox1.Font = new Font("Segoe UI", 5.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox1.Location = new Point(104, 13);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(11, 17);
+            textBox1.TabIndex = 197;
             // 
             // frmM_Cust
             // 
@@ -559,6 +571,7 @@
             FormClosing += frmM_Cust_FormClosing;
             FormClosed += frmM_Cust_FormClosed;
             Load += frmM_Cust_Load;
+            Validating += frmM_Cust_Validating;
             M_Cust.ResumeLayout(false);
             M_Cust.PerformLayout();
             ResumeLayout(false);
@@ -616,5 +629,6 @@
         private CheckBox chkCPBill;
         private Label lblComm;
         private Label lblCPBill;
+        private TextBox textBox1;
     }
 }

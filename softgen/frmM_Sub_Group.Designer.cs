@@ -70,6 +70,7 @@
             cboGrpId.Size = new Size(121, 23);
             cboGrpId.TabIndex = 27;
             cboGrpId.SelectedIndexChanged += cboGrpId_SelectedIndexChanged;
+            cboGrpId.KeyUp += cboGrpId_KeyUp;
             // 
             // rotGrpDesc
             // 
@@ -115,6 +116,8 @@
             txtSubGrpId.Name = "txtSubGrpId";
             txtSubGrpId.Size = new Size(165, 23);
             txtSubGrpId.TabIndex = 175;
+            txtSubGrpId.KeyUp += txtSubGrpId_KeyUp;
+            txtSubGrpId.Validating += txtSubGrpId_Validating;
             // 
             // M_Sub_Group
             // 

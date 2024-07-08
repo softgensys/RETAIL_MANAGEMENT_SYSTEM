@@ -632,6 +632,7 @@
             dbgItemDet.CellValidated += dbgItemDet_CellValidated;
             dbgItemDet.CellValidating += dbgItemDet_CellValidating;
             dbgItemDet.CellValueChanged += dbgItemDet_CellValueChanged;
+            dbgItemDet.DefaultValuesNeeded += dbgItemDet_DefaultValuesNeeded;
             dbgItemDet.EditingControlShowing += dbgItemDet_EditingControlShowing;
             dbgItemDet.RowLeave += dbgItemDet_RowLeave;
             dbgItemDet.RowPostPaint += dbgItemDet_RowPostPaint;
@@ -949,6 +950,7 @@
             txtInvNo.Size = new Size(112, 23);
             txtInvNo.TabIndex = 83;
             txtInvNo.TextChanged += txtInvNo_TextChanged;
+            txtInvNo.KeyUp += txtInvNo_KeyUp;
             // 
             // lblInvNo
             // 

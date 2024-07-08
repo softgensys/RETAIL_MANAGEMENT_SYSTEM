@@ -95,6 +95,17 @@ namespace softgen
                     textBox.Enabled = true;
                 }
 
+                if(control is System.Windows.Forms.ComboBox && control.Name.StartsWith("cbo"))
+                {
+                    System.Windows.Forms.ComboBox cboBox = (System.Windows.Forms.ComboBox)control;
+
+                    // Reset the value
+                    cboBox.Text = "";
+
+                    // Enable the TextBox
+                    cboBox.Enabled = true;
+                }
+
                 // Recursively call the method for nested controls
                 if (control.Controls.Count > 0)
                 {
@@ -158,11 +169,18 @@ namespace softgen
             if (!chkPaymAll.Checked)
             {
                 Paymchecked_yn = "Y";
+                chkInvGstDet.Checked = false;
+                chkItemGstDet.Checked = false;
+                chkGstdet.Checked = false;
+                chkInvtIME.Checked = false;
+
             }
             else
             {
                 Paymchecked_yn = "N";
             }
+
+
         }
 
         public string GetFormattedFDate()
@@ -225,11 +243,17 @@ namespace softgen
             if (chkGstdet.Checked)
             {
                 Gstdetchecked_yn = "Y";
+                chkInvGstDet.Checked = false;
+                chkItemGstDet.Checked = false;
+                chkPaymAll.Checked = false;
+                chkInvtIME.Checked = false;
+
             }
             else
             {
                 Gstdetchecked_yn = "N";
             }
+            
         }
 
         private void chkItemGstDet_CheckedChanged(object sender, EventArgs e)
@@ -237,6 +261,11 @@ namespace softgen
             if (chkItemGstDet.Checked)
             {
                 ItemGstdetchecked_yn = "Y";
+                chkInvGstDet.Checked = false;
+                chkGstdet.Checked = false;
+                chkPaymAll.Checked = false;
+                chkInvtIME.Checked = false;
+
             }
             else
             {
@@ -249,6 +278,11 @@ namespace softgen
             if (chkInvGstDet.Checked)
             {
                 InvGstdetchecked_yn = "Y";
+                chkGstdet.Checked = false;
+                chkItemGstDet.Checked = false;
+                chkPaymAll.Checked = false;
+                chkInvtIME.Checked = false;
+
             }
             else
             {

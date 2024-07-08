@@ -21,7 +21,10 @@ namespace softgen
 
             this.Activated += MyForm_Activated;
             this.KeyPreview = true; // Make sure the form has key preview enabled
-            this.KeyUp += DeTools.Form_KeyUp; // Subscribe to the KeyUp event
+            this.KeyUp += new KeyEventHandler(DeTools.Form_KeyUp);
+            DeTools.MakeTextBoxUppercase(txtName);
+
+            //this.FormClosed += frmM_Cust_FormClosed;
         }
 
 
@@ -67,6 +70,7 @@ namespace softgen
 
                     // Enable the TextBox
                     textBox.Enabled = true;
+                    txtCustId.Focus();
                 }
 
                 // Recursively call the method for nested controls
@@ -113,7 +117,10 @@ namespace softgen
         {
             try
             {
+                if (!string.IsNullOrEmpty(txtCustId.Text.ToString()) && !string.IsNullOrEmpty(txtCustId.Text.ToString()))
+                {
 
+                }
 
                 dbConnector = new DbConnector();
                 // dbConnector.connectionString= new OdbcConnection();
@@ -125,229 +132,238 @@ namespace softgen
                 int J;
 
                 blnItem_H = true;
-                DeTools.gstrSQL = "select * from m_customer where cust_id='" + txtCustId.Text.Trim() + "' limit 1;  ";
-                OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-                dbConnector.connection.Open();
-
-                OdbcDataReader reader = cmd.ExecuteReader();
-
-                if (DeTools.GetMode(this) != DeTools.ADDMODE)
+                if (txtCustId.Text != "" || txtName.Text != "")
                 {
-                    if (reader.HasRows)
+
+
+                    DeTools.gstrSQL = "select * from m_customer where cust_id='" + txtCustId.Text.Trim() + "' limit 1;  ";
+                    OdbcCommand cmd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                    dbConnector.connection.Open();
+
+                    OdbcDataReader reader = cmd.ExecuteReader();
+
+                    if (DeTools.GetMode(this) != DeTools.ADDMODE)
                     {
+                        if (reader.HasRows)
+                        {
+
+                            if (DeTools.CheckTemporaryTableExists("m_customer") != null)
+                            {
+
+                                // The record exists, so update it
+                                reader.Close();
+                                Cursor.Current = Cursors.WaitCursor;
+
+                                string gstrSQL1 = "Insert into temp_m_Customer(cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
+                                                    " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                                    " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON, open_yn, comp_name , mod_date, mod_by)" +
+                                                   "Select cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
+                                                   " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                                    " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON,  'Y' AS open_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name ," +
+                                                   " mod_date, mod_by from m_customer where cust_id= '" + txtCustId.Text.Trim() + "'";
+
+                                using (OdbcCommand insertintemp1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
+                                {
+                                    insertintemp1.ExecuteNonQuery();
+                                }
+
+                                string gstrSQL2 = "Select * from temp_m_customer where cust_id='" + txtCustId.Text.Trim() + "' and open_yn='Y'";
+                                OdbcCommand selectintemp1 = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+
+                                OdbcDataReader selectread = selectintemp1.ExecuteReader();
+
+                                if (selectread.HasRows)
+                                {
+                                    string delSQL = "Delete FROM m_customer WHERE cust_id = '" + txtCustId.Text.Trim() + "'; ";
+
+                                    using (OdbcCommand delfrmhdr1 = new OdbcCommand(delSQL, dbConnector.connection))
+                                    {
+                                        delfrmhdr1.ExecuteNonQuery();
+                                    }
+
+                                    DeTools.gstrSQL = "update temp_m_customer set cust_id = ?, cust_name = ?, dob = ?, mar_annv = ?, address_1 = ?, address_2 = ?, address_3 = ?," +
+                                        " city = ?, op_bal = ?, state_id = ?, zip = ?, country_id = ?, mob_no = ?, phone_1 = ?, phone_2 = ?, email = ?, start_dt = ?," +
+                                        " end_dt = ?, disc_per = ?, active_yn = ?, notes = ?, status = ?, trans_status = ?, tin = ?," +
+                                        " comp_name  =  '" + DeTools.fOSMachineName.GetMachineName() + "' , mod_date = ?, mod_by = ? where cust_id= '" + txtCustId.Text.Trim() + "'";
+
+                                    cmd.CommandText = DeTools.gstrSQL;
+
+
+                                    cmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("cust_name", txtName.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("dob", dtpDoB.Value));
+                                    cmd.Parameters.Add(new OdbcParameter("mar_annv", dtpMA.Value));
+                                    cmd.Parameters.Add(new OdbcParameter("address_1", txtAdd1.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("address_2", txtAdd2.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("address_3", txtAdd3.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("city", txtCity.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("op_bal", txtOpBal.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("state_id", txtState.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("zip", txtZip.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("country_id", txtCountry.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("mob_no", txtMobNo.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("phone_1", txtPhone1.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("phone_2", txtPhone2.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("email", txtEmail.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("start_dt", dtpDiscSDt.Value));
+                                    cmd.Parameters.Add(new OdbcParameter("end_dt", dtpDiscEDt.Value));
+                                    cmd.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                                    cmd.Parameters.Add(new OdbcParameter("notes", txtNotes.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("status", "V"));
+                                    cmd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
+                                    cmd.Parameters.Add(new OdbcParameter("tin", txtTinNo.Text.Trim()));
+                                    //cmd.Parameters.Add(new OdbcParameter("OP_BAL_BON", txtOpBal.Text.Trim()));
+                                    cmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
+                                    cmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
+
+
+                                    cmd.ExecuteNonQuery();
+
+                                    Cursor.Current = Cursors.Default;
+
+                                    Messages.SavingMsg();
+
+
+                                    //DeTools.SelectDataFromTemporaryTable("m_group");
+                                    reader.Close();
+
+                                    string insertQuery = "Insert into m_customer (cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
+                                                          " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                                          " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON," +
+                                                          " mod_date, mod_by) Select cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
+                                                          " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                                          " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON," +
+                                                          " mod_date, mod_by from temp_m_customer where cust_id='" + txtCustId.Text.Trim() + "'";
+
+                                    using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
+                                    {
+                                        insertCmd.ExecuteNonQuery();
+
+                                    }
+                                    string querupdN1 = "update temp_m_customer set open_yn='N' where cust_id=? order by ent_on desc ";
+
+                                    using (OdbcCommand querupdNCmd = new OdbcCommand(querupdN1, dbConnector.connection))
+                                    {
+                                        querupdNCmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.ToString().Trim()));
+                                        querupdNCmd.ExecuteNonQuery();
+
+
+                                    }
+
+                                    string querdel1 = "delete from temp_m_customer where cust_id=? order by ent_on desc ";
+
+                                    using (OdbcCommand querdelCmd = new OdbcCommand(querdel1, dbConnector.connection))
+                                    {
+                                        querdelCmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.ToString().Trim()));
+                                        querdelCmd.ExecuteNonQuery();
+
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    else
+                    {
+
+                        // The record does not exist, so insert a new one
+                        reader.Close();
 
                         if (DeTools.CheckTemporaryTableExists("m_customer") != null)
                         {
-
-                            // The record exists, so update it
-                            reader.Close();
                             Cursor.Current = Cursors.WaitCursor;
+                            //--------count tot col ->30
+                            DeTools.gstrSQL = "INSERT INTO temp_m_customer (cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3, city, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, comp_name, open_yn)" +
+                                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                            string gstrSQL1 = "Insert into temp_m_Customer(cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
-                                                " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                                                " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON, open_yn, comp_name , mod_date, mod_by)" +
-                                               "Select cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
-                                               " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                                                " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON,  'Y' AS open_yn, '" + DeTools.fOSMachineName.GetMachineName() + "' AS comp_name ," +
-                                               " mod_date, mod_by from m_customer where cust_id= '" + txtCustId.Text.Trim() + "'";
+                            OdbcCommand cmdd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
 
-                            using (OdbcCommand insertintemp1 = new OdbcCommand(gstrSQL1, dbConnector.connection))
+                            cmdd.CommandText = DeTools.gstrSQL;
+
+
+                            cmdd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("cust_name", txtName.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("dob", dtpDoB.Value));
+                            cmdd.Parameters.Add(new OdbcParameter("mar_annv", dtpMA.Value));
+                            cmdd.Parameters.Add(new OdbcParameter("address_1", txtAdd1.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("address_2", txtAdd2.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("address_3", txtAdd3.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("city", txtCity.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("op_bal", txtOpBal.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("state_id", txtState.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("zip", txtZip.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("country_id", txtCountry.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("mob_no", txtMobNo.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("phone_1", txtPhone1.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("phone_2", txtPhone2.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("email", txtEmail.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("start_dt", dtpDiscSDt.Value));
+                            cmdd.Parameters.Add(new OdbcParameter("end_dt", dtpDiscEDt.Value));
+                            cmdd.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
+                            cmdd.Parameters.Add(new OdbcParameter("notes", txtNotes.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("status", "V"));
+                            cmdd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
+                            cmdd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
+                            cmdd.Parameters.Add(new OdbcParameter("trans_status", "N"));
+                            cmdd.Parameters.Add(new OdbcParameter("tin", txtTinNo.Text.Trim()));
+                            //cmdd.Parameters.Add(new OdbcParameter("OP_BAL_BON", txtOpBal.Text.Trim()));
+                            cmdd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
+                            cmdd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
+
+                            cmdd.ExecuteNonQuery();
+
+                            //DeTools.SelectDataFromTemporaryTable("m_group");
+                            //reader.Close();
+
+                            string insertQuery = "Insert into m_customer(cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
+                                                 " city, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                                 " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON)" +
+                                                 "Select cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
+                                                 " city, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
+                                                 " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON" +
+                                                   " from temp_m_customer where cust_id= '" + txtCustId.Text.Trim() + "'";
+
+                            using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
                             {
-                                insertintemp1.ExecuteNonQuery();
+                                insertCmd.ExecuteNonQuery();
+
                             }
 
-                            string gstrSQL2 = "Select * from temp_m_customer where cust_id='" + txtCustId.Text.Trim() + "' and open_yn='Y'";
-                            OdbcCommand selectintemp1 = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
+                            reader.Close();
+                            Messages.SavingMsg();
+                            Cursor.Current = Cursors.Default;
 
-                            OdbcDataReader selectread = selectintemp1.ExecuteReader();
-
-                            if (selectread.HasRows)
+                            string quer1 = "update temp_m_customer set open_yn='N' where cust_id='" + txtCustId.Text.ToString().Trim() + "' order by ent_on desc ";
+                            using (OdbcCommand qurCmd = new OdbcCommand(quer1, dbConnector.connection))
                             {
-                                string delSQL = "Delete FROM m_customer WHERE cust_id = '" + txtCustId.Text.Trim() + "'; ";
+                                qurCmd.ExecuteNonQuery();
+                            }
 
-                                using (OdbcCommand delfrmhdr1 = new OdbcCommand(delSQL, dbConnector.connection))
-                                {
-                                    delfrmhdr1.ExecuteNonQuery();
-                                }
+                            string querdel1 = "delete from temp_m_customer where cust_id=? order by ent_on desc ";
 
-                                DeTools.gstrSQL = "update temp_m_customer set cust_id = ?, cust_name = ?, dob = ?, mar_annv = ?, address_1 = ?, address_2 = ?, address_3 = ?," +
-                                    " city = ?, op_bal = ?, state_id = ?, zip = ?, country_id = ?, mob_no = ?, phone_1 = ?, phone_2 = ?, email = ?, start_dt = ?," +
-                                    " end_dt = ?, disc_per = ?, active_yn = ?, notes = ?, status = ?, trans_status = ?, tin = ?," +
-                                    " comp_name  =  '" + DeTools.fOSMachineName.GetMachineName() + "' , mod_date = ?, mod_by = ? where cust_id= '" + txtCustId.Text.Trim() + "'";
+                            using (OdbcCommand querdelCmd = new OdbcCommand(querdel1, dbConnector.connection))
+                            {
+                                querdelCmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.ToString().Trim()));
+                                querdelCmd.ExecuteNonQuery();
 
-                                cmd.CommandText = DeTools.gstrSQL;
-
-
-                                cmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("cust_name", txtName.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("dob", dtpDoB.Value));
-                                cmd.Parameters.Add(new OdbcParameter("mar_annv", dtpMA.Value));
-                                cmd.Parameters.Add(new OdbcParameter("address_1", txtAdd1.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("address_2", txtAdd2.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("address_3", txtAdd3.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("city", txtCity.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("op_bal", txtOpBal.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("state_id", txtState.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("zip", txtZip.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("country_id", txtCountry.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("mob_no", txtMobNo.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("phone_1", txtPhone1.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("phone_2", txtPhone2.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("email", txtEmail.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("start_dt", dtpDiscSDt.Value));
-                                cmd.Parameters.Add(new OdbcParameter("end_dt", dtpDiscEDt.Value));
-                                cmd.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                                cmd.Parameters.Add(new OdbcParameter("notes", txtNotes.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("status", "V"));
-                                cmd.Parameters.Add(new OdbcParameter("Trans_status", "N"));
-                                cmd.Parameters.Add(new OdbcParameter("tin", txtTinNo.Text.Trim()));
-                                //cmd.Parameters.Add(new OdbcParameter("OP_BAL_BON", txtOpBal.Text.Trim()));
-                                cmd.Parameters.Add(new OdbcParameter("mod_date", OdbcType.DateTime)).Value = DateTime.Now;
-                                cmd.Parameters.Add(new OdbcParameter("mod_by", DeTools.gstrloginId));
-
-
-                                cmd.ExecuteNonQuery();
-
-                                Cursor.Current = Cursors.Default;
-
-                                Messages.SavingMsg();
-
-
-                                //DeTools.SelectDataFromTemporaryTable("m_group");
-                                reader.Close();
-
-                                string insertQuery = "Insert into m_customer (cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
-                                                      " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                                                      " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON," +
-                                                      " mod_date, mod_by) Select cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
-                                                      " city, dist_id, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                                                      " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON," +
-                                                      " mod_date, mod_by from temp_m_customer where cust_id='" + txtCustId.Text.Trim() + "'";
-
-                                using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
-                                {
-                                    insertCmd.ExecuteNonQuery();
-
-                                }
-                                string querupdN1 = "update temp_m_customer set open_yn='N' where cust_id=? order by ent_on desc ";
-
-                                using (OdbcCommand querupdNCmd = new OdbcCommand(querupdN1, dbConnector.connection))
-                                {
-                                    querupdNCmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.ToString().Trim()));
-                                    querupdNCmd.ExecuteNonQuery();
-
-
-                                }
-
-                                string querdel1 = "delete from temp_m_customer where cust_id=? order by ent_on desc ";
-
-                                using (OdbcCommand querdelCmd = new OdbcCommand(querdel1, dbConnector.connection))
-                                {
-                                    querdelCmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.ToString().Trim()));
-                                    querdelCmd.ExecuteNonQuery();
-
-
-                                }
                             }
                         }
-                    }
-                }
 
+                    }
+
+
+                    Messages.SavedMsg();
+                    dbConnector.connection.Close();
+                    ResetControls(this.Controls);
+                }
                 else
                 {
-
-                    // The record does not exist, so insert a new one
-                    reader.Close();
-
-                    if (DeTools.CheckTemporaryTableExists("m_customer") != null)
-                    {
-                        Cursor.Current = Cursors.WaitCursor;
-                        //--------count tot col ->30
-                        DeTools.gstrSQL = "INSERT INTO temp_m_customer (cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3, city, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                            " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, comp_name, open_yn)" +
-                            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-                        OdbcCommand cmdd = new OdbcCommand(DeTools.gstrSQL, dbConnector.connection);
-
-                        cmdd.CommandText = DeTools.gstrSQL;
-
-
-                        cmdd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("cust_name", txtName.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("dob", dtpDoB.Value));
-                        cmdd.Parameters.Add(new OdbcParameter("mar_annv", dtpMA.Value));
-                        cmdd.Parameters.Add(new OdbcParameter("address_1", txtAdd1.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("address_2", txtAdd2.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("address_3", txtAdd3.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("city", txtCity.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("op_bal", txtOpBal.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("state_id", txtState.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("zip", txtZip.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("country_id", txtCountry.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("mob_no", txtMobNo.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("phone_1", txtPhone1.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("phone_2", txtPhone2.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("email", txtEmail.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("start_dt", dtpDiscSDt.Value));
-                        cmdd.Parameters.Add(new OdbcParameter("end_dt", dtpDiscEDt.Value));
-                        cmdd.Parameters.Add(new OdbcParameter("disc_per", txtDiscPer.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("active_yn", chkStatus.Checked ? "Y" : "N"));
-                        cmdd.Parameters.Add(new OdbcParameter("notes", txtNotes.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("status", "V"));
-                        cmdd.Parameters.Add(new OdbcParameter("ent_by", DeTools.gstrloginId));
-                        cmdd.Parameters.Add(new OdbcParameter("ent_on", OdbcType.DateTime)).Value = DateTime.Now;
-                        cmdd.Parameters.Add(new OdbcParameter("trans_status", "N"));
-                        cmdd.Parameters.Add(new OdbcParameter("tin", txtTinNo.Text.Trim()));
-                        //cmdd.Parameters.Add(new OdbcParameter("OP_BAL_BON", txtOpBal.Text.Trim()));
-                        cmdd.Parameters.Add(new OdbcParameter("comp_name", DeTools.fOSMachineName.GetMachineName()));
-                        cmdd.Parameters.Add(new OdbcParameter("open_yn", "Y"));
-
-                        cmdd.ExecuteNonQuery();
-
-                        //DeTools.SelectDataFromTemporaryTable("m_group");
-                        //reader.Close();
-
-                        string insertQuery = "Insert into m_customer(cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
-                                             " city, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                                             " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON)" +
-                                             "Select cust_id, cust_name, dob, mar_annv, address_1, address_2, address_3," +
-                                             " city, op_bal, state_id, zip, country_id, mob_no, phone_1, phone_2, email, start_dt," +
-                                             " end_dt, disc_per, active_yn, notes, status, ent_by, ent_on, trans_status, tin, OP_BAL_BON" +
-                                               " from temp_m_customer where cust_id= '" + txtCustId.Text.Trim() + "'";
-
-                        using (OdbcCommand insertCmd = new OdbcCommand(insertQuery, dbConnector.connection))
-                        {
-                            insertCmd.ExecuteNonQuery();
-
-                        }
-
-                        reader.Close();
-                        Messages.SavingMsg();
-                        Cursor.Current = Cursors.Default;
-
-                        string quer1 = "update temp_m_customer set open_yn='N' where cust_id='" + txtCustId.Text.ToString().Trim() + "' order by ent_on desc ";
-                        using (OdbcCommand qurCmd = new OdbcCommand(quer1, dbConnector.connection))
-                        {
-                            qurCmd.ExecuteNonQuery();
-                        }
-
-                        string querdel1 = "delete from temp_m_customer where cust_id=? order by ent_on desc ";
-
-                        using (OdbcCommand querdelCmd = new OdbcCommand(querdel1, dbConnector.connection))
-                        {
-                            querdelCmd.Parameters.Add(new OdbcParameter("cust_id", txtCustId.Text.ToString().Trim()));
-                            querdelCmd.ExecuteNonQuery();
-
-                        }
-                    }
-
+                    MessageBox.Show("Pls Enter Cust Id or Cust Name!", "Cust Id or Cust Name Is Empty!", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
-
-                Messages.SavedMsg();
-                dbConnector.connection.Close();
-                ClearForm();
-
             }
             catch (Exception)
             {
@@ -498,6 +514,10 @@ namespace softgen
             {
 
                 throw;
+            }
+            finally
+            {
+                txtCustId.Enabled = false;
             }
         }
 
@@ -724,6 +744,25 @@ namespace softgen
                     dbConnector.connection.Close();
                 }
             }
+
+            // Check if there are any other child forms open
+            if (this.MdiParent.MdiChildren.Length > 1)
+            {
+                // Bring another child form to the front
+                foreach (Form child in this.MdiParent.MdiChildren)
+                {
+                    if (child != this)
+                    {
+                        child.Focus();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                // Bring the main form to the front
+                this.MdiParent.Focus();
+            }
         }
 
         private void frmM_Cust_FormClosed(object sender, FormClosedEventArgs e)
@@ -732,5 +771,46 @@ namespace softgen
             MainForm.Instance.mnuMCust.Enabled = true;
         }
 
+        private void frmM_Cust_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (this.Text.Contains("<Add>"))
+            {
+
+
+                if (!DeTools.IsFieldUnique("m_customer", "cust_id", txtCustId.Text.ToString().Trim()))
+                {
+                    MessageBox.Show("Id :" + txtCustId.Text + " already Exists.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtCustId.Text = null;
+                    txtCustId.Refresh();
+                    txtCustId.Focus();
+                    // You can also clear the control or perform other actions
+                }
+            }
+        }
+
+        private void txtCustId_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                string mode = DeTools.GetMode(DeTools.gobjActiveForm);
+                if (mode == DeTools.MODIFYMODE)
+                {
+                    SearchForm();
+                    txtCustId.Enabled = false;
+
+                }
+            }
+        }
+
+        private void txtCustId_TextChanged(object sender, EventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Convert the text to uppercase
+                textBox.Text = textBox.Text.ToUpper();
+                // Set the cursor at the end of the text
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
     }  //------END---------//
 }
