@@ -181,4 +181,49 @@
     - #### M_ITEM_DET
       -  ![Screenshot](https://github.com/user-attachments/assets/d4ae5ddd-7ba4-464c-b52c-daffcdb9eb40)
 
-                                                            
+  - ![Screenshot](https://github.com/user-attachments/assets/fea87a22-6543-4e3e-8251-5a2f039a6b47)
+                                                         - ![Screenshot](https://github.com/user-attachments/assets/a2125a0c-2562-4787-a878-8d1afcf190cf)
+                                                       
+  - ![Screenshot](https://github.com/user-attachments/assets/c6d15f55-80a6-4d8c-934e-300921b9e7b8)
+                                                         - ![Screenshot](https://github.com/user-attachments/assets/bfdc6ee8-c4cc-4af9-a409-ffa793a6f7f9)
+                                                         - ![Screenshot](https://github.com/user-attachments/assets/fb423bee-a8d5-401c-a47d-c830cec70d15)
+                                                         - ![Screenshot](https://github.com/user-attachments/assets/eb24f601-7563-4e1f-a774-6a88510a3150)
+                                                         - ![Screenshot](https://github.com/user-attachments/assets/36d49dd0-f9c2-46f3-89e0-206f1bb2349b)
+
+  - ### INVOICES TABLE
+    - #### T_INVOICE_HDR
+      -  ![Screenshot](https://github.com/user-attachments/assets/5f0c8a33-6f2d-4fda-af81-e682ea2aeec3)
+
+    - #### T_INVOICE_DET
+      -  ![Screenshot](https://github.com/user-attachments/assets/96df9478-0338-4f60-ae5d-cb8c6c3d2ebc)
+
+    - #### T_INVOICE_PAY_DET
+      -  ![Screenshot](https://github.com/user-attachments/assets/199d11b7-765f-4d0d-9c25-d09c0bbdadd7)
+
+  - ### SALE RETURN TABLE
+    - #### T_SR_HDR
+      -  ![Screenshot](https://github.com/user-attachments/assets/a5df290f-5662-4321-8ccc-451c63d08b06)
+
+    - #### T_SR_DET
+      -  ![Screenshot](https://github.com/user-attachments/assets/9e4173e4-d8c0-4066-a8b9-be18ad554892)
+
+    - #### T_SR_PAY_DET
+      -  ![Screenshot](https://github.com/user-attachments/assets/08972e65-5883-41cb-8f99-1ad9e69732c8)
+
+  - ### PURCHASE TABLE/GRN GOODS RECEIVING
+    - #### T_RECEIPT_HDR
+      -  ![Screenshot](https://github.com/user-attachments/assets/cf28ac18-6e6b-4291-9d9a-cdf78f9b5313)
+
+    - #### T_RECEIPT_DET
+      -  ![Screenshot](https://github.com/user-attachments/assets/0a78eb9e-cef3-4e22-88e3-12299ae807dc)
+
+    - #### T_RECEIPT_CHARGES
+      -  ![Screenshot](https://github.com/user-attachments/assets/254e7a4f-d7cf-46a3-b3e8-8adff6d74904)                    
+  - ## **THESE WERE SOME IMPORTANT TABLES THAT I HAVE  SHOWED YOU ABOVE, NOW SOME OF THE TABLES RELATED TO THESE**                                                                                            
+    - ![Screenshot](https://github.com/user-attachments/assets/9b157655-896d-47ce-a4ff-bb0bc4e16b20)
+            - ![Screenshot](https://github.com/user-attachments/assets/c3220167-db1f-4c9e-80ae-3be14db1aa46)
+            - ![Screenshot](https://github.com/user-attachments/assets/0c4daf23-bf58-4d6b-937a-58a91bf74eec)
+
+    - ## **  NOW THESE ARE THE ROUTINES/PROCEDURE CREATED FOR REPORTINGS **                                                     
+![Screenshot](https://github.com/user-attachments/assets/ee3987cd-50ef-4b21-b0ec-a7d5fe04f301)
+![Screenshot](https://github.com/user-attachments/assets/5cf24cd0-e547-427a-96a5-32e0b9480ce9)
